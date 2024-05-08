@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ForRobot
+namespace ForRobot.Views.Pages
 {
     /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
+    /// Логика взаимодействия для Page3D.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class Page3D : Page
     {
-        public MainWindow()
+        public Page3D()
         {
             InitializeComponent();
         }

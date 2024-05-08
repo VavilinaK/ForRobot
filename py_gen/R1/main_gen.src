@@ -1,0 +1,74 @@
+&ACCESS RVP
+&REL 45
+&PARAM EDITMASK = *
+&PARAM DISKPATH = KRC:\R1\Program
+DEF main_gen( )
+;FOLD INI;%{PE}
+  ;FOLD BASISTECH INI
+    GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS==TRUE DO IR_STOPM ( )
+    INTERRUPT ON 3 
+    BAS (#INITMOV,0 )
+  ;ENDFOLD (BASISTECH INI)
+  ;FOLD USER INI
+    ;Make your modifications here
+
+  ;ENDFOLD (USER INI)
+;ENDFOLD (INI)
+
+unfold()
+
+tcptrack_mod()
+ochistka_mod()
+
+custom_sync('h01010000', 'hffff0000', 1)
+edge_1_right_stm()
+
+custom_sync('h02020000', 'hffff0000', 2)
+edge_3_right_stm()
+
+custom_sync('h03030000', 'hffff0000', 3)
+edge_0_right_stm()
+
+custom_sync('h04040000', 'hffff0000', 4)
+edge_2_right_stm()
+
+custom_sync('h05050000', 'hffff0000', 5)
+edge_4_right_stm()
+
+custom_sync('h06060000', 'hffff0000', 6)
+edge_1_left_stm()
+
+custom_sync('h07070000', 'hffff0000', 7)
+edge_3_left_stm()
+
+custom_sync('h08080000', 'hffff0000', 8)
+edge_0_left_stm()
+
+custom_sync('h09090000', 'hffff0000', 9)
+edge_2_left_stm()
+
+custom_sync('h0A0A0000', 'hffff0000', 10)
+edge_4_left_stm()
+
+custom_sync('h0B0B0000', 'hffff0000', 11)
+
+go_home()
+
+fold()
+END
+
+
+DEF go_home()
+;FOLD HOME
+DECL E6AXIS XPHOME
+XPHOME = {A1 0.0,A2 0.0,A3 -130.0,A4 0.0,A5 -50.0,A6 -90.0,E1 -6000,E2 0.0,E3 -350.0,E4 0.0,E5 0.0,E6 0.0}
+ptp $axis_act
+XPHOME.E2 = $axis_act.E2
+PDAT_ACT={VEL 100.0,ACC 100.0,APO_DIST 10.0,GEAR_JERK 50.0000,EXAX_IGN 0}
+FDAT_ACT={TOOL_NO 1,BASE_NO 10,IPO_FRAME #BASE,POINT2[] " "}
+BAS(#PTP_PARAMS,100.0)
+SET_CD_PARAMS (0)
+PTP XPHOME C_DIS
+
+;ENDFOLD
+END

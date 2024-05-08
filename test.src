@@ -1,0 +1,36 @@
+&ACCESS RVP
+&REL 10
+&PARAM EDITMASK = *
+&PARAM TEMPLATE = C:\KRC\Roboter\Template\vorgabe
+DEF test( )
+DECL EKI_STATUS RET
+;FOLD INI;%{PE}
+  ;FOLD BASISTECH INI
+    GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS==TRUE DO IR_STOPM ( )
+    INTERRUPT ON 3 
+    BAS (#INITMOV,0 )
+  ;ENDFOLD (BASISTECH INI)
+  ;FOLD USER INI
+    ;Make your modifications here
+
+  ;ENDFOLD (USER INI)
+;ENDFOLD (INI)
+
+RET=EKI_Init("test")
+RET=EKI_Open("test")
+RET=EKI_SetReal("test", "Robot/Axis/@A1", $axis_act.A1)
+RET=EKI_SetReal("test", "Robot/Axis/@A2", $axis_act.A2)
+RET=EKI_SetReal("test", "Robot/Axis/@A3", $axis_act.A3)
+RET=EKI_SetReal("test", "Robot/Axis/@A4", $axis_act.A4)
+RET=EKI_SetReal("test", "Robot/Axis/@A5", $axis_act.A5)
+RET=EKI_SetReal("test", "Robot/Axis/@A6", $axis_act.A6)
+RET=EKI_SetReal("test", "Robot/Axis/@E1", $axis_act.E1)
+RET=EKI_SetReal("test", "Robot/Axis/@E2", $axis_act.E2)
+RET=EKI_SetReal("test", "Robot/Axis/@E3", $axis_act.E3)
+RET=EKI_Send("test","Robot")
+RET=EKI_Close("test")
+RET=EKI_Clear("test")
+;PTP $AXIS_ACT
+;$AXIS_FOR $VEL_AXIS
+
+END
