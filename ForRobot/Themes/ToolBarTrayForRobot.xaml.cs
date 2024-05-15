@@ -9,7 +9,18 @@ namespace ForRobot.Themes
     /// </summary>
     public partial class ToolBarTrayForRobot : UserControl
     {
+        #region Private variables
+
+        //private ViewModels.ToolBarViewModel _viewModel;
+
+        #endregion
+
         #region Public variables
+
+        //public ViewModels.ToolBarViewModel ViewModel
+        //{
+        //    get { return _viewModel ?? (ViewModels.ToolBarViewModel)this.DataContext ?? (_viewModel = new ViewModels.ToolBarViewModel()); }
+        //}
 
         #region Properties
 
@@ -51,7 +62,7 @@ namespace ForRobot.Themes
         {
             InitializeComponent();
 
-            this.DataContext = new ViewModels.ToolBarViewModel();
+            //if (this.DataContext == null) { this.DataContext = ViewModel; }
         }
 
         #endregion

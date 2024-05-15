@@ -23,8 +23,10 @@ namespace ForRobot.Libr
     {
         #region Private variables
 
+        private NLog.Logger Logger { get; } = NLog.LogManager.GetCurrentClassLogger();
+
         //private bool disposed = false;
-        
+
         /// <summary>
         /// Все свойства Detal равны нулю
         /// </summary>
@@ -33,13 +35,6 @@ namespace ForRobot.Libr
         private static bool DetalPropertiesAreNull(Detal detal) => detal.Long == decimal.Zero && detal.Hight == decimal.Zero
             && detal.DissolutionStart == decimal.Zero && detal.DissolutionEnd == decimal.Zero && detal.DistanceToFirst == decimal.Zero && detal.DistanceBetween == decimal.Zero
             && detal.ThicknessPlita == decimal.Zero && detal.ThicknessRebro == decimal.Zero && detal.SearchOffsetStart == decimal.Zero && detal.SearchOffsetEnd == decimal.Zero;
-
-        /// <summary>
-        /// Все свойства Svarka равны нулю
-        /// </summary>
-        /// <param name="svarka"></param>
-        /// <returns></returns>
-        private static bool SvarkaPropertiesAreNull(Svarka svarka) => svarka.WildingSpead == 0 && svarka.ProgramNom == 0;
 
         #endregion
 
@@ -75,7 +70,7 @@ namespace ForRobot.Libr
         /// <summary>
         /// Путь для вывода
         /// </summary>
-        internal string PathControl { get; private set; }
+        internal string PathProgramm { get; private set; }
 
         #endregion
 
@@ -95,7 +90,7 @@ namespace ForRobot.Libr
 
             this.PathGenerator = pathGenerator;
             this.FileName = fileName;
-            this.PathControl = pathControl;
+            this.PathProgramm = pathControl;
         }
 
         #endregion
@@ -170,45 +165,47 @@ namespace ForRobot.Libr
 
         #region Public functions
 
+        /// <summary>
+        /// Проверка завершения процесса генерации
+        /// </summary>
+        /// <param name="pathProgram">Путь к папке с программой</param>
+        /// <returns></returns>
         public bool ProccesEnd(string pathProgram)
         {
             bool res = false;
-
-            if (File.Exists(Path.Combine(pathProgram, string.Join("", this.FileName, ".src"))))
+            try
             {
-                this.LogMessage($"Файл {string.Join("", this.FileName, ".src")} сгенерирован");
-                res = true;
+                if (string.IsNullOrWhiteSpace(pathProgram))
+                    throw new ArgumentNullException("Путь к папке с программой");
+
+                if (File.Exists(Path.Combine(pathProgram, string.Join("", this.FileName, ".src"))))
+                {
+                    this.LogMessage($"Файл {string.Join("", this.FileName, ".src")} сгенерирован");
+                    res = true;
+                }
+                else
+                    this.LogErrorMessage($"Файл {Path.Combine(pathProgram, string.Join("", this.FileName, ".src"))} не найден");
             }
-            else
-                this.LogErrorMessage($"Файл {Path.Combine(pathProgram, string.Join("", this.FileName, ".src"))} не найден");
-
-            //if (File.Exists(Path.Combine(new FileInfo(this.PathGenerator).DirectoryName, string.Join("", this.FileName, ".dat"))))
-            //{
-            //    this.LogMessage($"Файл {string.Join("", this.FileName, ".dat")} сгенерирован");
-            //    res = true;
-            //}
-            //else
-            //{
-            //    this.LogErrorMessage($"Файл {Path.Combine(new FileInfo(this.PathGenerator).DirectoryName, string.Join("", this.FileName, ".dat"))} не найден");
-            //    res = false;
-            //}
-
+            catch(Exception ex)
+            {
+                this.LogErrorMessage(ex.Message, ex);
+            }
             return res;
         }
 
-        public void Start() => this.Start(null, null);
+        public void Start() => this.Start(null);
 
-        public void Start(Detal detal, Svarka svarka)
+        public void Start(Detal detal)
         {
             try
             {
                 if (object.Equals(detal, null)) throw new ArgumentNullException("detal");
 
-                if (object.Equals(svarka, null)) throw new ArgumentNullException("svarka");
+                //if (object.Equals(svarka, null)) throw new ArgumentNullException("svarka");
 
                 if (DetalPropertiesAreNull(detal)) throw new Exception("Не заполнен ни один параметр детали");
                     
-                if (SvarkaPropertiesAreNull(svarka)) throw new Exception("Не заполнены параметры сварки");
+                //if (SvarkaPropertiesAreNull(svarka)) throw new Exception("Не заполнены параметры сварки");
 
                 switch (detal)
                 {
@@ -232,7 +229,7 @@ namespace ForRobot.Libr
                     return;
                 }
 
-                string[,] args = { { "-p", $"{new FileInfo(this.PathGenerator).DirectoryName}\\{this.FileName}.json" }, { "-o", $"\"{this.PathControl}\"" }, { "-n", $"\"{this.FileName}.src\"" } };
+                string[,] args = { { "-p", $"{new FileInfo(this.PathGenerator).DirectoryName}\\{this.FileName}.json" }, { "-o", $"\"{this.PathProgramm}\"" }, { "-n", $"\"{this.FileName}.src\"" } };
 
                 string arv = "";
                 for(int i=0; i < args.GetLength(0); i++)
@@ -248,12 +245,17 @@ namespace ForRobot.Libr
                         RedirectStandardOutput = true,
                         RedirectStandardError = true,
                         CreateNoWindow = true,
-                        FileName = "cmd.exe",
-                        Arguments = $"/K {new DirectoryInfo(new FileInfo(this.PathGenerator).DirectoryName).Root}:& cd {new FileInfo(this.PathGenerator).DirectoryName}& py {this.PathGenerator}" + arv,
+                        //RedirectStandardInput = true,
+                        WorkingDirectory = new FileInfo(this.PathGenerator).DirectoryName,
+                        FileName = "python.exe",
+                        Arguments = this.PathGenerator + " " + arv,
                         //WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden
                     }
                 };
                 process.Start();
+                //process.StandardInput.Write($"/K {new DirectoryInfo(new FileInfo(this.PathGenerator).DirectoryName).Root}:& cd {new FileInfo(this.PathGenerator).DirectoryName}& py {this.PathGenerator}" + arv);
+                //process.StandardInput.Flush();
+                //process.StandardInput.Close();
                 //process.BeginOutputReadLine();
                 //string output = process.StandardOutput.ReadToEnd();
                 //if (!string.IsNullOrEmpty(output) && !string.Equals(output.TrimEnd().TrimStart().Replace(">", ""), new FileInfo(this.PathGenerator).DirectoryName))
@@ -263,6 +265,7 @@ namespace ForRobot.Libr
             catch (Exception ex)
             {
                 this.LogErrorMessage(ex.Message, ex);
+                this.Logger.Error(ex.Message);
                 //this.Dispose();
                 return;
             }

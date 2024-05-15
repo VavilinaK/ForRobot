@@ -2,12 +2,27 @@
 using System.Windows;
 using System.Windows.Media.Imaging;
 
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
 namespace ForRobot.Model
 {
     public class PlitaStringer : Detal
     {
-        public override sealed DetalType DetalType { get => DetalType.Stringer; }
+        [JsonIgnore]
+        /// <summary>
+        /// Тип детали
+        /// </summary>
+        public DetalType DetalType { get => DetalType.Stringer; }
 
         //public override sealed BitmapImage GenericImage { get => (BitmapImage)Application.Current.FindResource("ImagePlitaStringerFull"); }
+
+        #region Constructor
+
+        public PlitaStringer() { }
+
+        public PlitaStringer(DetalType type) : base(type) { }
+
+        #endregion
     }
 }

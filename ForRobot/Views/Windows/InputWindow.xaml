@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ForRobot.Views.Windows"
         mc:Ignorable="d"
-        Title="Input" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen">
+        Title="Input" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen"
+        Background="Gainsboro">
     
     <Grid Margin="15">
         <Grid.ColumnDefinitions>

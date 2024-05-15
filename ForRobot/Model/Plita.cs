@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -35,7 +35,7 @@ namespace ForRobot.Model
         /// <summary>
         /// Тип детали
         /// </summary>
-        public override sealed DetalType DetalType { get => DetalType.Plita; }
+        public DetalType DetalType { get => DetalType.Plita; }
 
         [JsonPropertyName("edge_count")]
         /// <summary>
@@ -272,8 +272,7 @@ namespace ForRobot.Model
             {
                 base.SearchOffsetEnd = value;
                 RebraImage = JoinRebra(GetStartRebraImage(), GetBodyRebraImage(), GetEndRebraImage());
-                if (!Equals(this.Change, null))
-                    this.Change.Invoke(this, null);
+                this.Change?.Invoke(this, null);
             }
         }
 
@@ -287,8 +286,7 @@ namespace ForRobot.Model
             set
             {
                 base.SeamsOverlap = value;
-                if (!Equals(this.Change, null))
-                    this.Change.Invoke(this, null);
+                this.Change?.Invoke(this, null);
             }
         }
 
@@ -302,8 +300,7 @@ namespace ForRobot.Model
             set
             {
                 base.TechOffsetSeamStart = value;
-                if (!Equals(this.Change, null))
-                    this.Change.Invoke(this, null);
+                this.Change?.Invoke(this, null);
             }
         }
 
@@ -317,6 +314,34 @@ namespace ForRobot.Model
             set
             {
                 base.TechOffsetSeamEnd = value;
+                this.Change?.Invoke(this, null);
+            }
+        }
+
+        [JsonPropertyName("velocity")]
+        /// <summary>
+        /// Скорость сварки
+        /// </summary>
+        public sealed override int WildingSpead
+        {
+            get => base.WildingSpead;
+            set
+            {
+                base.WildingSpead = value;
+                this.Change?.Invoke(this, null);
+            }
+        }
+
+        [JsonPropertyName("job")]
+        /// <summary>
+        /// Номер сварачной программы
+        /// </summary>
+        public sealed override int ProgramNom
+        {
+            get => base.ProgramNom;
+            set
+            {
+                base.ProgramNom = value;
                 if (!Equals(this.Change, null))
                     this.Change.Invoke(this, null);
             }
@@ -326,7 +351,11 @@ namespace ForRobot.Model
         public override Privyazka LongitudinalPrivyazka
         {
             get => base.LongitudinalPrivyazka;
-            set => base.LongitudinalPrivyazka = value;
+            set
+            {
+                base.LongitudinalPrivyazka = value;
+                this.Change?.Invoke(this, null);
+            }
         }
 
         [JsonIgnore]
@@ -370,6 +399,14 @@ namespace ForRobot.Model
         public override event EventHandler Change;
 
         //public override event Func<object, EventArgs, Task> Change;
+
+        #endregion
+
+        #region Constructors
+
+        public Plita() { }
+
+        public Plita(DetalType type) : base(type) { }
 
         #endregion
 

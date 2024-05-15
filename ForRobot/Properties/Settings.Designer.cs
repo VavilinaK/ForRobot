@@ -73,6 +73,18 @@ namespace ForRobot.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("main_gen")]
+        public string PlitaWithBevelsProgramm {
+            get {
+                return ((string)(this["PlitaWithBevelsProgramm"]));
+            }
+            set {
+                this["PlitaWithBevelsProgramm"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string PlitaGenerator {
             get {
@@ -80,6 +92,18 @@ namespace ForRobot.Properties {
             }
             set {
                 this["PlitaGenerator"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string PlitaWithBevelsGenerator {
+            get {
+                return ((string)(this["PlitaWithBevelsGenerator"]));
+            }
+            set {
+                this["PlitaWithBevelsGenerator"] = value;
             }
         }
         
@@ -109,12 +133,12 @@ namespace ForRobot.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.Collections.Specialized.StringCollection SaveConnection {
+        public global::System.Collections.Specialized.StringCollection SaveRobots {
             get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["SaveConnection"]));
+                return ((global::System.Collections.Specialized.StringCollection)(this["SaveRobots"]));
             }
             set {
-                this["SaveConnection"] = value;
+                this["SaveRobots"] = value;
             }
         }
         
@@ -139,6 +163,18 @@ namespace ForRobot.Properties {
             }
             set {
                 this["SavePlita"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SavePlitaWithBevels {
+            get {
+                return ((string)(this["SavePlitaWithBevels"]));
+            }
+            set {
+                this["SavePlitaWithBevels"] = value;
             }
         }
         

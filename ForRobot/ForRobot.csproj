@@ -245,7 +245,11 @@
     <Compile Include="AsyncRelayCommand.cs" />
     <Compile Include="BaseClass.cs" />
     <Compile Include="Libr\Generation.cs" />
+    <Compile Include="Libr\AutoScrollBehavior.cs" />
+    <Compile Include="Libr\ScrollViewerAttachedProperties.cs" />
     <Compile Include="Libr\StatusColorConverter.cs" />
+    <Compile Include="Model\ScoseTypes.cs" />
+    <Compile Include="Model\PlitaWithBevels.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -269,14 +273,12 @@
     <Compile Include="Model\PlitaStringer.cs" />
     <Compile Include="Model\PlitaTreygolnik.cs" />
     <Compile Include="Model\Privyazka.cs" />
-    <Compile Include="Model\Svarka.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Themes\ToolBarTrayForRobot.xaml.cs">
       <DependentUpon>ToolBarTrayForRobot.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\MainPageViewModel1.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
-    <Compile Include="ViewModels\Page2DViewModel.cs" />
     <Compile Include="ViewModels\ToolBarViewModel.cs" />
     <Compile Include="Views\Pages\Page2D.xaml.cs">
       <DependentUpon>Page2D.xaml</DependentUpon>

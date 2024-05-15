@@ -14,9 +14,10 @@ namespace ForRobot.Libr
 
             //if (!(value is string))
             //    throw new FormatException("to use this converter, value and parameter shall inherit from String.");
+
             if (!string.IsNullOrWhiteSpace((string)value) && Regex.IsMatch((string)value, @"^Нет соединения", RegexOptions.Compiled))
                 return new SolidColorBrush(Color.FromRgb(178, 34, 34));
-            
+
             if (!string.IsNullOrWhiteSpace((string)value) && Regex.IsMatch((string)value, @"^Программа не выбрана", RegexOptions.Compiled))
                 return new SolidColorBrush(Color.FromRgb(72, 155, 255));
 

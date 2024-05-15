@@ -22,5 +22,10 @@ namespace ForRobot.Model
         /// Плита треугольником
         /// </summary>
         Treygolnik = 3,
+
+        /// <summary>
+        /// Настил со скосами
+        /// </summary>
+        WithBevels = 4
     }
 }

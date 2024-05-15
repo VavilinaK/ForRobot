@@ -22,4 +22,8 @@
     <Folder Include="Classes\Data\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\ForRobot\ForRobot.csproj" />
+  </ItemGroup>
+
 </Project>

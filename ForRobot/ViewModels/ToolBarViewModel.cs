@@ -73,6 +73,10 @@ namespace ForRobot.ViewModels
         /// </summary>
         public event Func<object, EventArgs, Task> Send;
         /// <summary>
+        /// Событие выбора сгенерированной программы
+        /// </summary>
+        public event Func<object, EventArgs, Task> SelectProgramm;
+        /// <summary>
         /// Событие изменения свойств робота
         /// </summary>
         public event EventHandler ChangeRobot;
@@ -126,6 +130,24 @@ namespace ForRobot.ViewModels
             await Task.WhenAll(handlerTasks);
         }
 
+        private async Task _OnSelect(Func<object, EventArgs, Task> func)
+        {
+            Func<object, EventArgs, Task> handler = func;
+
+            if (handler == null)
+                return;
+
+            Delegate[] invocationList = handler.GetInvocationList();
+            Task[] handlerTasks = new Task[invocationList.Length];
+
+            for (int i = 0; i < invocationList.Length; i++)
+            {
+                handlerTasks[i] = ((Func<object, EventArgs, Task>)invocationList[i])(this, EventArgs.Empty);
+            }
+
+            await Task.WhenAll(handlerTasks);
+        }
+
         #endregion
 
         #region Public functions
@@ -140,6 +162,8 @@ namespace ForRobot.ViewModels
         }
 
         public async Task OnSend() => await this._OnSend(this.Send);
+
+        public async Task OnSelect() => await this._OnSelect(this.SelectProgramm);
 
         #region Commands
 
@@ -232,7 +256,7 @@ namespace ForRobot.ViewModels
                     {
                         if (!this.Robot.IsConnection || System.Windows.MessageBox.Show($"Удалить робота с соединением {this.Robot.Host}:{this.Robot.Port}?", "Удаление", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK)
                         {
-                            Properties.Settings.Default.SaveConnection.Remove($"{this.Robot.Host}:{this.Robot.Port}");
+                            Properties.Settings.Default.SaveRobots.Remove($"{this.Robot.Host}:{this.Robot.Port}");
                             Properties.Settings.Default.Save();
                             this.Dispose();
                             ((Views.Pages.PageMain1)App.Current.MainWindowView.ViewModel.NowPage).ViewModel.Items.Remove((Themes.ToolBarTrayForRobot)obj);
@@ -284,6 +308,7 @@ namespace ForRobot.ViewModels
                 return _selectProgrammRobotCommand ??
                     (_selectProgrammRobotCommand = new RelayCommand(obj =>
                     {
+                        this.SelectProgramm.Invoke(this, null);
                         //Task.Run(() => this.Robot.SelectProgramm());
                     }));
             }

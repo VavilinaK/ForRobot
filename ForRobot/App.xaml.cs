@@ -58,7 +58,7 @@ namespace ForRobot
 
         public static new App Current => Application.Current as App;
 
-        public Logger Logger { get; } = LogManager.GetCurrentClassLogger();
+        public NLog.Logger Logger { get; } = NLog.LogManager.GetCurrentClassLogger();
 
         #region Windows
 
@@ -95,6 +95,7 @@ namespace ForRobot
                     {
                         using (singleMutex = new SingleGlobalInstance(1000))
                         {
+                            this.Logger.Info($"{DateTime.Now.ToString("HH:mm:ss")} Запуск приложения");
                             Application.Current.MainWindow = MainWindowView;
                             MainWindowView.Show();
                             GC.KeepAlive(mutex);
@@ -112,7 +113,7 @@ namespace ForRobot
             }
             catch (Exception ex)
             {
-                Logger.Error(ex.Message);
+                this.Logger.Error(ex.Message);
             }
         }
 
@@ -132,6 +133,7 @@ namespace ForRobot
             if (((Application.Current.Windows.Count == 0) && (Application.Current.ShutdownMode == ShutdownMode.OnLastWindowClose))
                 || (Application.Current.ShutdownMode == ShutdownMode.OnMainWindowClose))
             {
+                this.Logger.Info($"{DateTime.Now.ToString("HH:mm:ss")} Закрытие приложения");
                 Application.Current.Shutdown(0);
             }
         }

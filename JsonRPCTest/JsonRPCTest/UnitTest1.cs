@@ -23,6 +23,9 @@ using System.Reactive.Concurrency;
 using System.Net.Sockets;
 using StreamJsonRpc;
 
+using ForRobot.Libr;
+using ForRobot.Libr.Client;
+
 namespace JsonRPCTest
 {
     [TestClass]
@@ -48,15 +51,20 @@ namespace JsonRPCTest
         [TestMethod]
         public void TestJsonClient2()
         {
-            //string message;
-            //try
-            //{
-            string answer = TestClient.CallList();
-            //}
-            //catch (Exception ex)
-            //{
-            //    message = ex.Message;
-            //}
+            string message;
+            try
+            {
+                JsonRpcConnection connection = new JsonRpcConnection("192.168.119.133", 3333);
+                connection.Open();
+                //bool answer = Task.Run<bool>(async() => await connection.CopyMem2File(@"D:\ForRobot\test.dat", "KRC:\\R1\\test.dat")).Result;
+                bool answer = Task.Run<bool>(async () => await connection.Select("KRC:\\R1\\Program\\main_gen.src")).Result;
+                //bool answer = Task.Run<bool>(async () => await connection.Copy(@"D:\NewProgramm\R1\test.dat", "KRC:\\R1\\Program\\test.dat")).Result;
+
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
+            }
         }
     }
 
@@ -159,7 +167,7 @@ namespace JsonRPCTest
                 stream.Close();
                 client.Close();
             }
-            return qqqq;
+            return res;
         }
     }
 }

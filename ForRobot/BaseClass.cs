@@ -12,10 +12,7 @@ namespace ForRobot
         /// <summary>Защищённый метод для создания события <see cref="PropertyChanged"/>.</summary>
         /// <param name="propertyName">Имя изменившегося свойства. 
         /// Если значение не задано, то используется имя метода в котором был вызов.</param>
-        protected void RaisePropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        protected void RaisePropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         /// <summary>Защищённый метод для присвоения значения полю и
         /// создания события <see cref="PropertyChanged"/>.</summary>

@@ -154,8 +154,10 @@
                                     <StackPanel Grid.Column="1" Orientation="Horizontal">
                                         <Label Content="{TemplateBinding NameRobot}" VerticalAlignment="Center" FontSize="18" FontWeight="Bold" Width="Auto"/>
                                         <Label Content="-" VerticalAlignment="Center" FontSize="16" Width="Auto"/>
-                                        <Label Content="{Binding Path=Robot.ProcessState, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource labelStatusStyle}"
-                                               Foreground="{Binding Path=Content, RelativeSource={RelativeSource Self}, Converter={StaticResource StatusColorConvert}}"/>
+                                        <Label Style="{StaticResource labelStatusStyle}">
+                                            <TextBlock Text="{Binding Path=Robot.ProcessState, UpdateSourceTrigger=PropertyChanged}"
+                                                       Foreground="{Binding Path=Text, RelativeSource={RelativeSource Self}, Converter={StaticResource StatusColorConvert}}"/>
+                                        </Label>
                                     </StackPanel>
 
                                     <ToggleButton Grid.Column="2" Name="toggleButtonConnection" Width="40" Margin="3,0" Style="{StaticResource toggleButtonConnectionStyle}">
@@ -229,7 +231,7 @@
                                                         <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
                                                         <Setter Property="Background" Value="{StaticResource ImageSelectProgramm}"/>
                                                         <Setter Property="ToolTip" Value="Выбор сгенерированной программы"/>
-                                                        <Setter Property="Command" Value="{Binding SelectProgrammCommand}"/>
+                                                        <Setter Property="Command" Value="{Binding Path=SelectRobotCommand}"/>
                                                     </Style>
                                                 </Button.Style>
                                             </Button>

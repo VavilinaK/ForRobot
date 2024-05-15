@@ -5,17 +5,23 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ForRobot.Views.Pages"
       xmlns:vm="clr-namespace:ForRobot.ViewModels"
+      xmlns:conv="clr-namespace:LibraryConvertClass;assembly=LibraryConvertClass"
       xmlns:uc="clr-namespace:ForRobot.Themes"
-      xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+      xmlns:lib="clr-namespace:ForRobot.Libr"
       mc:Ignorable="d" 
       d:DesignHeight="850" d:DesignWidth="1300"
+      Background="#cfcfcf"
       Title="Интерфейс">
 
     <Page.DataContext>
         <vm:MainPageViewModel1/>
     </Page.DataContext>
 
-    <Grid Background="#cfcfcf">
+    <Page.Resources>
+        <conv:RadioButtonConverter x:Key="RadioButtonConvert"/>
+    </Page.Resources>
+
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
@@ -151,8 +157,10 @@
                                 <RotateTransform Angle="90" />
                             </Separator.LayoutTransform>
                         </Separator>
-                        
-                        <RadioButton Content="One" Width="40" Style="{StaticResource toggleButtonCordinateStyle}" IsChecked="True">
+
+                        <RadioButton Content="One" Width="40" Style="{StaticResource toggleButtonCordinateStyle}"
+                                     IsChecked="{Binding Path=PageNowString, Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter=Page2D, Mode=TwoWay}">
+
                             <RadioButton.Template>
                                 <ControlTemplate TargetType="{x:Type ToggleButton}">
                                     <Border BorderThickness="0" CornerRadius="3" Padding="2" Style="{StaticResource toggleButtonCordinateTemplateStyle}">
@@ -162,7 +170,8 @@
                             </RadioButton.Template>
                         </RadioButton>
 
-                        <RadioButton Content="Two" Width="40" Style="{StaticResource toggleButtonCordinateStyle}">
+                        <RadioButton Content="Two" Width="40" Style="{StaticResource toggleButtonCordinateStyle}"
+                                     IsChecked="{Binding Path=PageNowString, Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter=Page3D, Mode=TwoWay}">
                             <RadioButton.Template>
                                 <ControlTemplate TargetType="{x:Type ToggleButton}">
                                     <Border BorderThickness="0" CornerRadius="3" Style="{StaticResource toggleButtonCordinateTemplateStyle}">
@@ -220,13 +229,55 @@
                                     </DataTemplate>
                                 </Setter.Value>
                             </Setter>
-                            <Setter Property="Padding" Value="5" />
+                            <Setter Property="Padding" Value="5"/>
+                            <Setter Property="FontSize" Value="16"/>
+
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=Header, RelativeSource={RelativeSource Self}}" Value="Скосы">
+                                    <Setter Property="Visibility" Value="Hidden"/>
+                                </DataTrigger>
+
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding Path=Header, RelativeSource={RelativeSource Self}}" Value="Скосы"/>
+                                        <Condition Binding="{Binding Path=SelectedType}" Value="Настил со скосами"/>
+                                    </MultiDataTrigger.Conditions>
+
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </MultiDataTrigger>
+                            </Style.Triggers>
                         </Style>
                     </TabControl.Resources>
 
                     <TabItem Header="Общие">
-                        <Grid Height="Auto">
-                            <Grid.RowDefinitions>
+                        <ContentControl>
+                            <ContentControl.Style>
+                                <Style TargetType="ContentControl">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ContentControl">
+                                                <ContentControl ContentTemplate="{StaticResource PlitaTemplateStyle}"/>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=SelectedType}" Value="Настил со скосами">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="ContentControl">
+                                                        <ContentControl ContentTemplate="{StaticResource PlitaWithBevelsTemplateStyle}"/>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ContentControl.Style>
+                        </ContentControl>
+                        
+                        <!--<Grid Height="Auto">-->
+                            <!--<Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
@@ -250,14 +301,14 @@
                             <Label Grid.Row="6" Grid.Column="0" Content="Роспуск справа, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
                             <Label Grid.Row="7" Grid.Column="0" Content="Количество ребер, шт." FontSize="16" FontWeight="Bold" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
 
-                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=DetalObject.Long, Mode=TwoWay, TargetNullValue=120000.00, FallbackValue=120000.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
+                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=DetalObject.Long, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
                                      FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
 
-                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=DetalObject.DistanceToFirst, Mode=TwoWay, TargetNullValue=300.00, FallbackValue=300.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
+                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=DetalObject.DistanceToFirst, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
                                      FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
 
                             <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Vertical">
-                                <TextBox Name="textBoxDistanceBetween" Text="{Binding Path=DetalObject.DistanceBetween, Mode=TwoWay, TargetNullValue=600.00, FallbackValue=600.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
+                                <TextBox Name="textBoxDistanceBetween" Text="{Binding Path=DetalObject.DistanceBetween, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
                                      FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
 
                                 <Popup PlacementTarget="{Binding ElementName=textBoxDistanceBetween}"
@@ -273,99 +324,21 @@
                                 </Popup>
                             </StackPanel>
 
-                            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Path=DetalObject.DistanceToStart, Mode=TwoWay, TargetNullValue=250.00, FallbackValue=250.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
+                            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Path=DetalObject.DistanceToStart, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
                                      FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
 
-                            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Path=DetalObject.DistanceToEnd, Mode=TwoWay, TargetNullValue=250.00, FallbackValue=250.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
+                            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Path=DetalObject.DistanceToEnd, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
                                      FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
 
-                            <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Path=DetalObject.DissolutionStart, Mode=TwoWay, TargetNullValue=200.00, FallbackValue=200.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
+                            <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Path=DetalObject.DissolutionStart, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
                                      FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
 
-                            <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Path=DetalObject.DissolutionEnd, Mode=TwoWay, TargetNullValue=200.00, FallbackValue=200.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
+                            <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Path=DetalObject.DissolutionEnd, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
                                      FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
 
-                            <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding Path=DetalObject.SumReber, Mode=TwoWay, FallbackValue=5, UpdateSourceTrigger=LostFocus}" 
-                                 FontSize="16" Padding="5" Width="{Binding Path=ActualWidth, ElementName=sp2}" Height="37"/>
-                            <!--<Label Grid.Row="0" Grid.Column="0" Content="Продольная привязка (по чертежу)" FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
-                            <Label Grid.Row="1" Grid.Column="0" Content="Длина конструкции, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
-                            <Label Grid.Row="2" Grid.Column="0" Content="Высота ребра, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
-                            <Label Grid.Row="3" Grid.Column="0" Content="Толщина ребра, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
-                            <Label Grid.Row="4" Grid.Column="0" Content="Расстояние до первого ребра, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
-                            <Label Grid.Row="5" Grid.Column="0" Content="Расстояние между ребрами, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
-                            <Label Grid.Row="6" Grid.Column="0" Content="Количество ребер, шт." FontSize="16" FontWeight="Bold" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
-
-                            <Label Grid.Row="8" Grid.Column="0" Content="Поперечная привязка (по чертежу)" FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
-                            <Label Grid.Row="9" Grid.Column="0" Content="Ширина конструкции, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
-                            <Label Grid.Row="10" Grid.Column="0" Content="Отступ в начале, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
-                            <Label Grid.Row="11" Grid.Column="0" Content="Отступ в конце, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center" Margin="0"/>
-                            <Label Grid.Row="12" Grid.Column="0" Content="Роспуск в начале, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center" Margin="0"/>
-                            <Label Grid.Row="13" Grid.Column="0" Content="Роспуск в конце, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center" Margin="0"/>
-                            <Label Grid.Row="14" Grid.Column="0" Content="Толщина плиты, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center" Margin="0"/>
-                            <Label Grid.Row="15" Grid.Column="0" Content="Смещение поиска в начале, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center" Margin="0"/>
-                            <Label Grid.Row="16" Grid.Column="0" Content="Смещение поиска в конце, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center" Margin="0"/>
-
-                            <Separator Grid.Row="7" Grid.ColumnSpan="2" Height="5" Margin="5,5,5,0"/>
-
-                            <StackPanel Name="sp2" Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Margin="0,5">
-                                <ComboBox Width="{Binding Path=ActualWidth, ElementName=sp2}" Height="35" FontSize="16" FontWeight="Bold"
-                                      VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                                      ItemsSource="{Binding Path=PrivyazkaCollection, Mode=OneWay}"
-                                      SelectedItem="{Binding Path=SelectedLongitudinalPrivyazka, Mode=TwoWay}"
-                                      SelectedIndex="0"
-                                      IsEnabled="False"/>
-                            </StackPanel>
-
-                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=DetalObject.Long, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
-                                     FontSize="16" Padding="5" Width="{Binding Path=ActualWidth, ElementName=sp2}" Height="37"/>
-
-                            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Path=DetalObject.Hight, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
-                                     FontSize="16" Padding="5" Width="{Binding Path=ActualWidth, ElementName=sp2}" Height="37"/>
-
-                            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Path=DetalObject.ThicknessRebro, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
-                                     FontSize="16" Padding="5" Width="{Binding Path=ActualWidth, ElementName=sp2}" Height="37"/>
-
-                            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Path=DetalObject.DistanceToFirst, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
-                                     FontSize="16" Padding="5" Width="{Binding Path=ActualWidth, ElementName=sp2}" Height="37"/>
-
-                            <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Path=DetalObject.DistanceBetween, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
-                                     FontSize="16" Padding="5" Width="{Binding Path=ActualWidth, ElementName=sp2}" Height="37"/>
-
-                            <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Path=DetalObject.SumReber, Mode=TwoWay, FallbackValue=4, UpdateSourceTrigger=LostFocus}" 
-                                 FontSize="16" Padding="5" Width="{Binding Path=ActualWidth, ElementName=sp2}" Height="37"/>
-
-                            <StackPanel Name="sp1" Grid.Row="8" Grid.Column="1" Orientation="Horizontal" Margin="0,5">
-                                <ComboBox Height="35" Width="{Binding Path=ActualWidth, ElementName=sp1}" FontSize="16" FontWeight="Bold"
-                                      VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                                      ItemsSource="{Binding Path=PrivyazkaCollection, Mode=OneWay}"
-                                      SelectedItem="{Binding Path=SelectedTransversePrivyazka, Mode=OneWayToSource}"
-                                      SelectedIndex="0"/>
-                            </StackPanel>
-
-                            <TextBox Grid.Row="9" Grid.Column="1" Text="{Binding Path=DetalObject.Wight, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
-                                 FontSize="16" Padding="5" Width="{Binding Path=ActualWidth, ElementName=sp1}" Height="37"/>
-
-                            <TextBox Grid.Row="10" Grid.Column="1" Text="{Binding Path=DetalObject.IndentionStart, Mode=OneWayToSource, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
-                                     FontSize="16" Padding="5" Width="{Binding Path=ActualWidth, ElementName=sp1}" Height="37"/>
-
-                            <TextBox Grid.Row="11" Grid.Column="1" Text="{Binding Path=DetalObject.IndentionEnd, Mode=OneWayToSource, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
-                                     FontSize="16" Padding="5" Width="{Binding Path=ActualWidth, ElementName=sp1}" Height="37"/>
-
-                            <TextBox Grid.Row="12" Grid.Column="1" Text="{Binding Path=DetalObject.DissolutionStart, Mode=OneWayToSource, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
-                                     FontSize="16" Padding="5" Width="{Binding Path=ActualWidth, ElementName=sp1}" Height="37"/>
-
-                            <TextBox Grid.Row="13" Grid.Column="1" Text="{Binding Path=DetalObject.DissolutionEnd, Mode=OneWayToSource, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
-                                     FontSize="16" Padding="5" Width="{Binding Path=ActualWidth, ElementName=sp1}" Height="37"/>
-
-                            <TextBox Grid.Row="14" Grid.Column="1" Text="{Binding Path=DetalObject.ThicknessPlita, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
-                                     FontSize="16" Padding="5" Width="{Binding Path=ActualWidth, ElementName=sp1}" Height="37"/>
-
-                            <TextBox Grid.Row="15" Grid.Column="1" Text="{Binding Path=DetalObject.SearchOffsetStart, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
-                                     FontSize="16" Padding="5" Width="{Binding Path=ActualWidth, ElementName=sp1}" Height="37"/>
-
-                            <TextBox Grid.Row="16" Grid.Column="1" Text="{Binding Path=DetalObject.SearchOffsetEnd, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
-                                     FontSize="16" Padding="5" Width="{Binding Path=ActualWidth, ElementName=sp1}" Height="37"/>-->
-                        </Grid>
+                            <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding Path=DetalObject.SumReber, Mode=TwoWay, FallbackValue=4, UpdateSourceTrigger=PropertyChanged}" 
+                                 FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>-->
+                        <!--</Grid>-->
                     </TabItem>
 
                     <TabItem Header="Доп.">
@@ -394,14 +367,14 @@
                             <Label Grid.Row="6" Grid.Column="0" Content="Технологический отступ начала шва, мм." FontSize="16" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
                             <Label Grid.Row="7" Grid.Column="0" Content="Технологический отступ конца шва, мм." FontSize="16" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
 
-                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=DetalObject.ThicknessPlita, Mode=TwoWay, TargetNullValue=16, FallbackValue=16, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
+                            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=DetalObject.ThicknessPlita, Mode=TwoWay, TargetNullValue=00, FallbackValue=00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
                                      FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
 
-                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=DetalObject.ThicknessRebro, Mode=TwoWay, TargetNullValue=16, FallbackValue=16, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
+                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=DetalObject.ThicknessRebro, Mode=TwoWay, TargetNullValue=00, FallbackValue=00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
                                      FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
 
                             <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Vertical">
-                                <TextBox Name="textBoxHieght" Text="{Binding Path=DetalObject.Hight, Mode=TwoWay, TargetNullValue=200.00, FallbackValue=200.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
+                                <TextBox Name="textBoxHieght" Text="{Binding Path=DetalObject.Hight, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
                                           FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
 
                                 <Popup PlacementTarget="{Binding ElementName=textBoxHieght}"
@@ -417,19 +390,19 @@
                                 </Popup>
                             </StackPanel>
 
-                            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Path=DetalObject.SearchOffsetStart, Mode=TwoWay, TargetNullValue=60.00, FallbackValue=60.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
+                            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Path=DetalObject.SearchOffsetStart, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
                                      FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
 
-                            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Path=DetalObject.SearchOffsetEnd, Mode=TwoWay, TargetNullValue=60.00, FallbackValue=60.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
+                            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Path=DetalObject.SearchOffsetEnd, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
                                      FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
 
-                            <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Path=DetalObject.SeamsOverlap, Mode=TwoWay, TargetNullValue=5.00, FallbackValue=5.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
+                            <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Path=DetalObject.SeamsOverlap, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
                                      FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
 
-                            <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Path=DetalObject.TechOffsetSeamStart, Mode=TwoWay, TargetNullValue=2.00, FallbackValue=2.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
+                            <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Path=DetalObject.TechOffsetSeamStart, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
                                      FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
 
-                            <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding Path=DetalObject.TechOffsetSeamEnd, Mode=TwoWay, TargetNullValue=3.00, FallbackValue=3.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
+                            <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding Path=DetalObject.TechOffsetSeamEnd, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
                                      FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
                         </Grid>
                     </TabItem>
@@ -449,15 +422,130 @@
                             </Grid.ColumnDefinitions>
 
                             <Label Grid.Row="0" Grid.Column="0" Content="Скорость сварки, см/м" FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
-                            <Label Grid.Row="1" Grid.Column="0" Content="Номер сварачной программы" FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
+                            <Label Grid.Row="1" Grid.Column="0" Content="Номер сварочной программы" FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
 
-                            <StackPanel Name="sp3" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">
-                                <TextBox Height="37" Text="{Binding Path=Svarka.WildingSpead, Mode=TwoWay,TargetNullValue=38, FallbackValue=38, ConverterCulture='en-us', StringFormat=F0, UpdateSourceTrigger=LostFocus}"
-                                 FontSize="16" Padding="5" Width="{Binding Path=ActualWidth, ElementName=sp3}"/>
-                            </StackPanel>
+                            <TextBox Grid.Row="0" Grid.Column="1" Height="37" Text="{Binding Path=DetalObject.WildingSpead, Mode=TwoWay,TargetNullValue=0, FallbackValue=0, ConverterCulture='en-us', StringFormat=F0, UpdateSourceTrigger=PropertyChanged}"
+                                 FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
 
-                            <TextBox Grid.Row="1" Grid.Column="1" Height="37" Text="{Binding Path=Svarka.ProgramNom, Mode=TwoWay,TargetNullValue=1, FallbackValue=1, ConverterCulture='en-us', StringFormat=F0, UpdateSourceTrigger=LostFocus}"
-                                 FontSize="16" Padding="5" Width="{Binding Path=ActualWidth, ElementName=sp3}"/>
+                            <TextBox Grid.Row="1" Grid.Column="1" Height="37" Text="{Binding Path=DetalObject.ProgramNom, Mode=TwoWay,TargetNullValue=1, FallbackValue=1, ConverterCulture='en-us', StringFormat=F0, UpdateSourceTrigger=PropertyChanged}"
+                                 FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
+                        </Grid>
+                    </TabItem>
+
+                    <TabItem Header="Скосы">
+                        <!--<TabItem.Style>
+                            <Style TargetType="{x:Type TabItem}">
+                                <Setter Property="Visibility" Value="Hidden"/>
+                                <Setter Property="Width" Value="0"/>
+
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=SelectedType}" Value="Настил со скосами">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Setter Property="Width" Value="Auto"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TabItem.Style>-->
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Grid Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" Grid.ColumnSpan="2">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <RadioButton Grid.Row="0" Grid.Column="0" Content="One" Style="{StaticResource toggleButtonScosStyle}"
+                                             IsChecked="{Binding Path=DetalObject.ScoseType, Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter=d_slope_leftt, Mode=TwoWay}"
+                                             ToolTip="Наклон влево">
+
+                                    <RadioButton.Template>
+                                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                            <Border BorderThickness="0" CornerRadius="3" Padding="2" Style="{StaticResource toggleButtonScosTemplateStyle}">
+                                                <Image Source="{StaticResource ImageGenerationOff}" Stretch="Fill"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </RadioButton.Template>
+                                </RadioButton>
+
+                                <RadioButton Grid.Row="0" Grid.Column="1" Content="Two" Style="{StaticResource toggleButtonScosStyle}"
+                                             IsChecked="{Binding Path=DetalObject.ScoseType, Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter=d_slope_right, Mode=TwoWay}"
+                                             ToolTip="Наклон вправо">
+                                    <RadioButton.Template>
+                                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                            <Border BorderThickness="0" CornerRadius="3" Style="{StaticResource toggleButtonScosTemplateStyle}">
+                                                <Image Source="{StaticResource ImageGenerationOn}"  Stretch="Fill"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </RadioButton.Template>
+                                </RadioButton>
+
+                                <RadioButton Grid.Row="1" Grid.Column="0" Content="One" Style="{StaticResource toggleButtonScosStyle}"
+                                             IsChecked="{Binding Path=DetalObject.ScoseType, Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter=d_trapezoid_top, Mode=TwoWay}"
+                                             ToolTip="Трапеция">
+
+                                    <RadioButton.Template>
+                                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                            <Border BorderThickness="0" CornerRadius="3" Padding="2" Style="{StaticResource toggleButtonScosTemplateStyle}">
+                                                <Image Source="{StaticResource ImageKeyOff}" Stretch="Fill"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </RadioButton.Template>
+                                </RadioButton>
+
+                                <RadioButton Grid.Row="1" Grid.Column="1" Content="Two" Style="{StaticResource toggleButtonScosStyle}"
+                                             IsChecked="{Binding Path=DetalObject.ScoseType, Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter=d_trapezoid_bottom, Mode=TwoWay}"
+                                             ToolTip="Перевёрнутая трапеция">
+                                    <RadioButton.Template>
+                                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                            <Border BorderThickness="0" CornerRadius="3" Style="{StaticResource toggleButtonScosTemplateStyle}">
+                                                <Image Source="{StaticResource ImageKeyOn}"  Stretch="Fill"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </RadioButton.Template>
+                                </RadioButton>
+
+                                <RadioButton Grid.Row="2" Grid.Column="0" Content="Two" Style="{StaticResource toggleButtonScosStyle}"
+                                             IsChecked="{Binding Path=DetalObject.ScoseType, Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter=d_rect, Mode=TwoWay}"
+                                             ToolTip="Прямоугольная форма">
+                                    
+                                    <RadioButton.Template>
+                                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                            <Border BorderThickness="0" CornerRadius="3" Style="{StaticResource toggleButtonScosTemplateStyle}">
+                                                <Image Source="{StaticResource Image3D}"  Stretch="Fill"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </RadioButton.Template>
+                                </RadioButton>
+                            </Grid>
+
+                            <Separator Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="10"/>
+                            
+                            <Label Grid.Row="4" Grid.Column="0" Content="Скос слева" FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
+                            <Label Grid.Row="5" Grid.Column="0" Content="Скос справа" FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
+
+                            <TextBox Grid.Row="4" Grid.Column="1" Height="37" Text="{Binding Path=DetalObject.BevelToStart, Mode=TwoWay,TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
+                                 FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
+
+                            <TextBox Grid.Row="5" Grid.Column="1" Height="37" Text="{Binding Path=DetalObject.BevelToEnd, Mode=TwoWay,TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
+                                 FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
                         </Grid>
                     </TabItem>
                 </TabControl>
@@ -493,30 +581,31 @@
                 </StackPanel>
             </Grid>
 
-            <!--<Frame Grid.Row="1" Grid.Column="3" Content="{Binding Path=NowPage}" NavigationUIVisibility="Hidden" Margin="0,0,0,0"/>-->
-
             <Grid Grid.Row="1" Grid.Column="3">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
+                    <!--<RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>-->
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <Image Grid.Row="0" Margin="0" Width="Auto" Height="Auto" MaxHeight="400" Source="{Binding Path=DetalObject.GenericImage, UpdateSourceTrigger=PropertyChanged}"/>
+                <!--<Image Grid.Row="0" Margin="0" Width="Auto" Height="Auto" MaxHeight="400" Source="{Binding Path=DetalObject.GenericImage, UpdateSourceTrigger=PropertyChanged}"/>
 
-                <Image Grid.Row="2" Margin="0" Width="Auto" Height="Auto" MaxHeight="300" Source="{Binding Path=DetalObject.RebraImage, UpdateSourceTrigger=PropertyChanged}"/>
+                <Image Grid.Row="2" Margin="0" Width="Auto" Height="Auto" MaxHeight="300" Source="{Binding Path=DetalObject.RebraImage, UpdateSourceTrigger=PropertyChanged}"/>-->
+
+                <Frame Grid.Row="0" Content="{Binding Path=PageNow, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" NavigationUIVisibility="Hidden" Margin="0,0,0,0"
+                       Background="#b3b3b3"/>
 
                 <StackPanel Grid.Row="4" Height="150">
-                    <TextBox Text="{Binding Path=Logger, UpdateSourceTrigger=PropertyChanged}" FontSize="15" Padding="15,10"
-                           Height="{Binding Path=Parent.ActualHeight, RelativeSource={RelativeSource Self}}"
-                           Width="{Binding Path=Parent.ActualWidth, RelativeSource={RelativeSource Self}}"
-                           Background="#FFECEBE2"
-                           AcceptsReturn="True" IsReadOnly="True"
-                           ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                           ScrollViewer.VerticalScrollBarVisibility="Visible"
-                           ScrollViewer.CanContentScroll="True"/>
+                    <TextBox Text="{Binding Path=Logger, UpdateSourceTrigger=PropertyChanged}" FontSize="15" Padding="15,10" TextWrapping="Wrap"
+                             Height="{Binding Path=Parent.ActualHeight, RelativeSource={RelativeSource Self}}"
+                             Width="{Binding Path=Parent.ActualWidth, RelativeSource={RelativeSource Self}}"
+                             Background="#FFECEBE2"
+                             AcceptsReturn="True" IsReadOnly="True"
+                             ScrollViewer.CanContentScroll="True"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto"
+                             lib:ScrollViewerAttachedProperties.ScrollOnTextChanged="True"/>
                 </StackPanel>
             </Grid>
         </Grid>

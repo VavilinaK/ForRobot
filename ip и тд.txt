@@ -41,7 +41,7 @@ result:
 {'method':'Select_Cancel','params':[],'id':1} - закрытие выбранной программы
 
 {'method':'File_CopyMem2File','params':['test\ntest', 'D:\\generation\\test.txt', 64],'id':1} - запись переданных данных в файл
-{'method':'File_CopyMem2File','params':'D:\\generation\\test.src', 'KRC:\\R1\\Program\\test.src', 64],'id':1}
+{'method':'File_CopyMem2File','params':'D:\\NewProgramm\\R1\\edge_0_left_stm.dat', 'KRC:\\R1\\Program\\edge_0_left_stm.dat', 64],'id':1}
 
 
 {'method':'File_Copy','params':['KRC:\\R1\\Program\\test.src', 'KRC:\\R1\\Program\\test2.src', 64],'id':1} - копирование файла

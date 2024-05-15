@@ -24,33 +24,15 @@ custom_sync('h01010000', 'hffff0000', 1)
 edge_1_right_stm()
 
 custom_sync('h02020000', 'hffff0000', 2)
-edge_3_right_stm()
-
-custom_sync('h03030000', 'hffff0000', 3)
 edge_0_right_stm()
 
-custom_sync('h04040000', 'hffff0000', 4)
-edge_2_right_stm()
-
-custom_sync('h05050000', 'hffff0000', 5)
-edge_4_right_stm()
-
-custom_sync('h06060000', 'hffff0000', 6)
+custom_sync('h03030000', 'hffff0000', 3)
 edge_1_left_stm()
 
-custom_sync('h07070000', 'hffff0000', 7)
-edge_3_left_stm()
-
-custom_sync('h08080000', 'hffff0000', 8)
+custom_sync('h04040000', 'hffff0000', 4)
 edge_0_left_stm()
 
-custom_sync('h09090000', 'hffff0000', 9)
-edge_2_left_stm()
-
-custom_sync('h0A0A0000', 'hffff0000', 10)
-edge_4_left_stm()
-
-custom_sync('h0B0B0000', 'hffff0000', 11)
+custom_sync('h05050000', 'hffff0000', 5)
 
 go_home()
 

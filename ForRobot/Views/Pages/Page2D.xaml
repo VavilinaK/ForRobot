@@ -5,36 +5,26 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ForRobot.Views.Pages"
       xmlns:vm="clr-namespace:ForRobot.ViewModels"
-      mc:Ignorable="d" 
-      d:DesignHeight="800" d:DesignWidth="800"
+      mc:Ignorable="d"
+      Background="Transparent"
       Title="Page2D">
-    
-    <Page.DataContext>
-        <vm:Page2DViewModel/>
-    </Page.DataContext>
-    
-    <Grid Background="#cfcfcf">
+
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="*" MaxHeight="25"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+        <!--<Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>-->
 
-        <Image Grid.Row="1" Margin="0" Width="Auto" Height="Auto" MaxHeight="400" Source="{Binding Path=DetalObject.GenericImage, UpdateSourceTrigger=PropertyChanged}"/>
+        <Image Grid.Row="0" Width="Auto" Height="Auto" MaxHeight="400" Source="{Binding Path=Detal2D.GenericImage, RelativeSource={RelativeSource AncestorType={x:Type local:Page2D}, Mode=FindAncestor}}"
+               HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
-        <Image Grid.Row="3" Margin="0" Width="Auto" Height="Auto" MaxHeight="300" Source="{Binding Path=DetalObject.RebraImage, UpdateSourceTrigger=PropertyChanged}"/>
-
-        <StackPanel Grid.Row="5" Height="150" VerticalAlignment="Bottom">
-            <TextBox Text="{Binding Path=Logger, UpdateSourceTrigger=PropertyChanged}" FontSize="15" Padding="15,10"
-                           Height="{Binding Path=Parent.ActualHeight, RelativeSource={RelativeSource Self}}"
-                           Width="{Binding Path=Parent.ActualWidth, RelativeSource={RelativeSource Self}}"
-                           Background="#FFECEBE2"
-                           AcceptsReturn="True" IsReadOnly="True"
-                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                           ScrollViewer.VerticalScrollBarVisibility="Visible"
-                           ScrollViewer.CanContentScroll="True"/>
-        </StackPanel>
+        <Image Grid.Row="2" Margin="0" Width="Auto" Height="Auto" MaxHeight="300" Source="{Binding Path=Detal2D.RebraImage, RelativeSource={RelativeSource AncestorType={x:Type local:Page2D}, Mode=FindAncestor}}"
+               HorizontalAlignment="Center"/>
     </Grid>
 </Page>

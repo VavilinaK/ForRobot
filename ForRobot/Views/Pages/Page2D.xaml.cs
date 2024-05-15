@@ -1,17 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+
+using ForRobot.Model;
 
 namespace ForRobot.Views.Pages
 {
@@ -20,9 +11,29 @@ namespace ForRobot.Views.Pages
     /// </summary>
     public partial class Page2D : Page
     {
+        #region Properties
+
+        public Detal Detal2D
+        {
+            get => (Detal)GetValue(DetalProperty);
+            set => SetValue(DetalProperty, value);
+        }
+
+        #region Static readonly
+
+        public static readonly DependencyProperty DetalProperty = DependencyProperty.Register("Detal2D", typeof(Detal), typeof(Page2D));
+               
+        #endregion
+
+        #endregion
+
+        #region Construct
+
         public Page2D()
         {
             InitializeComponent();
         }
+
+        #endregion
     }
 }

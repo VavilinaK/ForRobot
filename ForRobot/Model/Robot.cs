@@ -344,13 +344,13 @@ namespace ForRobot.Model
                         break;
 
                     case "#P_STOP":
-                        //LogMessage($"{this.Connection.Host}:{this.Connection.Port} программа запущена, но остановлена");
                         ProcessState = $"Программа {this.Connection.Pro_Name()} остановлена";
+                        //this.LogMessage($"Программа {ProcessName} остановлена");
                         break;
 
                     case "#P_END":
-                        //LogMessage($"{this.Connection.Host}:{this.Connection.Port} программа завершила работу");
                         ProcessState = $"Программа {this.Connection.Pro_Name()} завершена";
+                        //this.LogMessage($"Программа {ProcessName} завершена");
                         break;
                 }
 
@@ -402,8 +402,8 @@ namespace ForRobot.Model
 
                     if (this.Connection.IsConnected)
                     {
-                        //Task.Run(async () => await this.ProStateTimeChack(_cancelTokenSource.Token));
-                        //Task.Run(async () => await this.WeldTimeChack(_cancelTokenSource.Token));
+                        Task.Run(async () => await this.ProStateTimeChack(_cancelTokenSource.Token));
+                        Task.Run(async () => await this.WeldTimeChack(_cancelTokenSource.Token));
                     }
                     else
                         throw new TimeoutException("TcpClient соединение прервано");
@@ -425,8 +425,10 @@ namespace ForRobot.Model
         {
             try
             {
-                this._cancelTokenSource.Cancel();
-                if ((this.Pro_State == "#P_RESET" && MessageBox.Show($"Запустить программу {ProcessName}?", $"Запуск программы", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK) || this.Pro_State == "#P_STOP")
+                //this._cancelTokenSource.Cancel();
+                if ((this.Pro_State == "#P_RESET" && MessageBox.Show($"Запустить программу {ProcessName}?", $"Запуск программы", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK) 
+                    || this.Pro_State == "#P_STOP")
+                    //|| this.Pro_State == "#P_END" && MessageBox.Show($"Перезапустить программу {ProcessName}?", $"Перезапуск программы", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK)
                 {
                     if (!Task.Run<bool>(async () => await this.Connection.Run()).Result)
                         new Exception($"Ошибка запуска программы {ProcessName}");
@@ -437,14 +439,14 @@ namespace ForRobot.Model
                     Task.Run(async () => await this.ProStateTimeChack(this._cancelTokenSource.Token));
                     Task.Run(async () => await this.WeldTimeChack(this._cancelTokenSource.Token));
 
-                    while ((!string.Equals(this.Pro_State, "#P_END")))
+                    while (!string.Equals(this.Pro_State, "#P_END"))
                     {
+                        System.Threading.Thread.Sleep(1500);
                         if (string.Equals(this.Pro_State, "#P_STOP"))
                         {
-                            this.LogMessage($"Программа {ProcessState} остановлена");
+                            this.LogMessage($"Программа {ProcessName} остановлена");
                             return;
                         }
-                        System.Threading.Thread.Sleep(1_000);
                     }
 
                     if (string.Equals(this.Pro_State, "#P_END"))
@@ -452,11 +454,6 @@ namespace ForRobot.Model
                         this.LogMessage($"Программа {ProcessName} завершена");
                     }
                 }
-
-                //if(this.Pro_State == "#P_END" && MessageBox.Show($"Перезапустить программу {ProcessName}?", $"Перезапуск программы", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK)
-                //{
-
-                //}
             }
             catch (Exception ex)
             {
@@ -520,7 +517,7 @@ namespace ForRobot.Model
         /// </summary>
         /// <param name="endPath">Конечный путь</param>
         /// <param name="fileName">Директива файла</param>
-        public void Copy(string endPath, string fileName)
+        public bool Copy(string programName)
         {
             try
             {
@@ -528,135 +525,157 @@ namespace ForRobot.Model
                 {
                     this.LogErrorMessage("Нет пути на коталог на контроллере");
                     MessageBox.Show("Укажите путь к каталогу на контроллере", "Остановка", MessageBoxButton.OK, MessageBoxImage.Stop);
-                    return;
+                    return false;
                 }
 
-                switch (this.Connection.Pro_State())
+                switch (this.Pro_State)
                 {
-                    //case "#P_FREE":
-                        ////foreach(var file in Directory.GetFiles(this.PathProgramm, "*.dat"))
-                        ////{
-                        ////    if (!Task.Run<bool>(async () =>
-                        ////        await this.Connection.Copy(file, this.PathControllerFolder)).Result)
-                        ////        new Exception($"Ошибка копирования файла {file} в {endPath}");
-                        ////    else
-                        ////        this.LogMessage($"Файл {file} скопирован ");
-                        ////}
-                        ////break;
+                    case "#P_FREE":
+                        if (!Equals(MessageBox.Show($"Копировать файлы программы в {this.PathControllerFolder}?", "Копирование файлов", MessageBoxButton.YesNo, MessageBoxImage.Question), MessageBoxResult.Yes))
+                            return false;
 
-                        //if (!Task.Run<bool>(async () =>
-                        //    await this.Connection.Copy(Path.Combine(this.PathControllerFolder, string.Join("", fileName, ".src")), Path.Combine(endPath, fileName))).Result)
-                        //    new Exception($"Ошибка копирования файла {string.Join("", fileName, ".src")} из {this.PathControllerFolder} в {endPath}");
-                        //else
-                        //    this.LogMessage($"Файл {string.Join("", fileName, ".src")} скопирован");
+                        foreach (var file in Directory.GetFiles(this.PathProgramm, "*.dat"))
+                        {
+                            if (!Task.Run<bool>(async () => await this.Connection.Copy(file, Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
+                                new Exception($"Ошибка копирования файла {file} в {this.PathControllerFolder}");
+                            else
+                                this.LogMessage($"Файл {file} скопирован ");
+                        }
 
-                        //if (!Task.Run<bool>(async () =>
-                        //    await this.Connection.Copy(Path.Combine(this.PathControllerFolder, string.Join("", fileName, ".dat")), Path.Combine(endPath, fileName))).Result)
-                        //    new Exception($"Ошибка копирования файла {string.Join("", fileName, ".dat")} из {this.PathControllerFolder} в {endPath}");
-                        //else
-                        //    this.LogMessage($"Файл {string.Join("", fileName, ".dat")} скопирован");
-                        //break;
+                        foreach (var file in Directory.GetFiles(this.PathProgramm, "*.src"))
+                        {
+                            if(!Equals(string.Join("", programName, ".src"), new FileInfo(file).Name))
+                            {
+                                if (!Task.Run<bool>(async () => await this.Connection.Copy(file, Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
+                                    new Exception($"Ошибка копирования файла {file} в {this.PathControllerFolder}");
+                                else
+                                    this.LogMessage($"Файл {file} скопирован ");
+                            }
+                        }
 
-                        //case "#P_RESET":
-                        //case "#P_END":
-                        //    if (!Task.Run<bool>(async () => await this.Connection.SelectCancel()).Result)
-                        //    {
-                        //        this.LogErrorMessage("Не удаётся отменить выбор программы");
-                        //        return;
-                        //    }
-                        //    else
-                        //        this.LogMessage("Текущий выбор отменён");
+                        if (!Task.Run<bool>(async () => await this.Connection.Copy(Path.Combine(this.PathProgramm, $"{programName}.src"), Path.Combine(this.PathControllerFolder, $"{programName}.src"))).Result)
+                            new Exception($"Ошибка копирования файла {Path.Combine(this.PathProgramm, $"{programName}.src")} в {this.PathControllerFolder}");
+                        else
+                            this.LogMessage($"Файл {Path.Combine(this.PathProgramm, $"{programName}.src")} скопирован ");
+                        break;
 
-                        //    System.Threading.Thread.Sleep(1000); // Костыль).
+                    //if (!Task.Run<bool>(async () =>
+                    //    await this.Connection.Copy(Path.Combine(this.PathControllerFolder, string.Join("", fileName, ".src")), Path.Combine(endPath, fileName))).Result)
+                    //    new Exception($"Ошибка копирования файла {string.Join("", fileName, ".src")} из {this.PathControllerFolder} в {endPath}");
+                    //else
+                    //    this.LogMessage($"Файл {string.Join("", fileName, ".src")} скопирован");
 
-                        //    if (!Task.Run<bool>(async () =>
-                        //        await this.Connection.Copy(Path.Combine(this.PathControllerFolder, string.Join("", fileName, ".src")), Path.Combine(endPath, fileName))).Result)
-                        //        new Exception($"Ошибка копирования файла {string.Join("", fileName, ".src")} из {this.PathControllerFolder} в {endPath}");
-                        //    else
-                        //        this.LogMessage($"Файл {string.Join("", fileName, ".src")} скопирован");
+                    //if (!Task.Run<bool>(async () =>
+                    //    await this.Connection.Copy(Path.Combine(this.PathControllerFolder, string.Join("", fileName, ".dat")), Path.Combine(endPath, fileName))).Result)
+                    //    new Exception($"Ошибка копирования файла {string.Join("", fileName, ".dat")} из {this.PathControllerFolder} в {endPath}");
+                    //else
+                    //    this.LogMessage($"Файл {string.Join("", fileName, ".dat")} скопирован");
+                    //break;
 
-                        //    if (!Task.Run<bool>(async () => 
-                        //        await this.Connection.Copy(Path.Combine(this.PathControllerFolder, string.Join("", fileName, ".dat")), Path.Combine(endPath, fileName))).Result)
-                        //        new Exception($"Ошибка копирования файла {string.Join("", fileName, ".dat")} из {this.PathControllerFolder} в {endPath}");
-                        //    else
-                        //        this.LogMessage($"Файл {string.Join("", fileName, ".dat")} скопирован");
-                        //    break;
+                    case "#P_RESET":
+                    case "#P_END":
+                        if (!Task.Run<bool>(async () => await this.Connection.SelectCancel()).Result)
+                        {
+                            this.LogErrorMessage("Не удаётся отменить выбор программы");
+                            return false;
+                        }
+                        else
+                            this.LogMessage("Текущий выбор отменён");
 
-                        //case "#P_ACTIVE":
-                        //case "#P_STOP":
-                        //    this.LogMessage("Отмена копирования: уже запущен процесс!");
-                        //    return;
+                        System.Threading.Thread.Sleep(1000); // Костыль).
+
+                        if (!Equals(MessageBox.Show($"Копировать файлы программы в {this.PathControllerFolder}?", "Копирование файлов", MessageBoxButton.YesNo, MessageBoxImage.Question), MessageBoxResult.Yes))
+                            return false;
+
+                        foreach (var file in Directory.GetFiles(this.PathProgramm, "*.dat"))
+                        {
+                            if (!Task.Run<bool>(async () => await this.Connection.Copy(file, Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
+                                new Exception($"Ошибка копирования файла {file} в {this.PathControllerFolder}");
+                            else
+                                this.LogMessage($"Файл {file} скопирован ");
+                        }
+
+                        foreach (var file in Directory.GetFiles(this.PathProgramm, "*.src"))
+                        {
+                            if (!Equals(string.Join("", programName, ".src"), new FileInfo(file).Name))
+                            {
+                                if (!Task.Run<bool>(async () => await this.Connection.Copy(file, Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
+                                    new Exception($"Ошибка копирования файла {file} в {this.PathControllerFolder}");
+                                else
+                                    this.LogMessage($"Файл {file} скопирован ");
+                            }
+                        }
+
+                        if (!Task.Run<bool>(async () => await this.Connection.Copy(Path.Combine(this.PathProgramm, $"{programName}.src"), Path.Combine(this.PathControllerFolder, $"{programName}.src"))).Result)
+                            new Exception($"Ошибка копирования файла {Path.Combine(this.PathProgramm, $"{programName}.src")} в {this.PathControllerFolder}");
+                        else
+                            this.LogMessage($"Файл {Path.Combine(this.PathProgramm, $"{programName}.src")} скопирован ");
+                        break;
+
+                    case "#P_ACTIVE":
+                    case "#P_STOP":
+                        this.LogMessage("Отмена копирования: уже запущен процесс!");
+                        return false;
                 }
             }
             catch (Exception ex)
             {
                 this.LogErrorMessage(ex.Message, ex);
             }
+            return true;
         }
 
-        /// <summary>
-        /// Копирование файла на контроллер
-        /// </summary>
-        /// <param name="filesPath">Директива файлов</param>
-        public void CopyToController()
+        public void CopyToPC(string programName)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(this.PathProgramm) || !Directory.Exists(this.PathProgramm))
+                foreach (var file in Directory.GetFiles(this.PathProgramm, "*.dat"))
                 {
-                    this.LogErrorMessage($"Путь {this.PathProgramm} не существует или указан неверно");
-                    //MessageBox.Show($"Укажите путь к каталогу программы робота с соединением {this.Host}:{this.Port}", "Остановка", MessageBoxButton.OK, MessageBoxImage.Stop);
-                    return;
+                    if (!Task.Run<bool>(async () => await this.Connection.CopyMem2File(Path.Combine(this.PathProgramm, new FileInfo(file).Name),
+                            Path.Combine(this.PathProgramm, new FileInfo(file).Name))).Result)
+                        new Exception($"Ошибка копирования содержимого файла {file} " +
+                                      $"в { Path.Combine(this.PathProgramm, new FileInfo(file).Name)}");
+                    else
+                        this.LogMessage($"Содержимое файла {file} скопировано");
                 }
 
-                if (string.IsNullOrWhiteSpace(this.PathControllerFolder))
+                foreach (var file in Directory.GetFiles(this.PathProgramm, "*.src"))
                 {
-                    this.LogErrorMessage("Не указан путь для контролера");
-                    MessageBox.Show("Укажите путь к каталогу на контроллере", "Остановка", MessageBoxButton.OK, MessageBoxImage.Stop);
-                    return;
+                    if (!Equals(string.Join("", programName, ".src"), new FileInfo(file).Name))
+                    {
+                        if (!Task.Run<bool>(async () => await this.Connection.CopyMem2File(Path.Combine(this.PathProgramm, new FileInfo(file).Name),
+                                Path.Combine(this.PathProgramm, new FileInfo(file).Name))).Result)
+                            new Exception($"Ошибка копирования содержимого файла {file} " +
+                                          $"в { Path.Combine(this.PathProgramm, new FileInfo(file).Name)}");
+                        else
+                            this.LogMessage($"Содержимое файла {file} скопировано");
+                    }
                 }
 
-                switch (this.Connection.Pro_State())
-                {
-                    case "#P_FREE":
-                        foreach (var file in Directory.GetFiles(this.PathProgramm, "*.dat"))
-                        {
-                            Task.Run(async () => await this.Connection.CopyMem2File(file, Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Wait();
+                if (!Task.Run<bool>(async () => await this.Connection.CopyMem2File(Path.Combine(this.PathProgramm, programName),
+                        Path.Combine(this.PathProgramm, programName))).Result)
+                    new Exception($"Ошибка копирования содержимого файла {programName}.src" +
+                                  $"в { Path.Combine(this.PathProgramm, programName)}");
+                else
+                    this.LogMessage($"Содержимое файла {Path.Combine(this.PathProgramm, programName)} скопировано");
 
-                            if (!Task.Run<bool>(async () => await this.Connection.CopyMem2File(file, Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
-                                new Exception($"Ошибка копирования содержимого файла {file} в {Path.Combine(this.PathControllerFolder, new FileInfo(file).Name)} конроллера");
-                            else
-                                this.LogMessage($"Содержимое файла {file} не скопировано на контроллер");
-                        }
-                        break;
-
-                    case "#P_RESET":
-                    case "#P_END":
-                        break;
-
-                    case "#P_ACTIVE":
-                    case "#P_STOP":
-                        break;
-                }
-
-                //if (string.IsNullOrWhiteSpace(this.PathControllerFolder))
-                //{
-                //    this.LogErrorMessage("Нет пути на коталог на контроллере");
-                //    MessageBox.Show("Укажите путь к каталогу на контроллере", "Остановка", MessageBoxButton.OK, MessageBoxImage.Stop);
-                //    return;
-                //}
+                //if (!Task.Run<bool>(async () => await this.Connection.Copy(Path.Combine(this.PathProgramm, $"{programName}.src"), Path.Combine(this.PathControllerFolder, $"{programName}.src"))).Result)
+                //    new Exception($"Ошибка копирования файла {Path.Combine(this.PathProgramm, $"{programName}.src")} в {this.PathControllerFolder}");
+                //else
+                //    this.LogMessage($"Файл {Path.Combine(this.PathProgramm, $"{programName}.src")} скопирован ");
+                //break;
 
                 //if (!Task.Run<bool>(async () => await this.Connection.CopyMem2File(Path.Combine(yourePath, string.Join("", fileName, ".src")),
-                //         Path.Combine(this.PathControllerFolder, string.Join("", fileName, ".src")))).Result)
+                //         Path.Combine(this._pathControllerField, string.Join("", fileName, ".src")))).Result)
                 //    new Exception($"Ошибка копирования содержимого файла {string.Join("", fileName, ".src")} " +
-                //                  $"в {Path.Combine(this.PathControllerFolder, string.Join("", fileName, ".src"))} контроллера");
+                //                  $"в {Path.Combine(this._pathControllerField, string.Join("", fileName, ".src"))} контроллера");
                 //else
                 //    this.LogMessage($"Содержимое файла {string.Join("", fileName, ".src")} скопировано на контроллер");
 
                 //if (!Task.Run<bool>(async () => await this.Connection.CopyMem2File(Path.Combine(yourePath, string.Join("", fileName, ".dat")),
-                //                 Path.Combine(this.PathControllerFolder, string.Join("", fileName, ".dat")))).Result)
+                //                 Path.Combine(this._pathControllerField, string.Join("", fileName, ".dat")))).Result)
                 //    new Exception($"Ошибка копирования содержимого файла {string.Join("", fileName, ".dat")} " +
-                //                  $"в {Path.Combine(this.PathControllerFolder, string.Join("", fileName, ".dat"))} конроллера");
+                //                  $"в {Path.Combine(this._pathControllerField, string.Join("", fileName, ".dat"))} конроллера");
                 //else
                 //    this.LogMessage($"Содержимое файла {string.Join("", fileName, ".dat")} скопировано на контроллер");
             }
@@ -670,10 +689,11 @@ namespace ForRobot.Model
         /// Выбор программы
         /// </summary>
         /// <returns></returns>
-        public void SelectProgramm(string filePath)
+        public void SelectProgramm(string nameProgram)
         {
             try
             {
+                string filePath = Path.Combine(this.PathControllerFolder, nameProgram);
                 switch (this.Pro_State)
                 {
                     case "#P_FREE":
@@ -710,6 +730,72 @@ namespace ForRobot.Model
                     case "#P_STOP":
                         this.LogMessage("Отмена выбора: уже запущен процесс!");
                         break;
+                }
+            }
+            catch (Exception ex)
+            {
+                this.LogErrorMessage(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
+        /// Удаление программы
+        /// </summary>
+        /// <param name="filePath"></param>
+        public void DeleteProgramm(string flag)
+        {
+            try
+            {
+                if(flag == "pc")
+                {
+                    foreach (var file in Directory.GetFiles(this.PathProgramm))
+                    {
+                        if (!Task.Run<bool>(async () => await this.Connection.Delet(file)).Result)
+                            new Exception($"Ошибка удаления файла {file}");
+                        else
+                            this.LogMessage($"Файл программы {file} удалён");
+                    }
+                }
+                else if(flag == "controller")
+                {
+                    switch (this.Pro_State)
+                    {
+                        case "#P_FREE":
+                            foreach (var file in Directory.GetFiles(this.PathProgramm))
+                            {
+                                if (!Task.Run<bool>(async () => await this.Connection.Delet(Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
+                                    new Exception($"Ошибка удаления файла {Path.Combine(this.PathControllerFolder, new FileInfo(file).Name)}");
+                                else
+                                    this.LogMessage($"Файл программы {Path.Combine(this.PathControllerFolder, new FileInfo(file).Name)} удалён");
+                            }
+                            break;
+
+                        case "#P_RESET":
+                        case "#P_END":
+                            if (!Task.Run<bool>(async () => await this.Connection.SelectCancel()).Result)
+                            {
+                                this.LogErrorMessage("Не удаётся отменить выбор программы");
+                                return;
+                            }
+                            else
+                                this.LogMessage("Текущий выбор отменён");
+
+                            System.Threading.Thread.Sleep(1000);
+
+                            foreach (var file in Directory.GetFiles(this.PathProgramm))
+                            {
+                                if (!Task.Run<bool>(async () => await this.Connection.Delet(Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
+                                    new Exception($"Ошибка удаления файла {Path.Combine(this.PathControllerFolder, new FileInfo(file).Name)}");
+                                else
+                                    this.LogMessage($"Файл программы {Path.Combine(this.PathControllerFolder, new FileInfo(file).Name)} удалён");
+                            }
+                            break;
+
+                        case "#P_ACTIVE":
+                        case "#P_STOP":
+                            this.LogMessage("Отмена удаления: уже запущен процесс!");
+                            break;
+                    }
                 }
             }
             catch (Exception ex)
