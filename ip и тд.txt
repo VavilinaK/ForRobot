@@ -40,13 +40,16 @@ result:
 
 {'method':'Select_Cancel','params':[],'id':1} - закрытие выбранной программы
 
-{'method':'File_CopyMem2File','params':['test\ntest', 'D:\\generation\\test.txt', 64],'id':1} - запись переданных данных в файл
-{'method':'File_CopyMem2File','params':'D:\\NewProgramm\\R1\\edge_0_left_stm.dat', 'KRC:\\R1\\Program\\edge_0_left_stm.dat', 64],'id':1}
+{'method':'File_CopyMem2File','params':['test\ntest', 'D:\\NewProgramm\\R1\\generation\\test.txt', 64],'id':1} - запись переданных данных в файл
+{'method':'File_CopyMem2File','params':'D:\\NewProgramm\\R1\\edge_0_left_stm.dat', 'KRC:\\R1\\Program\\6514\\edge_0_left_stm.dat', 64],'id':1}
 
 
 {'method':'File_Copy','params':['KRC:\\R1\\Program\\test.src', 'KRC:\\R1\\Program\\test2.src', 64],'id':1} - копирование файла
-{'method':'File_Copy','params':['D:\\generation\\test.src', 'KRC:\\R1\\Program\\test.src', 64],'id':1}
+{'method':'File_Copy','params':['D:\\newPrograms\\R1\\edge_0_left_stm.src', 'KRC:\\R1\\Program\\6514\\edge_0_left_stm.src', 64],'id':1}
 
-{'method':'File_Delete','params':['KRC:\\R1\\Program\\test.src'],'id':1} - удаление файла
+{'method':'File_Delete','params':['KRC:\\R1\\Program\\edge_0_left_stm.dat'],'id':1} - удаление файла
 
-И отслеживание, допустим, как запрет на приближение на определённое расстояние?
+{'method':'File_Delete','params':['D:\\NewProgramm\\R1\\'],'id':1}
+
+---------------------------------------------------------------------------------------------
+{'method':'File_NameList','params':['D:\\newPrograms\\R1\\',511,127],'id':1}

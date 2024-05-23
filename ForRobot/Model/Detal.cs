@@ -7,7 +7,9 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
 
+using ForRobot.Libr;
 
 namespace ForRobot.Model
 {
@@ -25,6 +27,8 @@ namespace ForRobot.Model
             AllowTrailingCommas = true,
             WriteIndented = true
         };
+
+        private PlitaConfigurationSection Config { get; set; }
 
         #endregion
 
@@ -52,12 +56,15 @@ namespace ForRobot.Model
 
         [JsonIgnore]
         public virtual string Json { get => JsonSerializer.Serialize<Detal>(this, options); }
-               
-        //[JsonIgnore]
-        ///// <summary>
-        ///// Тип детали
-        ///// </summary>
-        //public virtual DetalType DetalType { get; private set; }
+
+        [JsonIgnore]
+        public virtual string JsonForSave { get; }
+
+        [JsonIgnore]
+        /// <summary>
+        /// Тип детали
+        /// </summary>
+        public virtual DetalType DetalType { get; }
 
         [JsonIgnore]
         /// <summary>
@@ -77,10 +84,11 @@ namespace ForRobot.Model
         /// </summary>
         public virtual decimal Hight { get; set; }
 
-        ///// <summary>
-        ///// Ширина
-        ///// </summary>
-        //public virtual decimal Wight { get; set; }
+        [JsonIgnore]
+        /// <summary>
+        /// Ширина настила
+        /// </summary>
+        public virtual decimal Wight { get; set; }
 
         [JsonIgnore]
         /// <summary>
@@ -217,45 +225,26 @@ namespace ForRobot.Model
             switch (type)
             {
                 case DetalType.Plita:
-                    this.SumReber = 5;
-                    this.Long = 120000;
-                    this.Hight = 200;
-                    this.DistanceToFirst = 830;
-                    this.DistanceBetween = 600;
-                    this.DistanceToStart = 250;
-                    this.DistanceToEnd = 250;
-                    this.DissolutionStart = 200;
-                    this.DissolutionEnd = 200;
-                    this.ThicknessPlita = 16;
-                    this.ThicknessRebro = 16;
-                    this.SearchOffsetStart = 60;
-                    this.SearchOffsetEnd = 60;
-                    this.SeamsOverlap = 5;
-                    this.TechOffsetSeamStart = 3;
-                    this.TechOffsetSeamEnd = 2;
-                    this.WildingSpead = 38;
-                    this.ProgramNom = 1;
-                    break;
-
-                case DetalType.WithBevels:
-                    this.SumReber = 2;
-                    this.Long = 11166;
-                    this.Hight = 200;
-                    this.DistanceToFirst = 300;
-                    this.DistanceBetween = 600;
-                    this.DistanceToStart = 801;
-                    this.DistanceToEnd = 201;
-                    this.DissolutionStart = 0;
-                    this.DissolutionEnd = 201;
-                    this.ThicknessPlita = 16;
-                    this.ThicknessRebro = 16;
-                    this.SearchOffsetStart = 100;
-                    this.SearchOffsetEnd = 60;
-                    this.SeamsOverlap = 5;
-                    this.TechOffsetSeamStart = 3;
-                    this.TechOffsetSeamEnd = 2;
-                    this.WildingSpead = 31;
-                    this.ProgramNom = 1;
+                    this.Config = ConfigurationManager.GetSection("plita") as PlitaConfigurationSection;
+                    this.SumReber = Config.SumReber;
+                    this.Long = Config.Long;
+                    this.Wight = Config.Wight;
+                    this.Hight = Config.Hight;
+                    this.DistanceToFirst = Config.DistanceToFirst;
+                    this.DistanceBetween = Config.DistanceBetween;
+                    this.DistanceToStart = Config.DistanceToStart;
+                    this.DistanceToEnd = Config.DistanceToEnd;
+                    this.DissolutionStart = Config.DissolutionStart;
+                    this.DissolutionEnd = Config.DissolutionEnd;
+                    this.ThicknessPlita = Config.ThicknessPlita;
+                    this.ThicknessRebro = Config.ThicknessRebro;
+                    this.SearchOffsetStart = Config.SearchOffsetStart;
+                    this.SearchOffsetEnd = Config.SearchOffsetEnd;
+                    this.SeamsOverlap = Config.SeamsOverlap;
+                    this.TechOffsetSeamStart = Config.TechOffsetSeamStart;
+                    this.TechOffsetSeamEnd = Config.TechOffsetSeamEnd;
+                    this.WildingSpead = Config.WildingSpead;
+                    this.ProgramNom = Config.ProgramNom;
                     break;
             }
         }

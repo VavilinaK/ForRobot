@@ -58,7 +58,7 @@ namespace ForRobot
 
         public static new App Current => Application.Current as App;
 
-        public NLog.Logger Logger { get; } = NLog.LogManager.GetCurrentClassLogger();
+        public NLog.Logger Logger { get; set; } = NLog.LogManager.GetCurrentClassLogger();
 
         #region Windows
 

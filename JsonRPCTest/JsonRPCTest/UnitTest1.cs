@@ -1,14 +1,12 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using System;
-using System.Net;
-using System.Linq;
-using System.Windows;
-using System.Threading;
+//using System.Net;
+//using System.Linq;
+//using System.Windows;
+//using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Reactive.Linq;
-using System.Reactive.Concurrency;
 
 //using Renci.SshNet;
 //using Renci.SshNet.Common;
@@ -23,7 +21,6 @@ using System.Reactive.Concurrency;
 using System.Net.Sockets;
 using StreamJsonRpc;
 
-using ForRobot.Libr;
 using ForRobot.Libr.Client;
 
 namespace JsonRPCTest
@@ -34,19 +31,19 @@ namespace JsonRPCTest
         /// <summary>
         /// Рабочий тест
         /// </summary>
-        [TestMethod]
-        public void TestJsonClient()
-        {
-            //string message;
-            //try
-            //{
-                string answer = TestClient.Call();
-            //}
-            //catch (Exception ex)
-            //{
-            //    message = ex.Message;
-            //}
-        }
+        //[TestMethod]
+        //public void TestJsonClient()
+        //{
+        //    //string message;
+        //    //try
+        //    //{
+        //        string answer = TestClient.Call();
+        //    //}
+        //    //catch (Exception ex)
+        //    //{
+        //    //    message = ex.Message;
+        //    //}
+        //}
 
         [TestMethod]
         public void TestJsonClient2()
@@ -57,9 +54,9 @@ namespace JsonRPCTest
                 JsonRpcConnection connection = new JsonRpcConnection("192.168.119.133", 3333);
                 connection.Open();
                 //bool answer = Task.Run<bool>(async() => await connection.CopyMem2File(@"D:\ForRobot\test.dat", "KRC:\\R1\\test.dat")).Result;
-                bool answer = Task.Run<bool>(async () => await connection.Select("KRC:\\R1\\Program\\main_gen.src")).Result;
+                //Dictionary<String, String> answer = Task.Run<Dictionary<String, String>>(async () => await connection.File_NameList("KRC:\\R1\\Program\\")).Result;
                 //bool answer = Task.Run<bool>(async () => await connection.Copy(@"D:\NewProgramm\R1\test.dat", "KRC:\\R1\\Program\\test.dat")).Result;
-
+                Dictionary<String, String> answer = Task.Run<Dictionary<String, String>>(async () => await connection.File_NameList("KRC:\\R1\\Program\\6514")).Result;
             }
             catch (Exception ex)
             {

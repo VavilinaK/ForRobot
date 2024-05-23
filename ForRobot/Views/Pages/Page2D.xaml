@@ -5,15 +5,18 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ForRobot.Views.Pages"
       xmlns:vm="clr-namespace:ForRobot.ViewModels"
+      xmlns:models="clr-namespace:ForRobot.Model"
       mc:Ignorable="d"
       Background="Transparent"
       Title="Page2D">
 
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="*" MaxHeight="25"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*" MaxHeight="25"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" MaxHeight="25"/>
         </Grid.RowDefinitions>
         <!--<Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -21,10 +24,28 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>-->
 
-        <Image Grid.Row="0" Width="Auto" Height="Auto" MaxHeight="400" Source="{Binding Path=Detal2D.GenericImage, RelativeSource={RelativeSource AncestorType={x:Type local:Page2D}, Mode=FindAncestor}}"
-               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Image Grid.Row="1" Grid.Column="1" Width="Auto" Height="Auto" Source="{Binding Path=Detal2D.GenericImage, RelativeSource={RelativeSource AncestorType={x:Type local:Page2D}, Mode=FindAncestor}}"
+               HorizontalAlignment="Center" VerticalAlignment="Center">
+            
+            <Image.Style>
+                <Style TargetType="Image">
+                    <Setter Property="MaxHeight" Value="720"/>
 
-        <Image Grid.Row="2" Margin="0" Width="Auto" Height="Auto" MaxHeight="300" Source="{Binding Path=Detal2D.RebraImage, RelativeSource={RelativeSource AncestorType={x:Type local:Page2D}, Mode=FindAncestor}}"
-               HorizontalAlignment="Center"/>
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Path=Detal2D.DetalType, RelativeSource={RelativeSource AncestorType={x:Type local:Page2D}, Mode=FindAncestor}}" Value="{x:Static models:DetalType.Plita}"/>
+                                <Condition Binding="{Binding Path=Detal2D.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type local:Page2D}, Mode=FindAncestor}}" Value="d_rect"/>
+                            </MultiDataTrigger.Conditions>
+
+                            <Setter Property="MaxHeight" Value="400"/>
+                        </MultiDataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Image.Style>
+        </Image>
+
+        <Image Grid.Row="3" Width="Auto" Height="Auto" MaxHeight="300" Source="{Binding Path=Detal2D.RebraImage, RelativeSource={RelativeSource AncestorType={x:Type local:Page2D}, Mode=FindAncestor}}"
+               HorizontalAlignment="Center" VerticalAlignment="Center"/>
     </Grid>
 </Page>

@@ -1,0 +1,196 @@
+&ACCESS RVP
+&REL 45
+&PARAM EDITMASK = *
+&PARAM DISKPATH = KRC:\R1\Program
+DEF edge_2_left_stm( )
+;FOLD INI;%{PE}
+  ;FOLD BASISTECH INI
+    GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS==TRUE DO IR_STOPM ( )
+    INTERRUPT ON 3 
+    BAS (#INITMOV,0 )
+  ;ENDFOLD (BASISTECH INI)
+  ;FOLD USER INI
+    ;Make your modifications here
+
+  ;ENDFOLD (USER INI)
+;ENDFOLD (INI)
+TS_CorrOff()
+;FOLD PTP S2_1 Vel= 100 % PDATW1_1 Tool[1] Base[10] ;%{PE}%R 8.3.34,%MKUKATPBASIS,%CMOVE,%VPTP,%P 1:PTP, 2:S2_1, 3:C_DIS, 5:100, 7:PDATS2_1
+$BWDSTART = FALSE
+PDAT_ACT=PPDATS2_1
+FDAT_ACT=FS2_1
+BAS(#PTP_PARAMS,100)
+SET_CD_PARAMS (0)
+PTP XS2_1 C_DIS
+;ENDFOLD
+
+;FOLD LIN S2_2 Vel= 0.06 m/s CPDATS2_2 TouchSense SEARCH VIA S2_3 CDS2_2 SPS2_2 Tool[1] Base[10] ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.touchsense.searchlin; Kuka.PointName=S2_2; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDATS2_2; Kuka.VelocityPath=0.06; Kuka.MovementParameterFieldEnabled=True; MoveType=LIN
+;FOLD Parameters TouchSense ;%{h}
+;Params TouchSense.SearchViaPoint=S2_3;TouchSense.ReferenceMove=CDS2_2;TouchSense.SeachParam=SPS2_2
+;ENDFOLD
+;ENDFOLD
+$BWDSTART = FALSE
+LDAT_ACT=LCPDATS2_2
+FDAT_ACT=FS2_2
+BAS(#CP_PARAMS,0.06)
+SET_CD_PARAMS (0)
+LIN XS2_2 C_DIS C_DIS
+TS_InitMovement($POS_ACT, XS2_3, ZSPS2_2)
+TS_ManMoveToVia(XS2_3)
+TS_Search(XS2_3, ZSPS2_2, VCDS2_2)
+TS_SetCorrData(ZSPS2_2, VCDS2_2)
+;ENDFOLD
+
+;FOLD TouchSense Corr 1 CDS2_2;%{E}
+;FOLD Parameters Corr 1D ;%{h}
+;Params IlfProvider=KukaRoboter.TouchSense.Correction1D;Correction1D=CDS2_2
+;ENDFOLD
+TS_BC6DCalc(VCDS2_2, TSg_CD0, TSg_CD0, TSg_CD0, TSg_CD0, TSg_CD0)
+;ENDFOLD
+
+;FOLD LIN S2_4 Vel= 0.06 m/s CPDATS2_4 TouchSense SEARCH VIA S2_5 CDS2_4 SPS2_4 Tool[1] Base[10] ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.touchsense.searchlin; Kuka.PointName=S2_4; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDATS2_4; Kuka.VelocityPath=0.06; Kuka.MovementParameterFieldEnabled=True; MoveType=LIN
+;FOLD Parameters TouchSense ;%{h}
+;Params TouchSense.SearchViaPoint=S2_5;TouchSense.ReferenceMove=CDS2_4;TouchSense.SeachParam=SPS2_4
+;ENDFOLD
+;ENDFOLD
+$BWDSTART = FALSE
+LDAT_ACT=LCPDATS2_4
+FDAT_ACT=FS2_4
+BAS(#CP_PARAMS,0.06)
+SET_CD_PARAMS (0)
+LIN XS2_4 C_DIS C_DIS
+TS_InitMovement($POS_ACT, XS2_5, ZSPS2_4)
+TS_ManMoveToVia(XS2_5)
+TS_Search(XS2_5, ZSPS2_4, VCDS2_4)
+TS_SetCorrData(ZSPS2_4, VCDS2_4)
+;ENDFOLD
+
+;FOLD TouchSense Corr 2 CDS2_2 CDS2_4;%{E}
+;FOLD Parameters Corr 2D ;%{h}
+;Params IlfProvider=KukaRoboter.TouchSense.Correction2D;Correction1D=CDS2_2;Correction2D=CDS2_4
+;ENDFOLD
+TS_BC6DCalc(VCDS2_2, TSg_CD0, TSg_CD0, VCDS2_4, TSg_CD0, TSg_CD0)
+;ENDFOLD
+
+;FOLD LIN S2_6 Vel= 0.06 m/s CPDATS1_2 Tool[1] Base[10] ;%{PE}%R 8.3.34,%MKUKATPBASIS,%CMOVE,%VLIN,%P 1:LIN, 2:S2_6, 3:, 5:0.06, 7:CPDATS2_6
+$BWDSTART = FALSE
+LDAT_ACT=LCPDATS2_6
+FDAT_ACT=FS2_6
+BAS(#CP_PARAMS,0.06)
+SET_CD_PARAMS (0)
+LIN XS2_6 C_DIS C_DIS
+;ENDFOLD
+
+;FOLD LIN S2_7 Vel= 0.02 m/s CPDATS2_7 TouchSense SEARCH VIA S2_8 CDS2_7 SPS2_7 Tool[1] Base[10] ;%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.touchsense.searchlin; Kuka.PointName=S2_7; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDATS2_7; Kuka.VelocityPath=0.02; Kuka.MovementParameterFieldEnabled=True; MoveType=LIN
+;FOLD Parameters TouchSense ;%{h}
+;Params TouchSense.SearchViaPoint=S2_8;TouchSense.ReferenceMove=CDS2_7;TouchSense.SeachParam=SPS2_7
+;ENDFOLD
+;ENDFOLD
+$BWDSTART = FALSE
+LDAT_ACT=LCPDATS2_7
+FDAT_ACT=FS2_7
+BAS(#CP_PARAMS,0.02)
+SET_CD_PARAMS (0)
+LIN XS2_7 C_DIS C_DIS
+TS_InitMovement($POS_ACT, XS2_8, ZSPS2_7)
+TS_ManMoveToVia(XS2_8)
+TS_Search(XS2_8, ZSPS2_7, VCDS2_7)
+TS_SetCorrData(ZSPS2_7, VCDS2_7)
+;ENDFOLD
+
+;FOLD TouchSense Corr 3 CDS2_2 CDS2_4 CDS2_7;%{E}
+;FOLD Parameters Corr 3D ;%{h}
+;Params IlfProvider=KukaRoboter.TouchSense.Correction3D;Correction1D=CDS2_2;Correction2D=CDS2_4;Correction3D=CDS2_7
+;ENDFOLD
+TS_BC6DCalc(VCDS2_2, TSg_CD0, TSg_CD0, VCDS2_4, TSg_CD0, VCDS2_7)
+;ENDFOLD
+
+;FOLD LIN S2_9 Vel= 0.1 m/s CPDATS1_2 Tool[1] Base[10] ;%{PE}%R 8.3.34,%MKUKATPBASIS,%CMOVE,%VLIN,%P 1:LIN, 2:S2_9, 3:, 5:0.1, 7:CPDATS2_9
+$BWDSTART = FALSE
+LDAT_ACT=LCPDATS2_9
+FDAT_ACT=FS2_9
+BAS(#CP_PARAMS,0.1)
+SET_CD_PARAMS (0)
+LIN XS2_9 C_DIS C_DIS
+;ENDFOLD
+
+;FOLD PTP W3_1 Vel= 100 % PDATW1_1 Tool[1] Base[10] ;%{PE}%R 8.3.34,%MKUKATPBASIS,%CMOVE,%VPTP,%P 1:PTP, 2:W3_1, 3:C_DIS, 5:100, 7:PDATW3_1
+$BWDSTART = FALSE
+PDAT_ACT=PPDATW3_1
+FDAT_ACT=FW3_1
+BAS(#PTP_PARAMS,100)
+SET_CD_PARAMS (0)
+PTP XW3_1 C_DIS
+;ENDFOLD
+
+;FOLD LIN W3_2 Vel= 0.2 m/s CPDATS1_2 Tool[1] Base[10] ;%{PE}%R 8.3.34,%MKUKATPBASIS,%CMOVE,%VLIN,%P 1:LIN, 2:W3_2, 3:, 5:0.2, 7:CPDATW3_2
+$BWDSTART = FALSE
+LDAT_ACT=LCPDATW3_2
+FDAT_ACT=FW3_2
+BAS(#CP_PARAMS,0.2)
+SET_CD_PARAMS (0)
+LIN XW3_2 C_DIS C_DIS
+;ENDFOLD
+
+custom_sync('hFAFA0000', 'hffff0000', 250)
+
+;FOLD ARCON WDATW3_3 LIN W3_3 Vel= 0.1 m/s CPDATW8_4 Tool[1] Base[10];%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.arctech.arconlin; Kuka.PointName=W3_3; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDATW3_3; Kuka.VelocityPath=0.1; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; ArcTech.WdatVarName=WDATW3_3
+;ENDFOLD
+$BWDSTART = FALSE
+LDAT_ACT = LCPDATW3_3
+FDAT_ACT = FW3_3
+BAS(#CP_PARAMS,0.1)
+SET_CD_PARAMS (0)
+TRIGGER WHEN DISTANCE = 1 DELAY = ArcGetDelay(#PreDefinition, WDATW3_3) DO ArcMainNG(#PreDefinition, WDATW3_3, WW3_3) PRIO = -1
+TRIGGER WHEN PATH = ArcGetPath(#OnTheFlyArcOn, WDATW3_3) DELAY = ArcGetDelay(#GasPreflow, WDATW3_3) DO ArcMainNG(#GasPreflow, WDATW3_3, WW3_3) PRIO = -1
+TRIGGER WHEN PATH = ArcGetPath(#OnTheFlyArcOn, WDATW3_3) DELAY = 0 DO ArcMainNG(#ArcOnMoveStd, WDATW3_3, WW3_3) PRIO = -1
+ArcMainNG(#ArcOnBeforeMoveStd, WDATW3_3, WW3_3)
+LIN XW3_3
+ArcMainNG(#ArcOnAfterMoveStd, WDATW3_3, WW3_3)
+;ENDFOLD
+
+;FOLD ARCOFF WDATW3_4 LIN W3_4 CPDATW3_4 Tool[1] Base[10];%{PE}
+;FOLD Parameters ;%{h}
+;Params IlfProvider=kukaroboter.arctech.arcofflin; Kuka.IsGlobalPoint=False; Kuka.PointName=W3_4; Kuka.BlendingEnabled=False; Kuka.MoveDataName=CPDATW3_4; Kuka.VelocityPath=0.0063; Kuka.CurrentCDSetIndex=0; Kuka.MovementParameterFieldEnabled=True; ArcTech.WdatVarName=WDATW3_4
+;ENDFOLD
+$BWDSTART = FALSE
+LDAT_ACT = LCPDATW3_4
+FDAT_ACT = FW3_4
+BAS(#CP_PARAMS, gArcBasVelDefinition)
+SET_CD_PARAMS (0)
+TRIGGER WHEN PATH = ArcGetPath(#ArcOffBefore, WDATW3_4) DELAY = 0 DO ArcMainNG(#ArcOffBeforeOffStd, WDATW3_4) PRIO = -1
+TRIGGER WHEN PATH = ArcGetPath(#OnTheFlyArcOff, WDATW3_4) DELAY = 0 DO ArcMainNG(#ArcOffMoveStd, WDATW3_4) PRIO = -1
+ArcMainNG(#ArcOffBeforeMoveStd, WDATW3_4)
+LIN XW3_4
+ArcMainNG(#ArcOffAfterMoveStd, WDATW3_4)
+;ENDFOLD
+
+;FOLD LIN W3_5 Vel= 0.2 m/s CPDATS1_2 Tool[1] Base[10] ;%{PE}%R 8.3.34,%MKUKATPBASIS,%CMOVE,%VLIN,%P 1:LIN, 2:W3_5, 3:, 5:0.2, 7:CPDATW3_5
+$BWDSTART = FALSE
+LDAT_ACT=LCPDATW3_5
+FDAT_ACT=FW3_5
+BAS(#CP_PARAMS,0.2)
+SET_CD_PARAMS (0)
+LIN XW3_5 C_DIS C_DIS
+;ENDFOLD
+
+;FOLD LIN W3_6 Vel= 0.4 m/s CPDATS1_2 Tool[1] Base[10] ;%{PE}%R 8.3.34,%MKUKATPBASIS,%CMOVE,%VLIN,%P 1:LIN, 2:W3_6, 3:, 5:0.4, 7:CPDATW3_6
+$BWDSTART = FALSE
+LDAT_ACT=LCPDATW3_6
+FDAT_ACT=FW3_6
+BAS(#CP_PARAMS,0.4)
+SET_CD_PARAMS (0)
+LIN XW3_6 C_DIS C_DIS
+;ENDFOLD
+
+TS_CorrOff()
+ochistka_mod()
+END

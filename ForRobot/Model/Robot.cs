@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
-//using System.Collections.Generic;
-using System.Linq;
 //using System.Text;
 
 using System.Text;
@@ -534,19 +534,20 @@ namespace ForRobot.Model
                         if (!Equals(MessageBox.Show($"Копировать файлы программы в {this.PathControllerFolder}?", "Копирование файлов", MessageBoxButton.YesNo, MessageBoxImage.Question), MessageBoxResult.Yes))
                             return false;
 
-                        foreach (var file in Directory.GetFiles(this.PathProgramm, "*.dat"))
+                        var fileCollection1 = Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameList(this.PathProgramm)).Result;
+                        foreach (var file in fileCollection1.Keys.Where(i => i.EndsWith(".dat")).ToList<string>())
                         {
-                            if (!Task.Run<bool>(async () => await this.Connection.Copy(file, Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
+                            if (!Task.Run<bool>(async () => await this.Connection.Copy(Path.Combine(this.PathProgramm, file), Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
                                 new Exception($"Ошибка копирования файла {file} в {this.PathControllerFolder}");
                             else
                                 this.LogMessage($"Файл {file} скопирован ");
                         }
 
-                        foreach (var file in Directory.GetFiles(this.PathProgramm, "*.src"))
+                        foreach (var file in fileCollection1.Keys.Where(i => i.EndsWith(".src")).ToList<string>())
                         {
-                            if(!Equals(string.Join("", programName, ".src"), new FileInfo(file).Name))
+                            if (!Equals(string.Join("", programName, ".src"), new FileInfo(file).Name))
                             {
-                                if (!Task.Run<bool>(async () => await this.Connection.Copy(file, Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
+                                if (!Task.Run<bool>(async () => await this.Connection.Copy(Path.Combine(this.PathProgramm, file), Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
                                     new Exception($"Ошибка копирования файла {file} в {this.PathControllerFolder}");
                                 else
                                     this.LogMessage($"Файл {file} скопирован ");
@@ -558,19 +559,6 @@ namespace ForRobot.Model
                         else
                             this.LogMessage($"Файл {Path.Combine(this.PathProgramm, $"{programName}.src")} скопирован ");
                         break;
-
-                    //if (!Task.Run<bool>(async () =>
-                    //    await this.Connection.Copy(Path.Combine(this.PathControllerFolder, string.Join("", fileName, ".src")), Path.Combine(endPath, fileName))).Result)
-                    //    new Exception($"Ошибка копирования файла {string.Join("", fileName, ".src")} из {this.PathControllerFolder} в {endPath}");
-                    //else
-                    //    this.LogMessage($"Файл {string.Join("", fileName, ".src")} скопирован");
-
-                    //if (!Task.Run<bool>(async () =>
-                    //    await this.Connection.Copy(Path.Combine(this.PathControllerFolder, string.Join("", fileName, ".dat")), Path.Combine(endPath, fileName))).Result)
-                    //    new Exception($"Ошибка копирования файла {string.Join("", fileName, ".dat")} из {this.PathControllerFolder} в {endPath}");
-                    //else
-                    //    this.LogMessage($"Файл {string.Join("", fileName, ".dat")} скопирован");
-                    //break;
 
                     case "#P_RESET":
                     case "#P_END":
@@ -587,19 +575,20 @@ namespace ForRobot.Model
                         if (!Equals(MessageBox.Show($"Копировать файлы программы в {this.PathControllerFolder}?", "Копирование файлов", MessageBoxButton.YesNo, MessageBoxImage.Question), MessageBoxResult.Yes))
                             return false;
 
-                        foreach (var file in Directory.GetFiles(this.PathProgramm, "*.dat"))
+                        var fileCollection2 = Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameList(this.PathProgramm)).Result;
+                        foreach (var file in fileCollection2.Keys.Where(i => i.EndsWith(".dat")).ToList<string>())
                         {
-                            if (!Task.Run<bool>(async () => await this.Connection.Copy(file, Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
+                            if (!Task.Run<bool>(async () => await this.Connection.Copy(Path.Combine(this.PathProgramm, file), Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
                                 new Exception($"Ошибка копирования файла {file} в {this.PathControllerFolder}");
                             else
                                 this.LogMessage($"Файл {file} скопирован ");
                         }
 
-                        foreach (var file in Directory.GetFiles(this.PathProgramm, "*.src"))
+                        foreach (var file in fileCollection2.Keys.Where(i => i.EndsWith(".src")).ToList<string>())
                         {
                             if (!Equals(string.Join("", programName, ".src"), new FileInfo(file).Name))
                             {
-                                if (!Task.Run<bool>(async () => await this.Connection.Copy(file, Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
+                                if (!Task.Run<bool>(async () => await this.Connection.Copy(Path.Combine(this.PathProgramm, file), Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
                                     new Exception($"Ошибка копирования файла {file} в {this.PathControllerFolder}");
                                 else
                                     this.LogMessage($"Файл {file} скопирован ");
@@ -629,6 +618,8 @@ namespace ForRobot.Model
         {
             try
             {
+                //var fileCollection = Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameList(this.PathProgramm)).Result;
+                //foreach (var file in fileCollection.Keys.Where(i => i.EndsWith(".dat")).ToList<string>())
                 foreach (var file in Directory.GetFiles(this.PathProgramm, "*.dat"))
                 {
                     if (!Task.Run<bool>(async () => await this.Connection.CopyMem2File(Path.Combine(this.PathProgramm, new FileInfo(file).Name),
@@ -640,6 +631,7 @@ namespace ForRobot.Model
                 }
 
                 foreach (var file in Directory.GetFiles(this.PathProgramm, "*.src"))
+                //foreach (var file in fileCollection.Keys.Where(i => i.EndsWith(".src")).ToList<string>())
                 {
                     if (!Equals(string.Join("", programName, ".src"), new FileInfo(file).Name))
                     {
@@ -748,9 +740,16 @@ namespace ForRobot.Model
             {
                 if(flag == "pc")
                 {
-                    foreach (var file in Directory.GetFiles(this.PathProgramm))
+                    //foreach (var file in Directory.GetFiles(this.PathProgramm))
+                    //{
+                    //    if (!Task.Run<bool>(async () => await this.Connection.Delet(file)).Result)
+                    //        new Exception($"Ошибка удаления файла {file}");
+                    //    else
+                    //        this.LogMessage($"Файл программы {file} удалён");
+                    //}
+                    foreach (var file in (Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameList(this.PathProgramm)).Result).Keys.ToList<string>())
                     {
-                        if (!Task.Run<bool>(async () => await this.Connection.Delet(file)).Result)
+                        if (!Task.Run<bool>(async () => await this.Connection.Delet(Path.Combine(this.PathProgramm, file))).Result)
                             new Exception($"Ошибка удаления файла {file}");
                         else
                             this.LogMessage($"Файл программы {file} удалён");
@@ -761,13 +760,20 @@ namespace ForRobot.Model
                     switch (this.Pro_State)
                     {
                         case "#P_FREE":
-                            foreach (var file in Directory.GetFiles(this.PathProgramm))
+                            foreach(var file in (Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameList(this.PathControllerFolder)).Result).Keys.ToList<string>())
                             {
                                 if (!Task.Run<bool>(async () => await this.Connection.Delet(Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
                                     new Exception($"Ошибка удаления файла {Path.Combine(this.PathControllerFolder, new FileInfo(file).Name)}");
                                 else
                                     this.LogMessage($"Файл программы {Path.Combine(this.PathControllerFolder, new FileInfo(file).Name)} удалён");
                             }
+                            //foreach (var file in Directory.GetFiles(this.PathProgramm))
+                            //{
+                            //    if (!Task.Run<bool>(async () => await this.Connection.Delet(Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
+                            //        new Exception($"Ошибка удаления файла {Path.Combine(this.PathControllerFolder, new FileInfo(file).Name)}");
+                            //    else
+                            //        this.LogMessage($"Файл программы {Path.Combine(this.PathControllerFolder, new FileInfo(file).Name)} удалён");
+                            //}
                             break;
 
                         case "#P_RESET":
@@ -782,7 +788,15 @@ namespace ForRobot.Model
 
                             System.Threading.Thread.Sleep(1000);
 
-                            foreach (var file in Directory.GetFiles(this.PathProgramm))
+                            //foreach (var file in Directory.GetFiles(this.PathProgramm))
+                            //{
+                            //    if (!Task.Run<bool>(async () => await this.Connection.Delet(Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
+                            //        new Exception($"Ошибка удаления файла {Path.Combine(this.PathControllerFolder, new FileInfo(file).Name)}");
+                            //    else
+                            //        this.LogMessage($"Файл программы {Path.Combine(this.PathControllerFolder, new FileInfo(file).Name)} удалён");
+                            //}
+
+                            foreach (var file in (Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameList(this.PathControllerFolder)).Result).Keys.ToList<string>())
                             {
                                 if (!Task.Run<bool>(async () => await this.Connection.Delet(Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
                                     new Exception($"Ошибка удаления файла {Path.Combine(this.PathControllerFolder, new FileInfo(file).Name)}");

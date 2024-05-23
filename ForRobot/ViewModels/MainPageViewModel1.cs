@@ -42,13 +42,13 @@ namespace ForRobot.ViewModels
             Multiselect = false
         };
 
-        //private TabItem _selectedItem;
+        private TabItem _selectedItem;
 
         private Page _nowPage;
 
         #region Readonly
 
-        private static readonly List<string> _typeList = new List<string> { "Настил с ребром", "Настил со скосами", "Настил со стрингером", "Настил треугольником" };
+        private static readonly List<string> _typeList = new List<string> { "Настил с ребром", "Настил со стрингером", "Настил треугольником" };
         private static readonly List<string> _privyazkaList = new List<string> { "Вправо", "Влево" };
 
         #endregion
@@ -109,15 +109,7 @@ namespace ForRobot.ViewModels
             set => Set(ref this._nowPage, value);
         }
 
-        public string Logger
-        {
-            get => this._logger;
-            set
-            {
-                this._logger = value;
-                RaisePropertyChanged("Logger");
-            }
-        }
+        public string Logger { get => this._logger; set => Set(ref this._logger, value); }
 
         /// <summary>
         /// Путь к программе-генератору (зависит от типа детали)
@@ -127,7 +119,6 @@ namespace ForRobot.ViewModels
             get
             {
                 if (DetalObject is Plita) { return Properties.Settings.Default.PlitaGenerator; }
-                else if (DetalObject is PlitaWithBevels) { return Properties.Settings.Default.PlitaWithBevelsGenerator; }
                 else if (DetalObject is PlitaStringer) { return Properties.Settings.Default.PlitaStringerGenerator; }
                 else if (DetalObject is PlitaTreygolnik) { return Properties.Settings.Default.PlitaTreugolnikGenerator; }
                 else { return ""; }
@@ -135,7 +126,6 @@ namespace ForRobot.ViewModels
             set
             {
                 if (DetalObject is Plita) { Properties.Settings.Default.PlitaGenerator = value; }
-                else if (DetalObject is PlitaWithBevels) { Properties.Settings.Default.PlitaWithBevelsGenerator = value; }
                 else if (DetalObject is PlitaStringer) { Properties.Settings.Default.PlitaStringerGenerator = value; }
                 else if (DetalObject is PlitaTreygolnik) { Properties.Settings.Default.PlitaTreugolnikGenerator = value; }
                 Properties.Settings.Default.Save();
@@ -155,7 +145,6 @@ namespace ForRobot.ViewModels
             get
             {
                 if (DetalObject is Plita) { return Properties.Settings.Default.PlitaProgramm; }
-                else if (DetalObject is PlitaWithBevels) { return Properties.Settings.Default.PlitaWithBevelsProgramm; }
                 else if (DetalObject is PlitaStringer) { return Properties.Settings.Default.PlitaStringerProgramm; }
                 else if (DetalObject is PlitaTreygolnik) { return Properties.Settings.Default.PlitaTreugolnikProgramm; }
                 else { return ""; }
@@ -163,7 +152,6 @@ namespace ForRobot.ViewModels
             set
             {
                 if (DetalObject is Plita) { Properties.Settings.Default.PlitaProgramm = value; }
-                else if (DetalObject is PlitaWithBevels) { Properties.Settings.Default.PlitaWithBevelsProgramm = value; }
                 else if (DetalObject is PlitaStringer) { Properties.Settings.Default.PlitaStringerProgramm = value; }
                 else if (DetalObject is PlitaTreygolnik) { Properties.Settings.Default.PlitaTreugolnikProgramm = value; }
                 Properties.Settings.Default.Save();
@@ -223,7 +211,6 @@ namespace ForRobot.ViewModels
             get
             {
                 if (DetalObject is Plita) { return "Настил с ребром"; }
-                else if (DetalObject is PlitaWithBevels) { return "Настил со скосами"; }
                 else if (DetalObject is PlitaStringer) { return "Настил со стрингером"; }
                 else if (DetalObject is PlitaTreygolnik) { return "Настил треугольником"; }
                 else { return ""; }
@@ -231,7 +218,6 @@ namespace ForRobot.ViewModels
             set
             {
                 if (value == "Настил с ребром") { DetalObject = GetSavePlita(); }
-                if (value == "Настил со скосами") { DetalObject = GetSavePlitaWithBevels(); }
                 if (value == "Настил со стрингером") { DetalObject = GetSavePlitaStringer(); }
                 if (value == "Настил треугольником") { DetalObject = GetSavePlitaTreygolnik(); }
 
@@ -288,9 +274,9 @@ namespace ForRobot.ViewModels
         /// </summary>
         public TabItem SelectedItem
         {
-            get; set;
-            //get => _selectedItem;
-            //set => Set(ref this._selectedItem, value);
+            //get; set;
+            get => _selectedItem;
+            set => Set(ref this._selectedItem, value);
         }
 
         /// <summary>
@@ -389,10 +375,10 @@ namespace ForRobot.ViewModels
                 return _standartParametrsCommand ??
                     (_standartParametrsCommand = new RelayCommand(obj =>
                     {
-                        if (DetalObject is Plita) { this.DetalObject = new Plita(DetalType.Plita); }
-                        else if (DetalObject is PlitaWithBevels) { this.DetalObject = new PlitaWithBevels(DetalType.WithBevels); }
+                        if (DetalObject is Plita) { this.DetalObject = new Plita(DetalType.Plita) { ScoseType = ((Plita)this.DetalObject).ScoseType }; }
                         else if (DetalObject is PlitaStringer) { this.DetalObject = new PlitaStringer(DetalType.Stringer); }
                         else if (DetalObject is PlitaTreygolnik) { this.DetalObject = new PlitaTreygolnik(DetalType.Treygolnik); }
+                        this.DetalObject.Change += ChangeProperiesDetal;
                         SaveDetal();
                     }));
             }
@@ -522,19 +508,16 @@ namespace ForRobot.ViewModels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ChangeProperiesDetal(object sender, EventArgs e)
-        {
-            //await Task.Run(async () => await GenerationProgram());
-            SaveDetal();
-        }
+        private void ChangeProperiesDetal(object sender, EventArgs e) => SaveDetal();
 
         /// <summary>
         /// Сохранение изменений Detal
         /// </summary>
         private void SaveDetal()
         {
-            if (DetalObject is Plita) { Properties.Settings.Default.SavePlita = this.DetalObject.Json; }
-            if (DetalObject is PlitaWithBevels) { Properties.Settings.Default.SavePlitaWithBevels = this.DetalObject.Json; }
+            //await Task.Run(async () => await GenerationProgram());
+
+            if (DetalObject is Plita) { Properties.Settings.Default.SavePlita = this.DetalObject.JsonForSave; }
             else if (DetalObject is PlitaStringer) { Properties.Settings.Default.SavePlitaStringer = ""; }
             else if (DetalObject is PlitaTreygolnik) { Properties.Settings.Default.SavePlita = ""; }
             Properties.Settings.Default.Save();
@@ -590,22 +573,41 @@ namespace ForRobot.ViewModels
             File.WriteAllText(Path.Combine(new FileInfo(this.PathGenerator).DirectoryName, $"{this.ProgrammName}.json"), jObject1.ToString());
 
             // Генерация программы.
-            Generation generationProcess = new Generation(this.PathGenerator, this.ProgrammName, new FileInfo(this.PathGenerator).DirectoryName);
+            Generation generationProcess = new Generation(this.PathGenerator, this.ProgrammName);
             generationProcess.Log += new EventHandler<LogEventArgs>(WreteLog);
             generationProcess.LogError += new EventHandler<LogErrorEventArgs>(WreteLogError);
+
+            foreach (var item in this.Items)
+            {
+                var dat = (ToolBarViewModel)item.DataContext;
+
+                if (string.IsNullOrWhiteSpace(dat.Robot.PathProgramm))
+                    generationProcess.PathProgramm = new FileInfo(this.PathGenerator).DirectoryName;
+                else
+                    generationProcess.PathProgramm = new FileInfo(dat.Robot.PathProgramm).DirectoryName;
+            }
 
             generationProcess.Start(this.DetalObject);
 
             foreach (var item in this.Items)
-                if (generationProcess.ProccesEnd(((ToolBarViewModel)item.DataContext).Robot.PathProgramm))
+            {
+                var dat = (ToolBarViewModel)item.DataContext;
+
+                //if (Equals(System.Windows.MessageBox.Show($"Генерировать программу в {Directory.GetParent(generationProcess.PathProgramm).ToString()}?", "", MessageBoxButton.OKCancel, MessageBoxImage.Question), MessageBoxResult.Cancel))
+                //    return;
+
+                if (string.IsNullOrWhiteSpace(dat.Robot.PathProgramm) && Equals(System.Windows.MessageBox.Show($"{dat.Robot.Connection.Host}:{dat.Robot.Connection.Port} Не выбрана папка программы", "", MessageBoxButton.OK, MessageBoxImage.Stop), MessageBoxResult.OK))
+                    return;
+
+                if (generationProcess.ProccesEnd(dat.Robot.PathProgramm))
                 {
-                    var dat = (ToolBarViewModel)item.DataContext;
                     await Task.Run(() => dat.Robot.DeleteProgramm("pc"));
                     await Task.Run(() => dat.Robot.CopyToPC(string.Join("", this.ProgrammName, ".src")));
                     await Task.Run(() => dat.Robot.DeleteProgramm("controller"));
-                    if(await Task.Run<bool>(() => dat.Robot.Copy(this.ProgrammName)))
+                    if (await Task.Run<bool>(() => dat.Robot.Copy(this.ProgrammName)))
                         await Task.Run(() => dat.Robot.SelectProgramm(string.Join("", this.ProgrammName, ".src")));
                 }
+            }
         }
 
         /// <summary>
@@ -638,12 +640,6 @@ namespace ForRobot.ViewModels
         /// </summary>
         /// <returns></returns>
         private Plita GetSavePlita() => string.IsNullOrEmpty(Properties.Settings.Default.SavePlita) ? new Plita(DetalType.Plita) : JsonSerializer.Deserialize<Plita>(Properties.Settings.Default.SavePlita);
-
-        /// <summary>
-        /// Настройки плиты со скосами
-        /// </summary>
-        /// <returns></returns>
-        private PlitaWithBevels GetSavePlitaWithBevels() => string.IsNullOrEmpty(Properties.Settings.Default.SavePlitaWithBevels) ? new PlitaWithBevels(DetalType.WithBevels) : JsonSerializer.Deserialize<PlitaWithBevels>(Properties.Settings.Default.SavePlitaWithBevels);
 
         /// <summary>
         /// Настройки плиты со стрингером

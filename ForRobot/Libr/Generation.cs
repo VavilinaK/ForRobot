@@ -70,7 +70,7 @@ namespace ForRobot.Libr
         /// <summary>
         /// Путь для вывода
         /// </summary>
-        internal string PathProgramm { get; private set; }
+        internal string PathProgramm { get; set; }
 
         #endregion
 
@@ -180,7 +180,7 @@ namespace ForRobot.Libr
 
                 if (File.Exists(Path.Combine(pathProgram, string.Join("", this.FileName, ".src"))))
                 {
-                    this.LogMessage($"Файл {string.Join("", this.FileName, ".src")} сгенерирован");
+                    this.LogMessage($"Файл {string.Join("", this.FileName, ".src")} сгенерирован в {pathProgram}");
                     res = true;
                 }
                 else
@@ -229,13 +229,13 @@ namespace ForRobot.Libr
                     return;
                 }
 
-                string[,] args = { { "-p", $"{new FileInfo(this.PathGenerator).DirectoryName}\\{this.FileName}.json" }, { "-o", $"\"{this.PathProgramm}\"" }, { "-n", $"\"{this.FileName}.src\"" } };
+                string[] args = { $"-p {new FileInfo(this.PathGenerator).DirectoryName}\\{this.FileName}.json" , $"-o \"{Directory.GetParent(this.PathProgramm).ToString()}\"" , $"-n \"{this.FileName}.src\"" };
 
-                string arv = "";
-                for(int i=0; i < args.GetLength(0); i++)
-                {
-                    arv += (string.IsNullOrWhiteSpace(args[i, 1]) ? "" : $" {args[i, 0]} {args[i, 1]}");
-                }
+                //string arv = "";
+                //for(int i=0; i < args.GetLength(0); i++)
+                //{
+                //    arv += (string.IsNullOrWhiteSpace(args[i, 1]) ? "" : $" {args[i, 0]} {args[i, 1]}");
+                //}
 
                 Process process = new Process()
                 {
@@ -248,7 +248,7 @@ namespace ForRobot.Libr
                         //RedirectStandardInput = true,
                         WorkingDirectory = new FileInfo(this.PathGenerator).DirectoryName,
                         FileName = "python.exe",
-                        Arguments = this.PathGenerator + " " + arv,
+                        Arguments = this.PathGenerator + " " +  string.Join(" ", args)
                         //WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden
                     }
                 };

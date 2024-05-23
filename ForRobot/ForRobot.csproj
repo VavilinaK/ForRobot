@@ -246,10 +246,10 @@
     <Compile Include="BaseClass.cs" />
     <Compile Include="Libr\Generation.cs" />
     <Compile Include="Libr\AutoScrollBehavior.cs" />
+    <Compile Include="Libr\PlitaConfigurationSection.cs" />
     <Compile Include="Libr\ScrollViewerAttachedProperties.cs" />
     <Compile Include="Libr\StatusColorConverter.cs" />
     <Compile Include="Model\ScoseTypes.cs" />
-    <Compile Include="Model\PlitaWithBevels.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -357,6 +357,15 @@
     <Resource Include="Images\generationOff.png" />
     <Resource Include="Images\KeyOff.png" />
     <Resource Include="Images\KeyOn.png" />
+    <Resource Include="Images\ParallelogramRight.png" />
+    <Resource Include="Images\ParallelogramLeft.png" />
+    <Resource Include="Images\Rectangular.png" />
+    <Resource Include="Images\TrapezoidBottom.png" />
+    <Resource Include="Images\TrapezoidTop.png" />
+    <Resource Include="Images\Slope_left.png" />
+    <Resource Include="Images\Slope_right.png" />
+    <Resource Include="Images\trapezoid_bottom.png" />
+    <Resource Include="Images\Trapezoid_top.png" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

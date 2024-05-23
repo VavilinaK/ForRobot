@@ -1,6 +1,9 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:ForRobot.Themes">
+                    xmlns:local="clr-namespace:ForRobot.Themes"
+                    xmlns:conv="clr-namespace:LibraryConvertClass;assembly=LibraryConvertClass">
+
+    <conv:RadioButtonConverter x:Key="RadioButtonConvert"/>
 
     <BitmapImage x:Key="ImagePlitaFull" UriSource="/InterfaceOfRobots;component/Images/PlitaFull.png"/>
     <BitmapImage x:Key="ImagePlitaStringerFull" UriSource="/InterfaceOfRobots;component/Images/PlitaStringerFull.png"/>
@@ -12,6 +15,13 @@
     <BitmapImage x:Key="ImagePlitaStart" UriSource="/InterfaceOfRobots;component/Images/StartPlita.png"/>
     <BitmapImage x:Key="ImagePlitaBody" UriSource="/InterfaceOfRobots;component/Images/Plita.png"/>
     <BitmapImage x:Key="ImagePlitaEnd" UriSource="/InterfaceOfRobots;component/Images/EndPlita.png"/>
+
+    <!--Скосы-->
+    <BitmapImage x:Key="ImageSlopeLeft" UriSource="/InterfaceOfRobots;component/Images/Slope_left.png"/>
+    <BitmapImage x:Key="ImageSlopeRight" UriSource="/InterfaceOfRobots;component/Images/Slope_right.png"/>
+    <BitmapImage x:Key="ImageTrapezoidTopParam" UriSource="/InterfaceOfRobots;component/Images/Trapezoid_top.png"/>
+    <BitmapImage x:Key="ImageTrapezoidBottomParam" UriSource="/InterfaceOfRobots;component/Images/trapezoid_bottom.png"/>
+
 
     <Image x:Key="ImageSettingFill" Source="/InterfaceOfRobots;component/Images/setting-fill.png" />
     <Image x:Key="ImageSettingUnFill" Source="/InterfaceOfRobots;component/Images/setting-unfill.png" />
@@ -44,6 +54,12 @@
     <BitmapImage x:Key="Image3D" UriSource="/InterfaceOfRobots;component/Images/3d.png"/>
     <BitmapImage x:Key="ImageStandart" UriSource="/InterfaceOfRobots;component/Images/clear.png"/>
     <BitmapImage x:Key="ImageExclamation" UriSource="/InterfaceOfRobots;component/Images/exclamation.png"/>
+
+    <BitmapImage x:Key="ImageRectangular" UriSource="/InterfaceOfRobots;component/Images/Rectangular.png"/>
+    <BitmapImage x:Key="ImageParallelogramLeft" UriSource="/InterfaceOfRobots;component/Images/ParallelogramLeft.png"/>
+    <BitmapImage x:Key="ImageParallelogramRight" UriSource="/InterfaceOfRobots;component/Images/ParallelogramRight.png"/>
+    <BitmapImage x:Key="ImageTrapezoidTop" UriSource="/InterfaceOfRobots;component/Images/TrapezoidTop.png"/>
+    <BitmapImage x:Key="ImageTrapezoidBottom" UriSource="/InterfaceOfRobots;component/Images/TrapezoidBottom.png"/>
 
     <ImageBrush x:Key="ImageStart" ImageSource="/InterfaceOfRobots;component/Images/Start.png"/>
     <ImageBrush x:Key="ImagePause" ImageSource="/InterfaceOfRobots;component/Images/Pause.png"/>
@@ -800,8 +816,8 @@
     
     <!--Смена скосов-->
     <Style x:Key="toggleButtonScosStyle" TargetType="{x:Type ToggleButton}">
-        <Setter Property="Width" Value="60"/>
-        <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
+        <Setter Property="Width" Value="100"/>
+        <Setter Property="Height" Value="80"/>
         <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -857,6 +873,8 @@
     <Style x:Key="toggleButtonInfoStyle" TargetType="ToggleButton">
         <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
         <Setter Property="ToolTip" Value="Информирование"/>
+        <Setter Property="IsChecked" Value="True"/>
+        <!--<Setter Property="Visibility" Value="Hidden"/>-->
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ToggleButton}">
@@ -889,17 +907,27 @@
             </Setter.Value>
         </Setter>
 
-        <!--<Style.Triggers>
-            <Trigger Property="IsChecked" Value="False">
-                <Trigger.EnterActions>
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" RepeatBehavior="Forever" AutoReverse="True" Duration="0:0:1"/>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </Trigger.EnterActions>
-            </Trigger>
-        </Style.Triggers>-->
+        <Style.Triggers>
+            <!--<MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="d_rect"/>
+                    <Condition Binding="{Binding Path=DataContext.SelectedItem.Header, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="Сварка"/>
+                </MultiDataTrigger.Conditions>
+
+                <Setter Property="IsChecked" Value="True"/>
+                <Setter Property="Visibility" Value="Visible"/>
+            </MultiDataTrigger>-->
+            
+            <!--<DataTrigger Binding="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="d_rect">
+                <Setter Property="IsChecked" Value="True"/>
+                <Setter Property="Visibility" Value="Visible"/>
+            </DataTrigger>-->
+
+            <!--<DataTrigger Binding="{Binding Path=DataContext.SelectedItem.Header, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Value="Сварка">
+                <Setter Property="IsChecked" Value="True"/>
+                <Setter Property="Visibility" Value="Visible"/>
+            </DataTrigger>-->
+        </Style.Triggers>
     </Style>
     
     <!--TabControl-->
@@ -931,28 +959,126 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*" MinWidth="150"/>
             </Grid.ColumnDefinitions>
 
-            <Label Grid.Row="0" Grid.Column="0" Content="Длина настила, мм." FontSize="16" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
-            <Label Grid.Row="1" Grid.Column="0" Content="Расстояние до осевой линии первого ребра сверху, мм." FontSize="16" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
-            <Label Grid.Row="2" Grid.Column="0" Content="Расстояние между осевыми линиями рёбер, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
-            <Label Grid.Row="3" Grid.Column="0" Content="Расстояние до торца ребра слева, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
-            <Label Grid.Row="4" Grid.Column="0" Content="Расстояние до торца ребра справа, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
-            <Label Grid.Row="5" Grid.Column="0" Content="Роспуск слева, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
-            <Label Grid.Row="6" Grid.Column="0" Content="Роспуск справа, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
-            <Label Grid.Row="7" Grid.Column="0" Content="Количество ребер, шт." FontSize="16" FontWeight="Bold" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
+            <Grid Grid.Row="0" Grid.ColumnSpan="2" Margin="0, 10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
 
-            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.Long, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
+                <RadioButton Grid.Column="0" Content="Two" Style="{StaticResource toggleButtonScosStyle}"
+                                             IsChecked="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, 
+                                                Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter=d_rect, Mode=TwoWay}"
+                                             ToolTip="Прямоугольная форма">
+
+                    <RadioButton.Template>
+                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                            <Border BorderThickness="0" CornerRadius="3" Style="{StaticResource toggleButtonScosTemplateStyle}">
+                                <Image Source="{StaticResource ImageRectangular}"  Stretch="Fill"/>
+                            </Border>
+                        </ControlTemplate>
+                    </RadioButton.Template>
+                </RadioButton>
+
+                <RadioButton Grid.Column="1" Content="Two" Style="{StaticResource toggleButtonScosStyle}"
+                                             IsChecked="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, 
+                                                Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter=d_slope_right, Mode=TwoWay}"
+                                             ToolTip="Наклон вправо">
+                    <RadioButton.Template>
+                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                            <Border BorderThickness="0" CornerRadius="3" Style="{StaticResource toggleButtonScosTemplateStyle}">
+                                <Image Source="{StaticResource ImageParallelogramRight}"  Stretch="Fill"/>
+                            </Border>
+                        </ControlTemplate>
+                    </RadioButton.Template>
+                </RadioButton>
+
+                <RadioButton Grid.Column="2" Content="One" Style="{StaticResource toggleButtonScosStyle}"
+                                             IsChecked="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, 
+                                                Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter=d_slope_left, Mode=TwoWay}"
+                                             ToolTip="Наклон влево">
+
+                    <RadioButton.Template>
+                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                            <Border BorderThickness="0" CornerRadius="3" Padding="2" Style="{StaticResource toggleButtonScosTemplateStyle}">
+                                <Image Source="{StaticResource ImageParallelogramLeft}" Stretch="Fill"/>
+                            </Border>
+                        </ControlTemplate>
+                    </RadioButton.Template>
+                </RadioButton>
+
+                <RadioButton Grid.Column="3" Content="One" Style="{StaticResource toggleButtonScosStyle}"
+                                             IsChecked="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, 
+                                                Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter=d_trapezoid_top, Mode=TwoWay}"
+                                             ToolTip="Трапеция">
+
+                    <RadioButton.Template>
+                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                            <Border BorderThickness="0" CornerRadius="3" Padding="2" Style="{StaticResource toggleButtonScosTemplateStyle}">
+                                <Image Source="{StaticResource ImageTrapezoidTop}" Stretch="Fill"/>
+                            </Border>
+                        </ControlTemplate>
+                    </RadioButton.Template>
+                </RadioButton>
+
+                <RadioButton Grid.Column="4" Content="Two" Style="{StaticResource toggleButtonScosStyle}"
+                                             IsChecked="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, 
+                                                Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter=d_trapezoid_bottom, Mode=TwoWay}"
+                                             ToolTip="Перевёрнутая трапеция">
+                    <RadioButton.Template>
+                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                            <Border BorderThickness="0" CornerRadius="3" Style="{StaticResource toggleButtonScosTemplateStyle}">
+                                <Image Source="{StaticResource ImageTrapezoidBottom}"  Stretch="Fill"/>
+                            </Border>
+                        </ControlTemplate>
+                    </RadioButton.Template>
+                </RadioButton>
+            </Grid>
+
+            <Label Grid.Row="1" Grid.Column="0" Content="Длина настила, мм." FontSize="16" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+            <Label Grid.Row="2" Grid.Column="0" Content="Ширина настила, мм." FontSize="16" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+            <Label Grid.Row="3" Grid.Column="0" Content="Расстояние до осевой линии первого ребра сверху, мм." FontSize="16" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
+            <Label Grid.Row="4" Grid.Column="0" Content="Расстояние между осевыми линиями рёбер, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
+            <Label Grid.Row="5" Grid.Column="0" Content="Расстояние до торца ребра слева, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
+            <Label Grid.Row="6" Grid.Column="0" Content="Расстояние до торца ребра справа, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
+            <Label Grid.Row="7" Grid.Column="0" Content="Роспуск слева, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
+            <Label Grid.Row="8" Grid.Column="0" Content="Роспуск справа, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
+            <Label Grid.Row="9" Grid.Column="0" Content="Скос слева, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
+            <Label Grid.Row="10" Grid.Column="0" Content="Скос справа, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
+            <Label Grid.Row="11" Grid.Column="0" Content="Количество ребер, шт." FontSize="16" FontWeight="Bold" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
+
+            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.Long, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
                                      FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
 
-            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DistanceToFirst, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
+            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.Wight, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
+                                     FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37">
+                <TextBox.Style>
+                    <Style TargetType="TextBox">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="d_rect">
+                                <Setter Property="IsEnabled" Value="False"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
+
+            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DistanceToFirst, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
                                      FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
 
-            <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Vertical">
+            <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Vertical">
                 <TextBox Name="textBoxDistanceBetween" Text="{Binding Path=DataContext.DetalObject.DistanceBetween, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
                                      FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
 
@@ -969,91 +1095,60 @@
                 </Popup>
             </StackPanel>
 
-            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DistanceToStart, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
+            <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DistanceToStart, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
                                      FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
 
-            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DistanceToEnd, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
+            <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DistanceToEnd, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
                                      FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
 
-            <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DissolutionStart, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
+            <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DissolutionStart, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
                                      FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
 
-            <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DissolutionEnd, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
+            <TextBox Grid.Row="8" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DissolutionEnd, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
                                      FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
 
-            <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.SumReber, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, FallbackValue=4, UpdateSourceTrigger=PropertyChanged}" 
+            <TextBox Grid.Row="9" Grid.Column="1" Height="37" Text="{Binding Path=DataContext.DetalObject.BevelToStart, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
+                                 FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}">
+                <TextBox.Style>
+                    <Style TargetType="TextBox">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="d_rect">
+                                <Setter Property="IsEnabled" Value="False"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
+
+            <TextBox Grid.Row="10" Grid.Column="1" Height="37" Text="{Binding Path=DataContext.DetalObject.BevelToEnd, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
+                                 FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}">
+                <TextBox.Style>
+                    <Style TargetType="TextBox">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="d_rect">
+                                <Setter Property="IsEnabled" Value="False"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
+            
+            <TextBox Grid.Row="11" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.SumReber, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, FallbackValue=4, UpdateSourceTrigger=PropertyChanged}" 
                                  FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
         </Grid>
     </DataTemplate>
 
-    <DataTemplate x:Key="PlitaWithBevelsTemplateStyle" DataType="{x:Type ContentControl}">
+    <DataTemplate x:Key="OtherTemplateStyle" DataType="{x:Type ContentControl}">
         <Grid Height="Auto">
             <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*" MinWidth="150"/>
-            </Grid.ColumnDefinitions>
 
-            <Label Grid.Row="0" Grid.Column="0" Content="Длина настила, мм." FontSize="16" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
-            <Label Grid.Row="1" Grid.Column="0" Content="Ширина настила, мм." FontSize="16" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
-            <Label Grid.Row="2" Grid.Column="0" Content="Расстояние до осевой линии первого ребра сверху, мм." FontSize="16" HorizontalContentAlignment="Left" VerticalContentAlignment="Center"/>
-            <Label Grid.Row="3" Grid.Column="0" Content="Расстояние между осевыми линиями рёбер, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
-            <Label Grid.Row="4" Grid.Column="0" Content="Расстояние до торца ребра слева, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
-            <Label Grid.Row="5" Grid.Column="0" Content="Расстояние до торца ребра справа, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
-            <Label Grid.Row="6" Grid.Column="0" Content="Роспуск слева, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
-            <Label Grid.Row="7" Grid.Column="0" Content="Роспуск справа, мм." FontSize="16" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
-            <Label Grid.Row="8" Grid.Column="0" Content="Количество ребер, шт." FontSize="16" FontWeight="Bold" HorizontalContentAlignment="Left"  VerticalContentAlignment="Center"/>
-
-            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.Long, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
-                                     FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
-
-            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.Wight, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
-                                     FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
-
-            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DistanceToFirst, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
-                                     FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
-
-            <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Vertical">
-                <TextBox Name="textBoxDistanceBetween" Text="{Binding Path=DataContext.DetalObject.DistanceBetween, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
-                                     FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
-
-                <Popup PlacementTarget="{Binding ElementName=textBoxDistanceBetween}"
-                                       IsOpen="{Binding IsKeyboardFocused, ElementName=textBoxDistanceBetween, Mode=OneWay}"
-                                       AllowsTransparency="True" AllowDrop="True"
-                                       Placement="Right">
-
-                    <Border Background="#FF68DDFF" Height="35" Width="190" Padding="2" CornerRadius="3" Opacity="0.90">
-                        <TextBlock FontSize="14" FontStyle="Italic"
-                                                   Text="Одинаковое для всех рёбер" TextWrapping="Wrap"
-                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Border>
-                </Popup>
+            <StackPanel Grid.Row="1">
+                <Label Content="В разработке" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" FontSize="18"/>
             </StackPanel>
-
-            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DistanceToStart, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
-                                     FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
-
-            <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DistanceToEnd, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
-                                     FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
-
-            <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DissolutionStart, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
-                                     FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
-
-            <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DissolutionEnd, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=PropertyChanged}"
-                                     FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
-
-            <TextBox Grid.Row="8" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.SumReber, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, FallbackValue=4, UpdateSourceTrigger=PropertyChanged}" 
-                                 FontSize="16" Padding="5" Width="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}" Height="37"/>
         </Grid>
     </DataTemplate>
 </ResourceDictionary>  

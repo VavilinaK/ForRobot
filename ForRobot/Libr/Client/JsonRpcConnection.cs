@@ -582,6 +582,17 @@ namespace ForRobot.Libr.Client
         }
 
         /// <summary>
+        /// Список файлов по деректории
+        /// </summary>
+        /// <returns></returns>
+        public async Task<Dictionary<String, String>> File_NameList(string path)
+        {
+            object[] args = { path, 511, 127 };
+            Dictionary<String, String> result = await this.JsonRpc.InvokeAsync<Dictionary<String, String>>("File_NameList", args);
+            return result;
+        }
+
+        /// <summary>
         /// Название программы
         /// </summary>
         /// <returns></returns>

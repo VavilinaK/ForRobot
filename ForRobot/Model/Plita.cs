@@ -6,6 +6,7 @@ using System.Windows.Media.Imaging;
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Configuration;
 
 using ForRobot.Libr;
 
@@ -15,6 +16,11 @@ namespace ForRobot.Model
     {
         #region Private variables
 
+        private string _scoseType;
+
+        private decimal _bevelToStart = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).BevelToStart;
+        private decimal _bevelToEnd = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).BevelToEnd;
+        
         private BitmapImage _rebraImage;
         private BitmapImage _plitaImage;
 
@@ -28,27 +34,55 @@ namespace ForRobot.Model
 
         #region Public variables
 
+        /// <summary>
+        /// Json-строка для передачи
+        /// </summary>
         [JsonIgnore]
-        public sealed override string Json { get => JsonSerializer.Serialize<Plita>(this, options); }
+        public override string Json { get => JsonSerializer.Serialize<Plita>(this, options); }
+
+        /// <summary>
+        /// Json-строка для сохранения
+        /// </summary>
+        [JsonIgnore]
+        public override string JsonForSave { get => JsonSerializer.Serialize<Plita>(this.Save(), options).Replace(ScoseTypes.SlopeLeft, this.ScoseType); }
 
         [JsonIgnore]
         /// <summary>
         /// Тип детали
         /// </summary>
-        public DetalType DetalType { get => DetalType.Plita; }
+        public override DetalType DetalType { get => DetalType.Plita; }
+
+        [JsonPropertyName("d_type")]
+        /// <summary>
+        /// Тип скоса
+        /// </summary>
+        public string ScoseType
+        {
+            get => string.IsNullOrEmpty(this._scoseType) ? this._scoseType = ScoseTypes.Rect : this._scoseType;
+            set
+            {
+                Set(ref this._scoseType, value);
+                RaisePropertyChanged(nameof(this.Wight));
+                RaisePropertyChanged(nameof(this.BevelToStart));
+                RaisePropertyChanged(nameof(this.BevelToEnd));
+                RaisePropertyChanged(nameof(this.GenericImage));
+                RaisePropertyChanged(nameof(this.RebraImage));
+                this.Change?.Invoke(this, null);
+            }
+        }
 
         [JsonPropertyName("edge_count")]
         /// <summary>
         /// Количество ребер
         /// </summary>
-        public sealed override int SumReber
+        public override int SumReber
         {
             get => base.SumReber;
             set
             {
                 base.SumReber = value;
                 RebraImage = JoinRebra(GetStartRebraImage(), GetBodyRebraImage(), GetEndRebraImage());
-                GenericImage = JoinPlita(GetStartPlitaImage(), GetBodyPlitaImage(), GetEndPlitaImage());
+                GenericImage = this.GetGenericImage();
                 if (!Equals(this.Change, null))
                     this.Change.Invoke(this, null);
             }
@@ -58,57 +92,65 @@ namespace ForRobot.Model
         /// <summary>
         /// Длина настила
         /// </summary>
-        public sealed override decimal Long
+        public override decimal Long
         {
             get => Math.Round(base.Long, 2);
             set
             {
                 base.Long = value;
                 RebraImage = JoinRebra(GetStartRebraImage(), GetBodyRebraImage(), GetEndRebraImage());
-                GenericImage = JoinPlita(GetStartPlitaImage(), GetBodyPlitaImage(), GetEndPlitaImage());
+                GenericImage = this.GetGenericImage();
                 if (!Equals(this.Change, null))
                     this.Change.Invoke(this, null);
             }
         }
 
+        [JsonPropertyName("w")]
+        /// <summary>
+        /// Ширина настила
+        /// </summary>
+        public override decimal Wight
+        {
+            get
+            {
+                if (this.ScoseType == ScoseTypes.Rect)
+                    return 0;
+                else
+                    return Math.Round(base.Wight, 2);
+            }
+            set
+            {
+                base.Wight = value;
+                this.Change?.Invoke(this, null);
+            }
+        }
+        
         [JsonPropertyName("h")]
         /// <summary>
         /// Высота ребра
         /// </summary>
-        public sealed override decimal Hight
+        public override decimal Hight
         {
             get => Math.Round(base.Hight, 2);
             set
             {
                 base.Hight = value;
                 RebraImage = JoinRebra(GetStartRebraImage(), GetBodyRebraImage(), GetEndRebraImage());
-                if (!Equals(this.Change, null))
-                    this.Change.Invoke(this, null);
+                this.Change?.Invoke(this, null);
             }
         }
-
-        //public sealed override decimal Wight
-        //{
-        //    get => Math.Round(base.Wight, 2);
-        //    set
-        //    {
-        //        base.Wight = value;
-        //        RebraImage = JoinRebra(GetStartRebraImage(), GetBodyRebraImage(), GetEndRebraImage());
-        //        GenericImage = JoinPlita(GetStartPlitaImage(), GetBodyPlitaImage(), GetEndPlitaImage());
-        //        this.Change.Invoke(this, null);
-        //    }
-        //}
 
         [JsonPropertyName("d_w1")]
         /// <summary>
         /// Расстояние по ширине до осевой линии первого ребра
         /// </summary>
-        public sealed override decimal DistanceToFirst
+        public override decimal DistanceToFirst
         {
             get => Math.Round(base.DistanceToFirst, 2);
             set
             {
                 base.DistanceToFirst = value;
+                GenericImage = this.GetGenericImage();
                 if (!Equals(this.Change, null))
                     this.Change.Invoke(this, null);
             }
@@ -118,15 +160,15 @@ namespace ForRobot.Model
         /// <summary>
         /// Расстояние между осевыми линиями рёбер
         /// </summary>
-        public sealed override decimal DistanceBetween
+        public override decimal DistanceBetween
         {
             get => Math.Round(base.DistanceBetween, 2);
             set
             {
                 base.DistanceBetween = value;
                 RebraImage = JoinRebra(GetStartRebraImage(), GetBodyRebraImage(), GetEndRebraImage());
-                if (!Equals(this.Change, null))
-                    this.Change.Invoke(this, null);
+                GenericImage = this.GetGenericImage();
+                this.Change?.Invoke(this, null);
             }
         }
 
@@ -134,14 +176,14 @@ namespace ForRobot.Model
         /// <summary>
         /// Расстояние торца ребра в начале
         /// </summary>
-        public sealed override decimal DistanceToStart
+        public override decimal DistanceToStart
         {
             get => base.DistanceToStart;
             set
             {
                 base.DistanceToStart = value;
-                if (!Equals(this.Change, null))
-                    this.Change.Invoke(this, null);
+                this.GenericImage = GetGenericImage();
+                this.Change?.Invoke(this, null);
             }
         }
 
@@ -149,14 +191,14 @@ namespace ForRobot.Model
         /// <summary>
         /// Расстояние торца ребра в конце
         /// </summary>
-        public sealed override decimal DistanceToEnd
+        public override decimal DistanceToEnd
         {
             get => base.DistanceToEnd;
             set
             {
                 base.DistanceToEnd = value;
-                if (!Equals(this.Change, null))
-                    this.Change.Invoke(this, null);
+                this.GenericImage = GetGenericImage();
+                this.Change?.Invoke(this, null);
             }
         }
 
@@ -164,7 +206,7 @@ namespace ForRobot.Model
         /// <summary>
         /// Роспуск вначале
         /// </summary>
-        public sealed override decimal DissolutionStart
+        public override decimal DissolutionStart
         {
             get
             {
@@ -180,9 +222,8 @@ namespace ForRobot.Model
                 else
                     base.DissolutionEnd = value;
 
-                GenericImage = JoinPlita(GetStartPlitaImage(), GetBodyPlitaImage(), GetEndPlitaImage());
-                if (!Equals(this.Change, null))
-                    this.Change.Invoke(this, null);
+                GenericImage = this.GetGenericImage();
+                this.Change?.Invoke(this, null);
             }
         }
 
@@ -190,7 +231,7 @@ namespace ForRobot.Model
         /// <summary>
         /// Роспуск вконце
         /// </summary>
-        public sealed override decimal DissolutionEnd
+        public override decimal DissolutionEnd
         {
             get
             {
@@ -206,7 +247,7 @@ namespace ForRobot.Model
                 else
                     base.DissolutionStart = value;
 
-                GenericImage = JoinPlita(GetStartPlitaImage(), GetBodyPlitaImage(), GetEndPlitaImage());
+                GenericImage = this.GetGenericImage();
                 if (!Equals(this.Change, null))
                     this.Change.Invoke(this, null);
             }
@@ -217,7 +258,7 @@ namespace ForRobot.Model
         /// <summary>
         /// Толщина настила
         /// </summary>
-        public sealed override decimal ThicknessPlita
+        public override decimal ThicknessPlita
         {
             get => Math.Round(base.ThicknessPlita, 2);
             set
@@ -233,13 +274,13 @@ namespace ForRobot.Model
         /// <summary>
         /// Толщина ребра
         /// </summary>
-        public sealed override decimal ThicknessRebro
+        public override decimal ThicknessRebro
         {
             get => Math.Round(base.ThicknessRebro, 2);
             set
             {
                 base.ThicknessRebro = value;
-                GenericImage = JoinPlita(GetStartPlitaImage(), GetBodyPlitaImage(), GetEndPlitaImage());
+                GenericImage = this.GetGenericImage();
                 if (!Equals(this.Change, null))
                     this.Change.Invoke(this, null);
             }
@@ -249,7 +290,7 @@ namespace ForRobot.Model
         /// <summary>
         /// Отступ поиска в начале
         /// </summary>
-        public sealed override decimal SearchOffsetStart
+        public override decimal SearchOffsetStart
         {
             get => base.SearchOffsetStart;
             set
@@ -265,7 +306,7 @@ namespace ForRobot.Model
         /// <summary>
         /// Отступ поиска в конце
         /// </summary>
-        public sealed override decimal SearchOffsetEnd
+        public override decimal SearchOffsetEnd
         {
             get => base.SearchOffsetEnd;
             set
@@ -280,7 +321,7 @@ namespace ForRobot.Model
         /// <summary>
         /// Перекрытие швов
         /// </summary>
-        public sealed override decimal SeamsOverlap
+        public override decimal SeamsOverlap
         {
             get => base.SeamsOverlap;
             set
@@ -294,7 +335,7 @@ namespace ForRobot.Model
         /// <summary>
         /// Технологический отступ начала шва
         /// </summary>
-        public sealed override decimal TechOffsetSeamStart
+        public override decimal TechOffsetSeamStart
         {
             get => base.TechOffsetSeamStart;
             set
@@ -308,7 +349,7 @@ namespace ForRobot.Model
         /// <summary>
         /// Технологический отступ конца шва
         /// </summary>
-        public sealed override decimal TechOffsetSeamEnd
+        public override decimal TechOffsetSeamEnd
         {
             get => base.TechOffsetSeamEnd;
             set
@@ -318,11 +359,53 @@ namespace ForRobot.Model
             }
         }
 
+        [JsonPropertyName("d_b1")]
+        /// <summary>
+        /// Скос слева
+        /// </summary>
+        public decimal BevelToStart
+        {
+            get
+            {
+                if (Equals(this.ScoseType, ScoseTypes.Rect))
+                    return 0;
+                else
+                    return this._bevelToStart;
+            }
+            set
+            {
+                this._bevelToStart = value;
+                this.GenericImage = GetGenericImage();
+                this.Change?.Invoke(this, null);
+            }
+        }
+
+        [JsonPropertyName("d_b2")]
+        /// <summary>
+        /// Скос справа
+        /// </summary>
+        public decimal BevelToEnd
+        {
+            get
+            {
+                if (Equals(this.ScoseType, ScoseTypes.Rect))
+                    return 0;
+                else
+                    return this._bevelToEnd;
+            }
+            set
+            {
+                this._bevelToEnd = value;
+                this.GenericImage = GetGenericImage();
+                this.Change?.Invoke(this, null);
+            }
+        }
+
         [JsonPropertyName("velocity")]
         /// <summary>
         /// Скорость сварки
         /// </summary>
-        public sealed override int WildingSpead
+        public override int WildingSpead
         {
             get => base.WildingSpead;
             set
@@ -336,7 +419,7 @@ namespace ForRobot.Model
         /// <summary>
         /// Номер сварачной программы
         /// </summary>
-        public sealed override int ProgramNom
+        public override int ProgramNom
         {
             get => base.ProgramNom;
             set
@@ -365,7 +448,7 @@ namespace ForRobot.Model
             set
             {
                 base.TransversePrivyazka = value;
-                GenericImage = JoinPlita(GetStartPlitaImage(), GetBodyPlitaImage(), GetEndPlitaImage());
+                GenericImage = this.GetGenericImage();
             }
         }
 
@@ -375,7 +458,7 @@ namespace ForRobot.Model
         /// </summary>
         public override sealed BitmapImage RebraImage
         {
-            get => this._rebraImage ?? (this._rebraImage = JoinRebra(GetStartRebraImage(), GetBodyRebraImage(), GetEndRebraImage()));
+            get => Equals(this.ScoseType, "d_rect") ? (this._rebraImage = JoinRebra(GetStartRebraImage(), GetBodyRebraImage(), GetEndRebraImage())) : null;
             set => Set(ref this._rebraImage, value);
         }
 
@@ -383,11 +466,7 @@ namespace ForRobot.Model
         /// <summary>
         /// Общее изображение плиты
         /// </summary>
-        public override sealed BitmapImage GenericImage
-        {
-            get => _plitaImage ?? (_plitaImage = JoinPlita(GetStartPlitaImage(), GetBodyPlitaImage(), GetEndPlitaImage()));
-            set => Set(ref this._plitaImage, value);
-        }
+        public override sealed BitmapImage GenericImage { get => this.GetGenericImage(); set => Set(ref this._plitaImage, value); }
 
         #endregion
 
@@ -406,7 +485,10 @@ namespace ForRobot.Model
 
         public Plita() { }
 
-        public Plita(DetalType type) : base(type) { }
+        public Plita(DetalType type) : base(type)
+        {
+            this.Wight = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).Wight;
+        }
 
         #endregion
 
@@ -419,6 +501,36 @@ namespace ForRobot.Model
         #endregion
 
         #region Private functions
+
+        /// <summary>
+        /// Экземпляр для сохранения
+        /// </summary>
+        /// <returns></returns>
+        private Plita Save() => new Plita()
+        {
+            ScoseType = ScoseTypes.SlopeLeft,
+            SumReber = this.SumReber,
+            Long = this.Long,
+            Wight = base.Wight,
+            Hight = this.Hight,
+            DistanceToFirst = this.DistanceToFirst,
+            DistanceBetween = this.DistanceBetween,
+            DistanceToStart = this.DistanceToStart,
+            DistanceToEnd = this.DistanceToEnd,
+            DissolutionStart = this.DissolutionStart,
+            DissolutionEnd = this.DissolutionEnd,
+            ThicknessPlita = this.ThicknessPlita,
+            ThicknessRebro = this.ThicknessRebro,
+            SearchOffsetStart = this.SearchOffsetStart,
+            SearchOffsetEnd = this.SearchOffsetEnd,
+            SeamsOverlap = this.SeamsOverlap,
+            TechOffsetSeamStart = this.TechOffsetSeamStart,
+            TechOffsetSeamEnd = this.TechOffsetSeamEnd,
+            BevelToStart = this._bevelToStart,
+            BevelToEnd = this._bevelToEnd,
+            WildingSpead = this.WildingSpead,
+            ProgramNom = this.ProgramNom
+        };
 
         #region Рёбра
 
@@ -851,6 +963,34 @@ namespace ForRobot.Model
         #endregion
 
         #region Плита
+        
+        /// <summary>
+        /// Вывод изображения плиты исхотя из типа настила
+        /// </summary>
+        /// <returns></returns>
+        private BitmapImage GetGenericImage()
+        {
+            switch (this.ScoseType)
+            {
+                case "d_rect":
+                    return JoinPlita(GetStartPlitaImage(), GetBodyPlitaImage(), GetEndPlitaImage());
+
+                case "d_slope_left":
+                    return LibraryConvertClass.ImageConverter.BitmapToBitmapImage(GetTextSlopeLeft(new Bitmap(LibraryConvertClass.ImageConverter.BitmapImagetoBitmap((BitmapImage)Application.Current.TryFindResource("ImageSlopeLeft")), new System.Drawing.Size(1280, 720))));
+
+                case "d_slope_right":
+                    return LibraryConvertClass.ImageConverter.BitmapToBitmapImage(GetTextSlopeRight(new Bitmap(LibraryConvertClass.ImageConverter.BitmapImagetoBitmap((BitmapImage)Application.Current.TryFindResource("ImageSlopeRight")), new System.Drawing.Size(1280, 720))));
+
+                case "d_trapezoid_top":
+                    return LibraryConvertClass.ImageConverter.BitmapToBitmapImage(GetTextTrapezoidTop(new Bitmap(LibraryConvertClass.ImageConverter.BitmapImagetoBitmap((BitmapImage)Application.Current.TryFindResource("ImageTrapezoidTopParam")), new System.Drawing.Size(1280, 720))));
+
+                case "d_trapezoid_bottom":
+                    return LibraryConvertClass.ImageConverter.BitmapToBitmapImage(GetTextTrapezoidBottom(new Bitmap(LibraryConvertClass.ImageConverter.BitmapImagetoBitmap((BitmapImage)Application.Current.TryFindResource("ImageTrapezoidBottomParam")), new System.Drawing.Size(1280, 720))));
+
+                default:
+                    return this._plitaImage;
+            }
+        }
 
         /// <summary>
         /// Выгрузка изображения начала плиты из ресурсов
@@ -1003,7 +1143,7 @@ namespace ForRobot.Model
         }
 
         /// <summary>
-        /// Добавление текста на изображение плиты
+        /// Добавление текста на изображение плиты прямоугольной формы
         /// </summary>
         /// <param name="bitmap"></param>
         /// <returns></returns>
@@ -1061,6 +1201,338 @@ namespace ForRobot.Model
             return bitmap;
         }
 
+        /// <summary>
+        /// Добавление текста на изображение плиты со скосом влево
+        /// </summary>
+        /// <param name="bitmap"></param>
+        /// <returns></returns>
+        private Bitmap GetTextSlopeLeft(Bitmap bitmap)
+        {
+            using (Graphics graphics = Graphics.FromImage(bitmap))
+            {
+                StringFormat stringFormatHorizont = new StringFormat
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                };
+
+                StringFormat stringFormatVertical = new StringFormat(StringFormatFlags.DirectionVertical)
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                };
+
+                using (Font font = new Font("Lucida Console", 18, System.Drawing.FontStyle.Regular))
+                {
+                    graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+
+                    graphics.DrawString(Long.ToString(),
+                        FontLibr.FindFont(graphics, Long.ToString(), new System.Drawing.Size(250, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(550, 70),
+                        stringFormatHorizont);
+
+                    graphics.DrawString(DistanceToFirst.ToString(),
+                        FontLibr.FindFont(graphics, DistanceToFirst.ToString(), new System.Drawing.Size(125, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(1220, 240),
+                        stringFormatVertical);
+
+                    graphics.DrawString(DistanceBetween.ToString(),
+                        FontLibr.FindFont(graphics, DistanceBetween.ToString(), new System.Drawing.Size(100, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(1220, 365),
+                        stringFormatVertical);
+
+                    graphics.DrawString(BevelToStart.ToString(),
+                        FontLibr.FindFont(graphics, BevelToStart.ToString(), new System.Drawing.Size(100, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(105, 680),
+                        stringFormatHorizont);
+
+                    graphics.DrawString(BevelToEnd.ToString(),
+                        FontLibr.FindFont(graphics, BevelToEnd.ToString(), new System.Drawing.Size(80, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(1125, 150),
+                        stringFormatHorizont);
+
+                    graphics.DrawString(DistanceToStart.ToString(),
+                        FontLibr.FindFont(graphics, DistanceToStart.ToString(), new System.Drawing.Size(110, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(215, 600),
+                        stringFormatHorizont);
+
+                    graphics.DrawString(DistanceToEnd.ToString(),
+                        FontLibr.FindFont(graphics, DistanceToEnd.ToString(), new System.Drawing.Size(110, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(1080, 600),
+                        stringFormatHorizont);
+
+                    graphics.DrawString(DissolutionStart.ToString(),
+                        FontLibr.FindFont(graphics, DissolutionStart.ToString(), new System.Drawing.Size(80, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(320, 600),
+                        stringFormatHorizont);
+
+                    graphics.DrawString(DissolutionEnd.ToString(),
+                        FontLibr.FindFont(graphics, DissolutionEnd.ToString(), new System.Drawing.Size(50, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(995, 600),
+                        stringFormatHorizont);
+                }
+            }
+            return bitmap;
+        }
+
+        /// <summary>
+        /// Добавление текста на изображение плиты со скосом вправо
+        /// </summary>
+        /// <param name="bitmap"></param>
+        /// <returns></returns>
+        private Bitmap GetTextSlopeRight(Bitmap bitmap)
+        {
+            using (Graphics graphics = Graphics.FromImage(bitmap))
+            {
+                StringFormat stringFormatHorizont = new StringFormat
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                };
+
+                StringFormat stringFormatVertical = new StringFormat(StringFormatFlags.DirectionVertical)
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                };
+
+                using (Font font = new Font("Lucida Console", 18, System.Drawing.FontStyle.Regular))
+                {
+                    graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+
+                    graphics.DrawString(Long.ToString(),
+                        FontLibr.FindFont(graphics, Long.ToString(), new System.Drawing.Size(250, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(700, 60),
+                        stringFormatHorizont);
+
+                    graphics.DrawString(DistanceToFirst.ToString(),
+                        FontLibr.FindFont(graphics, DistanceToFirst.ToString(), new System.Drawing.Size(125, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(80, 220),
+                        stringFormatVertical);
+
+                    graphics.DrawString(DistanceBetween.ToString(),
+                        FontLibr.FindFont(graphics, DistanceBetween.ToString(), new System.Drawing.Size(100, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(80, 340),
+                        stringFormatVertical);
+
+                    graphics.DrawString(BevelToStart.ToString(),
+                        FontLibr.FindFont(graphics, BevelToStart.ToString(), new System.Drawing.Size(70, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(190, 130),
+                        stringFormatHorizont);
+
+                    graphics.DrawString(BevelToEnd.ToString(),
+                        FontLibr.FindFont(graphics, BevelToEnd.ToString(), new System.Drawing.Size(100, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(1220, 680),
+                        stringFormatHorizont);
+
+                    graphics.DrawString(DistanceToStart.ToString(),
+                        FontLibr.FindFont(graphics, DistanceToStart.ToString(), new System.Drawing.Size(110, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(240, 600),
+                        stringFormatHorizont);
+
+                    graphics.DrawString(DistanceToEnd.ToString(),
+                        FontLibr.FindFont(graphics, DistanceToEnd.ToString(), new System.Drawing.Size(110, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(1105, 600),
+                        stringFormatHorizont);
+
+                    graphics.DrawString(DissolutionStart.ToString(),
+                        FontLibr.FindFont(graphics, DissolutionStart.ToString(), new System.Drawing.Size(43, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(322, 600),
+                        stringFormatHorizont);
+
+                    graphics.DrawString(DissolutionEnd.ToString(),
+                        FontLibr.FindFont(graphics, DissolutionEnd.ToString(), new System.Drawing.Size(140, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(965, 600),
+                        stringFormatHorizont);
+                }
+            }
+            return bitmap;
+        }
+
+        /// <summary>
+        /// Добавление текста на изображение плиты трапецией
+        /// </summary>
+        /// <param name="bitmap"></param>
+        /// <returns></returns>
+        private Bitmap GetTextTrapezoidTop(Bitmap bitmap)
+        {
+            using (Graphics graphics = Graphics.FromImage(bitmap))
+            {
+                StringFormat stringFormatHorizont = new StringFormat
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                };
+
+                StringFormat stringFormatVertical = new StringFormat(StringFormatFlags.DirectionVertical)
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                };
+
+                using (Font font = new Font("Lucida Console", 18, System.Drawing.FontStyle.Regular))
+                {
+                    graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+
+                    graphics.DrawString(Long.ToString(),
+                        FontLibr.FindFont(graphics, Long.ToString(), new System.Drawing.Size(250, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(600, 60),
+                        stringFormatHorizont);
+
+                    graphics.DrawString(DistanceToFirst.ToString(),
+                        FontLibr.FindFont(graphics, DistanceToFirst.ToString(), new System.Drawing.Size(150, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(60, 300),
+                        stringFormatVertical);
+
+                    graphics.DrawString(DistanceBetween.ToString(),
+                        FontLibr.FindFont(graphics, DistanceBetween.ToString(), new System.Drawing.Size(140, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(60, 465),
+                        stringFormatVertical);
+
+                    graphics.DrawString(BevelToStart.ToString(),
+                        FontLibr.FindFont(graphics, BevelToStart.ToString(), new System.Drawing.Size(80, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(150, 190),
+                        stringFormatHorizont);
+
+                    graphics.DrawString(BevelToEnd.ToString(),
+                        FontLibr.FindFont(graphics, BevelToEnd.ToString(), new System.Drawing.Size(100, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(1120, 140),
+                        stringFormatHorizont);
+
+                    graphics.DrawString(DistanceToStart.ToString(),
+                        FontLibr.FindFont(graphics, DistanceToStart.ToString(), new System.Drawing.Size(125, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(200, 620),
+                        stringFormatHorizont);
+
+                    graphics.DrawString(DistanceToEnd.ToString(),
+                        FontLibr.FindFont(graphics, DistanceToEnd.ToString(), new System.Drawing.Size(130, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(1060, 620),
+                        stringFormatHorizont);
+
+                    graphics.DrawString(DissolutionStart.ToString(),
+                        FontLibr.FindFont(graphics, DissolutionStart.ToString(), new System.Drawing.Size(50, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(295, 620),
+                        stringFormatHorizont);
+
+                    graphics.DrawString(DissolutionEnd.ToString(),
+                        FontLibr.FindFont(graphics, DissolutionEnd.ToString(), new System.Drawing.Size(80, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(940, 620),
+                        stringFormatHorizont);
+                }
+            }
+            return bitmap;
+        }
+
+        /// <summary>
+        /// Добавление текста на изображение плиты перевернутой трапецией
+        /// </summary>
+        /// <param name="bitmap"></param>
+        /// <returns></returns>
+        private Bitmap GetTextTrapezoidBottom(Bitmap bitmap)
+        {
+            using (Graphics graphics = Graphics.FromImage(bitmap))
+            {
+                StringFormat stringFormatHorizont = new StringFormat
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                };
+
+                StringFormat stringFormatVertical = new StringFormat(StringFormatFlags.DirectionVertical)
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                };
+
+                using (Font font = new Font("Lucida Console", 18, System.Drawing.FontStyle.Regular))
+                {
+                    graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+
+                    graphics.DrawString(Long.ToString(),
+                        FontLibr.FindFont(graphics, Long.ToString(), new System.Drawing.Size(250, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(600, 60),
+                        stringFormatHorizont);
+
+                    graphics.DrawString(DistanceToFirst.ToString(),
+                        FontLibr.FindFont(graphics, DistanceToFirst.ToString(), new System.Drawing.Size(130, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(100, 260),
+                        stringFormatVertical);
+
+                    graphics.DrawString(DistanceBetween.ToString(),
+                        FontLibr.FindFont(graphics, DistanceBetween.ToString(), new System.Drawing.Size(110, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(100, 390),
+                        stringFormatVertical);
+
+                    graphics.DrawString(BevelToStart.ToString(),
+                        FontLibr.FindFont(graphics, BevelToStart.ToString(), new System.Drawing.Size(110, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(185, 150),
+                        stringFormatHorizont);
+
+                    graphics.DrawString(BevelToEnd.ToString(),
+                        FontLibr.FindFont(graphics, BevelToEnd.ToString(), new System.Drawing.Size(100, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(1130, 150),
+                        stringFormatHorizont);
+
+                    graphics.DrawString(DistanceToStart.ToString(),
+                        FontLibr.FindFont(graphics, DistanceToStart.ToString(), new System.Drawing.Size(110, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(260, 640),
+                        stringFormatHorizont);
+
+                    graphics.DrawString(DistanceToEnd.ToString(),
+                        FontLibr.FindFont(graphics, DistanceToEnd.ToString(), new System.Drawing.Size(110, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(1055, 640),
+                        stringFormatHorizont);
+
+                    graphics.DrawString(DissolutionStart.ToString(),
+                        FontLibr.FindFont(graphics, DissolutionStart.ToString(), new System.Drawing.Size(45, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(343, 640),
+                        stringFormatHorizont);
+
+                    graphics.DrawString(DissolutionEnd.ToString(),
+                        FontLibr.FindFont(graphics, DissolutionEnd.ToString(), new System.Drawing.Size(80, 30), font),
+                        new SolidBrush(Color.Black),
+                        new PointF(955, 640),
+                        stringFormatHorizont);
+                }
+            }
+            return bitmap;
+        }
+        
         private Bitmap GetArrows(Bitmap bitmap)
         {
             using (Graphics g = Graphics.FromImage(bitmap))

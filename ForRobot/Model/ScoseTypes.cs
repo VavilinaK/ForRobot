@@ -15,7 +15,7 @@ namespace ForRobot.Model
         /// <summary>
         /// Наклон влево
         /// </summary>
-        public static readonly string SlopeLeft = "d_slope_leftt";
+        public static readonly string SlopeLeft = "d_slope_left";
 
         /// <summary>
         /// Наклон вправо
