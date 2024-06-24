@@ -16,6 +16,7 @@ using Python.Runtime;
 using Python.Runtime.Native;
 
 using ForRobot.Model;
+using ForRobot.Model.Detals;
 
 namespace ForRobot.Libr
 {
@@ -229,7 +230,7 @@ namespace ForRobot.Libr
                     return;
                 }
 
-                string[] args = { $"-p {new FileInfo(this.PathGenerator).DirectoryName}\\{this.FileName}.json" , $"-o \"{Directory.GetParent(this.PathProgramm).ToString()}\"" , $"-n \"{this.FileName}.src\"" };
+                string[] args = { $"-p {new FileInfo(this.PathGenerator).DirectoryName}\\{this.FileName}.json" , $"-o \"{this.PathProgramm}\"" , $"-n \"{this.FileName}.src\"" };
 
                 //string arv = "";
                 //for(int i=0; i < args.GetLength(0); i++)

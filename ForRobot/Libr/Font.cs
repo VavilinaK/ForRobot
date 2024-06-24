@@ -6,7 +6,7 @@ namespace ForRobot.Libr
     public static class FontLibr
     {
         /// <summary>
-        /// 
+        /// Вычисление размера шрифта
         /// </summary>
         /// <param name="g"></param>
         /// <param name="longString"></param>

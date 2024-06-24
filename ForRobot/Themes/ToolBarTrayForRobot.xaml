@@ -158,15 +158,10 @@
                                             <TextBlock Text="{Binding Path=Robot.ProcessState, UpdateSourceTrigger=PropertyChanged}"
                                                        Foreground="{Binding Path=Text, RelativeSource={RelativeSource Self}, Converter={StaticResource StatusColorConvert}}"/>
                                         </Label>
+                                        <Button Style="{StaticResource buttonConnectionUpDateStyle}" Command="{Binding UpDateConnectionCommand}"/>
                                     </StackPanel>
 
-                                    <ToggleButton Grid.Column="2" Name="toggleButtonConnection" Width="40" Margin="3,0" Style="{StaticResource toggleButtonConnectionStyle}">
-                                        <!--<i:Interaction.Triggers>
-                                            <i:EventTrigger EventName="Unchecked">
-                                                <i:InvokeCommandAction Command="{Binding Path=OpenConnectionCommand}"/>
-                                            </i:EventTrigger>
-                                        </i:Interaction.Triggers>-->
-                                    </ToggleButton>
+                                    <ToggleButton Grid.Column="2" Name="toggleButtonConnection" Width="40" Margin="3,0" Style="{StaticResource toggleButtonConnectionStyle}"/>
 
                                     <Button Grid.Column="3" Width="40" Margin="5, 0" Style="{StaticResource buttonTransferCustStyle}"
                                             Command="{Binding Path=SendCommand}"/>
@@ -209,29 +204,33 @@
                                                             <DataTrigger Binding="{Binding Path=Robot.Pro_State}" Value="#P_STOP">
                                                                 <Setter Property="ToolTip" Value="Продолжить программу"/>
                                                             </DataTrigger>
+
+                                                            <DataTrigger Binding="{Binding Path=Robot.Pro_State}" Value="#P_END">
+                                                                <Setter Property="Background" Value="{StaticResource ImageRepeat}"/>
+                                                                <Setter Property="ToolTip" Value="Перезапустить программу"/>
+                                                            </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
                                                 </Button.Style>
                                             </Button>
 
-                                            <Button Width="50" Margin="3, 0">
+                                            <Button Width="50" Margin="3, 0" ToolTip="Аннулировать программу"
+                                                    Command="{Binding Path=StopRobotCommand}">
                                                 <Button.Style>
                                                     <Style TargetType="Button">
                                                         <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
                                                         <Setter Property="Background" Value="{StaticResource ImageStop}"/>
-                                                        <Setter Property="ToolTip" Value="Сброс программы"/>
-                                                        <Setter Property="Command" Value="{Binding Path=StopRobotCommand}"/>
                                                     </Style>
                                                 </Button.Style>
                                             </Button>
 
-                                            <Button Width="50" Margin="3, 0, 0, 0">
+                                            <Button Width="50" Margin="3, 0, 0, 0" ToolTip="Выбор сгенерированной программы"
+                                                    Command="{Binding Path=SelectRobotCommand}">
+                                                
                                                 <Button.Style>
                                                     <Style TargetType="Button">
                                                         <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
                                                         <Setter Property="Background" Value="{StaticResource ImageSelectProgramm}"/>
-                                                        <Setter Property="ToolTip" Value="Выбор сгенерированной программы"/>
-                                                        <Setter Property="Command" Value="{Binding Path=SelectRobotCommand}"/>
                                                     </Style>
                                                 </Button.Style>
                                             </Button>

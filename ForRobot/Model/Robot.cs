@@ -3,10 +3,9 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Threading;
+using System.Configuration;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-
-//using System.Text;
 
 using System.Text;
 using System.Text.Json;
@@ -22,19 +21,15 @@ namespace ForRobot.Model
         #region Private variables
 
         private volatile bool _disposed = false;
-        //private bool Disposed => _disposed != 0;
-
         private JsonRpcConnection _connection;
 
         private string _json;
         private string _pathProgram;
-        private string _pathControllerFolder = "KRC:\\R1\\Program\\";
-        private string _host;
-        private string _pro_state;
-        private string _processState = "Нет соединения";
-        
+        private string _pathControllerFolder;
+        private string _host;   
         private int _port;
         private int _timeout_milliseconds;
+        private string _pro_state;
 
         private decimal _voltage;
         private decimal _current;
@@ -42,8 +37,10 @@ namespace ForRobot.Model
         private decimal _m1;
         private decimal _tracking;
 
-        private CancellationTokenSource _cancelTokenSource { get; set; } = new CancellationTokenSource();
+        private CancellationTokenSource _cancelTokenSource { get; set; }
 
+        private RobotConfigurationSection Config { get; set; } = ConfigurationManager.GetSection("robot") as RobotConfigurationSection;
+        
         #region Readonly
 
         private readonly JsonSerializerOptions options = new JsonSerializerOptions
@@ -76,11 +73,7 @@ namespace ForRobot.Model
         #region Public variables
 
         [JsonIgnore]
-        public string Json
-        {
-            get => string.IsNullOrWhiteSpace(_json) == true ? _json = JsonSerializer.Serialize<Robot>(this, options) : _json;
-            set => _json = value;
-        }
+        public string Json { get => JsonSerializer.Serialize<Robot>(this, options); }
 
         [JsonPropertyName("pathProgram")]
         /// <summary>
@@ -92,9 +85,7 @@ namespace ForRobot.Model
             set
             {
                 Set(ref this._pathProgram, value);
-                Json = JsonSerializer.Serialize<Robot>(this, options);
-                if (!string.IsNullOrWhiteSpace(this._pathProgram))
-                    this.ChangeRobot?.Invoke(this, null);
+                this.ChangeRobot?.Invoke(this, null);
             }
         }
 
@@ -104,13 +95,11 @@ namespace ForRobot.Model
         /// </summary>
         public string PathControllerFolder
         {
-            get => this._pathControllerFolder;
+            get => this._pathControllerFolder ?? (this._pathControllerFolder = this.Config.PathControllerFolder);
             set
             {
                 Set(ref this._pathControllerFolder, value);
-                Json = JsonSerializer.Serialize<Robot>(this, options);
-                if (!string.IsNullOrWhiteSpace(this._pathControllerFolder))
-                    this.ChangeRobot?.Invoke(this, null);
+                this.ChangeRobot?.Invoke(this, null);
             }
         }
 
@@ -127,11 +116,11 @@ namespace ForRobot.Model
             set
             {
                 this._host = value;
-                Json = JsonSerializer.Serialize<Robot>(this, options);
                 if (!int.Equals(this._timeout_milliseconds, 0) && !int.Equals(this.Port, 0) && (!string.IsNullOrWhiteSpace(this._host) || !Equals(this._host, "0.0.0.0")))
                 {
-                    this.ChangeRobot?.Invoke(this, null);
                     this.OpenConnection(this._timeout_milliseconds);
+                    if(this.IsConnection)
+                        this.ChangeRobot?.Invoke(this, null);
                 }
             }
         }
@@ -143,11 +132,11 @@ namespace ForRobot.Model
             set
             {
                 this._port = value;
-                Json = JsonSerializer.Serialize<Robot>(this, options);
                 if (!int.Equals(this._timeout_milliseconds, 0) && !int.Equals(this._port, 0) && (!string.IsNullOrWhiteSpace(this.Host) || !Equals(this.Host, "0.0.0.0")))
                 {
-                    this.ChangeRobot?.Invoke(this, null);
                     this.OpenConnection(this._timeout_milliseconds);
+                    if (this.IsConnection)
+                        this.ChangeRobot?.Invoke(this, null);
                 }
             }
         }
@@ -165,11 +154,11 @@ namespace ForRobot.Model
 
                 return this._connection;
             }
-            set => this._connection = value;
+            set => Set(ref this._connection, value);
         }
 
         [JsonIgnore]
-        public bool IsConnection { get => Equals(this.Connection, null) ? false : this.Connection.IsConnected; }
+        public bool IsConnection { get => (this.Connection is null) || (this.Connection.Client is null) ? false : this.Connection.Client.Connected; }
 
         [JsonIgnore]
         /// <summary>
@@ -189,20 +178,61 @@ namespace ForRobot.Model
         /// </summary>
         public decimal Z { get; set; } = decimal.Zero;
 
+        /// <summary>
+        /// Статус программы на роботе
+        /// </summary>
         [JsonIgnore]
-        public string Pro_State { get => this._pro_state; set => Set(ref this._pro_state, value); }
+        public string Pro_State
+        {
+            get => this._pro_state;
+            set
+            {
+                Set(ref this._pro_state, value);
+                RaisePropertyChanged(nameof(this.ProcessState));
+            }
+        }
 
         [JsonIgnore]
         /// <summary>
         /// Статус процесса
         /// </summary>
-        public string ProcessState { get => this._processState; set => Set(ref this._processState, value); }
+        public string ProcessState
+        {
+            get
+            {
+                if (this.IsConnection)
+                {
+                    switch (this.Pro_State)
+                    {
+                        case "#P_FREE":
+                            return "Программа не выбрана";
+
+                        case "#P_RESET":
+                            return $"Выбрана программа {this.RobotProgramName}";
+
+                        case "#P_ACTIVE":
+                            return $"Запущена программа {this.RobotProgramName}";
+
+                        case "#P_STOP":
+                            return $"Программа {this.RobotProgramName} остановлена";
+
+                        case "#P_END":
+                            return $"Программа {this.RobotProgramName} завершена";
+
+                        default:
+                            return "Нет соединения";
+                    }
+                }
+                else
+                    return "Нет соединения";
+            }
+        }
 
         [JsonIgnore]
         /// <summary>
-        /// Имя процесса
+        /// Название программы, выбранной на роботе
         /// </summary>
-        public string ProcessName { get => this.Connection.Pro_Name(); }
+        public string RobotProgramName { get => Task.Run(async () => await this.Connection.Pro_Name()).Result.Replace("\"", ""); }
 
         [JsonIgnore]
         public decimal Voltage
@@ -273,8 +303,6 @@ namespace ForRobot.Model
 
         public Robot(string hostname, int port)
         {
-            this.Host = hostname;
-            this.Port = port;
             //if (string.IsNullOrWhiteSpace(hostname))
             //{
             //    throw new ArgumentNullException("hostname");
@@ -284,6 +312,9 @@ namespace ForRobot.Model
             //{
             //    throw new ArgumentNullException("port");
             //}
+
+            this.Host = hostname;
+            this.Port = port;
         }
 
         #endregion
@@ -318,54 +349,35 @@ namespace ForRobot.Model
 
         private async Task ProStateTimeChack(CancellationToken token)
         {
-            while (!token.IsCancellationRequested)
+            try
             {
-                var delay = Task.Delay(1000);
-                var state = this.Connection.Process_State();
-                //var @in = this.Connection.In();
-
-                await Task.WhenAll(new Task[] { delay, state });
-                this.Pro_State = state.Result;
-                switch (this.Pro_State)
+                while (this.IsConnection)
                 {
-                    case "#P_FREE":
-                        //LogMessage($"{this.Connection.Host}:{this.Connection.Port} не выбрана программа");
-                        ProcessState = "Программа не выбрана";
-                        break;
-
-                    case "#P_RESET":
-                        //LogMessage($"{this.Connection.Host}:{this.Connection.Port} программа выбрана, но не запущена/сброшена");
-                        ProcessState = $"Выбрана программа {this.Connection.Pro_Name()}";
-                        break;
-
-                    case "#P_ACTIVE":
-                        //LogMessage($"{this.Connection.Host}:{this.Connection.Port} программа запущена");
-                        ProcessState = $"Запущена программа {this.Connection.Pro_Name()}";
-                        break;
-
-                    case "#P_STOP":
-                        ProcessState = $"Программа {this.Connection.Pro_Name()} остановлена";
-                        //this.LogMessage($"Программа {ProcessName} остановлена");
-                        break;
-
-                    case "#P_END":
-                        ProcessState = $"Программа {this.Connection.Pro_Name()} завершена";
-                        //this.LogMessage($"Программа {ProcessName} завершена");
-                        break;
+                    var task = this.Connection.Process_State();
+                    await Task.WhenAll(new Task[] { Task.Delay(1000, token), task });
+                    this.Pro_State = task.Result;
                 }
-
-                //this.ConvertToTelegraf(@in.Result.ToArray());
+            }
+            catch (Exception ex)
+            {
+                this.LogErrorMessage(ex.Message, ex);
             }
         }
 
         private async Task WeldTimeChack(CancellationToken token)
         {
-            while (!token.IsCancellationRequested)
+            try
             {
-                var delay = Task.Delay(2000);
-                var @in = this.Connection.In();
-                await Task.WhenAll(new Task[] { delay, @in });
-                this.ConvertToTelegraf(@in.Result.ToArray());
+                while (this.IsConnection)
+                {
+                    var task = this.Connection.In();
+                    await Task.WhenAll(new Task[] { Task.Delay(3000, token), task });
+                    this.ConvertToTelegraf(task.Result.ToArray());
+                }
+            }
+            catch (Exception ex)
+            {
+                this.LogErrorMessage(ex.Message, ex);
             }
         }
 
@@ -385,37 +397,44 @@ namespace ForRobot.Model
         public void OpenConnection(int timeout_milliseconds)
         {
             this._timeout_milliseconds = timeout_milliseconds;
+
+            if (!int.Equals(this._timeout_milliseconds, 0) && !int.Equals(this._port, 0) && (!string.IsNullOrWhiteSpace(this.Host) || !Equals(this.Host, "0.0.0.0")))
+            {
+                Thread thread = new Thread(new ThreadStart(BeginConnect))
+                {
+                    IsBackground = true
+                };
+                thread.Start();
+                thread.Join(this._timeout_milliseconds);  // Закроется даже при неудачном подключении.
+            }
+        }
+
+        private void OpenConnection()
+        {
             try
             {
-                if (!int.Equals(this.Port, 0) && (!string.IsNullOrWhiteSpace(this.Host) || !Equals(this.Host, "0.0.0.0")))
+                this.Connection = new JsonRpcConnection(this.Host, this.Port);
+                this.Connection.Log += this.Log;
+                this.Connection.LogError += this.LogError;
+                this.Connection.Connected += (sender, e) => RaisePropertyChanged(nameof(this.IsConnection));
+                this.Connection.Aborted += (sender, e) => RaisePropertyChanged(nameof(this.IsConnection));
+                this.Connection.Disconnected += (sender, e) => RaisePropertyChanged(nameof(this.IsConnection));
+                
+                this.Connection.Open();
+                if (this.IsConnection)
                 {
-                    this.Connection = new JsonRpcConnection(this.Host, this.Port);
-                    this.Connection.Log += this.Log;
-                    this.Connection.LogError += this.LogError;
-
-                    Thread thread = new Thread(new ThreadStart(BeginConnect))
-                    {
-                        IsBackground = true // Закроется даже при неудачном подключении.
-                    };
-                    thread.Start();
-                    thread.Join(this._timeout_milliseconds);
-
-                    if (this.Connection.IsConnected)
-                    {
-                        Task.Run(async () => await this.ProStateTimeChack(_cancelTokenSource.Token));
-                        Task.Run(async () => await this.WeldTimeChack(_cancelTokenSource.Token));
-                    }
-                    else
-                        throw new TimeoutException("TcpClient соединение прервано");
+                    this._cancelTokenSource = new CancellationTokenSource();
+                    Task.Run(async () => await this.ProStateTimeChack(this._cancelTokenSource.Token));
+                    Task.Run(async () => await this.WeldTimeChack(this._cancelTokenSource.Token));
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 this.LogErrorMessage(ex.Message, ex);
             }
         }
 
-        protected void BeginConnect() => this.Connection.Open();
+        protected void BeginConnect() => this.OpenConnection();
 
         /// <summary>
         /// Запуск программы
@@ -425,34 +444,43 @@ namespace ForRobot.Model
         {
             try
             {
-                //this._cancelTokenSource.Cancel();
-                if ((this.Pro_State == "#P_RESET" && MessageBox.Show($"Запустить программу {ProcessName}?", $"Запуск программы", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK) 
+                if ((this.Pro_State == "#P_RESET" && MessageBox.Show($"Запустить программу {this.RobotProgramName}?", $"Запуск программы", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK) 
                     || this.Pro_State == "#P_STOP")
-                    //|| this.Pro_State == "#P_END" && MessageBox.Show($"Перезапустить программу {ProcessName}?", $"Перезапуск программы", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK)
                 {
-                    if (!Task.Run<bool>(async () => await this.Connection.Run()).Result)
-                        new Exception($"Ошибка запуска программы {ProcessName}");
+                    if (!Task.Run<bool>(async () => await this.Connection.Start()).Result)
+                        new Exception($"Ошибка запуска программы {RobotProgramName}");
                     else
-                        this.LogMessage($"Программа {ProcessName} запущена");
+                        this.LogMessage($"Программа {this.RobotProgramName} запущена");
 
-                    this._cancelTokenSource = new CancellationTokenSource();
-                    Task.Run(async () => await this.ProStateTimeChack(this._cancelTokenSource.Token));
-                    Task.Run(async () => await this.WeldTimeChack(this._cancelTokenSource.Token));
-
-                    while (!string.Equals(this.Pro_State, "#P_END"))
+                    do
                     {
-                        System.Threading.Thread.Sleep(1500);
-                        if (string.Equals(this.Pro_State, "#P_STOP"))
+                        if (string.Equals(this.Pro_State, "#P_STOP") || string.Equals(this.Pro_State, "#P_END"))
                         {
-                            this.LogMessage($"Программа {ProcessName} остановлена");
+                            this.LogMessage($"Программа {this.RobotProgramName} остановлена/завершена");
                             return;
                         }
                     }
+                    while (!string.Equals(this.Pro_State, "#P_END"));
+                }
 
-                    if (string.Equals(this.Pro_State, "#P_END"))
+                if(this.Pro_State == "#P_END" && MessageBox.Show($"Перезапустить программу {this.RobotProgramName}?", $"Перезапуск программы", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK)
+                {
+                    this.SelectProgramm(this.RobotProgramName + ".src");
+
+                    if (!Task.Run<bool>(async () => await this.Connection.Start()).Result)
+                        new Exception($"Ошибка перезапуска программы {RobotProgramName}");
+                    else
+                        this.LogMessage($"Программа {this.RobotProgramName} перезапущена");
+
+                    do
                     {
-                        this.LogMessage($"Программа {ProcessName} завершена");
+                        if (string.Equals(this.Pro_State, "#P_STOP") || string.Equals(this.Pro_State, "#P_END"))
+                        {
+                            this.LogMessage($"Программа {this.RobotProgramName} остановлена/завершена");
+                            return;
+                        }
                     }
+                    while (!string.Equals(this.Pro_State, "#P_END"));
                 }
             }
             catch (Exception ex)
@@ -472,9 +500,9 @@ namespace ForRobot.Model
                 if (string.Equals(this.Pro_State, "#P_ACTIVE"))
                 {
                     if (!Task.Run<bool>(async () => await this.Connection.Pause()).Result)
-                        new Exception($"Ошибка остановки программы {ProcessName}");
+                        new Exception($"Ошибка остановки программы {RobotProgramName}");
                     else
-                        this.LogMessage($"Программа {ProcessName} остановлена");
+                        this.LogMessage($"Программа {RobotProgramName} остановлена");
                 }
             }
             catch (Exception ex)
@@ -524,14 +552,15 @@ namespace ForRobot.Model
                 if (string.IsNullOrWhiteSpace(this.PathControllerFolder))
                 {
                     this.LogErrorMessage("Нет пути на коталог на контроллере");
-                    MessageBox.Show("Укажите путь к каталогу на контроллере", "Остановка", MessageBoxButton.OK, MessageBoxImage.Stop);
+                    MessageBox.Show("Укажите путь к каталогу на контроллере", "Остановка", MessageBoxButton.OK, MessageBoxImage.Stop, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
                     return false;
                 }
 
                 switch (this.Pro_State)
                 {
                     case "#P_FREE":
-                        if (!Equals(MessageBox.Show($"Копировать файлы программы в {this.PathControllerFolder}?", "Копирование файлов", MessageBoxButton.YesNo, MessageBoxImage.Question), MessageBoxResult.Yes))
+                        if (!Equals(MessageBox.Show($"{this.Host}:{this.Port} Копировать файлы программы в {this.PathControllerFolder}?","Копирование файлов", 
+                                                    MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes, MessageBoxOptions.DefaultDesktopOnly), MessageBoxResult.Yes))
                             return false;
 
                         var fileCollection1 = Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameList(this.PathProgramm)).Result;
@@ -572,7 +601,7 @@ namespace ForRobot.Model
 
                         System.Threading.Thread.Sleep(1000); // Костыль).
 
-                        if (!Equals(MessageBox.Show($"Копировать файлы программы в {this.PathControllerFolder}?", "Копирование файлов", MessageBoxButton.YesNo, MessageBoxImage.Question), MessageBoxResult.Yes))
+                        if (!Equals(MessageBox.Show($"Копировать файлы программы в {this.PathControllerFolder}?", "Копирование файлов", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes, MessageBoxOptions.DefaultDesktopOnly), MessageBoxResult.Yes))
                             return false;
 
                         var fileCollection2 = Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameList(this.PathProgramm)).Result;
@@ -610,10 +639,15 @@ namespace ForRobot.Model
             catch (Exception ex)
             {
                 this.LogErrorMessage(ex.Message, ex);
+                return false;
             }
             return true;
         }
 
+        /// <summary>
+        /// Копирование на компьютер
+        /// </summary>
+        /// <param name="programName"></param>
         public void CopyToPC(string programName)
         {
             try
@@ -685,16 +719,8 @@ namespace ForRobot.Model
         {
             try
             {
-                string filePath = Path.Combine(this.PathControllerFolder, nameProgram);
                 switch (this.Pro_State)
                 {
-                    case "#P_FREE":
-                        if (!Task.Run<bool>(async () => await this.Connection.Select(filePath)).Result)
-                            new Exception("Ошибка выбора файла " + filePath);
-                        else
-                            this.LogMessage($"Файл программы {filePath} выбран");
-                        break;
-
                     case "#P_RESET":
                     case "#P_END":
                         if (!Task.Run<bool>(async () => await this.Connection.SelectCancel()).Result)
@@ -706,23 +732,21 @@ namespace ForRobot.Model
                             this.LogMessage("Текущий выбор отменён");
 
                         System.Threading.Thread.Sleep(1000);
-
-                        //if (!Task.Run<bool>(async () => await this.Connection.Select(Path.Combine("KRC:\\R1\\Program\\", string.Join("", fileName, ".src")))).Result)
-                        //    new Exception("Ошибка выбора файла " + Path.Combine("KRC:\\R1\\Program\\", string.Join("", fileName, ".src")));
-                        //else
-                        //    this.LogMessage($"Файл программы {string.Join("", fileName, ".src")} выбран");
-
-                        if (!Task.Run<bool>(async () => await this.Connection.Select(filePath)).Result)
-                            new Exception("Ошибка выбора файла " + filePath);
-                        else
-                            this.LogMessage($"Файл программы {filePath} выбран");
                         break;
 
                     case "#P_ACTIVE":
                     case "#P_STOP":
                         this.LogMessage("Отмена выбора: уже запущен процесс!");
-                        break;
+                        return;
                 }
+
+                string filePath = Path.Combine($"{PathControllerFolder.Split('\\')[0]}\\",
+                        Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameList(PathControllerFolder.Split('\\')[0] + "\\")).Result.Keys.ToList().Where(item => item.IndexOf(nameProgram, StringComparison.OrdinalIgnoreCase) >= 0).ToArray()[0]);
+
+                if (Task.Run<bool>(async () => await this.Connection.Select(filePath)).Result)
+                    this.LogMessage($"Файл программы {filePath} выбран");
+                else
+                    new Exception("Ошибка выбора файла " + filePath);
             }
             catch (Exception ex)
             {
@@ -747,6 +771,7 @@ namespace ForRobot.Model
                     //    else
                     //        this.LogMessage($"Файл программы {file} удалён");
                     //}
+
                     foreach (var file in (Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameList(this.PathProgramm)).Result).Keys.ToList<string>())
                     {
                         if (!Task.Run<bool>(async () => await this.Connection.Delet(Path.Combine(this.PathProgramm, file))).Result)
@@ -831,7 +856,7 @@ namespace ForRobot.Model
             if (this._disposed) return;
             if (disposing)
             {
-                this._cancelTokenSource.Cancel();
+                this._cancelTokenSource?.Cancel();
                 if (this.Connection == null)
                 {
                     this._disposed = true;

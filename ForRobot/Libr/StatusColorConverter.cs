@@ -10,28 +10,28 @@ namespace ForRobot.Libr
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            //IComparable v1 = value as IComparable;
+            IComparable v1 = value as IComparable;
 
-            //if (!(value is string))
-            //    throw new FormatException("to use this converter, value and parameter shall inherit from String.");
+            if (value is string == false)
+                throw new FormatException("to use this converter, value and parameter shall inherit from String.");
 
-            if (!string.IsNullOrWhiteSpace((string)value) && Regex.IsMatch((string)value, @"^Нет соединения", RegexOptions.Compiled))
-                return new SolidColorBrush(Color.FromRgb(178, 34, 34));
+            if (!string.IsNullOrWhiteSpace((string)v1) && Regex.IsMatch((string)value, @"^Нет соединения", RegexOptions.Compiled))
+                return new SolidColorBrush(Color.FromRgb(111, 82, 255));
 
-            if (!string.IsNullOrWhiteSpace((string)value) && Regex.IsMatch((string)value, @"^Программа не выбрана", RegexOptions.Compiled))
-                return new SolidColorBrush(Color.FromRgb(72, 155, 255));
+            if (!string.IsNullOrWhiteSpace((string)v1) && Regex.IsMatch((string)value, @"^Программа не выбрана", RegexOptions.Compiled))
+                return new SolidColorBrush(Color.FromRgb(10, 122, 255));
 
-            if (!string.IsNullOrWhiteSpace((string)value) && Regex.IsMatch((string)value, @"^Выбрана программа \w*", RegexOptions.Compiled))
-                return new SolidColorBrush(Color.FromRgb(207, 193, 0));
+            if (!string.IsNullOrWhiteSpace((string)v1) && Regex.IsMatch((string)value, @"^Выбрана программа \w*", RegexOptions.Compiled))
+                return new SolidColorBrush(Color.FromRgb(247, 153, 0));
 
-            if (!string.IsNullOrWhiteSpace((string)value) && Regex.IsMatch((string)value, @"^Запущена программа \w*", RegexOptions.Compiled))
-                return new SolidColorBrush(Color.FromRgb(0, 214, 118));
+            if (!string.IsNullOrWhiteSpace((string)v1) && Regex.IsMatch((string)value, @"^Запущена программа \w*", RegexOptions.Compiled))
+                return new SolidColorBrush(Color.FromRgb(0, 183, 56));
 
-            if (!string.IsNullOrWhiteSpace((string)value) && Regex.IsMatch((string)value, @"\w* остановлена$", RegexOptions.Compiled))
-                return new SolidColorBrush(Color.FromRgb(255, 56, 56));
+            if (!string.IsNullOrWhiteSpace((string)v1) && Regex.IsMatch((string)value, @"\w* остановлена$", RegexOptions.Compiled))
+                return new SolidColorBrush(Color.FromRgb(246, 77, 0));
 
-            if (!string.IsNullOrWhiteSpace((string)value) && Regex.IsMatch((string)value, @"\w* завершена$", RegexOptions.Compiled))
-                return new SolidColorBrush(Color.FromRgb(95, 255, 51));
+            if (!string.IsNullOrWhiteSpace((string)v1) && Regex.IsMatch((string)value, @"\w* завершена$", RegexOptions.Compiled))
+                return new SolidColorBrush(Color.FromRgb(221, 0, 0));
             else
                 return new SolidColorBrush(Colors.Black);
         }
@@ -41,20 +41,23 @@ namespace ForRobot.Libr
             if (value == null || !(value is SolidColorBrush))
                 throw new FormatException("To use this convertBack, value and parameter shall inherit from SolidColorBrush");
 
-            if (((SolidColorBrush)value).Color == Color.FromRgb(255, 56, 56))
+            if (((SolidColorBrush)value).Color == Color.FromRgb(111, 82, 255))
+                return "Нет соединения";
+
+            else if (((SolidColorBrush)value).Color == Color.FromRgb(10, 122, 255))
                 return "Программа не выбрана";
 
-            else if (((SolidColorBrush)value).Color == Color.FromRgb(255, 252, 51))
+            else if (((SolidColorBrush)value).Color == Color.FromRgb(247, 153, 0))
                 return "Выбрана программа";
 
-            else if (((SolidColorBrush)value).Color == Color.FromRgb(0, 214, 118))
+            else if (((SolidColorBrush)value).Color == Color.FromRgb(0, 183, 56))
                 return "Запущена программа";
 
-            else if (((SolidColorBrush)value).Color == Color.FromRgb(255, 56, 56))
-                return "Остановлена программа";
+            else if (((SolidColorBrush)value).Color == Color.FromRgb(246, 77, 0))
+                return "Программа остановлена";
 
-            else if (((SolidColorBrush)value).Color == Color.FromRgb(95, 255, 51))
-                return "Завершена программаа";
+            else if (((SolidColorBrush)value).Color == Color.FromRgb(221, 0, 0))
+                return "Программа завершена";
             else
                 throw new Exception(string.Format("Cannot convert, unknown value {0}", value));
         }

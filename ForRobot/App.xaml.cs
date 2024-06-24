@@ -125,7 +125,7 @@ namespace ForRobot
         private void onDispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
             MessageBox.Show(e.Exception.Message + "\t||\t" + e.Exception.Source, "", MessageBoxButton.OK);
-            Logger.Error(e.Exception.Message + "\t||\t" + e.Exception.Source);
+            Logger.Fatal(e.Exception.Message + "\t||\t" + e.Exception.Source);
         }
 
         private void onExit(object sender, ExitEventArgs e)
@@ -133,7 +133,7 @@ namespace ForRobot
             if (((Application.Current.Windows.Count == 0) && (Application.Current.ShutdownMode == ShutdownMode.OnLastWindowClose))
                 || (Application.Current.ShutdownMode == ShutdownMode.OnMainWindowClose))
             {
-                this.Logger.Info($"{DateTime.Now.ToString("HH:mm:ss")} Закрытие приложения");
+                this.Logger.Trace($"{DateTime.Now.ToString("HH:mm:ss")} Закрытие приложения");
                 Application.Current.Shutdown(0);
             }
         }

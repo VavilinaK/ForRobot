@@ -1,15 +1,11 @@
 ﻿using System;
 using System.IO;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using System.Net.Sockets;
 
-using Newtonsoft.Json.Linq;
 using StreamJsonRpc;
-
-//using Microsoft.VisualStudio.Threading;
-using System.Collections.Generic;
 
 namespace ForRobot.Libr.Client
 {
@@ -28,11 +24,6 @@ namespace ForRobot.Libr.Client
         private volatile int _disposed;
         private bool Disposed => _disposed != 0;
 
-        private TcpClient _tcpClient;
-        private NetworkStream _stream;
-        private NewLineDelimitedMessageHandler _message_handler;
-        private JsonRpc _jsonRpc;
-
         /// <summary>
         /// Используется классом для указания, что соединение установлено
         /// </summary>
@@ -42,7 +33,7 @@ namespace ForRobot.Libr.Client
             {
                 try
                 {
-                    if (this.SocketConnection == null || !this.SocketConnection.Connected)
+                    if (this.Client == null || !this.Client.Connected)
                     {
                         return false;
                     }
@@ -53,7 +44,7 @@ namespace ForRobot.Libr.Client
                     return false;
                 }
 
-                if (!Key())
+                if (!this._key())
                 {
                     return false;
                 }
@@ -65,11 +56,21 @@ namespace ForRobot.Libr.Client
 
         #region Events
 
-        public event EventHandler Connected;
-        public event EventHandler Aborted;
-        public event EventHandler Disconnected;
         /// <summary>
-        /// Событие логирования действия
+        /// Событие открытия соединения
+        /// </summary>
+        public event EventHandler Connected;
+        /// <summary>
+        /// Событие прерывания соединения
+        /// </summary>
+        public event EventHandler Aborted;
+        /// <summary>
+        /// Событие закрытие соединения
+        /// </summary>
+        public event EventHandler Disconnected;
+         
+        /// <summary>
+        /// Событие записи лога
         /// </summary>
         public event EventHandler<LogEventArgs> Log;
         /// <summary>
@@ -80,64 +81,39 @@ namespace ForRobot.Libr.Client
         #endregion
 
         #region Public variables
-
-        //public bool IsConnected => Client?.Connected ?? false;
-
+        
         public string Host { get; set; }
 
         public int Port { get; set; }
 
-        public bool IsConnected { get => !Equals(this.Client, null) ? SocketConnection.Connected : false; }
-
+        /// <summary>
+        /// Клиент
+        /// </summary>
         public TcpClient Client
         {
-            get
-            {
-                //if (TcpClient.Equals(this._tcpClient, null) || !this._tcpClient.Connected)
-                //{
-                //    this._tcpClient = new TcpClient(Host, Port)
-                //    {
-                //        ReceiveTimeout = 3000,
-                //        SendTimeout = 3000
-                //    };
-                //    this.onConnected();
-                //    return this._tcpClient;
-                //}
-                //else
-                    return this._tcpClient;
-            }
-            set => this._tcpClient = value;
+            get; set;
+            //get
+            //{
+            //    //if (TcpClient.Equals(this._tcpClient, null) || !this._tcpClient.Connected)
+            //    //{
+            //    //    this._tcpClient = new TcpClient(Host, Port)
+            //    //    {
+            //    //        ReceiveTimeout = 3000,
+            //    //        SendTimeout = 3000
+            //    //    };
+            //    //    this.onConnected();
+            //    //    return this._tcpClient;
+            //    //}
+            //    //else
+            //        return this._tcpClient;
+            //}
+            //set => this._tcpClient = value;
         }
 
-        public NetworkStream Stream
-        {
-            get
-            {
-                //if (NetworkStream.Equals(this._stream, null) || !this._stream.CanWrite || !this._stream.CanWrite)
-                //{
-                //    this._stream = _tcpClient.GetStream();
-                //    this.onConnected();
-                //    return this._stream;
-                //}
-                //else
-                    return this._stream;
-            }
-            set => this._stream = value;
-        }
-
-        public NewLineDelimitedMessageHandler MessageHandler { get => this._message_handler; set => this._message_handler = value; }
-
-        public JsonRpc JsonRpc
-        {
-            get => this._jsonRpc;
-            set
-            {
-                this._jsonRpc = value;
-                //this._jsonRpc.AddLocalRpcMethod("auth", new Func<string>((a) =>))
-            }
-        }
-
-        public Socket SocketConnection { get => this.Client.Client; set => this.Client.Client = value; }
+        /// <summary>
+        /// Управляет подключением JSON-RPC к серверу через Stream
+        /// </summary>
+        private JsonRpc JsonRpc { get; set; }
 
         #endregion
 
@@ -164,6 +140,18 @@ namespace ForRobot.Libr.Client
         #endregion
 
         #region Private functions
+
+        /// <summary>
+        /// Запрос ключа с сервера
+        /// </summary>
+        /// <returns></returns>
+        private bool _key()
+        {
+            Task<string> task = Task.Run(() => this.JsonRpc.InvokeAsync<string>("auth", "My_example_KEY"));
+            if (task.Result == OkResponse)
+                return true;
+            return false;
+        }
 
         /// <summary>
         /// Срабатывание события подключения
@@ -204,19 +192,31 @@ namespace ForRobot.Libr.Client
             this.Disconnected(this, null);
         }
 
-        private void _onAnnouncement(string data)
-        {
-            JObject announcement = JObject.Parse(data);
-            JValue param = announcement["result"] as JValue;
+        //private void _onAnnouncement(string data)
+        //{
+        //    JObject announcement = JObject.Parse(data);
+        //    JValue param = announcement["result"] as JValue;
 
-            if (param == null || string.CompareOrdinal((string)param, OkResponse) != 0)
-            {
-                return;
-            }
-            //string type = (string)param["message"];
-        }
+        //    if (param == null || string.CompareOrdinal((string)param, OkResponse) != 0)
+        //    {
+        //        return;
+        //    }
 
-        //private void receiveAnnouncements(IAsyncResult result)
+        //    //if (announcement["method"] == null || string.CompareOrdinal((string)announcement["method"], AnnouncementMethod) != 0
+        //    //    || param == null)
+        //    //{
+        //    //    return;
+        //    //}
+
+        //    //if (param["sender"] == null || string.CompareOrdinal((string)param["sender"], AnnouncementSender) != 0
+        //    //    || param["message"] == null)
+        //    //{
+        //    //    return;
+        //    //}
+        //    //string type = (string)param["message"];
+        //}
+
+        //private void _receiveAnnouncements(IAsyncResult result)
         //{
         //    if (this.Disposed)
         //    {
@@ -241,13 +241,13 @@ namespace ForRobot.Libr.Client
         //        {
         //            this.LogErrorMessage("Не удалось прочитать TCP-сокет", ex);
         //            this.Close();
-        //            this.onAborted();
+        //            this._onAborted();
         //        }
 
         //        if (read > 0)
         //        {
         //            state.Builder.Append(Encoding.UTF8.GetString(state.Buffer, 0, read));
-        //            this.receive(state);
+        //            this._receive(state);
         //        }
 
         //        string data = state.Builder.ToString();
@@ -266,14 +266,18 @@ namespace ForRobot.Libr.Client
         //                pos += AnnouncementEnd.Length;
         //            }
         //            state.Builder.Remove(0, pos);
-        //            this.onAnnouncement(data.Substring(0, pos));
+        //            this._onAnnouncement(data.Substring(0, pos));
         //        }
 
-        //        this.receive(state);
+        //        this._receive(state);
         //    }
         //}
 
-        //private void receive(SocketStateObject state)
+        ///// <summary>
+        ///// Получение данных из соединения
+        ///// </summary>
+        ///// <param name="state"></param>
+        //private void _receive(SocketStateObject state)
         //{
         //    if (state == null || this.SocketConnection == null || !this.SocketConnection.Connected)
         //    {
@@ -283,44 +287,35 @@ namespace ForRobot.Libr.Client
         //    try
         //    {
         //        this.SocketConnection.BeginReceive(state.Buffer, 0, SocketStateObject.BufferSize,
-        //            0, new AsyncCallback(this.receiveAnnouncements), state);
+        //            0, new AsyncCallback(this._receiveAnnouncements), state);
         //    }
         //    catch (Exception ex)
         //    {
         //        this.LogErrorMessage("Не удалось начать прием из TCP-сокета", ex);
         //        this.Close();
-        //        this.onAborted();
+        //        this._onAborted();
         //    }
         //}
 
+        /// <summary>
+        /// Вызов события записи в журнал логгирования
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void _onLog(object sender, LogEventArgs e)
         {
             this.Log?.Invoke(this, e);
         }
 
+        /// <summary>
+        /// Вызов события записи ошибки в журнал логгирования
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void _onLogError(object sender, LogErrorEventArgs e)
         {
             this.LogError?.Invoke(this, e);
         }
-
-        #region Asyn functions
-
-        /// <summary>
-        /// Запрос ключа с сервера
-        /// </summary>
-        /// <returns></returns>
-        private bool Key()
-        {
-            Task<string> task = Task.Run(() => this.JsonRpc.InvokeAsync<string>("auth", "My_example_KEY"));
-            if (task.Result == OkResponse)
-                return true;
-
-            return false;
-
-            //return Task.Run(() => this.JsonRpc.InvokeAsync<string>("auth", "My_example_KEY"));
-        }
-
-        #endregion
 
         #endregion
 
@@ -353,28 +348,6 @@ namespace ForRobot.Libr.Client
         #region Public function
 
         /// <summary>
-        /// Закрытие соединения
-        /// </summary>
-        public void Close()
-        {
-            this.LogMessage($"Закрытие соединения . . .");
-
-            try
-            {
-                if (this.SocketConnection != null && this.SocketConnection.Connected)
-                {
-                    this.SocketConnection.Disconnect(false);
-                    this._onDisconnected();
-                    this.LogMessage($"Соединение закрыто");
-                }
-            }
-            catch (Exception ex)
-            {
-                this.LogErrorMessage("Не удалось отключиться от TCP-сокета", ex);
-            }
-        }
-
-        /// <summary>
         /// Открытие соединения
         /// </summary>
         /// <returns></returns>
@@ -383,15 +356,13 @@ namespace ForRobot.Libr.Client
             this.LogMessage($"Открытие соединения с сервером . . .");
             try
             {
-                this._tcpClient = new TcpClient(this.Host, this.Port)
+                this.Client = new TcpClient(this.Host, this.Port)
                 {
                     ReceiveTimeout = 3000,
                     SendTimeout = 3000
                 };
-                //this._tcpClient.Connect(Host, Port);
-                this.Stream = _tcpClient.GetStream();
-                this.MessageHandler = new NewLineDelimitedMessageHandler(_stream, _stream, new JsonMessageFormatter());
-                this.JsonRpc = new JsonRpc(this._message_handler);
+
+                this.JsonRpc = new JsonRpc(new NewLineDelimitedMessageHandler(Client.GetStream(), Client.GetStream(), new JsonMessageFormatter()));
                 this.JsonRpc.StartListening();
 
                 if (!this._isActive)
@@ -402,7 +373,7 @@ namespace ForRobot.Libr.Client
 
                 this._onConnected();
                 this.LogMessage($"Открыто соединение");
-                //this.receive(new SocketStateObject());
+                //this._receive(new SocketStateObject());
             }
             catch (SocketException ex)
             {
@@ -414,15 +385,29 @@ namespace ForRobot.Libr.Client
         }
 
         /// <summary>
-        /// Запрос статуса процесса
+        /// Закрытие соединения
         /// </summary>
-        /// <returns></returns>
-        public string Pro_State()
+        public void Close()
         {
-            this.LogMessage($"Запрос статуса процесса . . .");
-            Task<string> task = Task.Run(async () => await this.JsonRpc.InvokeAsync<string>("Var_ShowVar", "$PRO_STATE"));
-            task.Wait();
-            return task.Result;
+            this.LogMessage($"Закрытие соединения . . .");
+
+            if (this.Client != null)
+                if (this.Client.Connected)
+                {
+                    try
+                    {
+                        this.Client.Client.Disconnect(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        this.LogErrorMessage("Не удалось отключиться от TCP-сокета", ex);
+                    }
+                    this.Client.Client.Disconnect(false);
+                    this._onDisconnected();
+                    this.LogMessage($"Соединение закрыто");
+                }
+                else
+                    this.LogErrorMessage($"Соединение закрыто со стороны робота");
         }
 
         #region Asyn
@@ -434,6 +419,15 @@ namespace ForRobot.Libr.Client
         public async Task<string> Process_State()
         {
             return await this.JsonRpc.InvokeAsync<string>("Var_ShowVar", "$PRO_STATE");
+        }
+
+        /// <summary>
+        /// Название программы
+        /// </summary>
+        /// <returns></returns>
+        public async Task<string> Pro_Name()
+        {
+            return await this.JsonRpc.InvokeAsync<string>("Var_ShowVar", "$PRO_NAME[]");
         }
 
         /// <summary>
@@ -517,7 +511,7 @@ namespace ForRobot.Libr.Client
         }
 
         /// <summary>
-        /// Удаление файла программы из директивы робота
+        /// Удаление файла программы по директории
         /// </summary>
         /// <returns></returns>
         public async Task<bool> Delet(string path)
@@ -535,7 +529,7 @@ namespace ForRobot.Libr.Client
         /// Запуск программы
         /// </summary>
         /// <returns></returns>
-        public async Task<bool> Run()
+        public async Task<bool> Start()
         {
             this.LogMessage($"Запуск текущей программы . . .");
 
@@ -548,7 +542,7 @@ namespace ForRobot.Libr.Client
         }
 
         /// <summary>
-        /// Запуск программы
+        /// Выбор и запуск программы
         /// </summary>
         /// <returns></returns>
         public async Task<bool> Run(string path)
@@ -592,17 +586,6 @@ namespace ForRobot.Libr.Client
             return result;
         }
 
-        /// <summary>
-        /// Название программы
-        /// </summary>
-        /// <returns></returns>
-        public string Pro_Name()
-        {
-            Task<string> task = Task.Run(async () => await this.JsonRpc.InvokeAsync<string>("Var_ShowVar", "$PRO_NAME[]"));
-            task.Wait();
-            return task.Result.Replace("\"", "");
-        }
-
         #endregion
 
         #endregion
@@ -621,17 +604,15 @@ namespace ForRobot.Libr.Client
                 {
                     try
                     {
-                        lock (this.SocketConnection)
+                        lock (this.Client.Client)
                         {
                             this.Close();
-                            this.SocketConnection.Close();
-                            this._stream.Close();
-                            this._tcpClient.Close();
+                            this.Client.Close();
                         }
                     }
                     catch (Exception ex)
                     {
-                        this.LogErrorMessage($"Не удалось закрыть TCP-сокет", ex);
+                        this.LogErrorMessage($"Не удалось закрыть TCP-клиент", ex);
                     }
                     finally
                     {

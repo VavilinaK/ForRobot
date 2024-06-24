@@ -3,6 +3,9 @@ using System.Configuration;
 
 namespace ForRobot.Libr
 {
+    /// <summary>
+    /// Класс для вывода стандартных свойств настила из app.config
+    /// </summary>
     public class PlitaConfigurationSection : System.Configuration.ConfigurationSection
     {
         [ConfigurationProperty("SumReber")]

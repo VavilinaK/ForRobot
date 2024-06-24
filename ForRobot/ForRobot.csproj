@@ -76,10 +76,6 @@
     <Reference Include="GalaSoft.MvvmLight.Platform, Version=5.4.1.0, Culture=neutral, PublicKeyToken=5f873c45e98af8a1, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.Platform.dll</HintPath>
     </Reference>
-    <Reference Include="LibraryConvertClass, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Sources\Task_Manager\LibraryConvertClass\bin\Release\LibraryConvertClass.dll</HintPath>
-    </Reference>
     <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
       <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
     </Reference>
@@ -118,7 +114,7 @@
       <HintPath>..\packages\Microsoft.Win32.Registry.5.0.0\lib\net461\Microsoft.Win32.Registry.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.77\lib\net462\Microsoft.Xaml.Behaviors.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.122\lib\net462\Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
     <Reference Include="Nerdbank.Streams, Version=2.10.0.0, Culture=neutral, PublicKeyToken=cac503e1823ce71c, processorArchitecture=MSIL">
       <HintPath>..\packages\Nerdbank.Streams.2.10.72\lib\netstandard2.0\Nerdbank.Streams.dll</HintPath>
@@ -214,6 +210,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Themes\TabControlStyleResourceDictionary.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\ToolBarTrayForRobot.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -226,7 +226,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Pages\PageMain1.xaml">
+    <Page Include="Views\Pages\PageMain.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -244,12 +244,27 @@
     </Compile>
     <Compile Include="AsyncRelayCommand.cs" />
     <Compile Include="BaseClass.cs" />
+    <Compile Include="Libr\Converters\ImageConverter.cs" />
+    <Compile Include="Libr\Converters\JsonCommentConverter.cs" />
+    <Compile Include="Libr\Converters\RadioButtonConverter.cs" />
+    <Compile Include="Libr\FullyObservableCollection.cs" />
     <Compile Include="Libr\Generation.cs" />
     <Compile Include="Libr\AutoScrollBehavior.cs" />
+    <Compile Include="Libr\ItemPropertyChangedEventArgs.cs" />
+    <Compile Include="Libr\Json\DefferentDistanceAttribute.cs" />
+    <Compile Include="Libr\Json\DefferentDistanceAttributesResolver.cs" />
+    <Compile Include="Libr\Json\SameDistanceAttribute.cs" />
+    <Compile Include="Libr\Json\SameDistanceAttributesResolver.cs" />
+    <Compile Include="Libr\Json\SaveAttribute.cs" />
+    <Compile Include="Libr\Json\SaveAttributesResolver.cs" />
     <Compile Include="Libr\PlitaConfigurationSection.cs" />
+    <Compile Include="Libr\RobotConfigurationSection.cs" />
     <Compile Include="Libr\ScrollViewerAttachedProperties.cs" />
     <Compile Include="Libr\StatusColorConverter.cs" />
-    <Compile Include="Model\ScoseTypes.cs" />
+    <Compile Include="Model\Detals\DistanceBetweenRebraType.cs" />
+    <Compile Include="Model\Detals\Plita.cs" />
+    <Compile Include="Model\Detals\ScoseTypes.cs" />
+    <Compile Include="Model\StatusProcess.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -258,7 +273,6 @@
     <Compile Include="RelayCommand.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Libr\Client\StatusEventArgs.cs" />
-    <Compile Include="Libr\Client\StatusProcess.cs" />
     <Compile Include="Libr\Client\TaskHelper.cs" />
     <Compile Include="Libr\Client\JsonRpcConnection.cs" />
     <Compile Include="Libr\Client\SocketStateObject.cs" />
@@ -267,17 +281,18 @@
     <Compile Include="Libr\LogEventArgs.cs" />
     <Compile Include="Libr\Font.cs" />
     <Compile Include="Model\Robot.cs" />
-    <Compile Include="Model\RobotStatus.cs" />
-    <Compile Include="Model\Detal.cs" />
-    <Compile Include="Model\DetalType.cs" />
-    <Compile Include="Model\PlitaStringer.cs" />
-    <Compile Include="Model\PlitaTreygolnik.cs" />
-    <Compile Include="Model\Privyazka.cs" />
+    <Compile Include="Model\Detals\Detal.cs" />
+    <Compile Include="Model\Detals\DetalType.cs" />
+    <Compile Include="Model\Detals\PlitaStringer.cs" />
+    <Compile Include="Model\Detals\PlitaTreygolnik.cs" />
+    <Compile Include="Model\Detals\Privyazka.cs" />
     <Compile Include="NativeMethods.cs" />
+    <Compile Include="Themes\MetroStyleResourceDictionary.cs" />
+    <Compile Include="Libr\Converters\RowNumberConverter.cs" />
     <Compile Include="Themes\ToolBarTrayForRobot.xaml.cs">
       <DependentUpon>ToolBarTrayForRobot.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\MainPageViewModel1.cs" />
+    <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\ToolBarViewModel.cs" />
     <Compile Include="Views\Pages\Page2D.xaml.cs">
@@ -286,8 +301,8 @@
     <Compile Include="Views\Pages\Page3D.xaml.cs">
       <DependentUpon>Page3D.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Pages\PageMain1.xaml.cs">
-      <DependentUpon>PageMain1.xaml</DependentUpon>
+    <Compile Include="Views\Pages\PageMain.xaml.cs">
+      <DependentUpon>PageMain.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Windows\InputWindow.xaml.cs">
       <DependentUpon>InputWindow.xaml</DependentUpon>
@@ -302,8 +317,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\Plita.cs" />
-    <Compile Include="Model\Rebro.cs" />
+    <Compile Include="Model\Detals\Rib.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -312,60 +326,64 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Resource Include="README.txt" />
-    <Resource Include="Images\PlitaStringerFull.png" />
-    <Resource Include="Images\PlitaTreygolnikFull.png" />
-    <Resource Include="Images\toRight.png" />
-    <Resource Include="Images\toLeft.png" />
-    <Resource Include="Images\EndPlita.png" />
-    <Resource Include="Images\edit.png" />
-    <Resource Include="Images\Pause.png" />
-    <Resource Include="Images\SelectProgramm.png" />
-    <Resource Include="Images\Search.png" />
-    <Resource Include="Images\delete.png" />
-    <Resource Include="Images\Add.png" />
-    <Resource Include="Images\notControls.png" />
-    <Resource Include="Images\controls.png" />
-    <Resource Include="Images\ConnectionOff.png" />
-    <Resource Include="Images\connectionOn.png" />
-    <Resource Include="Images\graph.png" />
-    <Resource Include="Images\3d.png" />
-    <Resource Include="Images\2d.png" />
-    <Resource Include="Images\Plita.png" />
+    <Resource Include="Themes\Images\repeat.png" />
+    <Resource Include="README.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Themes\Images\PlitaStringerFull.png" />
+    <Resource Include="Themes\Images\PlitaTreygolnikFull.png" />
+    <Resource Include="Themes\Images\toRight.png" />
+    <Resource Include="Themes\Images\toLeft.png" />
+    <Resource Include="Themes\Images\EndPlita.png" />
+    <Resource Include="Themes\Images\edit.png" />
+    <Resource Include="Themes\Images\Pause.png" />
+    <Resource Include="Themes\Images\SelectProgramm.png" />
+    <Resource Include="Themes\Images\Search.png" />
+    <Resource Include="Themes\Images\delete.png" />
+    <Resource Include="Themes\Images\Add.png" />
+    <Resource Include="Themes\Images\notControls.png" />
+    <Resource Include="Themes\Images\controls.png" />
+    <Resource Include="Themes\Images\ConnectionOff.png" />
+    <Resource Include="Themes\Images\connectionOn.png" />
+    <Resource Include="Themes\Images\graph.png" />
+    <Resource Include="Themes\Images\3d.png" />
+    <Resource Include="Themes\Images\2d.png" />
+    <Resource Include="Themes\Images\Plita.png" />
     <Resource Include="robot_icon.ico" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Resource Include="Images\StartReber.png" />
-    <Resource Include="Images\setting-fill.png" />
-    <Resource Include="Images\setting-unfill.png" />
-    <Resource Include="Images\StartPlita.png" />
-    <Resource Include="Images\update.png" />
-    <Resource Include="Images\Start.png" />
-    <Resource Include="Images\Stop.png" />
-    <Resource Include="Images\robot_icon.ico" />
-    <Resource Include="Images\positionOn.png" />
-    <Resource Include="Images\positionOff.png" />
-    <Resource Include="Images\weldingOff.png" />
-    <Resource Include="Images\weldingOn.png" />
-    <Resource Include="Images\transferOn.png" />
-    <Resource Include="Images\transferOff.png" />
-    <Resource Include="Images\clear.png" />
-    <Resource Include="Images\exclamation.png" />
-    <Resource Include="Images\generationOn.png" />
-    <Resource Include="Images\generationOff.png" />
-    <Resource Include="Images\KeyOff.png" />
-    <Resource Include="Images\KeyOn.png" />
-    <Resource Include="Images\ParallelogramRight.png" />
-    <Resource Include="Images\ParallelogramLeft.png" />
-    <Resource Include="Images\Rectangular.png" />
-    <Resource Include="Images\TrapezoidBottom.png" />
-    <Resource Include="Images\TrapezoidTop.png" />
-    <Resource Include="Images\Slope_left.png" />
-    <Resource Include="Images\Slope_right.png" />
-    <Resource Include="Images\trapezoid_bottom.png" />
-    <Resource Include="Images\Trapezoid_top.png" />
+    <Resource Include="Themes\Images\StartReber.png" />
+    <Resource Include="Themes\Images\setting-fill.png" />
+    <Resource Include="Themes\Images\setting-unfill.png" />
+    <Resource Include="Themes\Images\StartPlita.png" />
+    <Resource Include="Themes\Images\update.png" />
+    <Resource Include="Themes\Images\Start.png" />
+    <Resource Include="Themes\Images\Stop.png" />
+    <Resource Include="Themes\Images\robot_icon.ico" />
+    <Resource Include="Themes\Images\positionOn.png" />
+    <Resource Include="Themes\Images\positionOff.png" />
+    <Resource Include="Themes\Images\weldingOff.png" />
+    <Resource Include="Themes\Images\weldingOn.png" />
+    <Resource Include="Themes\Images\transferOn.png" />
+    <Resource Include="Themes\Images\transferOff.png" />
+    <Resource Include="Themes\Images\clear.png" />
+    <Resource Include="Themes\Images\exclamation.png" />
+    <Resource Include="Themes\Images\generationOn.png" />
+    <Resource Include="Themes\Images\generationOff.png" />
+    <Resource Include="Themes\Images\KeyOff.png" />
+    <Resource Include="Themes\Images\KeyOn.png" />
+    <Resource Include="Themes\Images\ParallelogramRight.png" />
+    <Resource Include="Themes\Images\ParallelogramLeft.png" />
+    <Resource Include="Themes\Images\Rectangular.png" />
+    <Resource Include="Themes\Images\TrapezoidBottom.png" />
+    <Resource Include="Themes\Images\TrapezoidTop.png" />
+    <Resource Include="Themes\Images\Slope_left.png" />
+    <Resource Include="Themes\Images\Slope_right.png" />
+    <Resource Include="Themes\Images\trapezoid_bottom.png" />
+    <Resource Include="Themes\Images\Trapezoid_top.png" />
+    <Resource Include="Themes\Images\question.png" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -402,6 +420,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Help\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.9.28\build\Microsoft.VisualStudio.Threading.Analyzers.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.9.28\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" />

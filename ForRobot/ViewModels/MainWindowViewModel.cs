@@ -17,7 +17,7 @@ namespace ForRobot.ViewModels
 
         public WindowState State { get; set; } = WindowState.Maximized;
 
-        public Page NowPage { get; set; } = new Views.Pages.PageMain1();
+        public Page NowPage { get; set; } = new Views.Pages.PageMain();
 
         #endregion
 

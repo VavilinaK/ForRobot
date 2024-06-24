@@ -8,10 +8,10 @@ using System.Windows.Controls.Primitives;
 using System.ComponentModel;
 using System.Security.Cryptography;
 
-using LiveCharts;
-using LiveCharts.Wpf;
+//using LiveCharts;
+//using LiveCharts.Wpf;
 
-using Microsoft.VisualBasic;
+//using Microsoft.VisualBasic;
 
 using ForRobot.Libr;
 
@@ -43,6 +43,8 @@ namespace ForRobot.ViewModels
         private RelayCommand _sendCommand;
 
         private RelayCommand _deleteRobotCommand;
+
+        private RelayCommand _upDateConnectionCommand;
 
         private RelayCommand _runRobotCommand;
 
@@ -76,6 +78,7 @@ namespace ForRobot.ViewModels
         /// Событие выбора сгенерированной программы
         /// </summary>
         public event Func<object, EventArgs, Task> SelectProgramm;
+
         /// <summary>
         /// Событие изменения свойств робота
         /// </summary>
@@ -91,96 +94,7 @@ namespace ForRobot.ViewModels
 
         #endregion
 
-        #endregion
-
-        #region Construct
-
-        public ToolBarViewModel()
-        {
-            if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
-                return;
-
-            //if (string.IsNullOrWhiteSpace(host))
-            //    throw new ArgumentNullException("host");
-
-
-            //if (int.Equals(port, 0))
-            //    throw new ArgumentNullException("port");
-        }
-
-        #endregion
-
-        #region Private function
-
-        private async Task _OnSend(Func<object, EventArgs, Task> func)
-        {
-            Func<object, EventArgs, Task> handler = func;
-
-            if (handler == null)
-                return;
-
-            Delegate[] invocationList = handler.GetInvocationList();
-            Task[] handlerTasks = new Task[invocationList.Length];
-
-            for (int i = 0; i < invocationList.Length; i++)
-            {
-                handlerTasks[i] = ((Func<object, EventArgs, Task>)invocationList[i])(this, EventArgs.Empty);
-            }
-
-            await Task.WhenAll(handlerTasks);
-        }
-
-        private async Task _OnSelect(Func<object, EventArgs, Task> func)
-        {
-            Func<object, EventArgs, Task> handler = func;
-
-            if (handler == null)
-                return;
-
-            Delegate[] invocationList = handler.GetInvocationList();
-            Task[] handlerTasks = new Task[invocationList.Length];
-
-            for (int i = 0; i < invocationList.Length; i++)
-            {
-                handlerTasks[i] = ((Func<object, EventArgs, Task>)invocationList[i])(this, EventArgs.Empty);
-            }
-
-            await Task.WhenAll(handlerTasks);
-        }
-
-        #endregion
-
-        #region Public functions
-
-        public void OpenConnection(string host, int port, int timeout_milliseconds)
-        {
-            this.Robot = new Model.Robot(host, port);
-            this.Robot.ChangeRobot += this.ChangeRobot;
-            this.Robot.Log += this.Log;
-            this.Robot.LogError += this.LogError;
-            this.Robot.OpenConnection(timeout_milliseconds);
-        }
-
-        public async Task OnSend() => await this._OnSend(this.Send);
-
-        public async Task OnSelect() => await this._OnSelect(this.SelectProgramm);
-
         #region Commands
-
-        //public RelayCommand OpenConnectionCommand
-        //{
-        //    get
-        //    {
-        //        return _openConnectionCommand ??
-        //            (_openConnectionCommand = new RelayCommand(obj =>
-        //            {
-        //                this.Robot.ChangeRobot += this.ChangeRobot;
-        //                this.Robot.Log += this.Log;
-        //                this.Robot.LogError += this.LogError;
-        //                this.Robot.OpenConnection();
-        //            }));
-        //    }
-        //}
 
         /// <summary>
         /// Выбор пути до каталога робота
@@ -201,8 +115,8 @@ namespace ForRobot.ViewModels
                             //{
                             //    string[] files = Directory.GetFiles(fbd.SelectedPath);
 
-                                //    //System.Windows.Forms.MessageBox.Show("Files found: " + files.Length.ToString(), "Message");
-                                //}
+                            //    //System.Windows.Forms.MessageBox.Show("Files found: " + files.Length.ToString(), "Message");
+                            //}
                         }
                     }));
             }
@@ -259,8 +173,24 @@ namespace ForRobot.ViewModels
                             Properties.Settings.Default.SaveRobots.Remove($"{this.Robot.Host}:{this.Robot.Port}");
                             Properties.Settings.Default.Save();
                             this.Dispose();
-                            ((Views.Pages.PageMain1)App.Current.MainWindowView.ViewModel.NowPage).ViewModel.Items.Remove((Themes.ToolBarTrayForRobot)obj);
+                            ((Views.Pages.PageMain)App.Current.MainWindowView.ViewModel.NowPage).ViewModel.Items.Remove((Themes.ToolBarTrayForRobot)obj);
                         }
+                    }));
+            }
+        }
+
+        public RelayCommand UpDateConnectionCommand
+        {
+            get
+            {
+                return _upDateConnectionCommand ??
+                    (_upDateConnectionCommand = new RelayCommand(obj =>
+                    {
+                        //this.Robot = new Model.Robot(this.Robot.Host, this.Robot.Port);
+                        //this.Robot.ChangeRobot += this.ChangeRobot;
+                        //this.Robot.Log += this.Log;
+                        //this.Robot.LogError += this.LogError;
+                        this.Robot.OpenConnection(Properties.Settings.Default.ConnectionTimeOut);
                     }));
             }
         }
@@ -309,12 +239,78 @@ namespace ForRobot.ViewModels
                     (_selectProgrammRobotCommand = new RelayCommand(obj =>
                     {
                         this.SelectProgramm.Invoke(this, null);
-                        //Task.Run(() => this.Robot.SelectProgramm());
                     }));
             }
         }
 
         #endregion
+
+        #endregion
+
+        #region Construct
+
+        public ToolBarViewModel()
+        {
+            if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
+                return;
+        }
+
+        #endregion
+
+        #region Private function
+
+        //private async Task _OnSend(Func<object, EventArgs, Task> func)
+        //{
+        //    Func<object, EventArgs, Task> handler = func;
+
+        //    if (handler == null)
+        //        return;
+
+        //    Delegate[] invocationList = handler.GetInvocationList();
+        //    Task[] handlerTasks = new Task[invocationList.Length];
+
+        //    for (int i = 0; i < invocationList.Length; i++)
+        //    {
+        //        handlerTasks[i] = ((Func<object, EventArgs, Task>)invocationList[i])(this, EventArgs.Empty);
+        //    }
+
+        //    await Task.WhenAll(handlerTasks);
+        //}
+
+        //private async Task _OnSelect(Func<object, EventArgs, Task> func)
+        //{
+        //    Func<object, EventArgs, Task> handler = func;
+
+        //    if (handler == null)
+        //        return;
+
+        //    Delegate[] invocationList = handler.GetInvocationList();
+        //    Task[] handlerTasks = new Task[invocationList.Length];
+
+        //    for (int i = 0; i < invocationList.Length; i++)
+        //    {
+        //        handlerTasks[i] = ((Func<object, EventArgs, Task>)invocationList[i])(this, EventArgs.Empty);
+        //    }
+
+        //    await Task.WhenAll(handlerTasks);
+        //}
+
+        #endregion
+
+        #region Public functions
+
+        public void OpenConnection(string host, int port, int timeout_milliseconds)
+        {
+            this.Robot = new Model.Robot(host, port);
+            this.Robot.ChangeRobot += this.ChangeRobot;
+            this.Robot.Log += this.Log;
+            this.Robot.LogError += this.LogError;
+            this.Robot.OpenConnection(timeout_milliseconds);
+        }
+
+        //public async Task OnSend() => await this._OnSend(this.Send);
+
+        //public async Task OnSelect() => await this._OnSelect(this.SelectProgramm);
 
         #endregion
 
