@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34511.84
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Proba_Wisual", "Proba_Wisual.csproj", "{9B66B0D0-FBAE-4EA5-91F5-CF99575625B7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Image", "Image", "{00DCA5AA-6947-4917-B639-9C43EA19647A}"
+	ProjectSection(SolutionItems) = preProject
+		C:\Users\Orobej\Desktop\PLITA_REBRA_PROG\Screenshot_10.png = C:\Users\Orobej\Desktop\PLITA_REBRA_PROG\Screenshot_10.png
+		C:\Users\Orobej\Desktop\PLITA_REBRA_PROG\Screenshot_113png.png = C:\Users\Orobej\Desktop\PLITA_REBRA_PROG\Screenshot_113png.png
+		C:\Users\Orobej\Desktop\PLITA_REBRA_PROG\Screenshot_22.png = C:\Users\Orobej\Desktop\PLITA_REBRA_PROG\Screenshot_22.png
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Views", "Views", "{3DFA5355-E422-48EA-9029-98D91D145143}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libs", "Libs", "{BA3DF3BB-FFCA-4B6E-9FE0-BE8DEDF4220A}"
+	ProjectSection(SolutionItems) = preProject
+		DictionaryStyle.xaml = DictionaryStyle.xaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Model", "Model", "{9F62FC2B-8E8D-4021-A8D7-DB3FA69E1B5A}"
+	ProjectSection(SolutionItems) = preProject
+		Plita.cs = Plita.cs
+		Rebra.cs = Rebra.cs
+		Stringer.cs = Stringer.cs
+		Treygolnik.cs = Treygolnik.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Windows", "Windows", "{486E244E-A7E1-4F47-A63D-50EDB49C3857}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9B66B0D0-FBAE-4EA5-91F5-CF99575625B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B66B0D0-FBAE-4EA5-91F5-CF99575625B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B66B0D0-FBAE-4EA5-91F5-CF99575625B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B66B0D0-FBAE-4EA5-91F5-CF99575625B7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{486E244E-A7E1-4F47-A63D-50EDB49C3857} = {3DFA5355-E422-48EA-9029-98D91D145143}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C4999A75-F4B3-45A2-8F7F-DF827D191A38}
+	EndGlobalSection
+EndGlobal
