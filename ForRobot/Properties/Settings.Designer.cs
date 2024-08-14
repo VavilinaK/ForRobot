@@ -49,7 +49,7 @@ namespace ForRobot.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("main_gen")]
         public string PlitaStringerProgramm {
             get {
                 return ((string)(this["PlitaStringerProgramm"]));
@@ -61,7 +61,7 @@ namespace ForRobot.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("main_gen")]
         public string PlitaTreugolnikProgramm {
             get {
                 return ((string)(this["PlitaTreugolnikProgramm"]));

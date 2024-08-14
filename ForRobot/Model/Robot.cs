@@ -23,11 +23,11 @@ namespace ForRobot.Model
         private volatile bool _disposed = false;
         private JsonRpcConnection _connection;
 
-        private string _json;
+        //private string  _json;
         private string _pathProgram;
         private string _pathControllerFolder;
-        private string _host;   
-        private int _port;
+        //private string _host;   
+        //private int _port;
         private int _timeout_milliseconds;
         private string _pro_state;
 
@@ -40,7 +40,7 @@ namespace ForRobot.Model
         private CancellationTokenSource _cancelTokenSource { get; set; }
 
         private RobotConfigurationSection Config { get; set; } = ConfigurationManager.GetSection("robot") as RobotConfigurationSection;
-        
+
         #region Readonly
 
         private readonly JsonSerializerOptions options = new JsonSerializerOptions
@@ -75,6 +75,9 @@ namespace ForRobot.Model
         [JsonIgnore]
         public string Json { get => JsonSerializer.Serialize<Robot>(this, options); }
 
+        //[JsonIgnore]
+        //public int ConnectionTimeOut { get; set; }
+
         [JsonPropertyName("pathProgram")]
         /// <summary>
         /// Путь к папке с программой
@@ -106,38 +109,28 @@ namespace ForRobot.Model
         [JsonPropertyName("host")]
         public string Host
         {
-            get
-            {
-                if (string.IsNullOrWhiteSpace(this._host))
-                    return "0.0.0.0";
-                else
-                    return this._host;
-            }
+            get => this.Connection.Host;
             set
             {
-                this._host = value;
-                if (!int.Equals(this._timeout_milliseconds, 0) && !int.Equals(this.Port, 0) && (!string.IsNullOrWhiteSpace(this._host) || !Equals(this._host, "0.0.0.0")))
-                {
-                    this.OpenConnection(this._timeout_milliseconds);
-                    if(this.IsConnection)
-                        this.ChangeRobot?.Invoke(this, null);
-                }
+                this.Connection.Host = value;
+                if (this._timeout_milliseconds == 0 || this.Port == 0 || string.IsNullOrWhiteSpace(this.Connection.Host) || this.Connection.Host == "0.0.0.0")
+                    return;
+                this.OpenConnection(this._timeout_milliseconds);
+                this.ChangeRobot?.Invoke(this, null);
             }
         }
 
         [JsonPropertyName("port")]
         public int Port
         {
-            get => this._port;
+            get => this.Connection.Port;
             set
             {
-                this._port = value;
-                if (!int.Equals(this._timeout_milliseconds, 0) && !int.Equals(this._port, 0) && (!string.IsNullOrWhiteSpace(this.Host) || !Equals(this.Host, "0.0.0.0")))
-                {
-                    this.OpenConnection(this._timeout_milliseconds);
-                    if (this.IsConnection)
-                        this.ChangeRobot?.Invoke(this, null);
-                }
+                this.Connection.Port = value;
+                if (this._timeout_milliseconds == 0 || this.Connection.Port == 0 || string.IsNullOrWhiteSpace(this.Host) || this.Host == "0.0.0.0")
+                    return;
+                this.OpenConnection(this._timeout_milliseconds);
+                this.ChangeRobot?.Invoke(this, null);
             }
         }
 
@@ -147,15 +140,19 @@ namespace ForRobot.Model
         /// </summary>
         public JsonRpcConnection Connection
         {
-            get
-            {
-                if(object.Equals(this._connection,null) && (!string.IsNullOrWhiteSpace(this.Host) || !Equals("0.0.0.0", this.Host)) && !int.Equals(this.Port, 0))
-                    this._connection = new JsonRpcConnection(this.Host, this.Port);
+            get; set;
+            //get
+            //{
+            //    if(object.Equals(this._connection,null) && (!string.IsNullOrWhiteSpace(this.Host) || !Equals("0.0.0.0", this.Host)) && !int.Equals(this.Port, 0))
+            //    {
+            //        this._connection = new JsonRpcConnection(this.Host, this.Port);
+            //        RaisePropertyChanged(nameof(this.FileTree));
+            //    }
 
-                return this._connection;
-            }
-            set => Set(ref this._connection, value);
-        }
+            //    return this._connection;
+            //}
+            //set => Set(ref this._connection, value);
+        } = new JsonRpcConnection();
 
         [JsonIgnore]
         public bool IsConnection { get => (this.Connection is null) || (this.Connection.Client is null) ? false : this.Connection.Client.Connected; }
@@ -224,6 +221,7 @@ namespace ForRobot.Model
                     }
                 }
                 else
+                    RaisePropertyChanged(nameof(this.IsConnection));
                     return "Нет соединения";
             }
         }
@@ -235,43 +233,19 @@ namespace ForRobot.Model
         public string RobotProgramName { get => Task.Run(async () => await this.Connection.Pro_Name()).Result.Replace("\"", ""); }
 
         [JsonIgnore]
-        public decimal Voltage
-        {
-            get => this._voltage;
-            set
-            {
-                this._voltage = value;
-                //RaisePropertyChanged("Voltage");
-            }
-        }
+        public decimal Voltage { get => this._voltage; set => Set(ref this._voltage, value); }
 
         [JsonIgnore]
         /// <summary>
         /// Ток
         /// </summary>
-        public decimal Current
-        {
-            get => this._current;
-            set
-            {
-                this._current = value;
-                //RaisePropertyChanged("Current");
-            }
-        }
+        public decimal Current { get => this._current; set => Set(ref this._current, value); }
 
         [JsonIgnore]
         /// <summary>
         /// Сила подачи
         /// </summary>
-        public decimal WireFeed
-        {
-            get => this._wire_feed;
-            set
-            {
-                this._wire_feed = value;
-                //RaisePropertyChanged("WireFeed");
-            }
-        }
+        public decimal WireFeed { get => this._wire_feed; set => Set(ref this._wire_feed, value); }
 
         [JsonIgnore]
         public decimal M1
@@ -294,6 +268,15 @@ namespace ForRobot.Model
                 //RaisePropertyChanged("Tracking");
             }
         }
+
+        //private Dictionary<string, string> _files;
+
+        [JsonIgnore]
+        List<FileData> FilesCollection { get; }
+
+        //List<FileData> FilesCollection { get; }
+        //public Dictionary<string, string> FileTree { get => (this.IsConnection && this._files == null) ? 
+        //        (this._files = Task.Run<Dictionary<String, String>>(async () => await GetFiles()).Result) : _files; }
 
         #endregion
 
@@ -381,6 +364,16 @@ namespace ForRobot.Model
             }
         }
 
+        //private async Task<Dictionary<string, string>> GetFiles()
+        //{
+        //    return await this.Connection.File_NameList();
+        //}
+
+        private async Task<Dictionary<string, string>> GetFiles()
+        {
+            return await this.Connection.File_NameList();
+        }
+
         private void ConvertToTelegraf(char[] data)
         {
             this.Voltage = Convert.ToInt32(String.Join<byte>("", data.Skip(2064).Take(16).Reverse().Select(c => Convert.ToByte(c.ToString()))), 2) / 100;
@@ -390,6 +383,8 @@ namespace ForRobot.Model
             this.Tracking = Convert.ToInt32(String.Join<byte>("", data.Skip(2112).Take(16).Reverse().Select(c => Convert.ToByte(c.ToString()))), 2) / 10000;
         }
 
+
+
         #endregion
 
         #region Public functions
@@ -398,15 +393,15 @@ namespace ForRobot.Model
         {
             this._timeout_milliseconds = timeout_milliseconds;
 
-            if (!int.Equals(this._timeout_milliseconds, 0) && !int.Equals(this._port, 0) && (!string.IsNullOrWhiteSpace(this.Host) || !Equals(this.Host, "0.0.0.0")))
+            if (this._timeout_milliseconds == 0 || this.Port == 0 || string.IsNullOrWhiteSpace(this.Host) || this.Host == "0.0.0.0")
+                return;
+
+            Thread thread = new Thread(new ThreadStart(BeginConnect))
             {
-                Thread thread = new Thread(new ThreadStart(BeginConnect))
-                {
-                    IsBackground = true
-                };
-                thread.Start();
-                thread.Join(this._timeout_milliseconds);  // Закроется даже при неудачном подключении.
-            }
+                IsBackground = true
+            };
+            thread.Start();
+            thread.Join(this._timeout_milliseconds);  // Закроется даже при неудачном подключении.
         }
 
         private void OpenConnection()
@@ -515,7 +510,7 @@ namespace ForRobot.Model
         /// Аннулирование программы
         /// </summary>
         /// <returns></returns>
-        public void Stop()
+        public void Cancel()
         {
             try
             {

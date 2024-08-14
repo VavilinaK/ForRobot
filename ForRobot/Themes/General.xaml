@@ -4,17 +4,43 @@
                     xmlns:sys="clr-namespace:System;assembly=mscorlib"
                     xmlns:conv="clr-namespace:ForRobot.Libr.Converters">
 
+    <!--Data Type-->
+    <sys:Boolean x:Key="True">True</sys:Boolean>
+    <sys:Boolean x:Key="False">False</sys:Boolean>
+
+    <!--Converters-->
     <conv:RowNumberConverter x:Key="RowNumberConvert"/>
     <conv:RadioButtonConverter x:Key="RadioButtonConvert"/>
     <conv:StatusColorConverter x:Key="StatusColorConvert"/>
     <conv:StringFormatConverter x:Key="StringConvert"/>
+    <conv:ThicknessConverter x:Key="ThicknessConvert"/>
 
-    <sys:Boolean x:Key="True">True</sys:Boolean>
-    <sys:Boolean x:Key="False">False</sys:Boolean>
+    <!--Colors-->
+    <Color x:Key="Aqua">#00FFFF</Color>    
+    <Color x:Key="SteelBlue">#4682B4</Color>
+    <Color x:Key="LightGray">#FFC1C1C1</Color>
+    
+    <!--SolidColorBrush-->
+    <SolidColorBrush x:Key="BrushAqua" Color="{DynamicResource Aqua}"/>
+    <SolidColorBrush x:Key="BrushSteelBlue" Color="{DynamicResource SteelBlue}"/>
+    <SolidColorBrush x:Key="BrushLightGray" Color="{DynamicResource LightGray}"/>
 
-    <BitmapImage x:Key="ImagePlitaStart" UriSource="/InterfaceOfRobots;component/Themes/Images/StartPlita.png"/>
-    <BitmapImage x:Key="ImagePlitaBody" UriSource="/InterfaceOfRobots;component/Themes/Images/Plita.png"/>
-    <BitmapImage x:Key="ImagePlitaEnd" UriSource="/InterfaceOfRobots;component/Themes/Images/EndPlita.png"/>
+    <!--BitmapImages-->
+    <!--Button's BitmapImage-->
+    <BitmapImage x:Key="ImageGenerationOff" UriSource="/InterfaceOfRobots;component/Themes/Images/generationOff.png"/>
+    <BitmapImage x:Key="ImageGenerationOn" UriSource="/InterfaceOfRobots;component/Themes/Images/generationOn.png"/>
+
+    <BitmapImage x:Key="ImageStart" UriSource="/InterfaceOfRobots;component/Themes/Images/Start.png"/>
+    <BitmapImage x:Key="ImagePause" UriSource="/InterfaceOfRobots;component/Themes/Images/Pause.png"/>
+    <BitmapImage x:Key="ImageRepeat" UriSource="/InterfaceOfRobots;component/Themes/Images/repeat.png"/>
+    <BitmapImage x:Key="ImageCancel" UriSource="/InterfaceOfRobots;component/Themes/Images/Stop.png"/>
+    <BitmapImage x:Key="ImageSelectProgramm" UriSource="/InterfaceOfRobots;component/Themes/Images/SelectProgramm.png"/>
+
+    <BitmapImage x:Key="ImageDelete" UriSource="/InterfaceOfRobots;component/Themes/Images/delete.png"/>
+    <BitmapImage x:Key="ImageUpdate" UriSource="/InterfaceOfRobots;component/Themes/Images/update.png"/>
+    <BitmapImage x:Key="ImageAdd" UriSource="/InterfaceOfRobots;component/Themes/Images/Add.png"/>
+    <BitmapImage x:Key="ImageEdit" UriSource="/InterfaceOfRobots;component/Themes/Images/edit.png" x:Shared="false"/>
+    <BitmapImage x:Key="ImageUp" UriSource="/InterfaceOfRobots;component/Themes/Images/up.png" x:Shared="false"/>
 
     <!--Скосы-->
     <BitmapImage x:Key="ImageSlopeLeft" UriSource="/InterfaceOfRobots;component/Themes/Images/Slope_left.png"/>
@@ -22,22 +48,50 @@
     <BitmapImage x:Key="ImageTrapezoidTopParam" UriSource="/InterfaceOfRobots;component/Themes/Images/Trapezoid_top.png"/>
     <BitmapImage x:Key="ImageTrapezoidBottomParam" UriSource="/InterfaceOfRobots;component/Themes/Images/trapezoid_bottom.png"/>
 
+
+    <!--Button's Styles-->
+    <Style x:Key="baseButtonStyle" TargetType="FrameworkElement">
+        <Setter Property="Width" Value="45"/>
+        <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
+    </Style>
+
+    <Style x:Key="baseControlTemplateStyle" TargetType="{x:Type Border}">
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="3"/>
+
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}" Value="True">
+                <Setter Property="Background" Value="{StaticResource BrushLightGray}"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=IsPressed, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}" Value="True">
+                <Setter Property="Background" Value="{StaticResource BrushAqua}"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    
+
+
+    <BitmapImage x:Key="ImagePlitaStart" UriSource="/InterfaceOfRobots;component/Themes/Images/StartPlita.png"/>
+    <BitmapImage x:Key="ImagePlitaBody" UriSource="/InterfaceOfRobots;component/Themes/Images/Plita.png"/>
+    <BitmapImage x:Key="ImagePlitaEnd" UriSource="/InterfaceOfRobots;component/Themes/Images/EndPlita.png"/>
+
+
+
     <Image x:Key="ImageSettingFill" Source="/InterfaceOfRobots;component/Themes/Images/setting-fill.png" />
     <Image x:Key="ImageSettingUnFill" Source="/InterfaceOfRobots;component/Themes/Images/setting-unfill.png" />
 
     <BitmapImage x:Key="ImageKeyOff" UriSource="/InterfaceOfRobots;component/Themes/Images/KeyOff.png"/>
     <BitmapImage x:Key="ImageKeyOn" UriSource="/InterfaceOfRobots;component/Themes/Images/KeyOn.png"/>
 
-    <BitmapImage x:Key="ImageGenerationOff" UriSource="/InterfaceOfRobots;component/Themes/Images/generationOff.png" />
-    <BitmapImage x:Key="ImageGenerationOn" UriSource="/InterfaceOfRobots;component/Themes/Images/generationOn.png" />
+    <!--<BitmapImage x:Key="ImageGenerationOff" UriSource="/InterfaceOfRobots;component/Themes/Images/generationOff.png" />
+    <BitmapImage x:Key="ImageGenerationOn" UriSource="/InterfaceOfRobots;component/Themes/Images/generationOn.png" />-->
 
-    <BitmapImage x:Key="ImageEdit" UriSource="/InterfaceOfRobots;component/Themes/Images/edit.png" x:Shared="false"/>
 
-    <BitmapImage x:Key="ImageDelete" UriSource="/InterfaceOfRobots;component/Themes/Images/delete.png"/>
-    <BitmapImage x:Key="ImageUpdate" UriSource="/InterfaceOfRobots;component/Themes/Images/update.png"/>
+
+
     <BitmapImage x:Key="ImageTransferOff" UriSource="/InterfaceOfRobots;component/Themes/Images/transferOff.png"/>
     <BitmapImage x:Key="ImageTransferOn" UriSource="/InterfaceOfRobots;component/Themes/Images/transferOn.png"/>
-    <BitmapImage x:Key="ImageAdd" UriSource="/InterfaceOfRobots;component/Themes/Images/Add.png"/>
 
     <BitmapImage x:Key="ImageConnectionOff" UriSource="/InterfaceOfRobots;component/Themes/Images/ConnectionOff.png"/>
     <BitmapImage x:Key="ImageConnectionOn" UriSource="/InterfaceOfRobots;component/Themes/Images/connectionOn.png"/>
@@ -54,11 +108,11 @@
     <BitmapImage x:Key="ImageStandart" UriSource="/InterfaceOfRobots;component/Themes/Images/clear.png"/>
     <BitmapImage x:Key="ImageExclamation" UriSource="/InterfaceOfRobots;component/Themes/Images/exclamation.png"/>
 
-    <ImageBrush x:Key="ImageStart" ImageSource="/InterfaceOfRobots;component/Themes/Images/Start.png"/>
-    <ImageBrush x:Key="ImagePause" ImageSource="/InterfaceOfRobots;component/Themes/Images/Pause.png"/>
-    <ImageBrush x:Key="ImageRepeat" ImageSource="/InterfaceOfRobots;component/Themes/Images/repeat.png"/>
-    <ImageBrush x:Key="ImageStop" ImageSource="/InterfaceOfRobots;component/Themes/Images/Stop.png"/>
-    <ImageBrush x:Key="ImageSelectProgramm" ImageSource="/InterfaceOfRobots;component/Themes/Images/SelectProgramm.png"/>
+    <!--<ImageBrush x:Key="ImageStart" ImageSource="/InterfaceOfRobots;component/Themes/Images/Start.png"/>-->
+    <!--<ImageBrush x:Key="ImagePause" ImageSource="/InterfaceOfRobots;component/Themes/Images/Pause.png"/>-->
+    <!--<ImageBrush x:Key="ImageRepeat" ImageSource="/InterfaceOfRobots;component/Themes/Images/repeat.png"/>-->
+    <!--<ImageBrush x:Key="ImageStop" ImageSource="/InterfaceOfRobots;component/Themes/Images/Stop.png"/>-->
+    <!--<ImageBrush x:Key="ImageSelectProgramm" ImageSource="/InterfaceOfRobots;component/Themes/Images/SelectProgramm.png"/>-->
     <ImageBrush x:Key="ImageSearchProgramm" ImageSource="/InterfaceOfRobots;component/Themes/Images/Search.png"/>
 
     <ControlTemplate x:Key="templateButtonsInSettings" TargetType="{x:Type ButtonBase}">
@@ -516,11 +570,6 @@
                 <Setter Property="Visibility" Value="Visible"/>
             </DataTrigger>
 
-            <!--<DataTrigger Binding="{Binding Path=Robot.IsConnection, UpdateSourceTrigger=PropertyChanged}" Value="True">
-                <Setter Property="Width" Value="0"/>
-                <Setter Property="Visibility" Value="Hidden"/>
-            </DataTrigger>-->
-
             <DataTrigger Binding="{Binding Path=Visibility, RelativeSource={RelativeSource Self}}" Value="Visible">
                 <DataTrigger.EnterActions>
                     <BeginStoryboard Name="StartBlinking">
@@ -531,6 +580,40 @@
                 </DataTrigger.EnterActions>
             </DataTrigger>
         </Style.Triggers>       
+    </Style>
+
+    <Style x:Key="buttonConnectionUpDateStyle2" TargetType="Button">
+        <Setter Property="Width" Value="0"/>
+        <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
+        <Setter Property="Visibility" Value="Hidden"/>
+        <Setter Property="ToolTip" Value="Повторное соединение"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border BorderThickness="0">
+                        <Image Source="{StaticResource ImageUpdate}" Stretch="Fill"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=SelectedRobot.Item2.IsConnection}" Value="False">
+                <Setter Property="Width" Value="40"/>
+                <Setter Property="Visibility" Value="Visible"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=Visibility, RelativeSource={RelativeSource Self}}" Value="Visible">
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard Name="StartBlinking">
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" RepeatBehavior="Forever" AutoReverse="True" Duration="0:0:1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="buttonTransferCustStyle" TargetType="Button">
@@ -767,8 +850,8 @@
     <!--Кнопка добавления робота-->
     <Style x:Key="buttonAddUserControl" TargetType="Button">
         <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
-        <Setter Property="HorizontalAlignment" Value="Left"/>
-        <Setter Property="VerticalAlignment" Value="Bottom"/>
+        <!--<Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="VerticalAlignment" Value="Bottom"/>-->
         <Setter Property="ToolTip" Value="Добавить робота"/>
 
         <Setter Property="Template">

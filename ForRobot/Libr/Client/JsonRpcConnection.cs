@@ -15,7 +15,10 @@ namespace ForRobot.Libr.Client
 
         //private const string AnnouncementEnd = "}";
         //private const string AnnouncementEndAlternative = "}\n";
+        private const int DefaultPort = 0000;
+        private const string DefaultHost = "0.0.0.0";
         private const string OkResponse = "Ok";
+        private const string DefaulRoot = "KRC:\\";
 
         #endregion
 
@@ -121,17 +124,17 @@ namespace ForRobot.Libr.Client
 
         public JsonRpcConnection() : this(null, 0) { }
 
-        public JsonRpcConnection(string hostname, int port)
+        public JsonRpcConnection(string hostname = DefaultHost, int port = DefaultPort)
         {
-            if (string.IsNullOrWhiteSpace(hostname))
-            {
-                throw new ArgumentNullException("hostname");
-            }
+            //if (string.IsNullOrWhiteSpace(hostname))
+            //{
+            //    throw new ArgumentNullException("hostname");
+            //}
 
-            if (int.Equals(port, 0))
-            {
-                throw new ArgumentNullException("port");
-            }
+            //if (int.Equals(port, 0))
+            //{
+            //    throw new ArgumentNullException("port");
+            //}
 
             this.Host = hostname;
             this.Port = port;
@@ -150,6 +153,7 @@ namespace ForRobot.Libr.Client
             Task<string> task = Task.Run(() => this.JsonRpc.InvokeAsync<string>("auth", "My_example_KEY"));
             if (task.Result == OkResponse)
                 return true;
+
             return false;
         }
 
@@ -302,20 +306,14 @@ namespace ForRobot.Libr.Client
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void _onLog(object sender, LogEventArgs e)
-        {
-            this.Log?.Invoke(this, e);
-        }
+        private void _onLog(object sender, LogEventArgs e) => this.Log?.Invoke(this, e);
 
         /// <summary>
         /// Вызов события записи ошибки в журнал логгирования
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void _onLogError(object sender, LogErrorEventArgs e)
-        {
-            this.LogError?.Invoke(this, e);
-        }
+        private void _onLogError(object sender, LogErrorEventArgs e) => this.LogError?.Invoke(this, e);
 
         #endregion
 
@@ -416,28 +414,19 @@ namespace ForRobot.Libr.Client
         /// Запрос статуса процесса
         /// </summary>
         /// <returns></returns>
-        public async Task<string> Process_State()
-        {
-            return await this.JsonRpc.InvokeAsync<string>("Var_ShowVar", "$PRO_STATE");
-        }
+        public async Task<string> Process_State() => await this.JsonRpc.InvokeAsync<string>("Var_ShowVar", "$PRO_STATE");
 
         /// <summary>
         /// Название программы
         /// </summary>
         /// <returns></returns>
-        public async Task<string> Pro_Name()
-        {
-            return await this.JsonRpc.InvokeAsync<string>("Var_ShowVar", "$PRO_NAME[]");
-        }
+        public async Task<string> Pro_Name() => await this.JsonRpc.InvokeAsync<string>("Var_ShowVar", "$PRO_NAME[]");
 
         /// <summary>
         /// Запрос состояния входов
         /// </summary>
         /// <returns></returns>
-        public async Task<string> In()
-        {
-            return await this.JsonRpc.InvokeAsync<string>("Var_ShowVar", "$IN[]");
-        }
+        public async Task<string> In() => await this.JsonRpc.InvokeAsync<string>("Var_ShowVar", "$IN[]");
 
         /// <summary>
         /// Копирование файла в дерективу робота
@@ -492,6 +481,7 @@ namespace ForRobot.Libr.Client
 
             if (result == OkResponse)
                 return true;
+
             return false;
         }
 
@@ -507,6 +497,7 @@ namespace ForRobot.Libr.Client
 
             if (result == OkResponse)
                 return true;
+
             return false;
         }
 
@@ -522,6 +513,7 @@ namespace ForRobot.Libr.Client
 
             if (result == OkResponse)
                 return true;
+
             return false;
         }
 
@@ -576,10 +568,11 @@ namespace ForRobot.Libr.Client
         }
 
         /// <summary>
-        /// Список файлов по деректории
+        /// Список файлов
         /// </summary>
+        /// <param name="path">Директория зпроса</param>
         /// <returns></returns>
-        public async Task<Dictionary<String, String>> File_NameList(string path)
+        public async Task<Dictionary<String, String>> File_NameList(string path = DefaulRoot)
         {
             object[] args = { path, 511, 127 };
             Dictionary<String, String> result = await this.JsonRpc.InvokeAsync<Dictionary<String, String>>("File_NameList", args);

@@ -7,16 +7,32 @@ namespace ForRobot.Libr
 {
     public static class ScrollViewerAttachedProperties
     {
-        static readonly Dictionary<TextBox, Capture> _associations = new Dictionary<TextBox, Capture>();
+        #region Private variables
+
+        static readonly Dictionary<TextBox, TextBoxScrollingTrigger> _associations = new Dictionary<TextBox, TextBoxScrollingTrigger>();
+
+        #endregion
+
+        #region Public variables
 
         public static bool GetScrollOnTextChanged(DependencyObject dependencyObject) => (bool)dependencyObject.GetValue(ScrollOnTextChangedProperty);
 
         public static void SetScrollOnTextChanged(DependencyObject dependencyObject, bool value) => dependencyObject.SetValue(ScrollOnTextChangedProperty, value);
 
-        public static readonly DependencyProperty ScrollOnTextChangedProperty =
-            DependencyProperty.RegisterAttached("ScrollOnTextChanged", typeof(bool), typeof(ScrollViewerAttachedProperties), new UIPropertyMetadata(false, OnScrollOnTextChanged));
+        #region Readonly
 
-        static void OnScrollOnTextChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
+        public static readonly DependencyProperty ScrollOnTextChangedProperty = DependencyProperty.RegisterAttached("ScrollOnTextChanged", typeof(bool),
+                                                                                                            typeof(ScrollViewerAttachedProperties), new UIPropertyMetadata(false, OnScrollOnTextChanged));
+
+        public static readonly DependencyProperty ScrollOnLoadedProperty = DependencyProperty.RegisterAttached("ScrollOnLoaded", typeof(bool),
+                                                                                                            typeof(ScrollViewerAttachedProperties), new UIPropertyMetadata(false, OnScrollOnLoaded));
+        #endregion
+
+        #endregion
+
+        #region Private function
+
+        private static void OnScrollOnTextChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
         {
             var textBox = dependencyObject as TextBox;
             if (textBox == null)
@@ -44,37 +60,74 @@ namespace ForRobot.Libr
             }
         }
 
-        static void TextBoxUnloaded(object sender, RoutedEventArgs routedEventArgs)
+        private static void TextBoxUnloaded(object sender, RoutedEventArgs routedEventArgs)
         {
             var textBox = (TextBox)sender;
             _associations[textBox].Dispose();
             textBox.Unloaded -= TextBoxUnloaded;
         }
 
-        static void TextBoxLoaded(object sender, RoutedEventArgs routedEventArgs)
+        private static void TextBoxLoaded(object sender, RoutedEventArgs routedEventArgs)
         {
             var textBox = (TextBox)sender;
             textBox.Loaded -= TextBoxLoaded;
-            _associations[textBox] = new Capture(textBox);
+            _associations[textBox] = new TextBoxScrollingTrigger(textBox);
         }
 
-        class Capture : IDisposable
+        #endregion
+
+
+
+
+
+
+
+
+
+        private static void OnScrollOnLoaded(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
+        {
+            var textBox = dependencyObject as TextBox;
+            if (textBox == null)
+                return;
+
+            bool oldValue = (bool)e.OldValue, newValue = (bool)e.NewValue;
+            if (newValue == oldValue)
+                return;
+
+            if (newValue)
+            {
+                textBox.Loaded += TextBoxLoaded;
+                textBox.Unloaded += TextBoxUnloaded;
+            }
+            else
+            {
+                textBox.Loaded -= TextBoxLoaded;
+                textBox.Unloaded -= TextBoxUnloaded;
+
+                if (_associations.ContainsKey(textBox))
+                    _associations[textBox].Dispose();
+            }
+        }
+
+
+        class TextBoxScrollingTrigger : IDisposable
         {
             private TextBox TextBox { get; set; }
 
-            public Capture(TextBox textBox)
+            public TextBoxScrollingTrigger(TextBox textBox)
             {
                 TextBox = textBox;
+                TextBox.Loaded += OnTextBoxOnLoaded;
                 TextBox.TextChanged += OnTextBoxOnTextChanged;
             }
 
-            private void OnTextBoxOnTextChanged(object sender, TextChangedEventArgs args)
-            {
-                TextBox.ScrollToEnd();
-            }
+            private void OnTextBoxOnTextChanged(object sender, TextChangedEventArgs args) => TextBox.ScrollToEnd();
+
+            private void OnTextBoxOnLoaded(object sender, RoutedEventArgs args) => TextBox.ScrollToEnd();
 
             public void Dispose()
             {
+                TextBox.Loaded -= OnTextBoxOnLoaded;
                 TextBox.TextChanged -= OnTextBoxOnTextChanged;
             }
         }

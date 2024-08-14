@@ -19,7 +19,8 @@ namespace ForRobot.Libr.Converters
                 throw new FormatException("to use this converter, value and parameter shall inherit from String.");
 
             if (!string.IsNullOrWhiteSpace((string)v1) && Regex.IsMatch((string)value, @"^Нет соединения", RegexOptions.Compiled))
-                return new SolidColorBrush(Color.FromRgb(111, 82, 255));
+                return new SolidColorBrush(Color.FromRgb(128, 128, 128));
+            //return new SolidColorBrush(Color.FromRgb(111, 82, 255));
 
             if (!string.IsNullOrWhiteSpace((string)v1) && Regex.IsMatch((string)value, @"^Программа не выбрана", RegexOptions.Compiled))
                 return new SolidColorBrush(Color.FromRgb(10, 122, 255));
@@ -44,7 +45,8 @@ namespace ForRobot.Libr.Converters
             if (value == null || !(value is SolidColorBrush))
                 throw new FormatException("To use this convertBack, value and parameter shall inherit from SolidColorBrush");
 
-            if (((SolidColorBrush)value).Color == Color.FromRgb(111, 82, 255))
+            //if (((SolidColorBrush)value).Color == Color.FromRgb(111, 82, 255))
+            if (((SolidColorBrush)value).Color == Color.FromRgb(128, 128, 128))
                 return "Нет соединения";
 
             else if (((SolidColorBrush)value).Color == Color.FromRgb(10, 122, 255))

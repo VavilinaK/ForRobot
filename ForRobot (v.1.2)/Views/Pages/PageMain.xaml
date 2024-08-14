@@ -1,0 +1,437 @@
+﻿<Page x:Class="ForRobot.Views.Pages.PageMain"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ForRobot.Views.Pages"
+      xmlns:vm="clr-namespace:ForRobot.ViewModels"
+      xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+      xmlns:uc="clr-namespace:ForRobot.Themes"
+      xmlns:lib="clr-namespace:ForRobot.Libr"
+      mc:Ignorable="d" 
+      d:DesignHeight="1000" d:DesignWidth="1500"
+      Background="#cfcfcf">
+
+    <Page.DataContext>
+        <vm:MainPageViewModel/>
+    </Page.DataContext>
+
+    <Page.Title>
+        <MultiBinding Converter="{StaticResource StringConvert}" ConverterParameter="Интерфейс - v.{0}">
+            <Binding Path="Version" Mode="OneWay"/>
+        </MultiBinding>
+    </Page.Title>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <!--<Grid.ColumnDefinitions>
+            <ColumnDefinition Width="580"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>-->
+
+        <Popup IsOpen="{Binding ElementName=buttonSetting, Path=IsChecked}" PlacementTarget="{Binding ElementName=buttonSetting}" StaysOpen="True"
+               Placement="Bottom" AllowsTransparency="True" PopupAnimation="Fade" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Border Background="#FFEEEEEE" Padding="3" Width="450" Height="170" BorderThickness="3" BorderBrush="#FF747474">
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Content="Программа-генератор:" Grid.Row="0" Grid.Column="0" FontSize="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
+
+                    <Grid Grid.Row="0" Grid.Column="1" Margin="5">
+                        <TextBox Padding="0,0,25,0"
+                             Style="{StaticResource textBoxInSettings}"
+                             Text="{Binding Path=PathGenerator, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <Button Padding="2" HorizontalAlignment="Right" Width="{Binding Path=Parent.ActualHeight, RelativeSource={RelativeSource Self}}"
+                                Style="{StaticResource buttonEditStyle}"
+                                Command="{Binding Path=SelectPathCommand}"/>
+                    </Grid>
+
+                    <Label Content="Название итоговой программы:" Grid.Row="1" Grid.Column="0" FontSize="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Margin="5"
+                             Style="{StaticResource textBoxInSettings}"
+                             Text="{Binding Path=ProgrammName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                    <Label Content="Время ожидания подключения, с." Grid.Row="2" Grid.Column="0" FontSize="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
+                    <TextBox Grid.Row="2" Grid.Column="1" Margin="5"
+                             Style="{StaticResource textBoxInSettings}"
+                             Text="{Binding Path=ConnectionTimeOut, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, TargetNullValue=0, FallbackValue=0}"/>
+
+                    <Label Content="ПИН-код для управления" Grid.Row="3" Grid.Column="0" FontSize="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
+                    <Grid Grid.Row="3" Grid.Column="1" Margin="5" Width="{Binding RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}, Path=ActualWidth}">
+                        <TextBox Name="passwordBoxPinCode" Text="{Binding Path=PinCode, Mode=OneWayToSource}"
+                                     Padding="0,0,25,0" FontSize="14" IsEnabled="False"
+                                     VerticalContentAlignment="Center" HorizontalContentAlignment="Left">
+
+                            <!--<i:Interaction.Triggers>
+                                <i:EventTrigger EventName="PasswordChanged">
+                                    <i:InvokeCommandAction Command="{Binding Path=SelectPassword}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>-->
+                        </TextBox>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <!--<ToggleButton Style="{StaticResource toggleButtonPinCode}"
+                                          Width="{Binding Path=Parent.ActualHeight, RelativeSource={RelativeSource Self}}"
+                                          IsChecked="{Binding Path=OpenPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+
+                                --><!--<i:Interaction.Triggers>
+                                <i:EventTrigger EventName="LostFocus">
+                                    <i:InvokeCommandAction Command="{Binding Path=LostFocus}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>--><!--
+
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="{x:Type ButtonBase}">
+                                        <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" Focusable="False"
+                                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="Button.IsDefaulted" Value="True"/>
+                                            <Trigger Property="IsMouseOver" Value="True"/>
+                                            <Trigger Property="IsPressed" Value="True"/>
+                                            <Trigger Property="ToggleButton.IsChecked" Value="True"/>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>-->
+
+                            <Button Width="{Binding Path=Parent.ActualHeight, RelativeSource={RelativeSource Self}}"
+                                    Padding="2" Style="{StaticResource buttonEditStyle}"
+                                    Command="{Binding Path=EditPinCodeCommand}"
+                                    CommandParameter="{Binding ElementName=passwordBoxPinCode}"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Popup>
+
+        <Menu Grid.Row="0">
+            <Grid Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type Menu}, Mode=FindAncestor}}" Height="Auto" Margin="-8,0,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <ToggleButton Name="buttonSetting" Grid.Column="0" Margin="25,0,5,0" Width="45" HorizontalAlignment="Left" Visibility="Visible" Style="{StaticResource buttonSettingStyle}"/>
+
+                <Button Grid.Column="1" Margin="10,0" Width="45" HorizontalAlignment="Left" Visibility="Visible" Style="{StaticResource buttonGenerationStyle}"
+                            Command="{Binding Path=GenerationCommand}"/>
+
+                <ItemsControl Grid.Column="2" ItemsSource="{Binding Path=Items}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel IsItemsHost="True" MaxWidth="1400"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Loaded">
+                            <i:InvokeCommandAction Command="{Binding Path=AddItemCommand}" CommandParameter="loading"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </ItemsControl>
+
+                <Button Grid.Column="3" Width="45" Margin="15,5" Style="{StaticResource buttonAddUserControl}" Command="{Binding Path=AddItemCommand}"/>
+
+                <StackPanel Grid.Column="4" Orientation="Horizontal" Margin="0,0,25,0">
+                    <Button Width="45" Style="{StaticResource buttonStandartStyle}" Command="{Binding Path=StandartParametrsCommand}"/>
+
+                    <Separator Margin="10">
+                        <Separator.LayoutTransform>
+                            <RotateTransform Angle="90" />
+                        </Separator.LayoutTransform>
+                    </Separator>
+
+                    <RadioButton Content="One" Width="45" Style="{StaticResource toggleButtonCordinateStyle}"
+                                     IsChecked="{Binding Path=PageNowString, Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter=Page2D, Mode=TwoWay}">
+
+                        <RadioButton.Template>
+                            <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                <Border BorderThickness="0" CornerRadius="3" Padding="2" Style="{StaticResource toggleButtonCordinateTemplateStyle}">
+                                    <Image Source="{StaticResource Image2D}" Stretch="Fill"/>
+                                </Border>
+                            </ControlTemplate>
+                        </RadioButton.Template>
+                    </RadioButton>
+
+                    <RadioButton Content="Two" Width="45" Style="{StaticResource toggleButtonCordinateStyle}"
+                                     IsChecked="{Binding Path=PageNowString, Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter=Page3D, Mode=TwoWay}">
+                        <RadioButton.Template>
+                            <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                <Border BorderThickness="0" CornerRadius="3" Style="{StaticResource toggleButtonCordinateTemplateStyle}">
+                                    <Image Source="{StaticResource Image3D}"  Stretch="Fill"/>
+                                </Border>
+                            </ControlTemplate>
+                        </RadioButton.Template>
+                    </RadioButton>
+                </StackPanel>
+            </Grid>
+        </Menu>
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25"/>
+                <RowDefinition/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="25"/>
+                <ColumnDefinition Width="Auto" MinWidth="500"/>
+                <ColumnDefinition Width="25"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="25"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Row="1" Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*" MaxHeight="25"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <ComboBox Grid.Row="0" Margin="0" FontSize="18" FontWeight="DemiBold"
+                          VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                          ItemsSource="{Binding Path=TypeCollection}"
+                          SelectedItem="{Binding Path=SelectedType, Mode=OneWayToSource}"
+                          SelectedIndex="0">
+                    
+                    <ComboBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ComboBoxItem}">
+                            <Setter Property="Height" Value="45"/>
+                            <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+                            <Setter Property="TextBlock.VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </ComboBox.ItemContainerStyle>
+                </ComboBox>
+
+                <TabControl Name="tabControlParam" Grid.Row="2" TabStripPlacement="Right" FontSize="16" Margin="0" MaxHeight="600"
+                            SelectedItem="{Binding Path=SelectedItem, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}">
+                    
+                    <TabControl.Resources>
+                        <Style TargetType="{x:Type TabItem}">
+                            <Setter Property="HeaderTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <ContentPresenter Content="{TemplateBinding Content}">
+                                            <ContentPresenter.LayoutTransform>
+                                                <RotateTransform Angle="90" />
+                                            </ContentPresenter.LayoutTransform>
+                                        </ContentPresenter>
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Padding" Value="5"/>
+                            <Setter Property="FontSize" Value="16"/>
+
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=Header, RelativeSource={RelativeSource Self}}" Value="Скосы">
+                                    <Setter Property="Visibility" Value="Hidden"/>
+                                </DataTrigger>
+
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding Path=Header, RelativeSource={RelativeSource Self}}" Value="Скосы"/>
+                                        <Condition Binding="{Binding Path=SelectedType}" Value="Настил со скосами"/>
+                                    </MultiDataTrigger.Conditions>
+
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TabControl.Resources>
+
+                    <TabItem Header="Общие" Height="90">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <ContentControl>
+                                <ContentControl.Style>
+                                    <Style TargetType="ContentControl">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ContentControl">
+                                                    <ContentControl ContentTemplate="{StaticResource OtherTemplateStyle}"/>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=SelectedType}" Value="Настил с ребром">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="ContentControl">
+                                                            <ContentControl ContentTemplate="{StaticResource PlitaTemplateStyle}"/>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ContentControl.Style>
+                            </ContentControl>
+                        </ScrollViewer>
+                    </TabItem>
+
+                    <TabItem Header="Доп." Height="90">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <ContentControl>
+                                <ContentControl.Style>
+                                    <Style TargetType="ContentControl">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ContentControl">
+                                                    <ContentControl ContentTemplate="{StaticResource OtherTemplateStyle}"/>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=SelectedType}" Value="Настил с ребром">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="ContentControl">
+                                                            <ContentControl ContentTemplate="{StaticResource PlitaDopTemplateStyle}"/>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ContentControl.Style>
+                            </ContentControl>
+                        </ScrollViewer>
+                    </TabItem>
+
+                    <TabItem Header="Сварка" Height="90">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <ContentControl>
+                                <ContentControl.Style>
+                                    <Style TargetType="ContentControl">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ContentControl">
+                                                    <ContentControl ContentTemplate="{StaticResource OtherTemplateStyle}"/>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=SelectedType}" Value="Настил с ребром">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="ContentControl">
+                                                            <ContentControl ContentTemplate="{StaticResource PlitaSvarkaTemplateStyle}"/>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ContentControl.Style>
+                            </ContentControl>
+                        </ScrollViewer>
+                    </TabItem>
+                </TabControl>
+
+                <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Vertical">
+                    <ToggleButton Name="toggleButtonInfo" Width="50" Height="50" HorizontalAlignment="Left" Style="{StaticResource toggleButtonInfoStyle}"/>
+                    
+                    <Border Width="550" Margin="5" BorderThickness="5" BorderBrush="#FF1680C9" Background="#FFD5EBFD" Padding="7" HorizontalAlignment="Left">
+                        <TextBlock TextWrapping="Wrap" FontSize="16.5" FontWeight="Bold">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Text" Value="# Крайняя левая (как на чертеже) точка детали устанавливается по краю первого козелка. &#x0a;&#x0a;# Верхний торец - по продольным упорам на козелках.&#x0a;&#x0a;# Все отсчёты ведутся от 0, образованного продольным и поперечным упорами на первом козелке."/>
+
+                                    <Style.Triggers>
+                                        <MultiDataTrigger>
+                                            <MultiDataTrigger.Conditions>
+                                                <Condition Binding="{Binding Path=SelectedItem.Header, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Value="Общие"/>
+                                                <Condition Binding="{Binding Path=DetalObject.ScoseType, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Value="d_rect"/>
+                                            </MultiDataTrigger.Conditions>
+
+                                            <Setter Property="Text" Value="# Верхний левый угол детали (как на чертеже) устанавливается в 0 точку сварочного комплекса, образованную торцевыми упорами на козелках."/>
+                                        </MultiDataTrigger>
+                                        
+                                        
+                                        <DataTrigger Binding="{Binding Path=SelectedItem.Header, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Value="Сварка">
+                                            <Setter Property="Text" Value="Т3-ИП6  == 37 см/м&#x0a;Т3-ИП8  == 31 см/м&#x0a;Т3-ИП10 == 24 см/м"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=IsChecked, ElementName=toggleButtonInfo}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                                <Setter Property="Visibility" Value="Hidden"/>
+                            </Style>
+                        </Border.Style>
+                    </Border>
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Row="1" Grid.Column="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <!--<RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>-->
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!--<Image Grid.Row="0" Margin="0" Width="Auto" Height="Auto" MaxHeight="400" Source="{Binding Path=DetalObject.GenericImage, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Image Grid.Row="2" Margin="0" Width="Auto" Height="Auto" MaxHeight="300" Source="{Binding Path=DetalObject.RebraImage, UpdateSourceTrigger=PropertyChanged}"/>-->
+
+                <Frame Grid.Row="0" Content="{Binding Path=PageNow, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" NavigationUIVisibility="Hidden" Margin="0,0,0,0"
+                       Background="#b3b3b3"/>
+
+                <StackPanel Grid.Row="4" Height="150">
+                    <TextBox Text="{Binding Path=Logger, UpdateSourceTrigger=PropertyChanged}" FontSize="15" Padding="15,10" TextWrapping="Wrap"
+                             Height="{Binding Path=Parent.ActualHeight, RelativeSource={RelativeSource Self}}"
+                             Width="{Binding Path=Parent.ActualWidth, RelativeSource={RelativeSource Self}}"
+                             Background="#FFECEBE2"
+                             AcceptsReturn="True" IsReadOnly="True"
+                             ScrollViewer.CanContentScroll="True"
+                             ScrollViewer.VerticalScrollBarVisibility="Auto"
+                             lib:ScrollViewerAttachedProperties.ScrollOnTextChanged="True"/>
+                </StackPanel>
+            </Grid>
+
+            <DockPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="5" Background="#FF1680C9">
+                <Menu Background="Transparent">
+                    <MenuItem Background="Transparent" Height="30" Width="Auto" Command="{Binding HelpCommand}">
+                        <MenuItem.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="/InterfaceOfRobots;component/Themes/Images/question.png" Margin="0,2"/>
+                                <TextBlock Text="Help" FontSize="16" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" Margin="5, 0"/>
+                            </StackPanel>
+                        </MenuItem.Header>
+                    </MenuItem>
+                </Menu>
+            </DockPanel>
+        </Grid>
+    </Grid>
+</Page>

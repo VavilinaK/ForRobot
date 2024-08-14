@@ -1,17 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Windows.Controls;
 
 namespace ForRobot.Views.Pages
 {
@@ -20,9 +10,29 @@ namespace ForRobot.Views.Pages
     /// </summary>
     public partial class PageMain2 : Page
     {
+        #region Private variables
+
+        private ViewModels.MainPageViewModel2 _viewModel;
+
+        #endregion
+
+        #region Public variables
+
+        public ViewModels.MainPageViewModel2 ViewModel
+        {
+            get { return _viewModel ?? (ViewModels.MainPageViewModel2)this.DataContext ?? (_viewModel = new ViewModels.MainPageViewModel2()); }
+        }
+
+        #endregion
+
+        #region Constructr
+
         public PageMain2()
         {
             InitializeComponent();
+            if (this.DataContext == null) { this.DataContext = ViewModel; }
         }
+
+        #endregion
     }
 }
