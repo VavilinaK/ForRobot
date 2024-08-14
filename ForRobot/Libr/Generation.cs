@@ -86,8 +86,8 @@ namespace ForRobot.Libr
             if (string.IsNullOrWhiteSpace(pathGenerator))
                 throw new ArgumentNullException("pathGenerator");
 
-            if (string.IsNullOrWhiteSpace(fileName))
-                throw new ArgumentNullException("fileName");
+            //if (string.IsNullOrWhiteSpace(fileName))
+            //    throw new ArgumentNullException("fileName");
 
             this.PathGenerator = pathGenerator;
             this.FileName = fileName;
@@ -166,6 +166,8 @@ namespace ForRobot.Libr
 
         #region Public functions
 
+        //public bool ProccesEnd() => this.ProccesEnd()
+
         /// <summary>
         /// Проверка завершения процесса генерации
         /// </summary>
@@ -201,12 +203,7 @@ namespace ForRobot.Libr
             try
             {
                 if (object.Equals(detal, null)) throw new ArgumentNullException("detal");
-
-                //if (object.Equals(svarka, null)) throw new ArgumentNullException("svarka");
-
                 if (DetalPropertiesAreNull(detal)) throw new Exception("Не заполнен ни один параметр детали");
-                    
-                //if (SvarkaPropertiesAreNull(svarka)) throw new Exception("Не заполнены параметры сварки");
 
                 switch (detal)
                 {

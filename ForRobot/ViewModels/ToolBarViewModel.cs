@@ -112,11 +112,6 @@ namespace ForRobot.ViewModels
 
                             if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                                 this.Robot.PathProgramm = fbd.SelectedPath;
-                            //{
-                            //    string[] files = Directory.GetFiles(fbd.SelectedPath);
-
-                            //    //System.Windows.Forms.MessageBox.Show("Files found: " + files.Length.ToString(), "Message");
-                            //}
                         }
                     }));
             }
@@ -226,7 +221,7 @@ namespace ForRobot.ViewModels
                 return _stopRobotCommand ??
                     (_stopRobotCommand = new RelayCommand(obj =>
                     {
-                        Task.Run(() => this.Robot.Stop());
+                        Task.Run(() => this.Robot.Cancel());
                     }));
             }
         }

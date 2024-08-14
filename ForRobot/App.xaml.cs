@@ -51,7 +51,8 @@ namespace ForRobot
             get => this._log;
             set
             {
-                this._log = (value + "\n");
+                //this._log = (value + "\n");
+                this._log = value;
                 this.Log(this, null);
             }
         }

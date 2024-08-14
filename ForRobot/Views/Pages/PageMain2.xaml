@@ -5,6 +5,9 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ForRobot.Views.Pages"
       xmlns:vm="clr-namespace:ForRobot.ViewModels"
+      xmlns:lib="clr-namespace:ForRobot.Libr"
+      xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+      xmlns:sys="clr-namespace:System;assembly=mscorlib"
       mc:Ignorable="d" 
       d:DesignHeight="800" d:DesignWidth="1500"
       Background="#cfcfcf">
@@ -36,7 +39,42 @@
             <MenuItem>
                 <MenuItem.Template>
                     <ControlTemplate TargetType="{x:Type MenuItem}">
-                        <ComboBox Width="100" Margin="20,5,0,5"/>
+                        <ComboBox FontSize="18" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                                  Width="Auto" MinWidth="200" Margin="42,5,0,5"
+                                  ItemsSource="{Binding Path=RobotNamesCollection, Mode=OneWay}"
+                                  SelectedItem="{Binding Path=SelectedNameRobot, Mode=TwoWay}"
+                                  SelectedIndex="0">
+
+                            <ComboBox.Style>
+                                <Style TargetType="{x:Type ComboBox}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=RobotsCollection.Count}" Value="0">
+                                            <Setter Property="IsEnabled" Value="False"/>
+                                            <Setter Property="IsEditable" Value="True"/>
+                                            <Setter Property="Text" Value="Нет введёных роботов"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Binding="{Binding Path=SelectedNameRobot}" Value="{x:Null}">
+                                            <Setter Property="SelectedIndex" Value="0"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ComboBox.Style>
+                            
+                            <ComboBox.ItemContainerStyle>
+                                <Style TargetType="{x:Type ComboBoxItem}">
+                                    <Setter Property="Height" Value="45"/>
+                                    <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+                                    <Setter Property="TextBlock.VerticalAlignment" Value="Center"/>
+                                </Style>
+                            </ComboBox.ItemContainerStyle>
+
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="Loaded">
+                                    <i:InvokeCommandAction Command="{Binding Path=AddRobotCommand}" CommandParameter="loading"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </ComboBox>
                     </ControlTemplate>
                 </MenuItem.Template>
             </MenuItem>
@@ -44,7 +82,61 @@
             <MenuItem>
                 <MenuItem.Template>
                     <ControlTemplate TargetType="{x:Type MenuItem}">
-                        <Button Grid.Column="1" Width="40" Margin="15,5" HorizontalAlignment="Left" Visibility="Visible" Style="{StaticResource buttonGenerationStyle}"/>
+                        <Button Grid.Column="1" Width="40" Margin="15,5" HorizontalAlignment="Left" Visibility="Visible" ToolTip="Генерация программ"
+                                Command="{Binding Path=GenerateProgramCommand}">
+                            
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}">
+                                    <Setter Property="Height"  Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
+
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type Button}">
+                                                <Border BorderThickness="0" CornerRadius="3">
+                                                    <Border.Style>
+                                                        <Style TargetType="Border">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}" Value="True">
+                                                                    <Setter Property="Background" Value="{StaticResource BrushLightGray}"/>
+                                                                </DataTrigger>
+
+                                                                <DataTrigger Binding="{Binding Path=IsPressed, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}" Value="True">
+                                                                    <Setter Property="Background" Value="{StaticResource BrushAqua}"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+
+                                                    <Image Stretch="Fill">
+                                                        <Image.Style>
+                                                            <Style TargetType="Image">
+                                                                <Setter Property="Source" Value="{StaticResource ImageGenerationOff}"/>
+
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}" Value="True">
+                                                                        <Setter Property="Source" Value="{StaticResource ImageGenerationOn}"/>
+                                                                    </DataTrigger>
+
+                                                                    <DataTrigger Binding="{Binding Path=IsPressed, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}" Value="True">
+                                                                        <Setter Property="Source" Value="{StaticResource ImageGenerationOn}"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Image.Style>
+                                                    </Image>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=RobotsCollection.Count}" Value="0">
+                                            <Setter Property="IsEnabled" Value="False"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
                     </ControlTemplate>
                 </MenuItem.Template>
             </MenuItem>
@@ -60,12 +152,23 @@
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <ToggleButton Grid.Column="0" Name="toggleButtonProgrammControl" Width="40" Margin="5" Style="{StaticResource toggleButtonControlStyle}">
-                                        <!--<inter:Interaction.Triggers>
-                                            <inter:EventTrigger EventName="Checked">
-                                                <command:EventToCommand Command="{Binding Path=OpenCodingCommand}"  PassEventArgsToCommand="True"/>
-                                            </inter:EventTrigger>
-                                        </inter:Interaction.Triggers>-->
+                                    <ToggleButton Grid.Column="0" Name="toggleButtonProgrammControl" Width="40" Margin="5">
+                                        <ToggleButton.Style>
+                                            <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource toggleButtonControlStyle}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=RobotsCollection.Count}" Value="0">
+                                                        <Setter Property="IsChecked" Value="False"/>
+                                                        <Setter Property="IsEnabled" Value="False"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ToggleButton.Style>
+                                        
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="Checked">
+                                                <i:InvokeCommandAction Command="{Binding Path=OpenCodingCommand}" CommandParameter="{Binding Path=., RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}, Mode=FindAncestor}}"/>
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
                                     </ToggleButton>
 
                                     <Border Grid.Column="1" Margin="3" BorderThickness="0">
@@ -79,49 +182,122 @@
                                             </Style>
                                         </Border.Style>
 
-                                        <StackPanel Orientation="Horizontal">
-                                            <StackPanel.Resources>
-                                                <Style TargetType="{x:Type Button}">
-                                                    <Setter Property="Margin" Value="3,0"/>
-                                                    <Setter Property="Width" Value="45"/>
-                                                    <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
-                                                </Style>
-                                            </StackPanel.Resources>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
 
-                                            <Button Width="45">
+                                            <Button Grid.Column="0" Margin="5, 0">
                                                 <Button.Style>
-                                                    <Style TargetType="Button">
-                                                        <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
-                                                        <Setter Property="Background" Value="{StaticResource ImageStart}"/>
+                                                    <Style TargetType="{x:Type Button}">
                                                         <Setter Property="ToolTip" Value="Запуск программы"/>
-                                                        <Setter Property="Command" Value="{Binding Path=RunRobotCommand}"/>
+                                                        <Setter Property="Command" Value="{Binding Path=RunProgramCommand}"/>
 
-                                                        <!--<Style.Triggers>
-                                                            <DataTrigger Binding="{Binding Path=Robot.Pro_State}" Value="#P_ACTIVE">
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                                    <Border x:Name="Panel" Padding="5,0" Style="{StaticResource baseControlTemplateStyle}">
+                                                                        <Grid>
+                                                                            <Grid.ColumnDefinitions>
+                                                                                <ColumnDefinition Width="Auto"/>
+                                                                                <ColumnDefinition Width="Auto"/>
+                                                                            </Grid.ColumnDefinitions>
+
+                                                                            <Image x:Name="ButtonImage" Grid.Column="0" Width="45" Height="45" Stretch="Fill" Source="{StaticResource ImageStart}"/>
+
+                                                                            <Label x:Name="ButtonText" Grid.Column="1" Content="Пуск" FontSize="18" FontFamily="Segoe UI Historic" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
+                                                                        </Grid>
+                                                                    </Border>
+
+                                                                    <ControlTemplate.Triggers>
+                                                                        <DataTrigger Binding="{Binding Path=RobotForControl.Pro_State}" Value="#P_ACTIVE">
+                                                                            <Setter TargetName="ButtonImage" Property="Source" Value="{StaticResource ImagePause}"/>
+                                                                            <Setter TargetName="ButtonText" Property="Content" Value="Остановить"/>
+                                                                        </DataTrigger>
+
+                                                                        <DataTrigger Binding="{Binding Path=RobotForControl.Pro_State}" Value="#P_STOP">
+                                                                            <Setter TargetName="ButtonText" Property="Content" Value="Продолжить"/>
+                                                                        </DataTrigger>
+
+                                                                        <DataTrigger Binding="{Binding Path=RobotForControl.Pro_State}" Value="#P_END">
+                                                                            <Setter TargetName="ButtonImage" Property="Source" Value="{StaticResource ImageRepeat}"/>
+                                                                            <Setter TargetName="ButtonText" Property="Content" Value="Перезапустить"/>
+                                                                        </DataTrigger>
+                                                                    </ControlTemplate.Triggers>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Path=RobotForControl.Pro_State}" Value="#P_ACTIVE">
                                                                 <Setter Property="ToolTip" Value="Остановить программу"/>
-                                                                <Setter Property="Background" Value="{StaticResource ImagePause}"/>
-                                                                <Setter Property="Command" Value="{Binding Path=PauseRobotCommand}"/>
+                                                                <Setter Property="Command" Value="{Binding Path=PauseProgramCommand}"/>
                                                             </DataTrigger>
 
-                                                            <DataTrigger Binding="{Binding Path=Robot.Pro_State}" Value="#P_STOP">
+                                                            <DataTrigger Binding="{Binding Path=RobotForControl.Pro_State}" Value="#P_STOP">
                                                                 <Setter Property="ToolTip" Value="Продолжить программу"/>
                                                             </DataTrigger>
 
-                                                            <DataTrigger Binding="{Binding Path=Robot.Pro_State}" Value="#P_END">
-                                                                <Setter Property="Background" Value="{StaticResource ImageRepeat}"/>
+                                                            <DataTrigger Binding="{Binding Path=RobotForControl.Pro_State}" Value="#P_END">
                                                                 <Setter Property="ToolTip" Value="Перезапустить программу"/>
                                                             </DataTrigger>
-                                                        </Style.Triggers>-->
+                                                        </Style.Triggers>
                                                     </Style>
                                                 </Button.Style>
                                             </Button>
 
-                                            <Button Background="{StaticResource ImageStop}" ToolTip="Аннулировать программу" 
-                                                    Command="{Binding Path=StopRobotCommand}"/>
+                                            <Button Grid.Column="1" Margin="5, 0" ToolTip="Аннулировать программу" Command="{Binding CancelProgramCommand}">
+                                                <Button.Style>
+                                                    <Style TargetType="{x:Type Button}">
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                                    <Border x:Name="Panel" Padding="5,0" Style="{StaticResource baseControlTemplateStyle}">
+                                                                        <Grid>
+                                                                            <Grid.ColumnDefinitions>
+                                                                                <ColumnDefinition Width="Auto"/>
+                                                                                <ColumnDefinition Width="Auto"/>
+                                                                            </Grid.ColumnDefinitions>
 
-                                            <Button Background="{StaticResource ImageSelectProgramm}" ToolTip="Выбор сгенерированной программы"
-                                                    Command="{Binding Path=SelectRobotCommand}"/>
-                                        </StackPanel>
+                                                                            <Image x:Name="ButtonImage" Grid.Column="0" Width="45" Height="45" Stretch="Fill" Source="{StaticResource ImageCancel}"/>
+
+                                                                            <Label x:Name="ButtonText" Grid.Column="1" Content="Аннулировать" FontSize="18" FontFamily="Segoe UI Historic" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
+                                                                        </Grid>
+                                                                    </Border>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+
+                                            <Button Grid.Column="2" ToolTip="Выбор сгенерированной программы" Command="{Binding}">
+                                                <Button.Style>
+                                                    <Style TargetType="{x:Type Button}">
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                                    <Border x:Name="Panel" Style="{StaticResource baseControlTemplateStyle}">
+                                                                        <Grid>
+                                                                            <Grid.ColumnDefinitions>
+                                                                                <ColumnDefinition Width="Auto"/>
+                                                                                <ColumnDefinition Width="Auto"/>
+                                                                            </Grid.ColumnDefinitions>
+
+                                                                            <Image x:Name="ButtonImage" Grid.Column="0" Width="45" Height="45" Stretch="Fill" Source="{StaticResource ImageSelectProgramm}"/>
+
+                                                                            <!--<Label x:Name="ButtonText" Grid.Column="1" Content="Аннулировать" FontSize="18" FontFamily="Segoe UI Historic" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>-->
+                                                                        </Grid>
+                                                                    </Border>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                        </Grid>
                                     </Border>
                                 </Grid>
                             </ToolBar>
@@ -134,7 +310,8 @@
                 <MenuItem.Template>
                     <ControlTemplate TargetType="{x:Type MenuItem}">
                         <StackPanel Orientation="Horizontal">
-                            <Button Width="45" Margin="3,0" Style="{StaticResource buttonStandartStyle}" Command="{Binding Path=StandartParametrsCommand}"/>
+                            <Button Width="45" Margin="3,0" Style="{StaticResource buttonStandartStyle}"
+                                    Command="{Binding Path=StandartParametrsCommand}"/>
                            
                             <Separator HorizontalAlignment="Right" Margin="10">
                                 <Separator.LayoutTransform>
@@ -177,7 +354,8 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <TabControl Grid.Column="0" TabStripPlacement="Left" Background="Transparent">
+            <TabControl Grid.Column="0" TabStripPlacement="Left" Background="Transparent"
+                        SelectedItem="{Binding Path=SelectedMainItem, Mode=TwoWay}">
                 <TabControl.Resources>
                     <Style TargetType="{x:Type TabItem}">
                         <Setter Property="Padding" Value="3"/>
@@ -228,13 +406,50 @@
                                 <RowDefinition Height="25"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="25"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="25"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            
-                            <ComboBox Grid.Row="0" Margin="0" Padding="0, 10" FontSize="18" FontWeight="DemiBold"
+
+                            <Grid Grid.Row="0">
+                                <Grid.Resources>
+                                    <Style TargetType="{x:Type TextBox}">
+                                        <Setter Property="FontSize" Value="16"/>
+                                        <Setter Property="Padding" Value="0, 5"/>
+                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                    </Style>
+                                </Grid.Resources>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBox Grid.Column="0" Text="{Binding Path=ProgrammName, Mode=TwoWay}" MinWidth="200"/>
+                                <TextBox Grid.Column="1" Text="{Binding Path=PathGenerator, Mode=TwoWay}" Margin="15, 0"/>
+                                <Button Grid.Column="2" ToolTip="Изменить программу-генератор" Command="{Binding Path=SelectGeneratorProgramCommand}">
+                                    <Button.Style>
+                                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource baseButtonStyle}">
+                                            <Setter Property="Width" Value="40"/>
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="{x:Type Button}">
+                                                        <Border Padding="3" BorderThickness="0" Style="{StaticResource baseControlTemplateStyle}">
+                                                            <Image Stretch="Fill" Source="{StaticResource ImageEdit}"/>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </Grid>
+
+                            <ComboBox Grid.Row="2" Margin="0" Padding="0, 10" FontSize="18" FontWeight="DemiBold"
                                       VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                                      ItemsSource="{Binding Path=DetalTypeCollection}"
-                                      SelectedItem="{Binding Path=SelectedType, Mode=OneWayToSource}"
+                                      ItemsSource="{Binding Path=DetalTypeCollection, Mode=OneWay}"
+                                      SelectedItem="{Binding Path=SelectedDetalType, Mode=OneWayToSource}"
                                       SelectedIndex="0">
 
                                 <ComboBox.ItemContainerStyle>
@@ -246,7 +461,7 @@
                                 </ComboBox.ItemContainerStyle>
                             </ComboBox>
 
-                            <TabControl Name="tabControlParam" Grid.Row="2" TabStripPlacement="Right" 
+                            <TabControl Name="tabControlParam" Grid.Row="4" TabStripPlacement="Right" 
                                         Margin="0" MaxHeight="600"
                                         SelectedItem="{Binding Path=SelectedItem, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}">
                              
@@ -298,8 +513,8 @@
                                                         </Setter.Value>
                                                     </Setter>
 
-                                                    <!--<Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Path=SelectedType}" Value="Настил с ребром">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Path=SelectedDetalType}" Value="Настил с ребром">
                                                             <Setter Property="Template">
                                                                 <Setter.Value>
                                                                     <ControlTemplate TargetType="ContentControl">
@@ -308,7 +523,7 @@
                                                                 </Setter.Value>
                                                             </Setter>
                                                         </DataTrigger>
-                                                    </Style.Triggers>-->
+                                                    </Style.Triggers>
                                                 </Style>
                                             </ContentControl.Style>
                                         </ContentControl>
@@ -328,8 +543,8 @@
                                                         </Setter.Value>
                                                     </Setter>
 
-                                                    <!--<Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Path=SelectedType}" Value="Настил с ребром">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Path=SelectedDetalType}" Value="Настил с ребром">
                                                             <Setter Property="Template">
                                                                 <Setter.Value>
                                                                     <ControlTemplate TargetType="ContentControl">
@@ -338,7 +553,7 @@
                                                                 </Setter.Value>
                                                             </Setter>
                                                         </DataTrigger>
-                                                    </Style.Triggers>-->
+                                                    </Style.Triggers>
                                                 </Style>
                                             </ContentControl.Style>
                                         </ContentControl>
@@ -358,8 +573,8 @@
                                                         </Setter.Value>
                                                     </Setter>
 
-                                                    <!--<Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Path=SelectedType}" Value="Настил с ребром">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Path=SelectedDetalType}" Value="Настил с ребром">
                                                             <Setter Property="Template">
                                                                 <Setter.Value>
                                                                     <ControlTemplate TargetType="ContentControl">
@@ -368,7 +583,7 @@
                                                                 </Setter.Value>
                                                             </Setter>
                                                         </DataTrigger>
-                                                    </Style.Triggers>-->
+                                                    </Style.Triggers>
                                                 </Style>
                                             </ContentControl.Style>
                                         </ContentControl>
@@ -376,10 +591,10 @@
                                 </TabItem>
                             </TabControl>
 
-                            <StackPanel Grid.Row="4" Orientation="Vertical">
+                            <StackPanel Grid.Row="6" Orientation="Vertical">
                                 <ToggleButton Name="toggleButtonInfo" Width="45" Height="45" HorizontalAlignment="Left" Style="{StaticResource toggleButtonInfoStyle}"/>
 
-                                <Border Padding="7" Margin="5" BorderThickness="5"
+                                <Border Padding="7" Width="600" Margin="5" BorderThickness="5"
                                         BorderBrush="#FF1680C9" Background="#FFD5EBFD"
                                         HorizontalAlignment="Left">
 
@@ -399,7 +614,7 @@
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="Text" Value="# Крайняя левая (как на чертеже) точка детали устанавливается по краю первого козелка. &#x0a;&#x0a;# Верхний торец - по продольным упорам на козелках.&#x0a;&#x0a;# Все отсчёты ведутся от 0, образованного продольным и поперечным упорами на первом козелке."/>
 
-                                                <!--<Style.Triggers>
+                                                <Style.Triggers>
                                                     <MultiDataTrigger>
                                                         <MultiDataTrigger.Conditions>
                                                             <Condition Binding="{Binding Path=SelectedItem.Header, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Value="Общие"/>
@@ -413,7 +628,7 @@
                                                     <DataTrigger Binding="{Binding Path=SelectedItem.Header, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Value="Сварка">
                                                         <Setter Property="Text" Value="Т3-ИП6  == 37 см/м&#x0a;Т3-ИП8  == 31 см/м&#x0a;Т3-ИП10 == 24 см/м"/>
                                                     </DataTrigger>
-                                                </Style.Triggers>-->
+                                                </Style.Triggers>
                                             </Style>
                                         </TextBlock.Style>
                                     </TextBlock>
@@ -440,16 +655,46 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <ComboBox Grid.Row="0" Margin="0,5" FontSize="18" FontWeight="DemiBold"
+                            <Button Grid.Row="0" Grid.Column="0" ToolTip="Удалить робота"
+                                    Command="{Binding Path=DeleteRobotCommand}">
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource baseButtonStyle}">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                    <Border BorderThickness="0" Style="{StaticResource baseControlTemplateStyle}">
+                                                        <Image Stretch="Fill" Source="{StaticResource ImageDelete}"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                            
+                            <ComboBox Grid.Row="0" Grid.Column="1" Margin="5" FontSize="18"
                                       VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                                      ItemsSource="{Binding Path=TypeCollection}"
-                                      SelectedItem="{Binding Path=SelectedType, Mode=OneWayToSource}"
+                                      ItemsSource="{Binding Path=RobotsCollection, Mode=OneWay}"
+                                      SelectedItem="{Binding Path=SelectedRobot, Mode=TwoWay}"
                                       SelectedIndex="0">
+
+                                <ComboBox.Style>
+                                    <Style TargetType="{x:Type ComboBox}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=RobotsCollection.Count}" Value="0">
+                                                <Setter Property="IsEnabled" Value="False"/>
+                                                <Setter Property="IsEditable" Value="True"/>
+                                                <Setter Property="Text" Value="Нет введёных роботов"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ComboBox.Style>
 
                                 <ComboBox.ItemContainerStyle>
                                     <Style TargetType="{x:Type ComboBoxItem}">
@@ -458,13 +703,65 @@
                                         <Setter Property="TextBlock.VerticalAlignment" Value="Center"/>
                                     </Style>
                                 </ComboBox.ItemContainerStyle>
+
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Item1}" Padding="0,5"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
                             </ComboBox>
 
-                            <Button Grid.Row="0" Grid.Column="1" ToolTip="Удалить"/>
+                            <Button Grid.Row="0" Grid.Column="2" ToolTip="Повторное соединение" Command="{Binding UpDateConnectionCommand}">
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource baseButtonStyle}">
+                                        <Setter Property="Width" Value="0"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                    <Border BorderThickness="0" Style="{StaticResource baseControlTemplateStyle}">
+                                                        <Image Stretch="Fill" Source="{StaticResource ImageUpdate}"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
 
-                            <Button Grid.Row="0" Grid.Column="2" ToolTip="Добавить робота"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=SelectedRobot.Item2.IsConnection}" Value="False">
+                                                <Setter Property="Width" Value="40"/>
+                                            </DataTrigger>
 
-                            <TabControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" TabStripPlacement="Bottom"
+                                            <DataTrigger Binding="{Binding Path=Visibility, RelativeSource={RelativeSource Self}}" Value="Visible">
+                                                <DataTrigger.EnterActions>
+                                                    <BeginStoryboard Name="StartBlinking">
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" RepeatBehavior="Forever" AutoReverse="True" Duration="0:0:1"/>
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </DataTrigger.EnterActions>
+                                            </DataTrigger>
+                                        </Style.Triggers>                                       
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                            <Button Grid.Row="0" Grid.Column="3" ToolTip="Добавить робота" Command="{Binding Path=AddRobotCommand}">
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource baseButtonStyle}">
+                                        <Setter Property="Width" Value="40"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                    <Border BorderThickness="0" Style="{StaticResource baseControlTemplateStyle}">
+                                                        <Image Stretch="Fill" Source="{StaticResource ImageAdd}"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                            <TabControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" TabStripPlacement="Bottom"
                                         Background="#a3a3a3" BorderBrush="#4a4a4a" BorderThickness="1.25">
                                 
                                 <TabControl.Resources>
@@ -537,9 +834,8 @@
                                             <Label Grid.Row="0" Grid.Column="0" Content="Хост"/>
                                             <Label Grid.Row="0" Grid.Column="1" Content="Порт"/>
 
-                                            <TextBox Grid.Row="1" Grid.Column="0" Text="{Binding Path=Robot.Host, Mode=TwoWay, FallbackValue='0.0.0.0', TargetNullValue='0.0.0.0', UpdateSourceTrigger=LostFocus}"/>
-
-                                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=Robot.Port, Mode=TwoWay, FallbackValue=0000, TargetNullValue=0000, UpdateSourceTrigger=LostFocus}"/>
+                                            <TextBox Grid.Row="1" Grid.Column="0" Text="{Binding Path=SelectedRobot.Item2.Host, Mode=TwoWay, FallbackValue='0.0.0.0', TargetNullValue='0.0.0.0', UpdateSourceTrigger=LostFocus}"/>
+                                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=SelectedRobot.Item2.Port, Mode=TwoWay, FallbackValue=0000, TargetNullValue=0000, UpdateSourceTrigger=LostFocus}"/>
                                         </Grid>
 
                                         <Grid Grid.Row="1">
@@ -548,8 +844,23 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
 
-                                            <TextBox Grid.Column="0"/>
-                                            <Button Grid.Column="1" Height="30" ToolTip="Изменить исходящую папку"/>
+                                            <TextBox Grid.Column="0" Text="{Binding Path=SelectedRobot.Item2.PathProgramm, Mode=TwoWay}"/>
+                                            <Button Grid.Column="1" ToolTip="Изменить исходящую папку" Command="{Binding ChangePatnOnPCCommand}">
+                                                <Button.Style>
+                                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource baseButtonStyle}">
+                                                        <Setter Property="Width" Value="30"/>
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                                    <Border BorderThickness="0" Style="{StaticResource baseControlTemplateStyle}">
+                                                                        <Image Stretch="Fill" Source="{StaticResource ImageEdit}"/>
+                                                                    </Border>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
                                         </Grid>
 
                                         <Grid Grid.Row="2">
@@ -558,11 +869,42 @@
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
 
-                                            <Button Grid.Column="0" Height="30" ToolTip="Вверх до"/>
-                                            <TextBox Grid.Column="1"/>
+                                            <Button Grid.Column="0" Height="30" ToolTip="Вверх до">
+                                                <Button.Style>
+                                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource baseButtonStyle}">
+                                                        <Setter Property="Width" Value="30"/>
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                                    <Border BorderThickness="0" Style="{StaticResource baseControlTemplateStyle}">
+                                                                        <Image Stretch="Fill" Source="{StaticResource ImageUp}"/>
+                                                                    </Border>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="3">
+                                                <TextBlock Text="Ooo" Background="White" Foreground="Gray" Width="Auto" TextAlignment="Center" Panel.ZIndex="1">
+                                                    <TextBlock.Margin>
+                                                        <MultiBinding Converter="{StaticResource ThicknessConvert}">
+                                                            <Binding Path="0"/>
+                                                            <Binding Path="0"/>
+                                                            <Binding Path="10"/>
+                                                            <Binding Path="5"/>
+                                                        </MultiBinding>
+                                                    </TextBlock.Margin>
+                                                </TextBlock>
+                                                
+                                                <TextBox Text="Aaaa"
+                                                         Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}"
+                                                         HorizontalContentAlignment="Left" Margin="0"/>
+                                            </StackPanel>
                                         </Grid>
 
-                                        <TreeView Grid.Row="3" Margin="5">
+                                        <TreeView Grid.Row="3" Margin="5" ItemsSource="{Binding Path=SelectedRobot.Item2.FileTree}">
                                             
                                         </TreeView>
                                     </Grid>
@@ -599,14 +941,23 @@
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="*"/>
                                         </Grid.RowDefinitions>
-                                        <!--<Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>-->
 
-                                        <Label Grid.Row="0" Grid.Column="0" Content="Ток - {0}"/>
-                                        <Label Grid.Row="1" Grid.Column="0" Content="Усилие подачи - {0}"/>
-                                        
+                                        <Label Grid.Row="0">
+                                            <Label.Content>
+                                                <MultiBinding Converter="{StaticResource StringConvert}" ConverterParameter="Ток - {0}">
+                                                    <Binding Path="SelectedRobot.Item1.Current"  Mode="OneWay" TargetNullValue="0" FallbackValue="0" UpdateSourceTrigger="PropertyChanged"/>
+                                                </MultiBinding>
+                                            </Label.Content>
+                                        </Label>
+
+
+                                        <Label Grid.Row="1">
+                                            <Label.Content>
+                                                <MultiBinding Converter="{StaticResource StringConvert}" ConverterParameter="Усилие подачи - {0}">
+                                                    <Binding Path="SelectedRobot.Item1.WireFeed"  Mode="OneWay" TargetNullValue="0" FallbackValue="0" UpdateSourceTrigger="PropertyChanged"/>
+                                                </MultiBinding>
+                                            </Label.Content>
+                                        </Label>
                                     </Grid>
                                 </TabItem>
                             </TabControl>
@@ -624,7 +975,8 @@
                 <Grid Grid.Row="0">
                     <Frame Margin="0"
                            NavigationUIVisibility="Hidden"
-                           Background="#a3a3a3"/>
+                           Background="#a3a3a3"
+                           Content="{Binding Path=PageNow, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </Grid>
 
                 <TabControl Grid.Row="1" TabStripPlacement="Bottom"
@@ -661,27 +1013,87 @@
                     </TabControl.Resources>
 
                     <TabItem Header="Статус">
-                        <ListBox FontSize="18" Padding="10" Margin="3"
-                                  Background="#4a4a4a"
-                                  ScrollViewer.CanContentScroll="True"
-                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                 ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                        <ListBox SelectionMode="Single" FontSize="18" Padding="0, 10" Margin="3"
+                                 Background="White"
+                                 ScrollViewer.CanContentScroll="True"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                 ItemsSource="{Binding Path=RobotsCollection, Mode=OneWay}">
                             
-                            <ListBoxItem Background="Transparent" Foreground="White">
-                                <StackPanel Orientation="Horizontal">
-                                    <!--<Image Source="/WpfTutorialSamples;component/Images/bullet_blue.png" />-->
-                                    <TextBlock Text="Coffie"></TextBlock>
-                                </StackPanel>
-                            </ListBoxItem>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.Resources>
+                                            <Style TargetType="{x:Type TextBlock}">
+                                                <Setter Property="Margin" Value="5, 0"/>
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="TextAlignment" Value="Center"/>
+                                            </Style>
+                                        </Grid.Resources>
+                                        
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="20"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Ellipse Grid.Column="0" 
+                                                 Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"
+                                                 Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}">
+
+                                            <Ellipse.Style>
+                                                <Style TargetType="{x:Type Ellipse}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Path=Item2.Pro_State}" Value="#P_ACTIVE">
+                                                            <DataTrigger.EnterActions>
+                                                                <BeginStoryboard x:Name="blinkAnimation">
+                                                                    <Storyboard>
+                                                                        <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" RepeatBehavior="Forever" AutoReverse="True" Duration="0:0:1.25"/>
+                                                                    </Storyboard>
+                                                                </BeginStoryboard>
+                                                            </DataTrigger.EnterActions>
+                                                            
+                                                            <DataTrigger.ExitActions>
+                                                                <StopStoryboard BeginStoryboardName="blinkAnimation"/>
+                                                            </DataTrigger.ExitActions>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Ellipse.Style>
+                                            
+                                            <Ellipse.Fill>
+                                                <RadialGradientBrush>
+                                                    <GradientStop Color="White" Offset="0"/>
+                                                    <GradientStop Color="{Binding Path=Foreground.Color, ElementName=statusString}" Offset="1"/>
+                                                </RadialGradientBrush>
+                                            </Ellipse.Fill>
+                                        </Ellipse>
+
+                                        <TextBlock Grid.Column="1" Text="{Binding Item1}"/>
+                                        <TextBlock Grid.Column="2" Text="-"/>
+                                        <TextBlock x:Name="statusString" Grid.Column="3" Text="{Binding Item2.ProcessState}" FontWeight="Bold"
+                                                   Foreground="{Binding Path=Text, RelativeSource={RelativeSource Self}, Converter={StaticResource StatusColorConvert}}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="SelectionChanged">
+                                    <i:InvokeCommandAction Command="{Binding Path=SelectRobotCommand}" CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource AncestorType={x:Type ListBox}, Mode=FindAncestor}}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
                         </ListBox>
                     </TabItem>
 
                     <TabItem Header="Сообщения">
-                        <TextBox Text="Aaaa" FontSize="15" Foreground="Black" TextWrapping="Wrap"
+                        <TextBox Text="{Binding Path=Logger, UpdateSourceTrigger=PropertyChanged}"
+                                 FontSize="15" Foreground="Black" TextWrapping="Wrap"
                                  Padding="10" Margin="3" Background="White"
                                  AcceptsReturn="True" IsReadOnly="True"
                                  ScrollViewer.CanContentScroll="True"
-                                 ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 lib:ScrollViewerAttachedProperties.ScrollOnTextChanged="True"/>
                     </TabItem>
                 </TabControl>
             </Grid>

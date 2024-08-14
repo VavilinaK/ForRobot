@@ -5,33 +5,47 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ForRobot.Views.Windows"
         mc:Ignorable="d"
-        Title="Input"
+        Title="Окно ввода"
         SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterScreen"
-        Background="Gainsboro">
-    
-    <Grid Margin="15">
+        Background="Gainsboro"
+        ResizeMode="NoResize"
+        ContentRendered="Window_ContentRendered">
+
+    <Window.Resources>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Margin" Value="20, 5"/>
+            <Setter Property="MinWidth" Value="60"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="5, 3"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20, 10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Label Name="Question" Grid.Column="1">Question:</Label>
-        <TextBox Name="InputText" Grid.Column="1" Grid.Row="1" MinWidth="250"/>
+        <Label Name="Question" Grid.Column="1" Grid.Row="0"
+               Content="Текст:" FontSize="14"/>
 
-        <Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="0,15,0,0">
+        <TextBox Name="InputText" Grid.Column="1" Grid.Row="1" MinWidth="250" Margin="0, 5"
+                 Text="" FontSize="14" Padding="3"/>
+
+        <Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            
-            <Button Grid.Column="0" IsCancel="True" MinWidth="60" Margin="20, 5">_Cancel</Button>
-            <Button Grid.Column="1" IsDefault="True" Name="btnDialogOk" MinWidth="60" Margin="20, 5">_OK</Button>
+
+            <Button Grid.Column="0" Content="_Отмена" IsCancel="True"/>
+            <Button Name="btnDialogOk" Grid.Column="1" Content="_OK" IsDefault="True" Click="BtnDialogOk_Click"/>
         </Grid>
     </Grid>
 </Window>

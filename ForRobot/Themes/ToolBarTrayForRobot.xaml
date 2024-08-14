@@ -187,14 +187,14 @@
                                                 <Button.Style>
                                                     <Style TargetType="Button">
                                                         <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
-                                                        <Setter Property="Background" Value="{StaticResource ImageStart}"/>
+                                                        <!--<Setter Property="Background" Value="{StaticResource ImageStart}"/>-->
                                                         <Setter Property="ToolTip" Value="Запуск программы"/>
                                                         <Setter Property="Command" Value="{Binding Path=RunRobotCommand}"/>
 
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding Path=Robot.Pro_State}" Value="#P_ACTIVE">
                                                                 <Setter Property="ToolTip" Value="Остановить программу"/>
-                                                                <Setter Property="Background" Value="{StaticResource ImagePause}"/>
+                                                                <!--<Setter Property="Background" Value="{StaticResource ImagePause}"/>-->
                                                                 <Setter Property="Command" Value="{Binding Path=PauseRobotCommand}"/>
                                                             </DataTrigger>
 
@@ -203,7 +203,7 @@
                                                             </DataTrigger>
 
                                                             <DataTrigger Binding="{Binding Path=Robot.Pro_State}" Value="#P_END">
-                                                                <Setter Property="Background" Value="{StaticResource ImageRepeat}"/>
+                                                                <!--<Setter Property="Background" Value="{StaticResource ImageRepeat}"/>-->
                                                                 <Setter Property="ToolTip" Value="Перезапустить программу"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
@@ -216,7 +216,7 @@
                                                 <Button.Style>
                                                     <Style TargetType="Button">
                                                         <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
-                                                        <Setter Property="Background" Value="{StaticResource ImageStop}"/>
+                                                        <!--<Setter Property="Background" Value="{StaticResource ImageStop}"/>-->
                                                     </Style>
                                                 </Button.Style>
                                             </Button>
@@ -227,7 +227,7 @@
                                                 <Button.Style>
                                                     <Style TargetType="Button">
                                                         <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
-                                                        <Setter Property="Background" Value="{StaticResource ImageSelectProgramm}"/>
+                                                        <!--<Setter Property="Background" Value="{StaticResource ImageSelectProgramm}"/>-->
                                                     </Style>
                                                 </Button.Style>
                                             </Button>
