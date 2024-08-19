@@ -1,0 +1,22 @@
+﻿using System;
+
+namespace ForRobot.Model
+{
+    public enum FileTypes
+    {
+        /// <summary>
+        /// Папка
+        /// </summary>
+        Folder,
+
+        /// <summary>
+        /// Файл с расширением .src
+        /// </summary>
+        Program,
+
+        /// <summary>
+        /// Файл с расширением .dat
+        /// </summary>
+        DataList
+    }
+}
