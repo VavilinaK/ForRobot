@@ -210,11 +210,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Themes\PathBarDirectory.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\TabControlStyleResourceDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\ToolBarTrayForRobot.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\NavigationTreeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\PathBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -248,10 +260,14 @@
     </Compile>
     <Compile Include="AsyncRelayCommand.cs" />
     <Compile Include="BaseClass.cs" />
+    <Compile Include="Libr\Controls\INavTreeItem.cs" />
     <Compile Include="Libr\Converters\ImageConverter.cs" />
+    <Compile Include="Libr\Converters\NullBooleanConverter.cs" />
+    <Compile Include="Libr\Converters\SelectProgramConverter.cs" />
     <Compile Include="Libr\Converters\JsonCommentConverter.cs" />
     <Compile Include="Libr\Converters\RadioButtonConverter.cs" />
     <Compile Include="Libr\Converters\ThicknessConverter.cs" />
+    <Compile Include="Libr\FileCollection.cs" />
     <Compile Include="Libr\FullyObservableCollection.cs" />
     <Compile Include="Libr\Generation.cs" />
     <Compile Include="Libr\AutoScrollBehavior.cs" />
@@ -267,11 +283,16 @@
     <Compile Include="Libr\ScrollViewerAttachedProperties.cs" />
     <Compile Include="Libr\Converters\StatusColorConverter.cs" />
     <Compile Include="Libr\Converters\StringFormatConverter.cs" />
+    <Compile Include="Libr\TreeViewSelectedItemBehavior.cs" />
+    <Compile Include="Model\Controls\File.cs" />
+    <Compile Include="Model\Controls\IFile.cs" />
+    <Compile Include="Model\Controls\NavTreeItem.cs" />
     <Compile Include="Model\Detals\DetalTypes.cs" />
     <Compile Include="Model\Detals\DistanceBetweenRebraType.cs" />
     <Compile Include="Model\Detals\Plita.cs" />
     <Compile Include="Model\Detals\ScoseTypes.cs" />
     <Compile Include="Model\FileData.cs" />
+    <Compile Include="Model\FileFlags.cs" />
     <Compile Include="Model\FileTypes.cs" />
     <Compile Include="Model\StatusProcess.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -304,7 +325,14 @@
     <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel2.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\Controls\NavigationTreeViewVM.cs" />
     <Compile Include="ViewModels\ToolBarViewModel.cs" />
+    <Compile Include="Views\Controls\NavigationTreeView.xaml.cs">
+      <DependentUpon>NavigationTreeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\PathBar.xaml.cs">
+      <DependentUpon>PathBar.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Pages\Page2D.xaml.cs">
       <DependentUpon>Page2D.xaml</DependentUpon>
     </Compile>
@@ -339,6 +367,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Resource Include="Themes\Images\dataFile.png" />
+    <Resource Include="Themes\Images\programFile.png" />
+    <Resource Include="Themes\Images\folder.png" />
     <Resource Include="Themes\Images\up.png" />
     <Resource Include="Themes\Images\repeat.png" />
     <Resource Include="README.txt">

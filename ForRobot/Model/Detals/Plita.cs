@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Collections.Generic;
-//using System.Collections.ObjectModel;
 
 using System.Configuration;
 
@@ -177,7 +176,6 @@ namespace ForRobot.Model.Detals
         public bool DiferentDistance
         {
             get => this._diferentDistance;
-            //get => this._diferentDistance ?? false;
             set
             {
                 Set(ref this._diferentDistance, value);

@@ -26,8 +26,6 @@ namespace ForRobot.Libr
 
         private NLog.Logger Logger { get; } = NLog.LogManager.GetCurrentClassLogger();
 
-        //private bool disposed = false;
-
         /// <summary>
         /// Все свойства Detal равны нулю
         /// </summary>
@@ -86,9 +84,6 @@ namespace ForRobot.Libr
             if (string.IsNullOrWhiteSpace(pathGenerator))
                 throw new ArgumentNullException("pathGenerator");
 
-            //if (string.IsNullOrWhiteSpace(fileName))
-            //    throw new ArgumentNullException("fileName");
-
             this.PathGenerator = pathGenerator;
             this.FileName = fileName;
             this.PathProgramm = pathControl;
@@ -98,43 +93,7 @@ namespace ForRobot.Libr
 
         #region Private functions
 
-        private void StartGeneration(object detal, string[] args)
-        {
-            try
-            {
-                //Process process = new Process();
-                switch (detal)
-                {
-                    case Plita plita:
-                        this.LogMessage("Начат процесс генерации программы для плиты с рёбрами . . .");
-                        break;
 
-                    case PlitaStringer stringer:
-                        this.LogMessage("Начат процесс генерации программы для плиты со стрингером . . .");
-                        break;
-
-                    case PlitaTreygolnik treygolnik:
-                        this.LogMessage("Начат процесс генерации программы для плиты треугольником . . .");
-                        break;
-                }
-
-                if (!File.Exists(this.PathGenerator))
-                {
-                    this.LogErrorMessage($"Не существует файла {this.PathGenerator}");
-                    //this.Dispose();
-                    return;
-                }
-
-                //process.StartInfo.FileName = Path.Combine(this.PathGenerator);
-                //process.StartInfo.Arguments = String.Join(" ", args);
-                //process.Start();
-                //process.WaitForExit();
-            }
-            catch (Exception ex)
-            {
-                this.LogErrorMessage(ex.Message, ex);
-            }
-        }
 
         #endregion
 
@@ -166,28 +125,26 @@ namespace ForRobot.Libr
 
         #region Public functions
 
-        //public bool ProccesEnd() => this.ProccesEnd()
-
         /// <summary>
         /// Проверка завершения процесса генерации
         /// </summary>
         /// <param name="pathProgram">Путь к папке с программой</param>
         /// <returns></returns>
-        public bool ProccesEnd(string pathProgram)
+        public bool ProccesEnd()
         {
-            bool res = false;
+            bool res = true;
             try
             {
-                if (string.IsNullOrWhiteSpace(pathProgram))
-                    throw new ArgumentNullException("Путь к папке с программой");
-
-                if (File.Exists(Path.Combine(pathProgram, string.Join("", this.FileName, ".src"))))
+                foreach(var subdir in Directory.GetDirectories(this.PathProgramm))
                 {
-                    this.LogMessage($"Файл {string.Join("", this.FileName, ".src")} сгенерирован в {pathProgram}");
-                    res = true;
+                    if (File.Exists(Path.Combine(subdir, string.Join("", this.FileName, ".src"))))
+                        this.LogMessage($"Файл {string.Join("", this.FileName, ".src")} сгенерирован в {subdir}");
+                    else
+                    {
+                        this.LogErrorMessage($"Файл {Path.Combine(subdir, string.Join("", this.FileName, ".src"))} не найден");
+                        res = false;
+                    }
                 }
-                else
-                    this.LogErrorMessage($"Файл {Path.Combine(pathProgram, string.Join("", this.FileName, ".src"))} не найден");
             }
             catch(Exception ex)
             {
@@ -196,14 +153,21 @@ namespace ForRobot.Libr
             return res;
         }
 
-        public void Start() => this.Start(null);
-
         public void Start(Detal detal)
         {
             try
             {
-                if (object.Equals(detal, null)) throw new ArgumentNullException("detal");
-                if (DetalPropertiesAreNull(detal)) throw new Exception("Не заполнен ни один параметр детали");
+                if (detal == null)
+                    throw new ArgumentNullException("detal");
+
+                if (DetalPropertiesAreNull(detal))
+                    throw new Exception("Не заполнен ни один параметр детали");
+
+                if (!File.Exists(this.PathGenerator))
+                {
+                    this.LogErrorMessage($"Не существует файла {this.PathGenerator}");
+                    return;
+                }
 
                 switch (detal)
                 {
@@ -220,20 +184,10 @@ namespace ForRobot.Libr
                         break;
                 }
 
-                if (!File.Exists(this.PathGenerator))
-                {
-                    this.LogErrorMessage($"Не существует файла {this.PathGenerator}");
-                    //this.Dispose();
-                    return;
-                }
+                string[] args = { $"-p {new FileInfo(this.PathGenerator).DirectoryName}\\{this.FileName}.json" , $"-o \"{this.PathProgramm}\"" };
 
-                string[] args = { $"-p {new FileInfo(this.PathGenerator).DirectoryName}\\{this.FileName}.json" , $"-o \"{this.PathProgramm}\"" , $"-n \"{this.FileName}.src\"" };
-
-                //string arv = "";
-                //for(int i=0; i < args.GetLength(0); i++)
-                //{
-                //    arv += (string.IsNullOrWhiteSpace(args[i, 1]) ? "" : $" {args[i, 0]} {args[i, 1]}");
-                //}
+                if (!string.IsNullOrWhiteSpace(this.FileName))
+                    args = args.Append<string>($"-n \"{this.FileName}.src\"").ToArray<string>();
 
                 Process process = new Process()
                 {
@@ -243,56 +197,22 @@ namespace ForRobot.Libr
                         RedirectStandardOutput = true,
                         RedirectStandardError = true,
                         CreateNoWindow = true,
-                        //RedirectStandardInput = true,
                         WorkingDirectory = new FileInfo(this.PathGenerator).DirectoryName,
                         FileName = "python.exe",
-                        Arguments = this.PathGenerator + " " +  string.Join(" ", args)
-                        //WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden
+                        Arguments = this.PathGenerator + " " + string.Join(" ", args)
+                       //WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden
                     }
                 };
                 process.Start();
-                //process.StandardInput.Write($"/K {new DirectoryInfo(new FileInfo(this.PathGenerator).DirectoryName).Root}:& cd {new FileInfo(this.PathGenerator).DirectoryName}& py {this.PathGenerator}" + arv);
-                //process.StandardInput.Flush();
-                //process.StandardInput.Close();
-                //process.BeginOutputReadLine();
-                //string output = process.StandardOutput.ReadToEnd();
-                //if (!string.IsNullOrEmpty(output) && !string.Equals(output.TrimEnd().TrimStart().Replace(">", ""), new FileInfo(this.PathGenerator).DirectoryName))
-                //    new Exception(output);
                 process.WaitForExit();
             }
             catch (Exception ex)
             {
                 this.LogErrorMessage(ex.Message, ex);
                 this.Logger.Error(ex.Message);
-                //this.Dispose();
                 return;
             }
         }
-
-        #endregion
-
-        #region Implementations of IDisposable
-
-        //~Generation() => Dispose(false);
-
-        //public void Dispose() => Dispose(true);
-
-        //protected virtual void Dispose(bool disposing)
-        //{
-        //    if (disposed) return;
-        //    if (disposing)
-        //    {
-        //        if (this.Connection == null)
-        //        {
-        //            disposed = true;
-        //            return;
-        //        }
-        //        else
-        //            this.Connection.Dispose();
-        //    }
-        //    disposed = true;
-        //    GC.SuppressFinalize(this);
-        //}
 
         #endregion
     }

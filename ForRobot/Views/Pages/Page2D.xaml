@@ -10,43 +10,43 @@
       Background="Transparent"
       Title="Page2D">
 
-    <Grid Margin="15">
+    <Grid Margin="15, 15, 15, 0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="15"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+        <StackPanel Grid.Row="0">
+            <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <Image Width="Auto" Height="Auto" Stretch="Fill"
+                       Source="{Binding Path=Detal2D.GenericImage, RelativeSource={RelativeSource AncestorType={x:Type local:Page2D}, Mode=FindAncestor}}"
+                       HorizontalAlignment="Center" VerticalAlignment="Center">
 
-            <Image Grid.Column="1" Width="Auto" Height="Auto" Source="{Binding Path=Detal2D.GenericImage, RelativeSource={RelativeSource AncestorType={x:Type local:Page2D}, Mode=FindAncestor}}"
-               HorizontalAlignment="Center" VerticalAlignment="Center">                
-                <Image.Style>
-                    <Style TargetType="Image">
-                        <Setter Property="MaxHeight" Value="600"/>
+                    <Image.Style>
+                        <Style TargetType="Image">
+                            <Setter Property="MaxHeight" Value="600"/>
 
-                        <Style.Triggers>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding Path=Detal2D.DetalType, RelativeSource={RelativeSource AncestorType={x:Type local:Page2D}, Mode=FindAncestor}}" Value="Настил с ребром"/>
-                                    <Condition Binding="{Binding Path=Detal2D.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type local:Page2D}, Mode=FindAncestor}}" Value="d_rect"/>
-                                </MultiDataTrigger.Conditions>
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding Path=Detal2D.DetalType, RelativeSource={RelativeSource AncestorType={x:Type local:Page2D}, Mode=FindAncestor}}" Value="Настил с ребром"/>
+                                        <Condition Binding="{Binding Path=Detal2D.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type local:Page2D}, Mode=FindAncestor}}" Value="d_rect"/>
+                                    </MultiDataTrigger.Conditions>
 
-                                <Setter Property="MaxHeight" Value="400"/>
-                            </MultiDataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Image.Style>
-            </Image>
-        </Grid>
+                                    <Setter Property="MaxHeight" Value="400"/>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+            </ScrollViewer>
+        </StackPanel>
 
-        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-            <Image Width="Auto" Height="Auto" MaxHeight="290" Source="{Binding Path=Detal2D.RebraImage, RelativeSource={RelativeSource AncestorType={x:Type local:Page2D}, Mode=FindAncestor}}" Stretch="None"/>
-        </ScrollViewer>
+        <StackPanel Grid.Row="2">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <Image Width="Auto" Height="Auto" MaxHeight="290" Source="{Binding Path=Detal2D.RebraImage, RelativeSource={RelativeSource AncestorType={x:Type local:Page2D}, Mode=FindAncestor}}" Stretch="None"/>
+            </ScrollViewer>
+        </StackPanel>
     </Grid>
 </Page>
