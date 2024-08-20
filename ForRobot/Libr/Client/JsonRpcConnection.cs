@@ -18,7 +18,7 @@ namespace ForRobot.Libr.Client
         private const int DefaultPort = 0000;
         private const string DefaultHost = "0.0.0.0";
         private const string OkResponse = "Ok";
-        private const string DefaulRoot = "KRC:\\";
+        internal const string DefaulRoot = "KRC:\\";
 
         #endregion
 

@@ -136,7 +136,7 @@
                 <ItemsControl Grid.Column="2" ItemsSource="{Binding Path=Items}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapPanel IsItemsHost="True" MaxWidth="1400"/>
+                            <WrapPanel IsItemsHost="True" MaxWidth="1100"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
 

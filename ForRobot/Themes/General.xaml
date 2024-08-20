@@ -14,6 +14,8 @@
     <conv:StatusColorConverter x:Key="StatusColorConvert"/>
     <conv:StringFormatConverter x:Key="StringConvert"/>
     <conv:ThicknessConverter x:Key="ThicknessConvert"/>
+    <conv:SelectProgramConverter x:Key="SelectProgramConvert"/>
+    <conv:NullBooleanConverter x:Key="NullBooleanConvert"/>
 
     <!--Colors-->
     <Color x:Key="Aqua">#00FFFF</Color>    
@@ -37,7 +39,7 @@
     <BitmapImage x:Key="ImageSelectProgramm" UriSource="/InterfaceOfRobots;component/Themes/Images/SelectProgramm.png"/>
 
     <BitmapImage x:Key="ImageDelete" UriSource="/InterfaceOfRobots;component/Themes/Images/delete.png"/>
-    <BitmapImage x:Key="ImageUpdate" UriSource="/InterfaceOfRobots;component/Themes/Images/update.png"/>
+    <BitmapImage x:Key="ImageUpdate" UriSource="/InterfaceOfRobots;component/Themes/Images/update.png" x:Shared="false"/>
     <BitmapImage x:Key="ImageAdd" UriSource="/InterfaceOfRobots;component/Themes/Images/Add.png"/>
     <BitmapImage x:Key="ImageEdit" UriSource="/InterfaceOfRobots;component/Themes/Images/edit.png" x:Shared="false"/>
     <BitmapImage x:Key="ImageUp" UriSource="/InterfaceOfRobots;component/Themes/Images/up.png" x:Shared="false"/>
@@ -47,6 +49,11 @@
     <BitmapImage x:Key="ImageSlopeRight" UriSource="/InterfaceOfRobots;component/Themes/Images/Slope_right.png"/>
     <BitmapImage x:Key="ImageTrapezoidTopParam" UriSource="/InterfaceOfRobots;component/Themes/Images/Trapezoid_top.png"/>
     <BitmapImage x:Key="ImageTrapezoidBottomParam" UriSource="/InterfaceOfRobots;component/Themes/Images/trapezoid_bottom.png"/>
+    
+    <!--Program icon's-->
+    <BitmapImage x:Key="ImageFolderIcon" UriSource="/InterfaceOfRobots;component/Themes/Images/folder.png"/>
+    <BitmapImage x:Key="ImageDataFileIcon" UriSource="/InterfaceOfRobots;component/Themes/Images/dataFile.png"/>
+    <BitmapImage x:Key="ImageProgramFileIcon" UriSource="/InterfaceOfRobots;component/Themes/Images/programFile.png"/>
 
 
     <!--Button's Styles-->

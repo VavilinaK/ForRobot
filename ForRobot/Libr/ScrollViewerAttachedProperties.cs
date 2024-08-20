@@ -21,11 +21,9 @@ namespace ForRobot.Libr
 
         #region Readonly
 
-        public static readonly DependencyProperty ScrollOnTextChangedProperty = DependencyProperty.RegisterAttached("ScrollOnTextChanged", typeof(bool),
-                                                                                                            typeof(ScrollViewerAttachedProperties), new UIPropertyMetadata(false, OnScrollOnTextChanged));
+        public static readonly DependencyProperty ScrollOnTextChangedProperty = DependencyProperty.RegisterAttached("ScrollOnTextChanged", 
+            typeof(bool), typeof(ScrollViewerAttachedProperties), new UIPropertyMetadata(false, OnScrollOnTextChanged));
 
-        public static readonly DependencyProperty ScrollOnLoadedProperty = DependencyProperty.RegisterAttached("ScrollOnLoaded", typeof(bool),
-                                                                                                            typeof(ScrollViewerAttachedProperties), new UIPropertyMetadata(false, OnScrollOnLoaded));
         #endregion
 
         #endregion
@@ -36,14 +34,12 @@ namespace ForRobot.Libr
         {
             var textBox = dependencyObject as TextBox;
             if (textBox == null)
-            {
                 return;
-            }
+
             bool oldValue = (bool)e.OldValue, newValue = (bool)e.NewValue;
             if (newValue == oldValue)
-            {
                 return;
-            }
+
             if (newValue)
             {
                 textBox.Loaded += TextBoxLoaded;
@@ -76,40 +72,6 @@ namespace ForRobot.Libr
 
         #endregion
 
-
-
-
-
-
-
-
-
-        private static void OnScrollOnLoaded(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
-        {
-            var textBox = dependencyObject as TextBox;
-            if (textBox == null)
-                return;
-
-            bool oldValue = (bool)e.OldValue, newValue = (bool)e.NewValue;
-            if (newValue == oldValue)
-                return;
-
-            if (newValue)
-            {
-                textBox.Loaded += TextBoxLoaded;
-                textBox.Unloaded += TextBoxUnloaded;
-            }
-            else
-            {
-                textBox.Loaded -= TextBoxLoaded;
-                textBox.Unloaded -= TextBoxUnloaded;
-
-                if (_associations.ContainsKey(textBox))
-                    _associations[textBox].Dispose();
-            }
-        }
-
-
         class TextBoxScrollingTrigger : IDisposable
         {
             private TextBox TextBox { get; set; }
@@ -117,17 +79,13 @@ namespace ForRobot.Libr
             public TextBoxScrollingTrigger(TextBox textBox)
             {
                 TextBox = textBox;
-                TextBox.Loaded += OnTextBoxOnLoaded;
                 TextBox.TextChanged += OnTextBoxOnTextChanged;
             }
 
             private void OnTextBoxOnTextChanged(object sender, TextChangedEventArgs args) => TextBox.ScrollToEnd();
 
-            private void OnTextBoxOnLoaded(object sender, RoutedEventArgs args) => TextBox.ScrollToEnd();
-
             public void Dispose()
             {
-                TextBox.Loaded -= OnTextBoxOnLoaded;
                 TextBox.TextChanged -= OnTextBoxOnTextChanged;
             }
         }

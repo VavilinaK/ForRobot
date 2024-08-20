@@ -6,8 +6,10 @@
       xmlns:local="clr-namespace:ForRobot.Views.Pages"
       xmlns:vm="clr-namespace:ForRobot.ViewModels"
       xmlns:lib="clr-namespace:ForRobot.Libr"
+      xmlns:model="clr-namespace:ForRobot.Model"
       xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
+      xmlns:control="clr-namespace:ForRobot.Views.Controls"
       mc:Ignorable="d" 
       d:DesignHeight="800" d:DesignWidth="1500"
       Background="#cfcfcf">
@@ -273,7 +275,7 @@
                                                 </Button.Style>
                                             </Button>
 
-                                            <Button Grid.Column="2" ToolTip="Выбор сгенерированной программы" Command="{Binding}">
+                                            <Button Grid.Column="2" ToolTip="Выбор сгенерированной программы" Command="{Binding Path=SelectGeneratProgramCommand}">
                                                 <Button.Style>
                                                     <Style TargetType="{x:Type Button}">
                                                         <Setter Property="Template">
@@ -709,6 +711,12 @@
                                         <TextBlock Text="{Binding Item1}" Padding="0,5"/>
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
+
+                                <!--<i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="SelectionChanged">
+                                        <i:InvokeCommandAction Command="{Binding Path=SelectRobotCommand}" CommandParameter="{Binding Path=., RelativeSource={RelativeSource AncestorType={x:Type ComboBox}, Mode=FindAncestor}}"/>
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>-->
                             </ComboBox>
 
                             <Button Grid.Row="0" Grid.Column="2" ToolTip="Повторное соединение" Command="{Binding UpDateConnectionCommand}">
@@ -805,7 +813,7 @@
                                         </Style>
                                         
                                         <Style TargetType="{x:Type TextBox}">
-                                            <Setter Property="FontSize" Value="14"/>
+                                            <Setter Property="FontSize" Value="16"/>
                                             <Setter Property="Padding" Value="5"/>
                                             <Setter Property="Margin" Value="5"/>
                                             <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -869,7 +877,7 @@
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
 
-                                            <Button Grid.Column="0" Height="30" ToolTip="Вверх до">
+                                            <Button Grid.Column="0" Height="30" ToolTip="Обновить" Command="{Binding Path=UpDateFilesCommand}">
                                                 <Button.Style>
                                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource baseButtonStyle}">
                                                         <Setter Property="Width" Value="30"/>
@@ -877,7 +885,7 @@
                                                             <Setter.Value>
                                                                 <ControlTemplate TargetType="{x:Type Button}">
                                                                     <Border BorderThickness="0" Style="{StaticResource baseControlTemplateStyle}">
-                                                                        <Image Stretch="Fill" Source="{StaticResource ImageUp}"/>
+                                                                        <Image Stretch="Fill" Source="{StaticResource ImageUpdate}"/>
                                                                     </Border>
                                                                 </ControlTemplate>
                                                             </Setter.Value>
@@ -887,32 +895,140 @@
                                             </Button>
 
                                             <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="3">
-                                                <TextBlock Text="Ooo" Background="White" Foreground="Gray" Width="Auto" TextAlignment="Center" Panel.ZIndex="1">
-                                                    <TextBlock.Margin>
-                                                        <MultiBinding Converter="{StaticResource ThicknessConvert}">
-                                                            <Binding Path="0"/>
-                                                            <Binding Path="0"/>
-                                                            <Binding Path="10"/>
-                                                            <Binding Path="5"/>
-                                                        </MultiBinding>
-                                                    </TextBlock.Margin>
-                                                </TextBlock>
-                                                
-                                                <TextBox Text="Aaaa"
+                                                <TextBox Text="{Binding Path=SelectedRobot.Item2.PathControllerFolder, Mode=TwoWay}"
                                                          Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}"
-                                                         HorizontalContentAlignment="Left" Margin="0"/>
+                                                         HorizontalContentAlignment="Left" Margin="0" IsReadOnly="False"/>
                                             </StackPanel>
                                         </Grid>
 
-                                        <TreeView Grid.Row="3" Margin="5" ItemsSource="{Binding Path=SelectedRobot.Item2.FileTree}">
-                                            
-                                        </TreeView>
+                                        <ScrollViewer Grid.Row="3" Margin="5" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                                            <StackPanel>
+                                                <!--<control:NavigationTreeView
+                                                    RootFileCollection="{Binding Path=SelectedRobot.Item2.Files, Mode=OneWay}"
+                                                    Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}"
+                                                    Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}"/>-->
+
+                                                <TreeView FontSize="18" HorizontalContentAlignment="Stretch"
+                                                          ItemsSource="{Binding Path=SelectedRobot.Item2.Files, Mode=OneWay}"
+                                                          Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}"
+                                                          Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}"
+                                                          VirtualizingPanel.IsVirtualizing="True">
+                                                    
+                                                    <TreeView.Style>
+                                                        <Style TargetType="{x:Type TreeView}">
+                                                            <Setter Property="IsEnabled" Value="True"/>
+
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding SelectedRobot.Item2.IsConnection}" Value="{StaticResource False}">
+                                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                                </DataTrigger>
+
+                                                                <DataTrigger Binding="{Binding SelectedRobot.Item2.Pro_State}" Value="#P_ACTIVE">
+                                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                                </DataTrigger>
+
+                                                                <DataTrigger Binding="{Binding SelectedRobot.Item2.Pro_State}" Value="#P_STOP">
+                                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TreeView.Style>
+
+                                                    <TreeView.ItemTemplate>
+                                                        <HierarchicalDataTemplate ItemsSource="{Binding Children}" DataType="{x:Type model:FileData}">
+                                                            <Button ToolTip="{Binding Path=Path}"
+                                                                    Command="{Binding Path=DataContext.SelectFileCommand, RelativeSource = {RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
+                                                                    CommandParameter="{Binding Path=.}"
+                                                                    Background="{x:Null}" BorderBrush="{x:Null}" Padding="0" Height="30" Width="Auto"
+                                                                    Focusable="False" ClickMode="Press">
+                                                                <Grid>
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="Auto"/>
+                                                                        <ColumnDefinition/>
+                                                                    </Grid.ColumnDefinitions>
+
+                                                                    <Image Grid.Column="0" Source="{Binding Icon}" Stretch="Fill"/>
+                                                                    <TextBlock Grid.Column="1" Text="{Binding Name}" Margin="5,0,0,0">
+                                                                        <TextBlock.Style>
+                                                                            <Style TargetType="{x:Type TextBlock}">
+                                                                                <Setter Property="FontWeight"  Value="Normal"/>
+                                                                                
+                                                                                <Style.Triggers>
+                                                                                    <MultiDataTrigger>
+                                                                                        <MultiDataTrigger.Conditions>
+                                                                                            <!--<Condition Binding="{Binding Path=DataContext.SelectedRobot.Item2.Pro_State, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="#P_RESET"/>-->
+                                                                                            <!--<Condition Binding="{Binding Path=Name, Converter={StaticResource NullBooleanConvert}}" Value="{StaticResource False}"/>-->
+                                                                                            <Condition Value="True">
+                                                                                                <Condition.Binding>
+                                                                                                    <MultiBinding Converter="{StaticResource SelectProgramConvert}">
+                                                                                                        <MultiBinding.Bindings>
+                                                                                                            <Binding Path="Name"/>
+                                                                                                            <Binding Path="DataContext.SelectedRobot.Item2.RobotProgramName" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type Page}}"/>
+                                                                                                        </MultiBinding.Bindings>
+                                                                                                    </MultiBinding>
+                                                                                                </Condition.Binding>
+                                                                                            </Condition>
+                                                                                        </MultiDataTrigger.Conditions>
+
+                                                                                        <Setter Property="FontWeight" Value="Bold"/>
+                                                                                    </MultiDataTrigger>
+                                                                                </Style.Triggers>
+                                                                            </Style>
+                                                                        </TextBlock.Style>
+                                                                    </TextBlock>
+                                                                </Grid>
+                                                            </Button>
+                                                        </HierarchicalDataTemplate>
+                                                    </TreeView.ItemTemplate>
+
+                                                    <TreeView.ItemContainerStyle>
+                                                        <Style TargetType="{x:Type TreeViewItem}">
+                                                            <Setter Property="IsExpanded" Value="True"/>
+
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Path=Flag}" Value="{x:Static model:FileFlags.None}">
+                                                                    <Setter Property="Visibility" Value="Hidden"/>
+                                                                    <Setter Property="Height" Value="0"/>
+                                                                </DataTrigger>
+
+                                                                <DataTrigger Binding="{Binding Path=Type}" Value="{x:Static model:FileTypes.DataList}">
+                                                                    <Setter Property="Visibility" Value="Hidden"/>
+                                                                    <Setter Property="Height" Value="0"/>
+                                                                </DataTrigger>
+
+                                                                <!--<MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        -->
+                                                                <!--<Condition Binding="{Binding Path=DataContext.SelectedRobot.Item2.Pro_State, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="#P_RESET"/>-->
+                                                                <!--
+                                                                        <Condition Binding="{Binding Path=DataContext.SelectedRobot.Item2.RobotProgramName, Converter={StaticResource NullBooleanConvert}}" Value="{StaticResource False}"/>
+                                                                        <Condition Value="True">
+                                                                            <Condition.Binding>
+                                                                                <MultiBinding Converter="{StaticResource SelectProgramConvert}">
+                                                                                    <MultiBinding.Bindings>
+                                                                                        <Binding Path="Name"/>
+                                                                                        <Binding Path="DataContext.SelectedRobot.Item2.RobotProgramName" RelativeSource="{RelativeSource AncestorType={x:Type Page}}"/>
+                                                                                    </MultiBinding.Bindings>
+                                                                                </MultiBinding>
+                                                                            </Condition.Binding>
+                                                                        </Condition>
+                                                                    </MultiDataTrigger.Conditions>
+
+                                                                    <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                                                </MultiDataTrigger>-->
+
+                                                                <!--<Trigger Property="TreeViewItem.IsSelected" Value="True">
+                                                                    <Setter Property="Panel.Background" Value="Transparent"/>
+                                                                    <Setter Property="TextElement.Foreground" Value="Black"/>
+                                                                </Trigger>-->
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TreeView.ItemContainerStyle>
+                                                </TreeView>
+                                            </StackPanel>
+                                        </ScrollViewer>
                                     </Grid>
                                 </TabItem>
-
-                                <!--<TabItem Header="Обозреватель">
-
-                                </TabItem>-->
 
                                 <TabItem Header="Ток">
                                     <TabItem.Resources>
@@ -972,12 +1088,10 @@
                     <RowDefinition Height="150"/>
                 </Grid.RowDefinitions>
 
-                <Grid Grid.Row="0">
-                    <Frame Margin="0"
+                <Frame Grid.Row="0" Padding="0"
                            NavigationUIVisibility="Hidden"
                            Background="#a3a3a3"
                            Content="{Binding Path=PageNow, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
-                </Grid>
 
                 <TabControl Grid.Row="1" TabStripPlacement="Bottom"
                             Background="#a3a3a3" BorderBrush="#4a4a4a" BorderThickness="1.25">

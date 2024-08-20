@@ -496,7 +496,7 @@ namespace ForRobot.ViewModels
             ((ToolBarViewModel)item.DataContext).LogError += new EventHandler<LogErrorEventArgs>(WreteLogError);
             ((ToolBarViewModel)item.DataContext).OpenConnection(robot.Host, robot.Port, (this.ConnectionTimeOut * 1000));
             ((ToolBarViewModel)item.DataContext).Robot.PathProgramm = robot.PathProgramm;
-            ((ToolBarViewModel)item.DataContext).Robot.PathControllerFolder = robot.PathControllerFolder;
+            //((ToolBarViewModel)item.DataContext).Robot.PathControllerFolder = robot.PathControllerFolder;
             ((ToolBarViewModel)item.DataContext).Send += SendFile;
             ((ToolBarViewModel)item.DataContext).SelectProgramm += SelectFile;
             this.Items.Add(item);
@@ -619,8 +619,8 @@ namespace ForRobot.ViewModels
             foreach (var item in this.Items)
             {
                 var dat = (ToolBarViewModel)item.DataContext;
-                if (!generationProcess.ProccesEnd(dat.Robot.PathProgramm))
-                    return;
+                //if (!generationProcess.ProccesEnd(dat.Robot.PathProgramm))
+                //    return;
             }
 
             foreach (var item in this.Items)
@@ -632,11 +632,11 @@ namespace ForRobot.ViewModels
                     if (string.IsNullOrWhiteSpace(dat.Robot.PathProgramm) && Equals(System.Windows.MessageBox.Show($"{dat.Robot.Connection.Host}:{dat.Robot.Connection.Port} Не выбрана папка программы", "", MessageBoxButton.OK, MessageBoxImage.Stop), MessageBoxResult.OK))
                         return;
 
-                    await Task.Run(() => dat.Robot.DeleteProgramm("pc"));
-                    await Task.Run(() => dat.Robot.CopyToPC(string.Join("", this.ProgrammName, ".src")));
-                    await Task.Run(() => dat.Robot.DeleteProgramm("controller"));
-                    if (await Task.Run<bool>(() => dat.Robot.Copy(this.ProgrammName)))
-                        await Task.Run(() => dat.Robot.SelectProgramm(string.Join("", this.ProgrammName, ".src")));
+                    //await Task.Run(() => dat.Robot.DeleteProgramm("pc"));
+                    //await Task.Run(() => dat.Robot.CopyToPC(string.Join("", this.ProgrammName, ".src")));
+                    //await Task.Run(() => dat.Robot.DeleteProgramm("controller"));
+                    //if (await Task.Run<bool>(() => dat.Robot.Copy(this.ProgrammName)))
+                    //    await Task.Run(() => dat.Robot.SelectProgramm(string.Join("", this.ProgrammName, ".src")));
                 }
             }
         }
@@ -656,7 +656,7 @@ namespace ForRobot.ViewModels
                 if (string.IsNullOrWhiteSpace(dat.Robot.PathProgramm) && Equals(System.Windows.MessageBox.Show($"{dat.Robot.Connection.Host}:{dat.Robot.Connection.Port} Не выбрана папка программы", "", MessageBoxButton.OK, MessageBoxImage.Stop), MessageBoxResult.OK))
                     return;
 
-                await Task.Run(() => dat.Robot.DeleteProgramm("controller"));
+                //await Task.Run(() => dat.Robot.DeleteProgramm("controller"));
                 if (await Task.Run<bool>(() => dat.Robot.Copy(this.ProgrammName)))
                     await Task.Run(() => dat.Robot.SelectProgramm(string.Join("", this.ProgrammName, ".src")));
             }

@@ -25,10 +25,12 @@ namespace ForRobot.ViewModels
     {
         #region Private variables
 
+        private bool _isRead = false;
+
         /// <summary>
         /// Время ожидания
         /// </summary>
-        private int ConnectionTimeOut { get => Properties.Settings.Default.ConnectionTimeOut; }
+        private int ConnectionTimeOut { get => 3; }
 
         private Detal _detalObject;
 
@@ -37,10 +39,8 @@ namespace ForRobot.ViewModels
         private string _selectedDetalType;
 
         private string _logger;
-
+        
         private TabItem _selectedItem;
-
-        private TabItem _selectedMainItem;
 
         private Page _nowPage;
 
@@ -96,10 +96,12 @@ namespace ForRobot.ViewModels
 
         private RelayCommand _upDateConnectionCommand;
 
+        private RelayCommand _upDateFilesCommand;
+
         private RelayCommand _changePathOnPCtCommand;
 
         private RelayCommand _selectRobotCommand;
-
+        
         private IAsyncCommand _generateProgramCommand;
 
         private IAsyncCommand _runProgramCommand;
@@ -107,6 +109,10 @@ namespace ForRobot.ViewModels
         private IAsyncCommand _pauseProgramCommand;
 
         private IAsyncCommand _cancelProgramCommand;
+
+        private IAsyncCommand _selectGeneratProgramCommand;
+
+        private IAsyncCommand _selectFileCommand;
 
         #endregion
 
@@ -184,11 +190,7 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Нынешняя страница
         /// </summary>
-        public Page PageNow
-        {
-            get => this._nowPage ?? (this._nowPage = this._page2D);
-            set => Set(ref this._nowPage, value);
-        }
+        public Page PageNow { get => this._nowPage ?? (this._nowPage = this._page2D); set => Set(ref this._nowPage, value); }
 
         /// <summary>
         /// Объект детали
@@ -245,20 +247,16 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Выбранная вкладка
         /// </summary>
-        public TabItem SelectedItem
-        {
-            get => _selectedItem;
-            set => Set(ref this._selectedItem, value);
-        }
+        public TabItem SelectedItem { get => _selectedItem; set => Set(ref this._selectedItem, value); }
 
-        /// <summary>
-        /// Выбранная вкладка
-        /// </summary>
-        public TabItem SelectedMainItem
-        {
-            get => _selectedItem;
-            set => Set(ref this._selectedItem, value);
-        }
+        ///// <summary>
+        ///// Выбранная вкладка
+        ///// </summary>
+        //public TabItem SelectedMainItem
+        //{
+        //    get => _selectedItem;
+        //    set => Set(ref this._selectedItem, value);
+        //}
 
         /// <summary>
         /// Выбранный робот для просмотра
@@ -268,9 +266,14 @@ namespace ForRobot.ViewModels
         #region Управление
 
         /// <summary>
+        /// Имена роботов для управления
+        /// </summary>
+        public ObservableCollection<string> RobotNamesCollection { get => new ObservableCollection<string>(new List<string>() { "Все" }.Union(this.RobotsCollection.Select(item => item.Item1)).ToList<string>()); }
+        
+        /// <summary>
         /// Выбранный робот для управления
         /// </summary>
-        public Robot RobotForControl { get => (this.SelectedNameRobot == "Все" || this.SelectedNameRobot == null) ? null : this.RobotsCollection.Where(p => p.Item1 == this.SelectedNameRobot).Select(item => item.Item2).ToList<Robot>()[0]; }
+        public Robot RobotForControl { get => (this.SelectedNameRobot == "Все" || this.SelectedNameRobot == null) ? null : this.RobotsCollection.Where(p => p.Item1 == this.SelectedNameRobot).Select(item => item.Item2).ToList<Robot>().First(); }
 
         /// <summary>
         /// Выбранное имя робота для управления
@@ -284,9 +287,7 @@ namespace ForRobot.ViewModels
                 RaisePropertyChanged(nameof(this.SelectedNameRobot), nameof(this.RobotForControl));
             }
         }
-
-        public ObservableCollection<string> RobotNamesCollection { get => new ObservableCollection<string>(new List<string>() { "Все" }.Union(this.RobotsCollection.Select(item => item.Item1)).ToList<string>()); }
-
+        
         #endregion
 
         #region Collections
@@ -310,11 +311,7 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Коллекция роботов для просмотра
         /// </summary>
-        public ObservableCollection<Tuple<string, Robot>> RobotsCollection
-        {
-            get => this._robotsCollection;
-            set => Set(ref this._robotsCollection, value);
-        }
+        public ObservableCollection<Tuple<string, Robot>> RobotsCollection { get => this._robotsCollection; set => Set(ref this._robotsCollection, value); }
 
         #endregion
 
@@ -410,14 +407,16 @@ namespace ForRobot.ViewModels
                     {
                         if (obj as string == "loading" && Properties.Settings.Default.SaveRobots != null && Properties.Settings.Default.SaveRobots.Count > 0)
                         {
+                            this._isRead = true;
                             for (int i = 0; i < Properties.Settings.Default.SaveRobots.Count; i++)
                             {
                                 this.AddRobot(JsonConvert.DeserializeObject<Robot>(Properties.Settings.Default.SaveRobots[i]));
                             }
-                            //return;
+                            this._isRead = false;
                         }
                         else
-                            this.AddRobot(new Robot("0.0.0.0", 0000));
+                            this.AddRobot(new Robot());
+
                         this.SelectedRobot = this.RobotsCollection.Last();
                         this.SelectedNameRobot = this.RobotNamesCollection[0];
                     }));
@@ -465,6 +464,21 @@ namespace ForRobot.ViewModels
         }
 
         /// <summary>
+        /// Обновление содержимого робота
+        /// </summary>
+        public RelayCommand UpDateFilesCommand
+        {
+            get
+            {
+                return _upDateFilesCommand ??
+                    (_upDateFilesCommand = new RelayCommand(obj =>
+                    {
+                        this.SelectedRobot.Item2.GetFiles();
+                    }));
+            }
+        }
+
+        /// <summary>
         /// Изменение папки робота
         /// </summary>
         public RelayCommand ChangePatnOnPCCommand
@@ -500,6 +514,17 @@ namespace ForRobot.ViewModels
                 return _selectRobotCommand ??
                     (_selectRobotCommand = new RelayCommand(obj =>
                     {
+                        //if(obj is Tuple<string, Robot>)
+                        //{
+                            this.SelectedRobot = this.RobotsCollection.Where(item => item == obj).First();
+                        //    return;
+                        //}
+
+                        //if (obj is System.Windows.Controls.ComboBox)
+                        //{
+                        //    ((System.Windows.Controls.ComboBox)obj).Focus();
+                        //    return;
+                        //}
                         //this.SelectedItem.Header = "Роботы";
                     }));
             }
@@ -508,7 +533,7 @@ namespace ForRobot.ViewModels
         #region Управление
 
         /// <summary>
-        /// Команда генерации программы и её выпор на роботе/ах
+        /// Команда генерации программы и её выбор на роботе/ах
         /// </summary>
         public IAsyncCommand GenerateProgramCommand
         {
@@ -517,7 +542,60 @@ namespace ForRobot.ViewModels
                 return _generateProgramCommand ??
                     (_generateProgramCommand = new AsyncRelayCommand(async obj =>
                     {
-                        await GenerationProgram();
+                        //await GenerationProgram();
+                        string foldForGenerate = Directory.GetParent(this.RobotsCollection.First().Item2.PathProgramm).ToString();
+
+                        // Запись Json-файла
+                        JObject jObject1 = JObject.Parse(this.DetalObject.Json);
+                        File.WriteAllText(Path.Combine(foldForGenerate, $"{this.ProgrammName}.json"), jObject1.ToString());
+
+                        // Генерация программы.
+                        Generation generationProcess = new Generation(this.PathGenerator, this.ProgrammName, foldForGenerate);
+                        generationProcess.Log += new EventHandler<LogEventArgs>(WreteLog);
+                        generationProcess.LogError += new EventHandler<LogErrorEventArgs>(WreteLogError);
+                        generationProcess.Start(this.DetalObject);
+
+                        if (!generationProcess.ProccesEnd())
+                            return;
+
+                        if (this.SelectedNameRobot == "Все")
+                            foreach (var robot in this.RobotsCollection.Where(item => item.Item2.IsConnection))
+                            {
+                                if (string.IsNullOrWhiteSpace(robot.Item2.PathProgramm))
+                                {
+                                    System.Windows.MessageBox.Show("Не выбрана папка программы", $"{robot.Item1}", MessageBoxButton.OK, MessageBoxImage.Stop);
+                                    return;
+                                }
+                                await Task.Run(() => robot.Item2.DeleteProgramOnPC());
+                                await Task.Run(() => robot.Item2.CopyToPC(string.Join("", this.ProgrammName, ".src")));
+
+                                if (System.Windows.MessageBox.Show("Удалить ранее сгенерированные файлы программы?", $"{robot.Item1}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
+                                    MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK)
+                                    await Task.Run(() => robot.Item2.DeleteProgramm());
+
+                                if (await Task.Run<bool>(() => robot.Item2.Copy(this.ProgrammName)))
+                                    await Task.Run(() => robot.Item2.SelectProgramm(string.Join("", this.ProgrammName, ".src")));
+                            }
+                        else
+                        {
+                            if (string.IsNullOrWhiteSpace(this.RobotForControl.PathProgramm))
+                            {
+                                System.Windows.MessageBox.Show("Не выбрана папка программы", $"{this.SelectedNameRobot}", MessageBoxButton.OK, MessageBoxImage.Stop);
+                                return;
+                            }
+                            await Task.Run(() => this.RobotForControl.DeleteProgramOnPC());
+                            await Task.Run(() => this.RobotForControl.CopyToPC(string.Join("", this.ProgrammName, ".src")));
+
+                            if (System.Windows.MessageBox.Show($"Удалить все файлы из {this.RobotForControl.PathControllerFolder}?", $"{this.SelectedNameRobot}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
+                                MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK)
+                                await Task.Run(() => this.RobotForControl.DeleteProgramm());
+                            else
+                                return;
+
+                            if (await Task.Run<bool>(() => this.RobotForControl.Copy(this.ProgrammName)))
+                                await Task.Run(() => this.RobotForControl.SelectProgramm(string.Join("", this.ProgrammName, ".src")));
+                        }
+
                     }, _exceptionCallback));
             }
         }
@@ -585,6 +663,46 @@ namespace ForRobot.ViewModels
             }
         }
 
+        /// <summary>
+        /// Выбор файла программы
+        /// </summary>
+        public IAsyncCommand SelectGeneratProgramCommand
+        {
+            get
+            {
+                return _selectGeneratProgramCommand ??
+                    (_selectGeneratProgramCommand = new AsyncRelayCommand(async obj =>
+                    {
+                        if (this.SelectedNameRobot == "Все")
+                            foreach (var robot in this.RobotsCollection.Select(item => item.Item2))
+                            {
+                                await Task.Run(() => robot.SelectProgramm(string.Join("", this.ProgrammName, ".src")));
+                            }
+                        else
+                            await Task.Run(() => this.RobotForControl.SelectProgramm(string.Join("", this.ProgrammName, ".src")));
+
+                    }, _exceptionCallback));
+            }
+        }
+
+        /// <summary>
+        /// Выбор сгенерированной программы
+        /// </summary>
+        public IAsyncCommand SelectFileCommand
+        {
+            get
+            {
+                return _selectFileCommand ??
+                    (_selectFileCommand = new AsyncRelayCommand(async obj =>
+                    {
+                        ForRobot.Model.Controls.File file = (ForRobot.Model.Controls.File)obj;
+                        if (file.Type == FileTypes.Program)
+                            await Task.Run(() => this.SelectedRobot.Item2.SelectProgramm(file.Name));
+
+                    }, _exceptionCallback));
+            }
+        }
+
         #endregion
 
         #endregion
@@ -617,7 +735,6 @@ namespace ForRobot.ViewModels
             robot.Log += new EventHandler<ForRobot.Libr.LogEventArgs>(this.WreteLog);
             robot.LogError += new EventHandler<ForRobot.Libr.LogErrorEventArgs>(WreteLogError);
             robot.PathProgramm = (this.RobotsCollection.Count > 0) ? Path.Combine(Directory.GetParent(this.RobotsCollection.Last().Item2.PathProgramm).ToString(), $"R{this.RobotsCollection.Count + 1}") : Path.Combine(Directory.GetCurrentDirectory(), $"R{this.RobotsCollection.Count + 1}");
-            //robot.ConnectionTimeOut = this.ConnectionTimeOut;
             robot.OpenConnection(this.ConnectionTimeOut);
             this.RobotsCollection.Add(new Tuple<string, Robot>($"Робот {this.RobotsCollection.Count + 1}", robot));
             RaisePropertyChanged(nameof(this.RobotNamesCollection));
@@ -634,7 +751,6 @@ namespace ForRobot.ViewModels
             //this.Items.Add(item);
         }
 
-        private bool _isRead = false;
         /// <summary>
         /// При изменении свойств роботов
         /// </summary>
@@ -682,26 +798,26 @@ namespace ForRobot.ViewModels
         /// <param name="e"></param>
         private void SelectAppLogger(object sender, LogEventArgs e) => this.Logger = ((ForRobot.App)sender).LoggerString;
 
-        #region Async
+        //#region Async
 
-        private async Task GenerationProgram()
-        {
-            string foldForGenerate = Directory.GetParent(this.RobotsCollection.First().Item2.PathProgramm).ToString();
+        //private async Task GenerationProgram()
+        //{
+        //    string foldForGenerate = Directory.GetParent(this.RobotsCollection.First().Item2.PathProgramm).ToString();
             
-            // Запись Json-файла
-            JObject jObject1 = JObject.Parse(this.DetalObject.Json);
-            File.WriteAllText(Path.Combine(new FileInfo(foldForGenerate).DirectoryName, $"{this.ProgrammName}.json"), jObject1.ToString());
+        //    // Запись Json-файла
+        //    JObject jObject1 = JObject.Parse(this.DetalObject.Json);
+        //    File.WriteAllText(Path.Combine(new FileInfo(foldForGenerate).DirectoryName, $"{this.ProgrammName}.json"), jObject1.ToString());
 
-            // Генерация программы.
-            Generation generationProcess = new Generation(foldForGenerate, this.ProgrammName);
-            generationProcess.Log += new EventHandler<LogEventArgs>(WreteLog);
-            generationProcess.LogError += new EventHandler<LogErrorEventArgs>(WreteLogError);
-            generationProcess.Start(this.DetalObject);
-            //if (!generationProcess.ProccesEnd(dat.Robot.PathProgramm))
-            //    return;
-        }
+        //    // Генерация программы.
+        //    Generation generationProcess = new Generation(foldForGenerate, this.ProgrammName);
+        //    generationProcess.Log += new EventHandler<LogEventArgs>(WreteLog);
+        //    generationProcess.LogError += new EventHandler<LogErrorEventArgs>(WreteLogError);
+        //    generationProcess.Start(this.DetalObject);
+        //    //if (!generationProcess.ProccesEnd(dat.Robot.PathProgramm))
+        //    //    return;
+        //}
 
-        #endregion
+        //#endregion
 
         #region Deserialize Properties
 

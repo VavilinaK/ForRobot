@@ -1,5 +1,5 @@
 ﻿using System;
-//using System.Text.Json.Serialization;
+//using System.Text.Json.Serialization;l
 using Newtonsoft.Json;
 
 namespace ForRobot.Model.Detals
