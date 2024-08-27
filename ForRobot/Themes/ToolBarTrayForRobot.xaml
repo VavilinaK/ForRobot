@@ -301,7 +301,7 @@
                                                 <Label Content="{Binding Path=Robot.WireFeed, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2}" FontSize="16" VerticalAlignment="Center"/>
                                             </StackPanel>
 
-                                            <ToggleButton Grid.Column="2" Name="toggleButtonGraph" Width="40" Margin="3" Style="{StaticResource toggleButtonGraphStyle}" Visibility="Hidden"/>
+                                            <ToggleButton Grid.Column="2" Name="toggleButtonGraph" IsChecked="True" Width="40" Margin="3" Style="{StaticResource toggleButtonGraphStyle}" Visibility="Hidden"/>
                                         </Grid>
                                     </Border>
                                 </Grid>

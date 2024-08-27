@@ -30,6 +30,16 @@ namespace ForRobot
 
         private static SingleGlobalInstance singleMutex;
 
+        ///// <summary>
+        ///// Путь к программе на сервере
+        ///// </summary>
+        //private string FilePathOnServer { get => ForRobot.Properties.Settings.Default.PathInWeb; }
+
+        /// <summary>
+        /// Путь к программе на коммпьютере
+        /// </summary>
+        private string FilePathOnPC { get => Directory.GetCurrentDirectory(); }
+
         #region Widows
 
         private Views.Windows.MainWindow _mainWindow;
@@ -123,13 +133,13 @@ namespace ForRobot
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void onDispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        private void OnDispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
             MessageBox.Show(e.Exception.Message + "\t||\t" + e.Exception.Source, "", MessageBoxButton.OK);
             Logger.Fatal(e.Exception.Message + "\t||\t" + e.Exception.Source);
         }
 
-        private void onExit(object sender, ExitEventArgs e)
+        private void OnExit(object sender, ExitEventArgs e)
         {
             if (((Application.Current.Windows.Count == 0) && (Application.Current.ShutdownMode == ShutdownMode.OnLastWindowClose))
                 || (Application.Current.ShutdownMode == ShutdownMode.OnMainWindowClose))
@@ -137,6 +147,30 @@ namespace ForRobot
                 this.Logger.Trace($"{DateTime.Now.ToString("HH:mm:ss")} Закрытие приложения");
                 Application.Current.Shutdown(0);
             }
+        }
+
+        /// <summary>
+        /// Обновление программы.
+        /// Копирует файлы из каталога на сервере в нынешнюю директорию программы и перезапускает её
+        /// </summary>
+        /// <param name="e"></param>
+        private void UpDateApp(StartupEventArgs e)
+        {
+            //System.Diagnostics.Process process = new System.Diagnostics.Process()
+            //{
+            //    StartInfo = new ProcessStartInfo()
+            //    {
+            //        UseShellExecute = false,
+            //        RedirectStandardOutput = true,
+            //        RedirectStandardError = true,
+            //        WorkingDirectory = this.FilePath,
+            //        CreateNoWindow = true,
+            //        FileName = "cmd.exe",
+            //        Arguments = $"/K taskkill /im {ResourceAssembly.GetName().Name}.exe /f& xcopy \"{this.FilePathOnServer + "\\*.*"}\" \"{this.FilePath}\" /E /Y& START \"\" \"{this.FilePath + "\\" + ResourceAssembly.GetName().Name + ".exe"}\" \"{string.Join("\" \"", e.Args)}\"",
+            //        WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden
+            //    }
+            //};
+            //new Thread(() => process.Start()).Start();
         }
 
         #endregion

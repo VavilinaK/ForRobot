@@ -429,7 +429,7 @@ namespace ForRobot.Model.Detals
                 if (Equals(this.ScoseType, ScoseTypes.Rect))
                     return 0;
                 else
-                    return this._bevelToStart;
+                    return this._bevelToEnd;
             }
             set
             {

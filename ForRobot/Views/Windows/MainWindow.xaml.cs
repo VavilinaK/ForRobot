@@ -48,25 +48,17 @@ namespace ForRobot.Views.Windows
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (this.MainFrame.Content is Pages.PageMain && ((Pages.PageMain)this.MainFrame.Content).ViewModel.Items?.Count > 0)
+            if (this.MainFrame.Content is Pages.PageMain2 && ((Pages.PageMain2)this.MainFrame.Content).ViewModel.RobotsCollection.Where(robot => robot.Item2.IsConnection).Count() > 0)
             {
-                foreach(var item in ((Pages.PageMain)this.MainFrame.Content).ViewModel.Items)
-                    if (((ViewModels.ToolBarViewModel)((Themes.ToolBarTrayForRobot)item).DataContext).Robot.IsConnection)
+                if (MessageBox.Show($"Закрыть соединение?", "Закрытие окна", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK)
+                {
+                    foreach (var robot in ((Pages.PageMain2)this.MainFrame.Content).ViewModel.RobotsCollection)
                     {
-                        if (MessageBox.Show("Закрыть соединение", "Закрытие окна", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK)
-                        {
-                            foreach (var p in ((Pages.PageMain)this.MainFrame.Content).ViewModel.Items)
-                                if (!object.Equals(((ViewModels.ToolBarViewModel)p.DataContext).Robot, null) && !object.Equals(((ViewModels.ToolBarViewModel)p.DataContext).Robot.Connection, null)
-                                    && ((ViewModels.ToolBarViewModel)p.DataContext).Robot.Connection.Client.Connected)
-                                {
-                                    ((ViewModels.ToolBarViewModel)p.DataContext).Dispose();
-                                }
-
-                            e.Cancel = false;
-                        }
-                        else
-                            e.Cancel = true;
+                        robot.Item2.Dispose();
                     }
+                }
+                else
+                    e.Cancel = true;
             }
             else
                 e.Cancel = false;

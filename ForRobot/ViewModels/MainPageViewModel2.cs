@@ -32,7 +32,7 @@ namespace ForRobot.ViewModels
         /// </summary>
         private int ConnectionTimeOut { get => 3; }
 
-        private Detal _detalObject;
+        private Detal _detalObject = new Detal();
 
         private string _selectedNameRobot;
 
@@ -101,7 +101,9 @@ namespace ForRobot.ViewModels
         private RelayCommand _changePathOnPCtCommand;
 
         private RelayCommand _selectRobotCommand;
-        
+
+        private RelayCommand _helpCommand;
+
         private IAsyncCommand _generateProgramCommand;
 
         private IAsyncCommand _runProgramCommand;
@@ -226,7 +228,7 @@ namespace ForRobot.ViewModels
                 {
                     case string a when a == DetalTypes.Plita:
                         this.DetalObject = GetSavePlita();
-                        //((Plita)this.DetalObject).RibsCollection.ItemPropertyChanged += (o, e) => this.SaveDetal();
+                        ((Plita)this.DetalObject).RibsCollection.ItemPropertyChanged += (o, e) => this.SaveDetal();
                         break;
 
                     case string b when b == DetalTypes.Stringer:
@@ -238,7 +240,7 @@ namespace ForRobot.ViewModels
                         break;
                 }
 
-                //this.DetalObject.Change += ChangeProperiesDetal; // Обределение события изменения свойств
+                this.DetalObject.Change += ChangeProperiesDetal; // Обределение события изменения свойств
 
                 RaisePropertyChanged(nameof(this.SelectedDetalType), nameof(this.PathGenerator), nameof(this.ProgrammName));
             }
@@ -317,6 +319,9 @@ namespace ForRobot.ViewModels
 
         #region Commands
 
+        /// <summary>
+        /// Открытие панели управления
+        /// </summary>
         public RelayCommand OpenCodingCommand
         {
             get
@@ -364,12 +369,12 @@ namespace ForRobot.ViewModels
                                 ScoseType = ((Plita)this.DetalObject).ScoseType,
                                 DiferentDistance = (((Plita)this.DetalObject).ScoseType == ScoseTypes.Rect) ? ((Plita)this.DetalObject).DiferentDistance : false
                             };
-                            //((Plita)this.DetalObject).RibsCollection.ItemPropertyChanged += (o, e) => this.SaveDetal();
+                            ((Plita)this.DetalObject).RibsCollection.ItemPropertyChanged += (o, e) => this.SaveDetal();
                         }
                         else if (DetalObject is PlitaStringer) { this.DetalObject = new PlitaStringer(DetalType.Stringer); }
                         else if (DetalObject is PlitaTreygolnik) { this.DetalObject = new PlitaTreygolnik(DetalType.Treygolnik); }
-                        //this.DetalObject.Change += ChangeProperiesDetal;
-                        //SaveDetal();
+                        this.DetalObject.Change += ChangeProperiesDetal;
+                        SaveDetal();
                     }));
             }
         }
@@ -530,7 +535,22 @@ namespace ForRobot.ViewModels
             }
         }
 
-        #region Управление
+        /// <summary>
+        /// Открытие chm-справки
+        /// </summary>
+        public RelayCommand HelpCommand
+        {
+            get
+            {
+                return _helpCommand ??
+                    (_helpCommand = new RelayCommand(obj =>
+                    {
+                        Help.ShowHelp(null, "Help/HelpManual.chm");
+                    }));
+            }
+        }
+
+        #region Async
 
         /// <summary>
         /// Команда генерации программы и её выбор на роботе/ах
@@ -569,12 +589,19 @@ namespace ForRobot.ViewModels
                                 await Task.Run(() => robot.Item2.DeleteProgramOnPC());
                                 await Task.Run(() => robot.Item2.CopyToPC(string.Join("", this.ProgrammName, ".src")));
 
-                                if (System.Windows.MessageBox.Show("Удалить ранее сгенерированные файлы программы?", $"{robot.Item1}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
+                                if (System.Windows.MessageBox.Show($"Удалить все файлы из {robot.Item2.PathControllerFolder}?", $"{robot.Item1}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
                                     MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK)
                                     await Task.Run(() => robot.Item2.DeleteProgramm());
+                                else
+                                    return;
 
-                                if (await Task.Run<bool>(() => robot.Item2.Copy(this.ProgrammName)))
+                                //if (await Task.Run<bool>(() => robot.Item2.Copy(this.ProgrammName)))
+                                //    await Task.Run(() => robot.Item2.SelectProgramm(string.Join("", this.ProgrammName, ".src")));
+                                if (System.Windows.MessageBox.Show($"Копировать файлы программы в {robot.Item2.PathControllerFolder}?", $"{robot.Item1}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
+                                        MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK && await Task.Run<bool>(() => robot.Item2.Copy(this.ProgrammName)))
                                     await Task.Run(() => robot.Item2.SelectProgramm(string.Join("", this.ProgrammName, ".src")));
+                                else
+                                    return;
                             }
                         else
                         {
@@ -592,8 +619,11 @@ namespace ForRobot.ViewModels
                             else
                                 return;
 
-                            if (await Task.Run<bool>(() => this.RobotForControl.Copy(this.ProgrammName)))
+                            if (System.Windows.MessageBox.Show($"Копировать файлы программы в {this.RobotForControl.PathControllerFolder}?", $"{this.SelectedNameRobot}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
+                                MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK && await Task.Run<bool>(() => this.RobotForControl.Copy(this.ProgrammName)))
                                 await Task.Run(() => this.RobotForControl.SelectProgramm(string.Join("", this.ProgrammName, ".src")));
+                            else
+                                return;
                         }
 
                     }, _exceptionCallback));
@@ -610,13 +640,30 @@ namespace ForRobot.ViewModels
                 return _runProgramCommand ??
                     (_runProgramCommand = new AsyncRelayCommand(async obj =>
                     {
-                        if(this.SelectedNameRobot == "Все")
-                            foreach(var robot in this.RobotsCollection.Select(item => item.Item2))
+                        if (this.SelectedNameRobot == "Все")
+                            foreach (var robot in this.RobotsCollection.Select(item => item.Item2))
                             {
-                                await Task.Run(() => robot.Run());
+                                if (robot.Pro_State == "#P_RESET" && System.Windows.MessageBox.Show($"Запустить программу {robot.RobotProgramName}?",
+                                                                                                                                      $"{this.RobotsCollection.Where(item => item.Item2 == robot).Select(item => item.Item1)}", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK,
+                                                                                                                                      System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK ||
+                                    robot.Pro_State == "#P_END" && System.Windows.MessageBox.Show($"Перезапустить программу {robot.RobotProgramName}?",
+                                                                                                  $"{this.RobotsCollection.Where(item => item.Item2 == robot).Select(item => item.Item1)}", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK,
+                                                                                                  System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK ||
+                                    robot.Pro_State == "#P_STOP")
+                                {
+                                    await Task.Run(() => robot.Run());
+                                }
                             }
-                        else
+                        else if (this.RobotForControl.Pro_State == "#P_RESET" && System.Windows.MessageBox.Show($"Запустить программу {this.RobotForControl.RobotProgramName}?",
+                                                                                                           $"{this.SelectedNameRobot}", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK,
+                                                                                                           System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK ||
+                            this.RobotForControl.Pro_State == "#P_END" && System.Windows.MessageBox.Show($"Перезапустить программу {this.RobotForControl.RobotProgramName}?",
+                                                                                                         $"{this.SelectedNameRobot}", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK,
+                                                                                                         System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK ||
+                            this.RobotForControl.Pro_State == "#P_STOP")
+                        {
                             await Task.Run(() => this.RobotForControl.Run());
+                        }
                     }, _exceptionCallback));
             }
         }
@@ -767,6 +814,35 @@ namespace ForRobot.ViewModels
                     Properties.Settings.Default.Save();
                 }
             }
+        }
+
+        /// <summary>
+        /// Изменение свойств детали
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ChangeProperiesDetal(object sender, EventArgs e) => this.SaveDetal();
+
+        /// <summary>
+        /// Сохранение изменений Detal
+        /// </summary>
+        private void SaveDetal()
+        {
+            switch (this.DetalObject)
+            {
+                case Plita plita:
+                    Properties.Settings.Default.SavePlita = this.DetalObject.JsonForSave;
+                    break;
+
+                case PlitaStringer plitaStringer:
+                    Properties.Settings.Default.SavePlitaStringer = "";
+                    break;
+
+                case PlitaTreygolnik plitaTreygolnik:
+                    Properties.Settings.Default.SavePlita = "";
+                    break;
+            }
+            Properties.Settings.Default.Save();
         }
 
         /// <summary>

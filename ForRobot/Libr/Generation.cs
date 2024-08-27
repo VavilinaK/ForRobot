@@ -69,7 +69,7 @@ namespace ForRobot.Libr
         /// <summary>
         /// Путь для вывода
         /// </summary>
-        internal string PathProgramm { get; set; }
+        internal string PathOut { get; set; }
 
         #endregion
 
@@ -79,14 +79,14 @@ namespace ForRobot.Libr
 
         public Generation(string pathGenerator, string fileName) : this(pathGenerator, fileName, null) { }
 
-        public Generation(string pathGenerator, string fileName, string pathControl)
+        public Generation(string pathGenerator, string fileName, string pathOut)
         {
             if (string.IsNullOrWhiteSpace(pathGenerator))
                 throw new ArgumentNullException("pathGenerator");
 
             this.PathGenerator = pathGenerator;
             this.FileName = fileName;
-            this.PathProgramm = pathControl;
+            this.PathOut = pathOut;
         }
 
         #endregion
@@ -132,18 +132,18 @@ namespace ForRobot.Libr
         /// <returns></returns>
         public bool ProccesEnd()
         {
-            bool res = true;
+            bool res = false;
             try
             {
-                foreach(var subdir in Directory.GetDirectories(this.PathProgramm))
+                foreach(var subdir in Directory.GetDirectories(this.PathOut))
                 {
                     if (File.Exists(Path.Combine(subdir, string.Join("", this.FileName, ".src"))))
-                        this.LogMessage($"Файл {string.Join("", this.FileName, ".src")} сгенерирован в {subdir}");
-                    else
                     {
-                        this.LogErrorMessage($"Файл {Path.Combine(subdir, string.Join("", this.FileName, ".src"))} не найден");
-                        res = false;
+                        this.LogMessage($"Файл {string.Join("", this.FileName, ".src")} сгенерирован в {subdir}");
+                        res = true;
                     }
+                    else
+                        this.LogErrorMessage($"Файл {Path.Combine(subdir, string.Join("", this.FileName, ".src"))} не найден");
                 }
             }
             catch(Exception ex)
@@ -184,7 +184,7 @@ namespace ForRobot.Libr
                         break;
                 }
 
-                string[] args = { $"-p {new FileInfo(this.PathGenerator).DirectoryName}\\{this.FileName}.json" , $"-o \"{this.PathProgramm}\"" };
+                string[] args = { $"-p {this.PathOut}\\{this.FileName}.json" , $"-o \"{this.PathOut}\"" };
 
                 if (!string.IsNullOrWhiteSpace(this.FileName))
                     args = args.Append<string>($"-n \"{this.FileName}.src\"").ToArray<string>();
@@ -199,8 +199,8 @@ namespace ForRobot.Libr
                         CreateNoWindow = true,
                         WorkingDirectory = new FileInfo(this.PathGenerator).DirectoryName,
                         FileName = "python.exe",
-                        Arguments = this.PathGenerator + " " + string.Join(" ", args)
-                       //WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden
+                        Arguments = this.PathGenerator + " " + string.Join(" ", args),
+                        WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal
                     }
                 };
                 process.Start();

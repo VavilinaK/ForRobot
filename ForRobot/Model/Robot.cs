@@ -42,6 +42,10 @@ namespace ForRobot.Model
 
         private List<ForRobot.Model.Controls.File> FilesCollection = new List<Controls.File>();
 
+        private decimal[] _currentArray = new decimal[] { 0, 4, 6, 5, 3, -3, -1, 2 };
+
+        private decimal[] _wireFeedArray = new decimal[] { 0, 4, 6, 3, 6, -3, -1, 2 };
+
         #region Readonly
 
         private readonly JsonSerializerOptions options = new JsonSerializerOptions
@@ -93,37 +97,25 @@ namespace ForRobot.Model
             }
         }
 
-        //private string _pathControllerFolder;
-        [JsonIgnore]
+        [JsonPropertyName("pathControllerFolder")]
         /// <summary>
         /// Путь к папке на контроллере
         /// </summary>
         public string PathControllerFolder
         {
-            //get; set;
-
-            //get => this._pathControllerFolder ?? (this._pathControllerFolder = (string.IsNullOrEmpty(this.SearchPath(this.RobotProgramName?.ToLower() + ".src")) ? this.Config.PathControllerFolder : this.SearchPath(this.RobotProgramName?.ToLower() + ".src")));
-
             get
             {
                 if (string.IsNullOrEmpty(this._pathControllerFolder))
-                {
-                    if (string.IsNullOrEmpty(this.SearchPath(this.RobotProgramName?.ToLower() + ".src")))
-                        this._pathControllerFolder = this.Config.PathControllerFolder;
-                    else
-                        this._pathControllerFolder = this.SearchPath(this.RobotProgramName?.ToLower() + ".src");
-                }
+                    this._pathControllerFolder = this.Config.PathControllerFolder;
+
                 return this._pathControllerFolder;
             }
 
-            set => Set(ref this._pathControllerFolder, value);
-
-            //get => this._pathControllerFolder ?? (this._pathControllerFolder = this.Config.PathControllerFolder);
-            //set
-            //{
-            //    Set(ref this._pathControllerFolder, value);
-            //    this.ChangeRobot?.Invoke(this, null);
-            //}
+            set
+            {
+                Set(ref this._pathControllerFolder, value);
+                this.ChangeRobot?.Invoke(this, null);
+            }
         }
 
         [JsonPropertyName("host")]
@@ -161,7 +153,11 @@ namespace ForRobot.Model
         public JsonRpcConnection Connection
         {
             get => this._connection ?? (this._connection = new JsonRpcConnection());
-            set => Set(ref this._connection, value);
+            set
+            {
+                Set(ref this._connection, value);
+                RaisePropertyChanged(nameof(this.IsConnection), nameof(this.ProcessState));
+            }
         } 
 
         [JsonIgnore]
@@ -271,13 +267,29 @@ namespace ForRobot.Model
         /// <summary>
         /// Ток
         /// </summary>
-        public decimal Current { get => this._current; set => Set(ref this._current, value); }
+        public decimal Current
+        {
+            get => this._current;
+            set
+            {
+                Set(ref this._current, value);
+                this.CurrentArray.Append(this._current);
+            }
+        }
 
         [JsonIgnore]
         /// <summary>
         /// Сила подачи
         /// </summary>
-        public decimal WireFeed { get => this._wire_feed; set => Set(ref this._wire_feed, value); }
+        public decimal WireFeed
+        {
+            get => this._wire_feed;
+            set
+            {
+                Set(ref this._wire_feed, value);
+                this.WireFeedArray.Append(this._wire_feed);
+            }
+        }
 
         [JsonIgnore]
         public decimal M1
@@ -304,18 +316,17 @@ namespace ForRobot.Model
         [JsonIgnore]
         public ObservableCollection<ForRobot.Model.Controls.File> Files { get => new ObservableCollection<Controls.File>(this.FilesCollection); }
 
-        //[JsonIgnore]
-        //public ForRobot.Model.Controls.File SelectedFile
-        //{
-        //    //get => (this.Files.Where(item => item.Name.ToLower().Contains(this.RobotProgramName.ToLower())).Count() > 0)
-        //    //    ? this.Files.Where(item => item.Name.ToLower().Contains(this.RobotProgramName.ToLower())).First()
-        //    //    : null;
+        [JsonIgnore]
+        /// <summary>
+        /// Массив значений тока
+        /// </summary>
+        public decimal[] CurrentArray { get => this._currentArray; set => Set(ref this._currentArray, value); }
 
-        //    get=> this.SearchPath(this.RobotProgramName)
-        //}
-
-        //[JsonIgnore]
-        //public string SelectDirectory { get => this.SearchPath(this.RobotProgramName.ToLower() + ".scr"); }
+        [JsonIgnore]
+        /// <summary>
+        /// Массив значений силы подачи
+        /// </summary>
+        public decimal[] WireFeedArray { get => this._wireFeedArray; set => Set(ref this._wireFeedArray, value); }
 
         #endregion
 
@@ -441,7 +452,7 @@ namespace ForRobot.Model
                 if (!string.IsNullOrEmpty(path))
                     return path;
             }
-            return path;
+            return string.Empty;
         }
 
         private void OpenConnection()
@@ -547,44 +558,6 @@ namespace ForRobot.Model
                     }
                 }
             }
-
-            //if (this.IsConnection)
-            //{
-            //    if (data == null)
-            //    {
-            //        this.FilesCollection = new List<FileData>();
-            //        //this._filesCollection = new FileDataCollection();
-
-            //        List<FileData> fileDatas = new List<FileData>();
-            //        var files = Task.Run<Dictionary<string, string>>(async () => await this.Connection.File_NameList()).Result;
-
-            //        foreach (var file in files.Where(item => item.Key.Split(new char[] { '\\' }).Last() != ""))
-            //        {
-            //            FileData fileData = new FileData(file.Key, file.Value.TrimStart(';').TrimEnd(';'));
-            //            fileDatas.Add(fileData);
-            //        }
-
-            //        GetFiles(fileDatas, null, 0);
-            //    }
-            //    else
-            //    {
-            //        var groupData = data.Where(x => x.Path.Split(new char[] { '\\' }).ToArray().Length > index).GroupBy(x => x.Path.Split(new char[] { '\\' }).ToArray()[index]).ToList();
-            //        foreach (var group in groupData)
-            //        {
-            //            FileData newNode = (data.Where(x => x.Path.Split(new char[] { '\\' }).Last() == group.Key).ToList().Count > 0) ?
-            //                                data.Where(x => x.Path.Split(new char[] { '\\' }).Last() == group.Key).ToList().First() : new FileData() { Name = group.Key };
-            //            if (node == null)
-            //            {
-            //                this.FilesCollection.Add(newNode);
-            //            }
-            //            else
-            //            {
-            //                node.Children.Add(newNode);
-            //            }
-            //            GetFiles(group.ToList(), newNode, index + 1);
-            //        }
-            //    }
-            //}
         }
 
         protected void BeginConnect()
@@ -595,33 +568,14 @@ namespace ForRobot.Model
         }
 
         /// <summary>
-        /// Запуск программы
+        /// Запуск выбранной программы программы
         /// </summary>
         /// <returns></returns>
         public void Run()
         {
             try
             {
-                if ((this.Pro_State == "#P_RESET" && MessageBox.Show($"Запустить программу {this.RobotProgramName}?", $"Запуск программы", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK) 
-                    || this.Pro_State == "#P_STOP")
-                {
-                    if (!Task.Run<bool>(async () => await this.Connection.Start()).Result)
-                        new Exception($"Ошибка запуска программы {RobotProgramName}");
-                    else
-                        this.LogMessage($"Программа {this.RobotProgramName} запущена");
-
-                    do
-                    {
-                        if (string.Equals(this.Pro_State, "#P_STOP") || string.Equals(this.Pro_State, "#P_END"))
-                        {
-                            this.LogMessage($"Программа {this.RobotProgramName} остановлена/завершена");
-                            return;
-                        }
-                    }
-                    while (!string.Equals(this.Pro_State, "#P_END"));
-                }
-
-                if(this.Pro_State == "#P_END" && MessageBox.Show($"Перезапустить программу {this.RobotProgramName}?", $"Перезапуск программы", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK)
+                if(this.Pro_State == "#P_END")
                 {
                     this.SelectProgramm(this.RobotProgramName + ".src");
 
@@ -629,17 +583,25 @@ namespace ForRobot.Model
                         new Exception($"Ошибка перезапуска программы {RobotProgramName}");
                     else
                         this.LogMessage($"Программа {this.RobotProgramName} перезапущена");
-
-                    do
-                    {
-                        if (string.Equals(this.Pro_State, "#P_STOP") || string.Equals(this.Pro_State, "#P_END"))
-                        {
-                            this.LogMessage($"Программа {this.RobotProgramName} остановлена/завершена");
-                            return;
-                        }
-                    }
-                    while (!string.Equals(this.Pro_State, "#P_END"));
                 }
+
+                if (this.Pro_State == "#P_RESET" || this.Pro_State == "#P_STOP")
+                {
+                    if (!Task.Run<bool>(async () => await this.Connection.Start()).Result)
+                        new Exception($"Ошибка запуска программы {RobotProgramName}");
+                    else
+                        this.LogMessage($"Программа {this.RobotProgramName} запущена");
+                }
+
+                do
+                {
+                    if (string.Equals(this.Pro_State, "#P_STOP") || string.Equals(this.Pro_State, "#P_END"))
+                    {
+                        this.LogMessage($"Программа {this.RobotProgramName} остановлена/завершена");
+                        return;
+                    }
+                }
+                while (!string.Equals(this.Pro_State, "#P_END"));
             }
             catch (Exception ex)
             {
@@ -716,37 +678,6 @@ namespace ForRobot.Model
 
                 switch (this.Pro_State)
                 {
-                    //case "#P_FREE":
-                    //    if (!Equals(MessageBox.Show($"{this.Host}:{this.Port} Копировать файлы программы в {this.PathControllerFolder}?","Копирование файлов", 
-                    //                                MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes, MessageBoxOptions.DefaultDesktopOnly), MessageBoxResult.Yes))
-                    //        return false;
-
-                    //    var fileCollection1 = Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameList(this.PathProgramm)).Result;
-                    //    foreach (var file in fileCollection1.Keys.Where(i => i.EndsWith(".dat")).ToList<string>())
-                    //    {
-                    //        if (!Task.Run<bool>(async () => await this.Connection.Copy(Path.Combine(this.PathProgramm, file), Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
-                    //            new Exception($"Ошибка копирования файла {file} в {this.PathControllerFolder}");
-                    //        else
-                    //            this.LogMessage($"Файл {file} скопирован ");
-                    //    }
-
-                    //    foreach (var file in fileCollection1.Keys.Where(i => i.EndsWith(".src")).ToList<string>())
-                    //    {
-                    //        if (!Equals(string.Join("", sNameProgram, ".src"), new FileInfo(file).Name))
-                    //        {
-                    //            if (!Task.Run<bool>(async () => await this.Connection.Copy(Path.Combine(this.PathProgramm, file), Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
-                    //                new Exception($"Ошибка копирования файла {file} в {this.PathControllerFolder}");
-                    //            else
-                    //                this.LogMessage($"Файл {file} скопирован ");
-                    //        }
-                    //    }
-
-                    //    if (!Task.Run<bool>(async () => await this.Connection.Copy(Path.Combine(this.PathProgramm, $"{sNameProgram}.src"), Path.Combine(this.PathControllerFolder, $"{sNameProgram}.src"))).Result)
-                    //        new Exception($"Ошибка копирования файла {Path.Combine(this.PathProgramm, $"{sNameProgram}.src")} в {this.PathControllerFolder}");
-                    //    else
-                    //        this.LogMessage($"Файл {Path.Combine(this.PathProgramm, $"{sNameProgram}.src")} скопирован ");
-                    //    break;
-
                     case "#P_RESET":
                     case "#P_END":
                         if (!Task.Run<bool>(async () => await this.Connection.SelectCancel()).Result)
@@ -758,34 +689,6 @@ namespace ForRobot.Model
                             this.LogMessage("Текущий выбор отменён");
 
                         System.Threading.Thread.Sleep(1000); // Костыль).
-
-                        //if (!Equals(MessageBox.Show($"Копировать файлы программы в {this.PathControllerFolder}?", "Копирование файлов", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes, MessageBoxOptions.DefaultDesktopOnly), MessageBoxResult.Yes))
-                        //    return false;
-
-                        //var fileCollection2 = Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameList(this.PathProgramm)).Result;
-                        //foreach (var file in fileCollection2.Keys.Where(i => i.EndsWith(".dat")).ToList<string>())
-                        //{
-                        //    if (!Task.Run<bool>(async () => await this.Connection.Copy(Path.Combine(this.PathProgramm, file), Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
-                        //        new Exception($"Ошибка копирования файла {file} в {this.PathControllerFolder}");
-                        //    else
-                        //        this.LogMessage($"Файл {file} скопирован ");
-                        //}
-
-                        //foreach (var file in fileCollection2.Keys.Where(i => i.EndsWith(".src")).ToList<string>())
-                        //{
-                        //    if (!Equals(string.Join("", sNameProgram, ".src"), new FileInfo(file).Name))
-                        //    {
-                        //        if (!Task.Run<bool>(async () => await this.Connection.Copy(Path.Combine(this.PathProgramm, file), Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
-                        //            new Exception($"Ошибка копирования файла {file} в {this.PathControllerFolder}");
-                        //        else
-                        //            this.LogMessage($"Файл {file} скопирован ");
-                        //    }
-                        //}
-
-                        //if (!Task.Run<bool>(async () => await this.Connection.Copy(Path.Combine(this.PathProgramm, $"{sNameProgram}.src"), Path.Combine(this.PathControllerFolder, $"{programName}.src"))).Result)
-                        //    new Exception($"Ошибка копирования файла {Path.Combine(this.PathProgramm, $"{sNameProgram}.src")} в {this.PathControllerFolder}");
-                        //else
-                        //    this.LogMessage($"Файл {Path.Combine(this.PathProgramm, $"{sNameProgram}.src")} скопирован ");
                         break;
 
                     case "#P_ACTIVE":
@@ -794,8 +697,8 @@ namespace ForRobot.Model
                         return false;
                 }
 
-                if (!Equals(MessageBox.Show($"Копировать файлы программы в {this.PathControllerFolder}?", "Копирование файлов", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes, MessageBoxOptions.DefaultDesktopOnly), MessageBoxResult.Yes))
-                    return false;
+                //if (!Equals(MessageBox.Show($"Копировать файлы программы в {this.PathControllerFolder}?", "Копирование файлов", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes, MessageBoxOptions.DefaultDesktopOnly), MessageBoxResult.Yes))
+                //    return false;
 
                 var fileCollection2 = Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameList(this.PathProgramm)).Result;
                 foreach (var file in fileCollection2.Keys.Where(i => i.EndsWith(".dat")).ToList<string>())
@@ -821,6 +724,9 @@ namespace ForRobot.Model
                     new Exception($"Ошибка копирования файла {Path.Combine(this.PathProgramm, $"{sNameProgram}.src")} в {this.PathControllerFolder}");
                 else
                     this.LogMessage($"Файл {Path.Combine(this.PathProgramm, $"{sNameProgram}.src")} скопирован ");
+
+                this.GetFiles();
+                RaisePropertyChanged(nameof(this.Files));
             }
             catch (Exception ex)
             {
@@ -939,16 +845,6 @@ namespace ForRobot.Model
             {
                 switch (this.Pro_State)
                 {
-                    //case "#P_FREE":
-                    //    foreach (var file in (Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameList(this.PathControllerFolder)).Result).Keys.ToList<string>())
-                    //    {
-                    //        if (!Task.Run<bool>(async () => await this.Connection.Delet(Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
-                    //            new Exception($"Ошибка удаления файла {Path.Combine(this.PathControllerFolder, new FileInfo(file).Name)}");
-                    //        else
-                    //            this.LogMessage($"Файл программы {Path.Combine(this.PathControllerFolder, new FileInfo(file).Name)} удалён");
-                    //    }
-                    //    break;
-
                     case "#P_RESET":
                     case "#P_END":
                         if (!Task.Run<bool>(async () => await this.Connection.SelectCancel()).Result)
@@ -960,14 +856,6 @@ namespace ForRobot.Model
                             this.LogMessage("Текущий выбор отменён");
 
                         System.Threading.Thread.Sleep(1000);
-
-                        //foreach (var file in (Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameList(this.PathControllerFolder)).Result).Keys.ToList<string>())
-                        //{
-                        //    if (!Task.Run<bool>(async () => await this.Connection.Delet(Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
-                        //        new Exception($"Ошибка удаления файла {Path.Combine(this.PathControllerFolder, new FileInfo(file).Name)}");
-                        //    else
-                        //        this.LogMessage($"Файл программы {Path.Combine(this.PathControllerFolder, new FileInfo(file).Name)} удалён");
-                        //}
                         break;
 
                     case "#P_ACTIVE":
@@ -983,6 +871,9 @@ namespace ForRobot.Model
                     else
                         this.LogMessage($"Файл программы {Path.Combine(this.PathControllerFolder, new FileInfo(file).Name)} удалён");
                 }
+
+                this.GetFiles();
+                RaisePropertyChanged(nameof(this.Files));
             }
             catch (Exception ex)
             {
