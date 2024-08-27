@@ -26,7 +26,7 @@ namespace ForRobot.Libr
             while (Q.Count > 0)
             {
                 IFile e = Q.Dequeue();
-                if (e.Name == nameToSearchFor)
+                if (e.Name.ToLower() == nameToSearchFor.ToLower())
                     return e;
 
                 foreach (IFile friend in e.Children)

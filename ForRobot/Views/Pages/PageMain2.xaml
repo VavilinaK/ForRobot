@@ -10,6 +10,7 @@
       xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
       xmlns:control="clr-namespace:ForRobot.Views.Controls"
+      xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
       mc:Ignorable="d" 
       d:DesignHeight="800" d:DesignWidth="1500"
       Background="#cfcfcf">
@@ -37,6 +38,14 @@
                     <DockPanel HorizontalAlignment="Stretch"/>
                 </ItemsPanelTemplate>
             </Menu.ItemsPanel>
+
+            <!--<MenuItem>
+                <MenuItem.Template>
+                    <ControlTemplate TargetType="{x:Type MenuItem}">
+                        <Button Width="40" Height="25" Margin="42, 5, 0, 5"/>
+                    </ControlTemplate>
+                </MenuItem.Template>
+            </MenuItem>-->            
             
             <MenuItem>
                 <MenuItem.Template>
@@ -135,6 +144,10 @@
                                         <DataTrigger Binding="{Binding Path=RobotsCollection.Count}" Value="0">
                                             <Setter Property="IsEnabled" Value="False"/>
                                         </DataTrigger>
+
+                                        <DataTrigger Binding="{Binding Path=RobotForControl.IsConnection}" Value="{StaticResource False}">
+                                            <Setter Property="IsEnabled" Value="False"/>
+                                        </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
@@ -159,6 +172,11 @@
                                             <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource toggleButtonControlStyle}">
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Path=RobotsCollection.Count}" Value="0">
+                                                        <Setter Property="IsChecked" Value="False"/>
+                                                        <Setter Property="IsEnabled" Value="False"/>
+                                                    </DataTrigger>
+
+                                                    <DataTrigger Binding="{Binding Path=RobotForControl.IsConnection}" Value="{StaticResource False}">
                                                         <Setter Property="IsChecked" Value="False"/>
                                                         <Setter Property="IsEnabled" Value="False"/>
                                                     </DataTrigger>
@@ -189,11 +207,13 @@
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
 
-                                            <Button Grid.Column="0" Margin="5, 0">
+                                            <Button Grid.Column="0">
                                                 <Button.Style>
                                                     <Style TargetType="{x:Type Button}">
+                                                        <Setter Property="Margin" Value="5, 0"/>
                                                         <Setter Property="ToolTip" Value="Запуск программы"/>
                                                         <Setter Property="Command" Value="{Binding Path=RunProgramCommand}"/>
 
@@ -214,11 +234,6 @@
                                                                     </Border>
 
                                                                     <ControlTemplate.Triggers>
-                                                                        <DataTrigger Binding="{Binding Path=RobotForControl.Pro_State}" Value="#P_ACTIVE">
-                                                                            <Setter TargetName="ButtonImage" Property="Source" Value="{StaticResource ImagePause}"/>
-                                                                            <Setter TargetName="ButtonText" Property="Content" Value="Остановить"/>
-                                                                        </DataTrigger>
-
                                                                         <DataTrigger Binding="{Binding Path=RobotForControl.Pro_State}" Value="#P_STOP">
                                                                             <Setter TargetName="ButtonText" Property="Content" Value="Продолжить"/>
                                                                         </DataTrigger>
@@ -234,8 +249,8 @@
 
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding Path=RobotForControl.Pro_State}" Value="#P_ACTIVE">
-                                                                <Setter Property="ToolTip" Value="Остановить программу"/>
-                                                                <Setter Property="Command" Value="{Binding Path=PauseProgramCommand}"/>
+                                                                <Setter Property="Width" Value="0"/>
+                                                                <Setter Property="Margin" Value="0"/>
                                                             </DataTrigger>
 
                                                             <DataTrigger Binding="{Binding Path=RobotForControl.Pro_State}" Value="#P_STOP">
@@ -243,14 +258,56 @@
                                                             </DataTrigger>
 
                                                             <DataTrigger Binding="{Binding Path=RobotForControl.Pro_State}" Value="#P_END">
-                                                                <Setter Property="ToolTip" Value="Перезапустить программу"/>
+                                                                <Setter Property="ToolTip" Value="Перезапуск программы"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
                                                 </Button.Style>
                                             </Button>
 
-                                            <Button Grid.Column="1" Margin="5, 0" ToolTip="Аннулировать программу" Command="{Binding CancelProgramCommand}">
+                                            <Button Grid.Column="1">
+                                                <Button.Style>
+                                                    <Style TargetType="{x:Type Button}">
+                                                        <Setter Property="Width" Value="0"/>
+                                                        <Setter Property="Margin" Value="0"/>
+                                                        <Setter Property="ToolTip" Value="Остановка программы"/>
+                                                        <Setter Property="Command" Value="{Binding Path=PauseProgramCommand}"/>
+
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                                    <Border x:Name="Panel" Padding="5,0" Style="{StaticResource baseControlTemplateStyle}">
+                                                                        <Grid>
+                                                                            <Grid.ColumnDefinitions>
+                                                                                <ColumnDefinition Width="Auto"/>
+                                                                                <ColumnDefinition Width="Auto"/>
+                                                                            </Grid.ColumnDefinitions>
+
+                                                                            <Image x:Name="ButtonImage" Grid.Column="0" Width="45" Height="45" Stretch="Fill" Source="{StaticResource ImagePause}"/>
+
+                                                                            <Label x:Name="ButtonText" Grid.Column="1" Content="Остановить" FontSize="18" FontFamily="Segoe UI Historic" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
+                                                                        </Grid>
+                                                                    </Border>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Path=RobotForControl.Pro_State}" Value="#P_ACTIVE">
+                                                                <Setter Property="Width" Value="Auto"/>
+                                                                <Setter Property="Margin" Value="5, 0"/>
+                                                            </DataTrigger>
+
+                                                            <DataTrigger Binding="{Binding Path=SelectedNameRobot}" Value="Все">
+                                                                <Setter Property="Width" Value="Auto"/>
+                                                                <Setter Property="Margin" Value="5, 0"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+
+                                            <Button Grid.Column="2" Margin="5, 0" ToolTip="Аннулировать программу" Command="{Binding CancelProgramCommand}">
                                                 <Button.Style>
                                                     <Style TargetType="{x:Type Button}">
                                                         <Setter Property="Template">
@@ -275,7 +332,7 @@
                                                 </Button.Style>
                                             </Button>
 
-                                            <Button Grid.Column="2" ToolTip="Выбор сгенерированной программы" Command="{Binding Path=SelectGeneratProgramCommand}">
+                                            <Button Grid.Column="3" ToolTip="Выбор сгенерированной программы" Command="{Binding Path=SelectGeneratProgramCommand}">
                                                 <Button.Style>
                                                     <Style TargetType="{x:Type Button}">
                                                         <Setter Property="Template">
@@ -333,7 +390,7 @@
                                 </RadioButton.Template>
                             </RadioButton>
 
-                            <RadioButton Content="Two" Width="45" Margin="3,0" Style="{StaticResource toggleButtonCordinateStyle}"
+                            <RadioButton Content="Two" Width="0" Margin="3,0" Style="{StaticResource toggleButtonCordinateStyle}" Visibility="Hidden"
                                      IsChecked="{Binding Path=PageNowString, Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter=Page3D, Mode=TwoWay}">
                                 
                                 <RadioButton.Template>
@@ -895,7 +952,7 @@
                                             </Button>
 
                                             <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="3">
-                                                <TextBox Text="{Binding Path=SelectedRobot.Item2.PathControllerFolder, Mode=TwoWay}"
+                                                <TextBox Text="{Binding Path=SelectedRobot.Item2.PathControllerFolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                          Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}"
                                                          HorizontalContentAlignment="Left" Margin="0" IsReadOnly="False"/>
                                             </StackPanel>
@@ -956,8 +1013,9 @@
                                                                                 <Style.Triggers>
                                                                                     <MultiDataTrigger>
                                                                                         <MultiDataTrigger.Conditions>
+                                                                                            <Condition Binding="{Binding Path=DataContext.SelectedRobot.Item2.IsConnection, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="{StaticResource True}"/>
                                                                                             <!--<Condition Binding="{Binding Path=DataContext.SelectedRobot.Item2.Pro_State, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="#P_RESET"/>-->
-                                                                                            <!--<Condition Binding="{Binding Path=Name, Converter={StaticResource NullBooleanConvert}}" Value="{StaticResource False}"/>-->
+                                                                                            <Condition Binding="{Binding Path=Name, Converter={StaticResource NullBooleanConvert}}" Value="{StaticResource False}"/>
                                                                                             <Condition Value="True">
                                                                                                 <Condition.Binding>
                                                                                                     <MultiBinding Converter="{StaticResource SelectProgramConvert}">
@@ -1074,6 +1132,39 @@
                                                 </MultiBinding>
                                             </Label.Content>
                                         </Label>
+
+                                         <!--<lvc:CartesianChart Grid.Row="2" AnimationsSpeed="0:0:1.0" Hoverable="False" Zoom="X"
+                                                             LegendLocation="Top" DataTooltip="{x:Null}"
+                                                             Margin="0, 0, 10, 0">
+
+                                                <lvc:CartesianChart.Series>
+                                                    <lvc:LineSeries 
+                                                        Values="{Binding Path=SelectedRobot.Item2.CurrentArray}" 
+                                                                PointGeometry="{Binding Path=.}"
+                                                                LineSmoothness="0.75"
+                                                                StrokeThickness="5" 
+                                                                Stroke="#ffe600"
+                                                                Fill="Transparent"/>
+
+                                                    <lvc:LineSeries Values="{Binding Path=SelectedRobot.Item2.WireFeedArray}" 
+                                                                PointGeometry="{Binding Path=.}"
+                                                                LineSmoothness="0.75"
+                                                                StrokeThickness="5" 
+                                                                Stroke="#F34336"
+                                                                Fill="Transparent"/>
+                                                </lvc:CartesianChart.Series>
+                                                --><!--<lvc:CartesianChart.AxisX>
+                                            <lvc:Axis LabelFormatter="{Binding DateTimeFormatter}"
+                                                      MaxValue="{Binding AxisMax}" 
+                                                      MinValue="{Binding AxisMin}"
+                                                      Unit="{Binding AxisUnit}">
+                                                
+                                                <lvc:Axis.Separator>
+                                                    <lvc:Separator Step="{Binding AxisStep}" />
+                                                </lvc:Axis.Separator>
+                                            </lvc:Axis>
+                                        </lvc:CartesianChart.AxisX>--><!--
+                                            </lvc:CartesianChart>-->
                                     </Grid>
                                 </TabItem>
                             </TabControl>
@@ -1088,10 +1179,8 @@
                     <RowDefinition Height="150"/>
                 </Grid.RowDefinitions>
 
-                <Frame Grid.Row="0" Padding="0"
-                           NavigationUIVisibility="Hidden"
-                           Background="#a3a3a3"
-                           Content="{Binding Path=PageNow, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <Frame Grid.Row="0" Padding="0" NavigationUIVisibility="Hidden" Background="#a3a3a3"
+                       Content="{Binding Path=PageNow, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <TabControl Grid.Row="1" TabStripPlacement="Bottom"
                             Background="#a3a3a3" BorderBrush="#4a4a4a" BorderThickness="1.25">

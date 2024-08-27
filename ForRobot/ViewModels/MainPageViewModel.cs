@@ -42,8 +42,8 @@ namespace ForRobot.ViewModels
 
         private Detal _detal;
 
-        //private ObservableCollection<Themes.ToolBarTrayForRobot> _items = new ObservableCollection<Themes.ToolBarTrayForRobot>() { new Themes.ToolBarTrayForRobot() };
-        private ObservableCollection<Themes.ToolBarTrayForRobot> _items;
+        private ObservableCollection<Themes.ToolBarTrayForRobot> _items = new ObservableCollection<Themes.ToolBarTrayForRobot>() { new Themes.ToolBarTrayForRobot() };
+        //private ObservableCollection<Themes.ToolBarTrayForRobot> _items;
 
         private Generation _generation;
 
@@ -604,15 +604,15 @@ namespace ForRobot.ViewModels
             generationProcess.Log += new EventHandler<LogEventArgs>(WreteLog);
             generationProcess.LogError += new EventHandler<LogErrorEventArgs>(WreteLogError);
 
-            foreach (var item in this.Items)
-            {
-                var dat = (ToolBarViewModel)item.DataContext;
+            //foreach (var item in this.Items)
+            //{
+            //    var dat = (ToolBarViewModel)item.DataContext;
 
-                if (string.IsNullOrWhiteSpace(dat.Robot.PathProgramm))
-                    generationProcess.PathProgramm = this.PathGenerator;
-                else
-                    generationProcess.PathProgramm = new FileInfo(dat.Robot.PathProgramm).DirectoryName;
-            }
+            //    if (string.IsNullOrWhiteSpace(dat.Robot.PathProgramm))
+            //        generationProcess.PathProgramm = this.PathGenerator;
+            //    else
+            //        generationProcess.PathProgramm = new FileInfo(dat.Robot.PathProgramm).DirectoryName;
+            //}
 
             generationProcess.Start(this.DetalObject);
 
