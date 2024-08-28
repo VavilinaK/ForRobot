@@ -1332,8 +1332,9 @@
                     </MenuItem.Header>
                 </MenuItem>
 
-                <MenuItem Background="Transparent" Width="Auto" HorizontalAlignment="Right" Visibility="Hidden"
-                          Command="{Binding}">
+                <MenuItem Background="Transparent" Width="Auto" HorizontalAlignment="Right"
+                          Command="{Binding Path=PropertiesCommand}">
+                    
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <Grid>

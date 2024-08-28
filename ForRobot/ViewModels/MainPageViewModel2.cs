@@ -104,6 +104,8 @@ namespace ForRobot.ViewModels
 
         private RelayCommand _helpCommand;
 
+        private RelayCommand _propertiesCommand;
+
         private IAsyncCommand _generateProgramCommand;
 
         private IAsyncCommand _runProgramCommand;
@@ -550,6 +552,27 @@ namespace ForRobot.ViewModels
             }
         }
 
+        /// <summary>
+        /// Открытие окна настроик
+        /// </summary>
+        public RelayCommand PropertiesCommand
+        {
+            get
+            {
+                return _propertiesCommand ??
+                    (_propertiesCommand = new RelayCommand(obj =>
+                    {
+                        if (object.Equals(App.Current.PropertiesWindow, null))
+                        {
+                            App.Current.PropertiesWindow = new Views.Windows.PropertiesWindow();
+                            App.Current.PropertiesWindow.Closed += (a, b) => App.Current.PropertiesWindow = null;
+                            App.Current.PropertiesWindow.Owner = App.Current.MainWindowView;
+                            App.Current.PropertiesWindow.Show();
+                        }
+                    }));
+            }
+        }
+
         #region Async
 
         /// <summary>
@@ -593,15 +616,13 @@ namespace ForRobot.ViewModels
                                     MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK)
                                     await Task.Run(() => robot.Item2.DeleteProgramm());
                                 else
-                                    return;
+                                    continue;
 
-                                //if (await Task.Run<bool>(() => robot.Item2.Copy(this.ProgrammName)))
-                                //    await Task.Run(() => robot.Item2.SelectProgramm(string.Join("", this.ProgrammName, ".src")));
                                 if (System.Windows.MessageBox.Show($"Копировать файлы программы в {robot.Item2.PathControllerFolder}?", $"{robot.Item1}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
                                         MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK && await Task.Run<bool>(() => robot.Item2.Copy(this.ProgrammName)))
                                     await Task.Run(() => robot.Item2.SelectProgramm(string.Join("", this.ProgrammName, ".src")));
                                 else
-                                    return;
+                                    continue;
                             }
                         else
                         {

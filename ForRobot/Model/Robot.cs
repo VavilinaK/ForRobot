@@ -697,9 +697,6 @@ namespace ForRobot.Model
                         return false;
                 }
 
-                //if (!Equals(MessageBox.Show($"Копировать файлы программы в {this.PathControllerFolder}?", "Копирование файлов", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.Yes, MessageBoxOptions.DefaultDesktopOnly), MessageBoxResult.Yes))
-                //    return false;
-
                 var fileCollection2 = Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameList(this.PathProgramm)).Result;
                 foreach (var file in fileCollection2.Keys.Where(i => i.EndsWith(".dat")).ToList<string>())
                 {
@@ -827,12 +824,13 @@ namespace ForRobot.Model
         /// </summary>
         public void DeleteProgramOnPC()
         {
-            foreach (var file in (Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameList(this.PathProgramm)).Result).Keys.ToList<string>())
+            Dictionary<String, String> files = Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameList(this.PathProgramm)).Result;
+            foreach (var file in files.Keys)
             {
                 if (!Task.Run<bool>(async () => await this.Connection.Delet(Path.Combine(this.PathProgramm, file))).Result)
                     new Exception($"Ошибка удаления файла {file}");
                 else
-                    this.LogMessage($"Файл программы {file} удалён");
+                    this.LogMessage($"Файл {file} удалён");
             }
         }
 
@@ -864,7 +862,8 @@ namespace ForRobot.Model
                         return;
                 }
 
-                foreach (var file in (Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameList(this.PathControllerFolder)).Result).Keys.ToList<string>())
+                Dictionary<String, String> files = Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameList(this.PathControllerFolder)).Result;
+                foreach (var file in files.Keys)
                 {
                     if (!Task.Run<bool>(async () => await this.Connection.Delet(Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
                         new Exception($"Ошибка удаления файла {Path.Combine(this.PathControllerFolder, new FileInfo(file).Name)}");

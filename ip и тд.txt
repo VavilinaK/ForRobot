@@ -49,6 +49,6 @@ result:
 {'method':'File_Delete','params':['D:\\NewProgramm\\R1\\'],'id':1}
 
 ---------------------------------------------------------------------------------------------
-{'method':'File_NameList','params':['D:\\newPrograms\\R1\\',511,127],'id':1}
+{'method':'File_NameList','params':['D:\\newPrograms\\R2',511,127],'id':1}
 
 {'method':'File_NameList','params':['KRC:\\',511,127],'id':1}
