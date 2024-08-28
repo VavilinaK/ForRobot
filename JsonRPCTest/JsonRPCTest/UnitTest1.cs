@@ -159,7 +159,7 @@ namespace JsonRPCTest
                 stream.Close();
                 client.Close();
             }
-            return qqqq;
+            return null;
         }
     }
 }

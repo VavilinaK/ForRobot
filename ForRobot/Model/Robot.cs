@@ -895,12 +895,7 @@ namespace ForRobot.Model
             if (disposing)
             {
                 this._cancelTokenSource?.Cancel();
-                if (this.Connection == null)
-                {
-                    this._disposed = true;
-                    return;
-                }
-                else
+                if (this.IsConnection)
                     this.Connection.Dispose();
             }
             this._disposed = true;

@@ -1,0 +1,11 @@
+[OPTIONS]
+Compatibility=1.1 or later
+Compiled file=HelpManual.chm
+Contents file=Table of Contents 1.hhc
+Display compile progress=No
+Index file=Index 1.hhk
+Language=0x419 Русский (Россия)
+
+
+[INFOTYPES]
+

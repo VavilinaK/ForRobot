@@ -33,7 +33,7 @@
         </Grid.RowDefinitions>
 
         <Label Name="Question" Grid.Column="1" Grid.Row="0"
-               Content="Текст:" FontSize="14"/>
+               Content="Текст:" FontSize="14" HorizontalContentAlignment="Center"/>
 
         <TextBox Name="InputText" Grid.Column="1" Grid.Row="1" MinWidth="250" Margin="0, 5"
                  Text="" FontSize="14" Padding="3"/>

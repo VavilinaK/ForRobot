@@ -9,6 +9,8 @@ using System.Windows;
 using System.Data.SqlClient;
 using System.Configuration;
 
+using ClassLibraryTaskManager;
+
 using ForRobot.Libr;
 
 using NLog;
@@ -102,17 +104,17 @@ namespace ForRobot
 
                     if (!(Process.GetProcessesByName(ResourceAssembly.GetName().Name).Length > 1)) // Проверка на существование более 1 процесса.
                     {
-                        //using (SingleGlobalInstance singleMutex = new SingleGlobalInstance(1000))
-                        //{
-                            this.Logger.Info($"{DateTime.Now.ToString("HH:mm:ss")} Запуск приложения");
+                        using (ClassLibraryTaskManager.SingleGlobalInstance singleMutex = new ClassLibraryTaskManager.SingleGlobalInstance(1000))
+                        {
+                            this.Logger.Info($"{DateTime.Now.ToString("HH:mm:ss")} Запуск приложения\n");
                             Application.Current.MainWindow = MainWindowView;
                             MainWindowView.Show();
                             GC.KeepAlive(mutex);
-                        //}
+                        }
                     }
                     else
                     {
-                        this.Logger.Info($"{DateTime.Now.ToString("HH:mm:ss")} Приложение уже открыто!");
+                        this.Logger.Info($"{DateTime.Now.ToString("HH:mm:ss")} Приложение уже открыто!\n");
                         NativeMethods.PostMessage((IntPtr)NativeMethods.HWND_BROADCAST,
                             NativeMethods.WM_SHOWME,
                             IntPtr.Zero,
@@ -144,7 +146,7 @@ namespace ForRobot
             if (((Application.Current.Windows.Count == 0) && (Application.Current.ShutdownMode == ShutdownMode.OnLastWindowClose))
                 || (Application.Current.ShutdownMode == ShutdownMode.OnMainWindowClose))
             {
-                this.Logger.Trace($"{DateTime.Now.ToString("HH:mm:ss")} Закрытие приложения");
+                this.Logger.Info($"{DateTime.Now.ToString("HH:mm:ss")} Закрытие приложения");
                 Application.Current.Shutdown(0);
             }
         }
