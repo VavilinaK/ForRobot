@@ -39,14 +39,6 @@
                 </ItemsPanelTemplate>
             </Menu.ItemsPanel>
 
-            <!--<MenuItem>
-                <MenuItem.Template>
-                    <ControlTemplate TargetType="{x:Type MenuItem}">
-                        <Button Width="40" Height="25" Margin="42, 5, 0, 5"/>
-                    </ControlTemplate>
-                </MenuItem.Template>
-            </MenuItem>-->            
-            
             <MenuItem>
                 <MenuItem.Template>
                     <ControlTemplate TargetType="{x:Type MenuItem}">
@@ -1308,11 +1300,52 @@
         
         <DockPanel Grid.Row="2" Background="#FF1680C9">
             <Menu Background="Transparent">
-                <MenuItem Background="Transparent" Width="Auto" Command="{Binding HelpCommand}">
+                <Menu.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <DockPanel HorizontalAlignment="Stretch"/>
+                    </ItemsPanelTemplate>
+                </Menu.ItemsPanel>
+                
+                <Menu.Resources>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="FontSize" Value="14"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="TextAlignment" Value="Center"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                    </Style>
+                </Menu.Resources>
+                
+                <MenuItem Background="Transparent" Width="Auto" Command="{Binding HelpCommand}" CommandParameter="{Binding Path=.}">
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="/InterfaceOfRobots;component/Themes/Images/question.png" Margin="0,2"/>
-                            <TextBlock Text="Help" FontSize="14" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" Margin="5, 0"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="5"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Image Grid.Column="0" Source="/InterfaceOfRobots;component/Themes/Images/question.png" Margin="0,2"/>
+                                <TextBlock Grid.Column="2" Text="Help"/>
+                            </Grid>
+                        </StackPanel>
+                    </MenuItem.Header>
+                </MenuItem>
+
+                <MenuItem Background="Transparent" Width="Auto" HorizontalAlignment="Right" Visibility="Hidden"
+                          Command="{Binding}">
+                    <MenuItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="5"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Image Grid.Column="0" Source="/InterfaceOfRobots;component/Themes/Images/settings.png" Margin="0,2"/>
+                                <TextBlock Grid.Column="2" Text="Настройки"/>
+                            </Grid>
                         </StackPanel>
                     </MenuItem.Header>
                 </MenuItem>

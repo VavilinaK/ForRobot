@@ -6,6 +6,8 @@
              xmlns:local="clr-namespace:ForRobot"
              d1p1:Ignorable="d"             
              Startup="OnStartUp"
+             DispatcherUnhandledException="OnDispatcherUnhandledException"
+             Exit="OnExit"
              ShutdownMode="OnMainWindowClose">
     
   <Application.Resources>

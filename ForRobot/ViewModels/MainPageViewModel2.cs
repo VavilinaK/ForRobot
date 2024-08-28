@@ -331,7 +331,7 @@ namespace ForRobot.ViewModels
                     {
                         if(((System.Windows.Controls.Primitives.ToggleButton)obj).IsChecked == true)
                         {
-                            using (ForRobot.Views.Windows.InputWindow _inputWindow = new ForRobot.Views.Windows.InputWindow("Введите коэффициент для ВСЕХ позиций"))
+                            using (ForRobot.Views.Windows.InputWindow _inputWindow = new ForRobot.Views.Windows.InputWindow("Введите пин-код") { Title = "Управление программой" })
                             {
                                 if (_inputWindow.ShowDialog() == true)
                                 {
@@ -644,7 +644,7 @@ namespace ForRobot.ViewModels
                             foreach (var robot in this.RobotsCollection.Select(item => item.Item2))
                             {
                                 if (robot.Pro_State == "#P_RESET" && System.Windows.MessageBox.Show($"Запустить программу {robot.RobotProgramName}?",
-                                                                                                                                      $"{this.RobotsCollection.Where(item => item.Item2 == robot).Select(item => item.Item1)}", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK,
+                                                                                                                                      $"{this.RobotsCollection.Where(item => item.Item2 == robot).Select(item => item.Item1).First()}", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK,
                                                                                                                                       System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK ||
                                     robot.Pro_State == "#P_END" && System.Windows.MessageBox.Show($"Перезапустить программу {robot.RobotProgramName}?",
                                                                                                   $"{this.RobotsCollection.Where(item => item.Item2 == robot).Select(item => item.Item1)}", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK,
@@ -785,17 +785,6 @@ namespace ForRobot.ViewModels
             robot.OpenConnection(this.ConnectionTimeOut);
             this.RobotsCollection.Add(new Tuple<string, Robot>($"Робот {this.RobotsCollection.Count + 1}", robot));
             RaisePropertyChanged(nameof(this.RobotNamesCollection));
-
-            //Themes.ToolBarTrayForRobot item = new Themes.ToolBarTrayForRobot() { NameRobot = $"Робот {Items.Count + 1}" };
-            //((ToolBarViewModel)item.DataContext).ChangeRobot += new EventHandler(this.ChangeRobot);
-            //((ToolBarViewModel)item.DataContext).Log += new EventHandler<LogEventArgs>(WreteLog);
-            //((ToolBarViewModel)item.DataContext).LogError += new EventHandler<LogErrorEventArgs>(WreteLogError);
-            //((ToolBarViewModel)item.DataContext).OpenConnection(robot.Host, robot.Port, (this.ConnectionTimeOut * 1000));
-            //((ToolBarViewModel)item.DataContext).Robot.PathProgramm = robot.PathProgramm;
-            //((ToolBarViewModel)item.DataContext).Robot.PathControllerFolder = robot.PathControllerFolder;
-            //((ToolBarViewModel)item.DataContext).Send += SendFile;
-            //((ToolBarViewModel)item.DataContext).SelectProgramm += SelectFile;
-            //this.Items.Add(item);
         }
 
         /// <summary>
@@ -873,27 +862,6 @@ namespace ForRobot.ViewModels
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void SelectAppLogger(object sender, LogEventArgs e) => this.Logger = ((ForRobot.App)sender).LoggerString;
-
-        //#region Async
-
-        //private async Task GenerationProgram()
-        //{
-        //    string foldForGenerate = Directory.GetParent(this.RobotsCollection.First().Item2.PathProgramm).ToString();
-            
-        //    // Запись Json-файла
-        //    JObject jObject1 = JObject.Parse(this.DetalObject.Json);
-        //    File.WriteAllText(Path.Combine(new FileInfo(foldForGenerate).DirectoryName, $"{this.ProgrammName}.json"), jObject1.ToString());
-
-        //    // Генерация программы.
-        //    Generation generationProcess = new Generation(foldForGenerate, this.ProgrammName);
-        //    generationProcess.Log += new EventHandler<LogEventArgs>(WreteLog);
-        //    generationProcess.LogError += new EventHandler<LogErrorEventArgs>(WreteLogError);
-        //    generationProcess.Start(this.DetalObject);
-        //    //if (!generationProcess.ProccesEnd(dat.Robot.PathProgramm))
-        //    //    return;
-        //}
-
-        //#endregion
 
         #region Deserialize Properties
 

@@ -375,14 +375,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Resource Include="robot_icon.ico" />
+    <Resource Include="Themes\Images\settings.png" />
     <Resource Include="Themes\Images\dataFile.png" />
     <Resource Include="Themes\Images\programFile.png" />
     <Resource Include="Themes\Images\folder.png" />
     <Resource Include="Themes\Images\up.png" />
     <Resource Include="Themes\Images\repeat.png" />
-    <Resource Include="README.txt">
+    <EmbeddedResource Include="README.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
+    </EmbeddedResource>
     <Resource Include="Themes\Images\PlitaStringerFull.png" />
     <Resource Include="Themes\Images\PlitaTreygolnikFull.png" />
     <Resource Include="Themes\Images\toRight.png" />
@@ -402,7 +404,6 @@
     <Resource Include="Themes\Images\3d.png" />
     <Resource Include="Themes\Images\2d.png" />
     <Resource Include="Themes\Images\Plita.png" />
-    <Resource Include="robot_icon.ico" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -440,6 +441,7 @@
     <Resource Include="Themes\Images\question.png" />
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <None Include="ClassDiagram1.cd" />
     <EmbeddedResource Include="Help\HelpManual.chm">
