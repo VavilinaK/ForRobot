@@ -1,17 +1,25 @@
-192.168.119.134 3333
-KRC:\R1\Program - директива робота
-
-------------------------------------------------------------------------------------------
+KRC:\\R1\\Program - директива робота
 
 {'method':'auth','params':['My_example_KEY'],'id':1} - запрос ключа
 
-{'method':'Select_Select','params':['KRC:\\R1\\Program\\test.src'],'id':1} - выбор программы
+------------------------------------------------------------------------------------------
 
-{'method':'Select_Run','params':['KRC:\\R1\\Program\\test.src'],'id':1} - выбор и запуск программы на роботе
+
+{'method':'Select_Select','params':['KRC:\\R1\\Program\\test3.src'],'id':1} - выбор программы
+
+{'method':'Select_Start','params':[],'id':1}
+
+{'method':'Select_Stop','params':[1],'id':1} - остановка уже запущенной программы
+
+{'method':'Select_Run','params':['KRC:\\R1\\Program\\test_io.src'],'id':1} - выбор и запуск программы на роботе
 
 ------------------------------------------------------------------------------------------
 
-{'method':'Var_ShowVar','params':['$TRAFONAME[]'],'id':1} - запрос к переменной на роботе.
+{'method':'Var_ShowVar','params':['$BASE'],'id':1} - запрос к переменной на роботе.
+{'method':'Var_ShowVar','params':['$BASE'],'id':1}
+result:
+	
+{'method':'Var_ShowVar','params':['$IN[]'],'id':1}
 {'method':'Var_ShowVar','params':['$TRAFONAME[]'],'id':1}
 {'method':'Var_ShowVar','params':['$PRO_NAME[]'],'id':1}
 {'method':'Var_ShowVar','params':['$PRO_STATE'],'id':1} - состояние процесса
@@ -29,10 +37,18 @@ result:
 
 {'method':'Select_Cancel','params':[],'id':1} - закрытие выбранной программы
 
-{'method':'File_CopyMem2File','params':['test\ntest', 'D:\\test.txt', 64],'id':1} - запись переданных данных в файл
-{'method':'File_CopyMem2File','params':'D:\\generation\\test.txt', 'KRC:\\R1\\Program\\test.src', 64],'id':1}
+{'method':'File_CopyMem2File','params':['test\ntest', 'D:\\NewProgramm\\R1\\generation\\test.txt', 64],'id':1} - запись переданных данных в файл
+{'method':'File_CopyMem2File','params':'D:\\NewProgramm\\R1\\edge_0_left_stm.dat', 'KRC:\\R1\\Program\\6514\\edge_0_left_stm.dat', 64],'id':1}
+
 
 {'method':'File_Copy','params':['KRC:\\R1\\Program\\test.src', 'KRC:\\R1\\Program\\test2.src', 64],'id':1} - копирование файла
-{'method':'File_Copy','params':['D:\\generation\\test.src', 'KRC:\\R1\\Program\\test.src', 64],'id':1}
+{'method':'File_Copy','params':['D:\\newPrograms\\R1\\edge_0_left_stm.src', 'KRC:\\R1\\Program\\6514\\edge_0_left_stm.src', 64],'id':1}
 
-{'method':'File_Delete','params':['KRC:\\R1\\Program\\test.src'],'id':1} - удаление файла
+{'method':'File_Delete','params':['KRC:\\R1\\Program\\edge_0_left_stm.dat'],'id':1} - удаление файла
+
+{'method':'File_Delete','params':['D:\\NewProgramm\\R1\\'],'id':1}
+
+---------------------------------------------------------------------------------------------
+{'method':'File_NameList','params':['D:\\newPrograms\\R1\\',511,127],'id':1}
+
+{'method':'File_NameList','params':['KRC:\\',511,127],'id':1}

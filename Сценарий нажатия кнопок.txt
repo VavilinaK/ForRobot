@@ -1,0 +1,15 @@
+Run - всегда активна; 
+	проверка на {'method':'Var_ShowVar','params':['$PRO_NAME[]'],'id':1} != ""
+	и {'method':'Var_ShowVar','params':['$PRO_STATE'],'id':1} == #P_RESET;
+	если запущенна заменяется на Pause.
+
+Pause - пока программа запущена, т.е. {'method':'Var_ShowVar','params':['$PRO_STATE'],'id':1} == #P_ACTIVE
+
+Stop - проверка на {'method':'Var_ShowVar','params':['$PRO_STATE'],'id':1} == #P_ACTIVE
+	или {'method':'Var_ShowVar','params':['$PRO_STATE'],'id':1} == #P_STOP
+
+Search - если {'method':'Var_ShowVar','params':['$PRO_STATE'],'id':1} == #P_FREE
+	или {'method':'Var_ShowVar','params':['$PRO_STATE'],'id':1} == #P_END
+
+1) Ничего нет
+

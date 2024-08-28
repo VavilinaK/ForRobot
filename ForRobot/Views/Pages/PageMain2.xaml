@@ -1179,8 +1179,12 @@
                     <RowDefinition Height="150"/>
                 </Grid.RowDefinitions>
 
-                <Frame Grid.Row="0" Padding="0" NavigationUIVisibility="Hidden" Background="#a3a3a3"
-                       Content="{Binding Path=PageNow, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <DockPanel Grid.Row="0" LastChildFill="True" Background="#a3a3a3">
+                    <Frame NavigationUIVisibility="Hidden" Margin="15"
+                           HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                           HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                           Content="{Binding Path=PageNow, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </DockPanel>
 
                 <TabControl Grid.Row="1" TabStripPlacement="Bottom"
                             Background="#a3a3a3" BorderBrush="#4a4a4a" BorderThickness="1.25">

@@ -9,8 +9,6 @@ using System.Windows;
 using System.Data.SqlClient;
 using System.Configuration;
 
-using ClassLibraryTaskManager;
-
 using ForRobot.Libr;
 
 using NLog;
@@ -28,7 +26,7 @@ namespace ForRobot
 
         private static Mutex mutex = null;
 
-        private static SingleGlobalInstance singleMutex;
+        //private static SingleGlobalInstance singleMutex;
 
         ///// <summary>
         ///// Путь к программе на сервере
@@ -99,32 +97,34 @@ namespace ForRobot
                             NativeMethods.WM_SHOWME,
                             IntPtr.Zero,
                             IntPtr.Zero);
-                        Environment.Exit((int)Error.ExitCode.ERROR_SUCCESS);
+                        Environment.Exit(0);
                     }
 
-                    if (!Manager.ProcessInf(ResourceAssembly.GetName().Name))
+                    if (!(Process.GetProcessesByName(ResourceAssembly.GetName().Name).Length > 1)) // Проверка на существование более 1 процесса.
                     {
-                        using (singleMutex = new SingleGlobalInstance(1000))
-                        {
+                        //using (SingleGlobalInstance singleMutex = new SingleGlobalInstance(1000))
+                        //{
                             this.Logger.Info($"{DateTime.Now.ToString("HH:mm:ss")} Запуск приложения");
                             Application.Current.MainWindow = MainWindowView;
                             MainWindowView.Show();
                             GC.KeepAlive(mutex);
-                        }
+                        //}
                     }
                     else
                     {
+                        this.Logger.Info($"{DateTime.Now.ToString("HH:mm:ss")} Приложение уже открыто!");
                         NativeMethods.PostMessage((IntPtr)NativeMethods.HWND_BROADCAST,
                             NativeMethods.WM_SHOWME,
                             IntPtr.Zero,
                             IntPtr.Zero);
-                        Environment.Exit((int)Error.ExitCode.ERROR_SUCCESS);
+                        Environment.Exit(0);
                     }
                 }
             }
             catch (Exception ex)
             {
                 this.Logger.Error(ex.Message);
+                Environment.Exit(1);
             }
         }
 
