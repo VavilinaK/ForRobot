@@ -62,7 +62,7 @@
       <HintPath>..\packages\AustinHarris.JsonRpc.1.2.3\lib\netstandard2.0\AustinHarris.JsonRpc.dll</HintPath>
     </Reference>
     <Reference Include="ClassLibraryTaskManager">
-      <HintPath>..\..\Sources\Task_Manager\ClassLibraryTaskManager\ClassLibraryTaskManager\bin\Release\ClassLibraryTaskManager.dll</HintPath>
+      <HintPath>..\..\..\Sources\Task_Manager\ClassLibraryTaskManager\ClassLibraryTaskManager\bin\Release\ClassLibraryTaskManager.dll</HintPath>
     </Reference>
     <Reference Include="CommonServiceLocator, Version=2.0.7.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.2.0.7\lib\net47\CommonServiceLocator.dll</HintPath>
@@ -210,6 +210,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Libr\SingleGlobalInstance.cs" />
     <Compile Include="Views\Windows\PropertiesWindow.xaml.cs">
       <DependentUpon>PropertiesWindow.xaml</DependentUpon>
     </Compile>

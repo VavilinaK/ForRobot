@@ -8,9 +8,9 @@
       xmlns:models="clr-namespace:ForRobot.Model.Detals"
       mc:Ignorable="d"
       Background="Transparent"
-      Title="Page2D">
+      Height="Auto" Width="Auto">
 
-    <Grid Margin="15, 15, 15, 0">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="15"/>
@@ -45,7 +45,7 @@
 
         <StackPanel Grid.Row="2">
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                <Image Width="Auto" Height="Auto" MaxHeight="290" Source="{Binding Path=Detal2D.RebraImage, RelativeSource={RelativeSource AncestorType={x:Type local:Page2D}, Mode=FindAncestor}}" Stretch="None"/>
+                <Image Width="Auto" Height="Auto" MaxHeight="280" Source="{Binding Path=Detal2D.RebraImage, RelativeSource={RelativeSource AncestorType={x:Type local:Page2D}, Mode=FindAncestor}}" Stretch="None"/>
             </ScrollViewer>
         </StackPanel>
     </Grid>
