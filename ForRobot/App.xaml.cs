@@ -75,6 +75,8 @@ namespace ForRobot
 
         public Views.Windows.MainWindow MainWindowView { get => _mainWindow ?? (_mainWindow = new Views.Windows.MainWindow()); }
 
+        public Views.Windows.PropertiesWindow PropertiesWindow { get; set; }
+
         #endregion
 
         #endregion

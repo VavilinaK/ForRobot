@@ -6,10 +6,42 @@
         xmlns:local="clr-namespace:ForRobot.Views.Windows"
         mc:Ignorable="d"
         Title="Настройки программы"
-        Height="450" Width="800"
-        >
+        Height="450" Width="700" ResizeMode="NoResize"
+        ShowInTaskbar="True"  WindowStartupLocation="CenterScreen"
+        Background="#cfcfcf"
+        Icon="/InterfaceOfRobots;component/Themes/Images/settings.png">
     
-    <Grid>
-        
+    <Grid Margin="15">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="15"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <TreeView Grid.Column="0" x:Name="TreeViewProperties" SelectedValuePath="{Binding Path=.}">
+            <TreeViewItem Header="Общии"/>
+            <!--<TreeViewItem Header="Соединение">
+                
+            </TreeViewItem>-->
+            <!--<TreeViewItem Header="Генерация"/>-->
+        </TreeView>
+
+        <ContentControl Grid.Column="2">
+            <ContentControl.Style>
+                <Style TargetType="{x:Type ContentControl}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=SelectedValuePath.Header, ElementName=TreeViewProperties}" Value="Общии">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ContentControl">
+                                        <ContentControl ContentTemplate="{StaticResource GeneralProperiesTemplate}"/>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>
     </Grid>
 </Window>
