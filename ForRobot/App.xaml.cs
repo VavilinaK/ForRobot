@@ -30,10 +30,10 @@ namespace ForRobot
 
         //private static SingleGlobalInstance singleMutex;
 
-        ///// <summary>
-        ///// Путь к программе на сервере
-        ///// </summary>
-        //private string FilePathOnServer { get => ForRobot.Properties.Settings.Default.PathInWeb; }
+        /// <summary>
+        /// Путь к программе на сервере
+        /// </summary>
+        private string UpdatePath { get => ForRobot.Properties.Settings.Default.UpdatePath; }
 
         /// <summary>
         /// Путь к программе на коммпьютере
@@ -106,9 +106,16 @@ namespace ForRobot
 
                     if (!(Process.GetProcessesByName(ResourceAssembly.GetName().Name).Length > 1)) // Проверка на существование более 1 процесса.
                     {
+                        //if (ForRobot.Properties.Settings.Default.AutoUpdate && File.Exists(Path.Combine(App.Current.UpdatePath, $"{ResourceAssembly.GetName().Name}.exe")) &&
+                        //    new Version(FileVersionInfo.GetVersionInfo(Path.Combine(App.Current.UpdatePath, $"{ResourceAssembly.GetName().Name}.exe")).ProductVersion) > Assembly.GetExecutingAssembly().GetName().Version &&
+                        //    (!ForRobot.Properties.Settings.Default.InformUser || MessageBox.Show($"Обнаружено обновление до версии {FileVersionInfo.GetVersionInfo(Path.Combine(App.Current.UpdatePath, $"{ResourceAssembly.GetName().Name}.exe")).ProductVersion}\nОбновить приложение?", "Обновление интерфейса", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK))
+                        //{
+                        //    App.Current.UpDateApp(e);
+                        //}
+
                         using (ClassLibraryTaskManager.SingleGlobalInstance singleMutex = new ClassLibraryTaskManager.SingleGlobalInstance(1000))
                         {
-                            this.Logger.Info($"{DateTime.Now.ToString("HH:mm:ss")} Запуск приложения\n");
+                            this.Logger.Info("Запуск приложения\n");
                             Application.Current.MainWindow = MainWindowView;
                             MainWindowView.Show();
                             GC.KeepAlive(mutex);
@@ -116,7 +123,7 @@ namespace ForRobot
                     }
                     else
                     {
-                        this.Logger.Info($"{DateTime.Now.ToString("HH:mm:ss")} Приложение уже открыто!\n");
+                        this.Logger.Info("Приложение уже открыто!\n");
                         NativeMethods.PostMessage((IntPtr)NativeMethods.HWND_BROADCAST,
                             NativeMethods.WM_SHOWME,
                             IntPtr.Zero,
@@ -148,7 +155,7 @@ namespace ForRobot
             if (((Application.Current.Windows.Count == 0) && (Application.Current.ShutdownMode == ShutdownMode.OnLastWindowClose))
                 || (Application.Current.ShutdownMode == ShutdownMode.OnMainWindowClose))
             {
-                this.Logger.Info($"{DateTime.Now.ToString("HH:mm:ss")} Закрытие приложения");
+                this.Logger.Info("Закрытие приложения\n");
                 Application.Current.Shutdown(0);
             }
         }
@@ -160,21 +167,21 @@ namespace ForRobot
         /// <param name="e"></param>
         private void UpDateApp(StartupEventArgs e)
         {
-            //System.Diagnostics.Process process = new System.Diagnostics.Process()
-            //{
-            //    StartInfo = new ProcessStartInfo()
-            //    {
-            //        UseShellExecute = false,
-            //        RedirectStandardOutput = true,
-            //        RedirectStandardError = true,
-            //        WorkingDirectory = this.FilePath,
-            //        CreateNoWindow = true,
-            //        FileName = "cmd.exe",
-            //        Arguments = $"/K taskkill /im {ResourceAssembly.GetName().Name}.exe /f& xcopy \"{this.FilePathOnServer + "\\*.*"}\" \"{this.FilePath}\" /E /Y& START \"\" \"{this.FilePath + "\\" + ResourceAssembly.GetName().Name + ".exe"}\" \"{string.Join("\" \"", e.Args)}\"",
-            //        WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden
-            //    }
-            //};
-            //new Thread(() => process.Start()).Start();
+            System.Diagnostics.Process process = new System.Diagnostics.Process()
+            {
+                StartInfo = new ProcessStartInfo()
+                {
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    WorkingDirectory = this.FilePathOnPC,
+                    CreateNoWindow = true,
+                    FileName = "cmd.exe",
+                    Arguments = $"/K taskkill /im {ResourceAssembly.GetName().Name}.exe /f& xcopy \"{this.UpdatePath + "\\*.*"}\" \"{this.FilePathOnPC}\" /E /Y& START \"\" \"{this.FilePathOnPC + "\\" + ResourceAssembly.GetName().Name + ".exe"}\" \"{string.Join("\" \"", e.Args)}\"",
+                    WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden
+                }
+            };
+            new Thread(() => process.Start()).Start();
         }
 
         #endregion

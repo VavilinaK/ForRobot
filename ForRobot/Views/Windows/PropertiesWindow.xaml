@@ -3,13 +3,20 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:local="clr-namespace:ForRobot.Views.Windows"
+        xmlns:lib="clr-namespace:ForRobot.Libr"
+        xmlns:vm="clr-namespace:ForRobot.ViewModels"
         mc:Ignorable="d"
         Title="Настройки программы"
         Height="450" Width="700" ResizeMode="NoResize"
         ShowInTaskbar="True"  WindowStartupLocation="CenterScreen"
         Background="#cfcfcf"
         Icon="/InterfaceOfRobots;component/Themes/Images/settings.png">
+
+    <Window.DataContext>
+        <vm:PropertiesWindowViewModel/>
+    </Window.DataContext>
     
     <Grid Margin="15">
         <Grid.ColumnDefinitions>
@@ -18,19 +25,23 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <TreeView Grid.Column="0" x:Name="TreeViewProperties" SelectedValuePath="{Binding Path=.}">
-            <TreeViewItem Header="Общии"/>
+        <TreeView Grid.Column="0" x:Name="TreeViewProperties" FontSize="13">
+            <TreeViewItem Header="Общии" IsSelected="True"/>
             <!--<TreeViewItem Header="Соединение">
                 
             </TreeViewItem>-->
             <!--<TreeViewItem Header="Генерация"/>-->
+
+            <i:Interaction.Behaviors>
+                <lib:TreeViewSelectedItemBehavior SelectedItem="{Binding Path=.}" />
+            </i:Interaction.Behaviors>
         </TreeView>
 
         <ContentControl Grid.Column="2">
             <ContentControl.Style>
                 <Style TargetType="{x:Type ContentControl}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=SelectedValuePath.Header, ElementName=TreeViewProperties}" Value="Общии">
+                        <DataTrigger Binding="{Binding Path=SelectedItem.Header, ElementName=TreeViewProperties}" Value="Общии">
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="ContentControl">

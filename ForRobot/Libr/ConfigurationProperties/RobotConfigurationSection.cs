@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Configuration;
 
-namespace ForRobot.Libr
+namespace ForRobot.Libr.ConfigurationProperties
 {
     /// <summary>
     /// Класс для вывода стандартных свойств робота из app.config

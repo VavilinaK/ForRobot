@@ -15,7 +15,7 @@ namespace ForRobot.Model.Detals
         /// <summary>
         /// Экземпляр детали из app.config
         /// </summary>
-        private PlitaConfigurationSection Config { get; set; }
+        private ForRobot.Libr.ConfigurationProperties.PlitaConfigurationSection Config { get; set; }
 
         #endregion
 
@@ -172,7 +172,7 @@ namespace ForRobot.Model.Detals
             switch (type)
             {
                 case ForRobot.Model.Detals.DetalType.Plita:
-                    this.Config = ConfigurationManager.GetSection("plita") as PlitaConfigurationSection;
+                    this.Config = ConfigurationManager.GetSection("plita") as ForRobot.Libr.ConfigurationProperties.PlitaConfigurationSection;
                     this.Long = Config.Long;
                     this.Wight = Config.Wight;
                     this.Hight = Config.Hight;

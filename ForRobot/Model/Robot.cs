@@ -38,7 +38,7 @@ namespace ForRobot.Model
 
         private CancellationTokenSource _cancelTokenSource { get; set; }
 
-        private RobotConfigurationSection Config { get; set; } = ConfigurationManager.GetSection("robot") as RobotConfigurationSection;
+        private ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection Config { get; set; } = ConfigurationManager.GetSection("robot") as ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection;
 
         private List<ForRobot.Model.Controls.File> FilesCollection = new List<Controls.File>();
 

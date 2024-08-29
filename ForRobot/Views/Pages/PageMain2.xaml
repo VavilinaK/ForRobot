@@ -1344,7 +1344,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
-                                <Image Grid.Column="0" Source="/InterfaceOfRobots;component/Themes/Images/settings.png" Margin="0,2"/>
+                                <Image Grid.Column="0" Source="/InterfaceOfRobots;component/Themes/Images/settingsWhite.png" Margin="0,2"/>
                                 <TextBlock Grid.Column="2" Text="Настройки"/>
                             </Grid>
                         </StackPanel>

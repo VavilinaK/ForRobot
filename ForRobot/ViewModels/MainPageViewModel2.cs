@@ -333,7 +333,7 @@ namespace ForRobot.ViewModels
                     {
                         if(((System.Windows.Controls.Primitives.ToggleButton)obj).IsChecked == true)
                         {
-                            using (ForRobot.Views.Windows.InputWindow _inputWindow = new ForRobot.Views.Windows.InputWindow("Введите пин-код") { Title = "Управление программой" })
+                            using (ForRobot.Views.Windows.InputWindow _inputWindow = new ForRobot.Views.Windows.InputWindow("Введите пин-код") { Title = "Управление процессом на роботе" })
                             {
                                 if (_inputWindow.ShowDialog() == true)
                                 {
@@ -609,8 +609,8 @@ namespace ForRobot.ViewModels
                                     System.Windows.MessageBox.Show("Не выбрана папка программы", $"{robot.Item1}", MessageBoxButton.OK, MessageBoxImage.Stop);
                                     return;
                                 }
-                                await Task.Run(() => robot.Item2.DeleteProgramOnPC());
-                                await Task.Run(() => robot.Item2.CopyToPC(string.Join("", this.ProgrammName, ".src")));
+                                //await Task.Run(() => robot.Item2.DeleteProgramOnPC());
+                                //await Task.Run(() => robot.Item2.CopyToPC(string.Join("", this.ProgrammName, ".src")));
 
                                 if (System.Windows.MessageBox.Show($"Удалить все файлы из {robot.Item2.PathControllerFolder}?", $"{robot.Item1}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
                                     MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK)
@@ -631,8 +631,8 @@ namespace ForRobot.ViewModels
                                 System.Windows.MessageBox.Show("Не выбрана папка программы", $"{this.SelectedNameRobot}", MessageBoxButton.OK, MessageBoxImage.Stop);
                                 return;
                             }
-                            await Task.Run(() => this.RobotForControl.DeleteProgramOnPC());
-                            await Task.Run(() => this.RobotForControl.CopyToPC(string.Join("", this.ProgrammName, ".src")));
+                            //await Task.Run(() => this.RobotForControl.DeleteProgramOnPC());
+                            //await Task.Run(() => this.RobotForControl.CopyToPC(string.Join("", this.ProgrammName, ".src")));
 
                             if (System.Windows.MessageBox.Show($"Удалить все файлы из {this.RobotForControl.PathControllerFolder}?", $"{this.SelectedNameRobot}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
                                 MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK)
