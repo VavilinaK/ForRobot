@@ -1,10 +1,69 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:ForRobot.Themes">
+                    xmlns:local="clr-namespace:ForRobot.Themes"
+                    xmlns:properties="clr-namespace:ForRobot.Properties" >
 
     <DataTemplate x:Key="GeneralProperiesTemplate" DataType="{x:Type ContentControl}">
-        <Grid Background="Aqua">
-            
+        <DataTemplate.Resources>
+            <Style TargetType="{x:Type CheckBox}">
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
+            </Style>
+
+            <Style TargetType="{x:Type Label}">
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            </Style>
+
+            <Style TargetType="{x:Type Button}">
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="Padding" Value="0, 5"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            </Style>
+        </DataTemplate.Resources>
+        
+        <Grid Background="Transparent">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <GroupBox Grid.Row="0" Header="Обновление" FontSize="13" Padding="10">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <CheckBox Grid.Column="0" Content="Автообновление" IsChecked="{Binding Path=DataContext.AutoUpdate, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Mode=TwoWay}"/>
+                        <CheckBox Grid.Column="2" Content="Уведомлять пользователя перед обновлением" IsChecked="{Binding Path=DataContext.InformUser, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Mode=TwoWay}">
+                            <CheckBox.Style>
+                                <Style TargetType="{x:Type CheckBox}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Source={x:Static properties:Settings.Default}, Path=AutoUpdate}" Value="{StaticResource False}">
+                                            <Setter Property="IsEnabled" Value="False"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </CheckBox.Style>
+                        </CheckBox>
+                    </Grid>
+
+                    <Button Grid.Row="1" Content="Изменить путь к папке для обновлений" Padding="0, 5" Margin="0, 15, 0, 0" Command="{Binding Path=DataContext.EditPathForUpdateCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
+                </Grid>
+            </GroupBox>
+
+            <Button Grid.Row="1" Content="Изменить пин-код" Margin="15" Command="{Binding Path=DataContext.EditPinCodeCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
+
         </Grid>        
     </DataTemplate>
     

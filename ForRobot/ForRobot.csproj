@@ -210,7 +210,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Libr\Settings.cs" />
     <Compile Include="Libr\SingleGlobalInstance.cs" />
+    <Compile Include="ViewModels\PropertiesWindowViewModel.cs" />
     <Compile Include="Views\Windows\PropertiesWindow.xaml.cs">
       <DependentUpon>PropertiesWindow.xaml</DependentUpon>
     </Compile>
@@ -286,8 +288,8 @@
     <Compile Include="Libr\Json\SameDistanceAttributesResolver.cs" />
     <Compile Include="Libr\Json\SaveAttribute.cs" />
     <Compile Include="Libr\Json\SaveAttributesResolver.cs" />
-    <Compile Include="Libr\PlitaConfigurationSection.cs" />
-    <Compile Include="Libr\RobotConfigurationSection.cs" />
+    <Compile Include="Libr\ConfigurationProperties\PlitaConfigurationSection.cs" />
+    <Compile Include="Libr\ConfigurationProperties\RobotConfigurationSection.cs" />
     <Compile Include="Libr\ScrollViewerAttachedProperties.cs" />
     <Compile Include="Libr\Converters\StatusColorConverter.cs" />
     <Compile Include="Libr\Converters\StringFormatConverter.cs" />
@@ -379,8 +381,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Resource Include="robot_icon.ico" />
     <Resource Include="Themes\Images\settings.png" />
+    <Resource Include="robot_icon.ico" />
+    <Resource Include="Themes\Images\settingsWhite.png" />
     <Resource Include="Themes\Images\dataFile.png" />
     <Resource Include="Themes\Images\programFile.png" />
     <Resource Include="Themes\Images\folder.png" />
@@ -414,8 +417,6 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Resource Include="Themes\Images\StartReber.png" />
-    <Resource Include="Themes\Images\setting-fill.png" />
-    <Resource Include="Themes\Images\setting-unfill.png" />
     <Resource Include="Themes\Images\StartPlita.png" />
     <Resource Include="Themes\Images\update.png" />
     <Resource Include="Themes\Images\Start.png" />

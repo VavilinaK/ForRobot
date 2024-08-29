@@ -177,5 +177,41 @@ namespace ForRobot.Properties {
                 this["PinCode"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AutoUpdate {
+            get {
+                return ((bool)(this["AutoUpdate"]));
+            }
+            set {
+                this["AutoUpdate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("\\\\gateway\\Обменник\\!IT\\777\\Формы\\ForRobot\\Update")]
+        public string UpdatePath {
+            get {
+                return ((string)(this["UpdatePath"]));
+            }
+            set {
+                this["UpdatePath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool InformUser {
+            get {
+                return ((bool)(this["InformUser"]));
+            }
+            set {
+                this["InformUser"] = value;
+            }
+        }
     }
 }

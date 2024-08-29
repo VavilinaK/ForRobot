@@ -14,6 +14,7 @@ using Newtonsoft.Json.Serialization;
 using ForRobot.Libr;
 using ForRobot.Libr.Json;
 using ForRobot.Libr.Converters;
+using ForRobot.Libr.ConfigurationProperties;
 
 namespace ForRobot.Model.Detals
 {
