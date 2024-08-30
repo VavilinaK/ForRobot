@@ -210,7 +210,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Libr\Settings.cs" />
+    <Compile Include="Libr\Settings\ModeClosingApp.cs" />
+    <Compile Include="Libr\Settings\Settings.cs" />
     <Compile Include="Libr\SingleGlobalInstance.cs" />
     <Compile Include="ViewModels\PropertiesWindowViewModel.cs" />
     <Compile Include="Views\Windows\PropertiesWindow.xaml.cs">

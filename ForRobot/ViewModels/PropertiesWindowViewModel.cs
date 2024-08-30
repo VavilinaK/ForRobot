@@ -12,39 +12,77 @@ namespace ForRobot.ViewModels
     {
         #region Private variables
 
+
+
         #region Commands
 
+        private RelayCommand _saveCommand;
+
+        private RelayCommand _cancelCommand;
+        
         private RelayCommand _editPathForUpdateCommand;
 
         private RelayCommand _editPinCodeCommand;
-        
+
         #endregion
 
         #endregion
 
         #region Public variables
 
-        public bool AutoUpdate
-        {
-            get => Properties.Settings.Default.AutoUpdate;
-            set
-            {
-                Properties.Settings.Default.AutoUpdate = value;
-                Properties.Settings.Default.Save();
-            }
-        }
+        public ForRobot.Libr.Settings.Settings Settings { get; set; } = ForRobot.Libr.Settings.Settings.GetSettings();
 
-        public bool InformUser
-        {
-            get => Properties.Settings.Default.InformUser;
-            set
-            {
-                Properties.Settings.Default.InformUser = value;
-                Properties.Settings.Default.Save();
-            }
-        }
+        //public bool AutoUpdate
+        //{
+        //    get => Properties.Settings.Default.AutoUpdate;
+        //    set
+        //    {
+        //        Properties.Settings.Default.AutoUpdate = value;
+        //        Properties.Settings.Default.Save();
+        //    }
+        //}
+
+        //public bool InformUser
+        //{
+        //    get => Properties.Settings.Default.InformUser;
+        //    set
+        //    {
+        //        Properties.Settings.Default.InformUser = value;
+        //        Properties.Settings.Default.Save();
+        //    }
+        //}
 
         #region Commands
+
+        /// <summary>
+        /// Сохранение настроек
+        /// </summary>
+        public RelayCommand SaveCommand
+        {
+            get
+            {
+                return _saveCommand ??
+                    (_saveCommand = new RelayCommand(obj =>
+                    {
+                        this.Settings.Save();
+                    }));
+            }
+        }
+
+        /// <summary>
+        /// Закрытие окна
+        /// </summary>
+        public RelayCommand CancelCommand
+        {
+            get
+            {
+                return _cancelCommand ??
+                    (_cancelCommand = new RelayCommand(obj =>
+                    {
+
+                    }));
+            }
+        }
 
         /// <summary>
         /// Изменение директивы каталога с новой версией

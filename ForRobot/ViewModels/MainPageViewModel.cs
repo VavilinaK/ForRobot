@@ -188,18 +188,18 @@ namespace ForRobot.ViewModels
             }
         }
 
-        /// <summary>
-        /// Время ожидани подключения
-        /// </summary>
-        public int ConnectionTimeOut
-        {
-            get => Properties.Settings.Default.ConnectionTimeOut;
-            set
-            {
-                Properties.Settings.Default.ConnectionTimeOut = value;
-                Properties.Settings.Default.Save();
-            }
-        }
+        ///// <summary>
+        ///// Время ожидани подключения
+        ///// </summary>
+        //public int ConnectionTimeOut
+        //{
+        //    get => Properties.Settings.Default.ConnectionTimeOut;
+        //    set
+        //    {
+        //        Properties.Settings.Default.ConnectionTimeOut = value;
+        //        Properties.Settings.Default.Save();
+        //    }
+        //}
 
         /// <summary>
         /// Пин-код
@@ -494,7 +494,7 @@ namespace ForRobot.ViewModels
             ((ToolBarViewModel)item.DataContext).ChangeRobot += new EventHandler(this.ChangeRobot);
             ((ToolBarViewModel)item.DataContext).Log += new EventHandler<LogEventArgs>(WreteLog);
             ((ToolBarViewModel)item.DataContext).LogError += new EventHandler<LogErrorEventArgs>(WreteLogError);
-            ((ToolBarViewModel)item.DataContext).OpenConnection(robot.Host, robot.Port, (this.ConnectionTimeOut * 1000));
+            //((ToolBarViewModel)item.DataContext).OpenConnection(robot.Host, robot.Port, (this.ConnectionTimeOut * 1000));
             ((ToolBarViewModel)item.DataContext).Robot.PathProgramm = robot.PathProgramm;
             //((ToolBarViewModel)item.DataContext).Robot.PathControllerFolder = robot.PathControllerFolder;
             ((ToolBarViewModel)item.DataContext).Send += SendFile;

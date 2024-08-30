@@ -15,6 +15,8 @@ namespace ForRobot.Libr.Converters
 
             if (value is Boolean && parameter is Boolean)
                 return ((bool)parameter == (bool)value);
+            else if (value is ForRobot.Libr.Settings.ModeClosingApp && parameter is ForRobot.Libr.Settings.ModeClosingApp)
+                return ((ForRobot.Libr.Settings.ModeClosingApp)parameter == (ForRobot.Libr.Settings.ModeClosingApp)value);
             else
                 return ((string)parameter == (string)value);
         }

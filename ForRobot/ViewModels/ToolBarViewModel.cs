@@ -185,7 +185,7 @@ namespace ForRobot.ViewModels
                         //this.Robot.ChangeRobot += this.ChangeRobot;
                         //this.Robot.Log += this.Log;
                         //this.Robot.LogError += this.LogError;
-                        this.Robot.OpenConnection(Properties.Settings.Default.ConnectionTimeOut);
+                        //this.Robot.OpenConnection(Properties.Settings.Default.ConnectionTimeOut);
                     }));
             }
         }

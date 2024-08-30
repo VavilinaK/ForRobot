@@ -1,0 +1,74 @@
+﻿using System;
+using System.IO;
+using System.Diagnostics;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Text;
+//using System.Threading.Tasks;
+
+using Newtonsoft.Json;
+
+namespace ForRobot.Libr.Settings
+{
+    public class Settings
+    {
+        #region Private variables
+
+        private static readonly JsonSerializerSettings _jsonSettings = new JsonSerializerSettings()
+        {
+            Formatting = Formatting.Indented
+        };
+
+        #endregion
+
+        #region Public variables
+        
+        /// <summary>
+        /// Прилежение обновляется автоматически
+        /// </summary>
+        public bool AutoUpdate { get; set; } = true;
+
+        /// <summary>
+        /// Спрашивать пользователя об обновлении
+        /// </summary>
+        public bool InformUser { get; set; } = true;
+
+        /// <summary>
+        /// Ограничено ли время ожидания ответа от сервера
+        /// </summary>
+        public bool LimitedConnectionTimeOut { get; set; } = false;
+
+        /// <summary>
+        /// Время ожидания ответа от сервера, сек.
+        /// </summary>
+        public double ConnectionTimeOut { get; set; } = 3;
+
+        public ModeClosingApp ModeClosingApp { get; set; } = ModeClosingApp.HaveConnected;
+
+        #endregion
+
+        #region Constructor
+
+        public Settings() { }
+
+        #endregion
+
+        #region Public functions
+
+        public void Save()
+        {
+            string sPathForSave = Path.Combine(Path.GetTempPath(), "interfaceOfRobot_settings.json");
+            File.WriteAllText(sPathForSave, JsonConvert.SerializeObject(this, _jsonSettings));
+        }
+
+        public static Settings GetSettings()
+        {
+            if (File.Exists(Path.Combine(Path.GetTempPath(), "interfaceOfRobot_settings.json")))
+                return JsonConvert.DeserializeObject<Settings>(File.ReadAllText(Path.Combine(Path.GetTempPath(), "interfaceOfRobot_settings.json")), _jsonSettings);
+            else
+                return new Settings();
+        }
+
+        #endregion
+    }
+}

@@ -9,6 +9,8 @@ using System.Windows;
 using System.Data.SqlClient;
 using System.Configuration;
 
+using Newtonsoft.Json;
+
 using ClassLibraryTaskManager;
 
 using ForRobot.Libr;
@@ -39,6 +41,11 @@ namespace ForRobot
         /// Путь к программе на коммпьютере
         /// </summary>
         private string FilePathOnPC { get => Directory.GetCurrentDirectory(); }
+
+        /// <summary>
+        /// Настройки приложения
+        /// </summary>
+        private ForRobot.Libr.Settings.Settings Settings { get; } = ForRobot.Libr.Settings.Settings.GetSettings();
 
         #region Widows
 
@@ -106,6 +113,9 @@ namespace ForRobot
 
                     if (!(Process.GetProcessesByName(ResourceAssembly.GetName().Name).Length > 1)) // Проверка на существование более 1 процесса.
                     {
+                        // Выгрузка настроек из Temp
+
+
                         //if (ForRobot.Properties.Settings.Default.AutoUpdate && File.Exists(Path.Combine(App.Current.UpdatePath, $"{ResourceAssembly.GetName().Name}.exe")) &&
                         //    new Version(FileVersionInfo.GetVersionInfo(Path.Combine(App.Current.UpdatePath, $"{ResourceAssembly.GetName().Name}.exe")).ProductVersion) > Assembly.GetExecutingAssembly().GetName().Version &&
                         //    (!ForRobot.Properties.Settings.Default.InformUser || MessageBox.Show($"Обнаружено обновление до версии {FileVersionInfo.GetVersionInfo(Path.Combine(App.Current.UpdatePath, $"{ResourceAssembly.GetName().Name}.exe")).ProductVersion}\nОбновить приложение?", "Обновление интерфейса", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK))
