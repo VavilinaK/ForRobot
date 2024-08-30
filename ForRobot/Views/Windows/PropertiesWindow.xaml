@@ -19,16 +19,21 @@
     </Window.DataContext>
     
     <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="15"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150"/>
             <ColumnDefinition Width="15"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <TreeView Grid.Column="0" x:Name="TreeViewProperties" FontSize="13">
-            <TreeViewItem Header="Общии" Tag="General"/>
+        <TreeView Grid.Row="0" Grid.Column="0" x:Name="TreeViewProperties" FontSize="13">
+            <TreeViewItem Header="Общии" Tag="General" IsSelected="True"/>
 
-            <TreeViewItem Header="Соединение" Tag="Connection" IsSelected="True"/>
+            <TreeViewItem Header="Соединение" Tag="Connection"/>
             
             <!--<TreeViewItem Header="Генерация"/>-->
 
@@ -37,32 +42,72 @@
             </i:Interaction.Behaviors>
         </TreeView>
 
-        <ContentControl Grid.Column="2">
-            <ContentControl.Style>
-                <Style TargetType="{x:Type ContentControl}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=SelectedItem.Tag, ElementName=TreeViewProperties}" Value="General">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="ContentControl">
-                                        <ContentControl ContentTemplate="{StaticResource GeneralProperiesTemplate}"/>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </DataTrigger>
+        <Grid Grid.Row="0" Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-                        <DataTrigger Binding="{Binding Path=SelectedItem.Tag, ElementName=TreeViewProperties}" Value="Connection">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="ContentControl">
-                                        <ContentControl ContentTemplate="{StaticResource ConnectionProperiesTemplate}"/>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </DataTrigger>
-                    </Style.Triggers>
+            <Label Grid.Row="0" Grid.Column="0" Content="{Binding Path=SelectedItem.Header, ElementName=TreeViewProperties}"
+                   FontSize="13" VerticalContentAlignment="Top"/>
+            <Separator Grid.Row="0" Grid.Column="1"/>
+
+            <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                    Background="White" BorderBrush="#FF828790" BorderThickness="1">
+                
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <ContentControl Margin="5">
+                        <ContentControl.Style>
+                            <Style TargetType="{x:Type ContentControl}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=SelectedItem.Tag, ElementName=TreeViewProperties}" Value="General">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ContentControl">
+                                                    <ContentControl ContentTemplate="{StaticResource GeneralProperiesTemplate}"/>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+
+                                    <DataTrigger Binding="{Binding Path=SelectedItem.Tag, ElementName=TreeViewProperties}" Value="Connection">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ContentControl">
+                                                    <ContentControl ContentTemplate="{StaticResource ConnectionProperiesTemplate}"/>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ContentControl.Style>
+                    </ContentControl>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">
+            <Grid.Resources>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="FontSize" Value="13"/>
+                    <Setter Property="Width" Value="100"/>
+                    <Setter Property="Padding" Value="0, 5"/>
                 </Style>
-            </ContentControl.Style>
-        </ContentControl>
+            </Grid.Resources>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="15"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="1" Content="_OK" IsDefault="True" Command="{Binding Path=SaveCommand}"/>
+            <Button Grid.Column="3" Content="_Отмена" IsCancel="True"/>
+        </Grid>
     </Grid>
 </Window>
