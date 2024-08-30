@@ -585,68 +585,76 @@ namespace ForRobot.ViewModels
                 return _generateProgramCommand ??
                     (_generateProgramCommand = new AsyncRelayCommand(async obj =>
                     {
-                        //await GenerationProgram();
-                        string foldForGenerate = Directory.GetParent(this.RobotsCollection.First().Item2.PathProgramm).ToString();
+                        try
+                        {
+                            string foldForGenerate = Directory.GetParent(this.RobotsCollection.First().Item2.PathProgramm).ToString();
 
-                        // Запись Json-файла
-                        JObject jObject1 = JObject.Parse(this.DetalObject.Json);
-                        File.WriteAllText(Path.Combine(foldForGenerate, $"{this.ProgrammName}.json"), jObject1.ToString());
+                            // Запись Json-файла
+                            JObject jObject1 = JObject.Parse(this.DetalObject.Json);
+                            File.WriteAllText(Path.Combine(foldForGenerate, $"{this.ProgrammName}.json"), jObject1.ToString());
 
-                        // Генерация программы.
-                        Generation generationProcess = new Generation(this.PathGenerator, this.ProgrammName, foldForGenerate);
-                        generationProcess.Log += new EventHandler<LogEventArgs>(WreteLog);
-                        generationProcess.LogError += new EventHandler<LogErrorEventArgs>(WreteLogError);
-                        generationProcess.Start(this.DetalObject);
+                            // Генерация программы.
+                            Generation generationProcess = new Generation(this.PathGenerator, this.ProgrammName, foldForGenerate);
+                            generationProcess.Log += new EventHandler<LogEventArgs>(WreteLog);
+                            generationProcess.LogError += new EventHandler<LogErrorEventArgs>(WreteLogError);
+                            generationProcess.Start(this.DetalObject);
 
-                        if (!generationProcess.ProccesEnd())
-                            return;
+                            if (!generationProcess.ProccesEnd())
+                                return;
 
-                        if (this.SelectedNameRobot == "Все")
-                            foreach (var robot in this.RobotsCollection.Where(item => item.Item2.IsConnection))
-                            {
-                                if (string.IsNullOrWhiteSpace(robot.Item2.PathProgramm))
+                            if (this.SelectedNameRobot == "Все")
+                                foreach (var robot in this.RobotsCollection.Where(item => item.Item2.IsConnection))
                                 {
-                                    System.Windows.MessageBox.Show("Не выбрана папка программы", $"{robot.Item1}", MessageBoxButton.OK, MessageBoxImage.Stop);
+                                    if (string.IsNullOrWhiteSpace(robot.Item2.PathProgramm))
+                                    {
+                                        System.Windows.MessageBox.Show("Не выбрана папка программы", $"{robot.Item1}", MessageBoxButton.OK, MessageBoxImage.Stop);
+                                        return;
+                                    }
+
+                                    if (!await Task.Run<bool>(() => robot.Item2.DeleteProgramOnPC()) || !await Task.Run<bool>(() => robot.Item2.CopyToPC(string.Join("", this.ProgrammName, ".src"))))
+                                        continue;
+
+                                    if (System.Windows.MessageBox.Show($"Удалить все файлы из {robot.Item2.PathControllerFolder}?", $"{robot.Item1}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
+                                        MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK)
+                                        await Task.Run(() => robot.Item2.DeleteProgramm());
+                                    else
+                                        continue;
+
+                                    if (System.Windows.MessageBox.Show($"Копировать файлы программы в {robot.Item2.PathControllerFolder}?", $"{robot.Item1}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
+                                            MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK && await Task.Run<bool>(() => robot.Item2.Copy(this.ProgrammName)))
+                                        await Task.Run(() => robot.Item2.SelectProgramm(string.Join("", this.ProgrammName, ".src")));
+                                    else
+                                        continue;
+                                }
+                            else
+                            {
+                                if (string.IsNullOrWhiteSpace(this.RobotForControl.PathProgramm))
+                                {
+                                    System.Windows.MessageBox.Show("Не выбрана папка программы", $"{this.SelectedNameRobot}", MessageBoxButton.OK, MessageBoxImage.Stop);
                                     return;
                                 }
-                                //await Task.Run(() => robot.Item2.DeleteProgramOnPC());
-                                //await Task.Run(() => robot.Item2.CopyToPC(string.Join("", this.ProgrammName, ".src")));
 
-                                if (System.Windows.MessageBox.Show($"Удалить все файлы из {robot.Item2.PathControllerFolder}?", $"{robot.Item1}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
+                                if (!await Task.Run<bool>(() => this.RobotForControl.DeleteProgramOnPC()) || !await Task.Run<bool>(() => this.RobotForControl.CopyToPC(string.Join("", this.ProgrammName, ".src"))))
+                                    return;
+
+                                if (System.Windows.MessageBox.Show($"Удалить все файлы из {this.RobotForControl.PathControllerFolder}?", $"{this.SelectedNameRobot}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
                                     MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK)
-                                    await Task.Run(() => robot.Item2.DeleteProgramm());
+                                    await Task.Run(() => this.RobotForControl.DeleteProgramm());
                                 else
-                                    continue;
+                                    return;
 
-                                if (System.Windows.MessageBox.Show($"Копировать файлы программы в {robot.Item2.PathControllerFolder}?", $"{robot.Item1}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
-                                        MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK && await Task.Run<bool>(() => robot.Item2.Copy(this.ProgrammName)))
-                                    await Task.Run(() => robot.Item2.SelectProgramm(string.Join("", this.ProgrammName, ".src")));
+                                if (System.Windows.MessageBox.Show($"Копировать файлы программы в {this.RobotForControl.PathControllerFolder}?", $"{this.SelectedNameRobot}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
+                                    MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK && await Task.Run<bool>(() => this.RobotForControl.Copy(this.ProgrammName)))
+                                    await Task.Run(() => this.RobotForControl.SelectProgramm(string.Join("", this.ProgrammName, ".src")));
                                 else
-                                    continue;
+                                    return;
                             }
-                        else
-                        {
-                            if (string.IsNullOrWhiteSpace(this.RobotForControl.PathProgramm))
-                            {
-                                System.Windows.MessageBox.Show("Не выбрана папка программы", $"{this.SelectedNameRobot}", MessageBoxButton.OK, MessageBoxImage.Stop);
-                                return;
-                            }
-                            //await Task.Run(() => this.RobotForControl.DeleteProgramOnPC());
-                            //await Task.Run(() => this.RobotForControl.CopyToPC(string.Join("", this.ProgrammName, ".src")));
-
-                            if (System.Windows.MessageBox.Show($"Удалить все файлы из {this.RobotForControl.PathControllerFolder}?", $"{this.SelectedNameRobot}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
-                                MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK)
-                                await Task.Run(() => this.RobotForControl.DeleteProgramm());
-                            else
-                                return;
-
-                            if (System.Windows.MessageBox.Show($"Копировать файлы программы в {this.RobotForControl.PathControllerFolder}?", $"{this.SelectedNameRobot}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
-                                MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK && await Task.Run<bool>(() => this.RobotForControl.Copy(this.ProgrammName)))
-                                await Task.Run(() => this.RobotForControl.SelectProgramm(string.Join("", this.ProgrammName, ".src")));
-                            else
-                                return;
                         }
-
+                        catch(Exception e)
+                        {
+                            App.Current.LoggerString += e.Message;
+                            App.Current.Logger.Error(e.Message, e);
+                        }
                     }, _exceptionCallback));
             }
         }

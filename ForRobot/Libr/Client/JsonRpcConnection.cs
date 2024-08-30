@@ -574,8 +574,16 @@ namespace ForRobot.Libr.Client
         /// <returns></returns>
         public async Task<Dictionary<String, String>> File_NameList(string path = DefaulRoot)
         {
-            object[] args = { path, 511, 127 };
-            Dictionary<String, String> result = await this.JsonRpc.InvokeAsync<Dictionary<String, String>>("File_NameList", args);
+            Dictionary<String, String> result = new Dictionary<string, string>();
+            try
+            {
+                object[] args = { path, 511, 127 };
+                result = await this.JsonRpc.InvokeAsync<Dictionary<String, String>>("File_NameList", args);
+            }
+            catch (Exception e)
+            {
+                App.Current.Logger.Error(e.Message, e);
+            }
             return result;
         }
 
