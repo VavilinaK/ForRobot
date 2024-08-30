@@ -1332,7 +1332,7 @@
                     </MenuItem.Header>
                 </MenuItem>
 
-                <MenuItem Background="Transparent" Width="Auto" HorizontalAlignment="Right"
+                <MenuItem Background="Transparent" Width="Auto" HorizontalAlignment="Right" Visibility="Hidden"
                           Command="{Binding Path=PropertiesCommand}">
                     
                     <MenuItem.Header>

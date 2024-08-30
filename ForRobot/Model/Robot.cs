@@ -580,7 +580,7 @@ namespace ForRobot.Model
                     this.SelectProgramm(this.RobotProgramName + ".src");
 
                     if (!Task.Run<bool>(async () => await this.Connection.Start()).Result)
-                        new Exception($"Ошибка перезапуска программы {RobotProgramName}");
+                        throw new Exception($"Ошибка перезапуска программы {RobotProgramName}");
                     else
                         this.LogMessage($"Программа {this.RobotProgramName} перезапущена");
                 }
@@ -588,7 +588,7 @@ namespace ForRobot.Model
                 if (this.Pro_State == "#P_RESET" || this.Pro_State == "#P_STOP")
                 {
                     if (!Task.Run<bool>(async () => await this.Connection.Start()).Result)
-                        new Exception($"Ошибка запуска программы {RobotProgramName}");
+                        throw new Exception($"Ошибка запуска программы {RobotProgramName}");
                     else
                         this.LogMessage($"Программа {this.RobotProgramName} запущена");
                 }
@@ -620,7 +620,7 @@ namespace ForRobot.Model
                 if (this.Pro_State == "#P_ACTIVE")
                 {
                     if (!Task.Run<bool>(async () => await this.Connection.Pause()).Result)
-                        new Exception($"Ошибка остановки программы {RobotProgramName}");
+                        throw new Exception($"Ошибка остановки программы {RobotProgramName}");
                     else
                         this.LogMessage($"Программа {RobotProgramName} остановлена");
                 }
@@ -701,7 +701,7 @@ namespace ForRobot.Model
                 foreach (var file in fileCollection2.Keys.Where(i => i.EndsWith(".dat")).ToList<string>())
                 {
                     if (!Task.Run<bool>(async () => await this.Connection.Copy(Path.Combine(this.PathProgramm, file), Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
-                        new Exception($"Ошибка копирования файла {file} в {this.PathControllerFolder}");
+                        throw new Exception($"Ошибка копирования файла {file} в {this.PathControllerFolder}");
                     else
                         this.LogMessage($"Файл {file} скопирован ");
                 }
@@ -711,14 +711,14 @@ namespace ForRobot.Model
                     if (!Equals(string.Join("", sNameProgram, ".src"), new FileInfo(file).Name))
                     {
                         if (!Task.Run<bool>(async () => await this.Connection.Copy(Path.Combine(this.PathProgramm, file), Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
-                            new Exception($"Ошибка копирования файла {file} в {this.PathControllerFolder}");
+                            throw new Exception($"Ошибка копирования файла {file} в {this.PathControllerFolder}");
                         else
                             this.LogMessage($"Файл {file} скопирован ");
                     }
                 }
 
                 if (!Task.Run<bool>(async () => await this.Connection.Copy(Path.Combine(this.PathProgramm, $"{sNameProgram}.src"), Path.Combine(this.PathControllerFolder, $"{sNameProgram}.src"))).Result)
-                    new Exception($"Ошибка копирования файла {Path.Combine(this.PathProgramm, $"{sNameProgram}.src")} в {this.PathControllerFolder}");
+                    throw new Exception($"Ошибка копирования файла {Path.Combine(this.PathProgramm, $"{sNameProgram}.src")} в {this.PathControllerFolder}");
                 else
                     this.LogMessage($"Файл {Path.Combine(this.PathProgramm, $"{sNameProgram}.src")} скопирован ");
 
@@ -737,14 +737,14 @@ namespace ForRobot.Model
         /// Копирование на компьютер
         /// </summary>
         /// <param name="sNameProgram">Имя главной программы (без расширения)</param>
-        public void CopyToPC(string sNameProgram)
+        public bool CopyToPC(string sNameProgram)
         {
             try
             {
                 foreach (var file in Directory.GetFiles(this.PathProgramm, "*.dat"))
                 {
                     if (!Task.Run<bool>(async () => await this.Connection.CopyMem2File(Path.Combine(this.PathProgramm, new FileInfo(file).Name), Path.Combine(this.PathProgramm, new FileInfo(file).Name))).Result)
-                        new Exception($"Ошибка копирования содержимого файла {file} в {Path.Combine(this.PathProgramm, new FileInfo(file).Name)}");
+                        throw new Exception($"Ошибка копирования содержимого файла {file} в {Path.Combine(this.PathProgramm, new FileInfo(file).Name)}");
                     else
                         this.LogMessage($"Содержимое файла {file} скопировано");
                 }
@@ -754,21 +754,23 @@ namespace ForRobot.Model
                     if (!Equals(sNameProgram, new FileInfo(file).Name))
                     {
                         if (!Task.Run<bool>(async () => await this.Connection.CopyMem2File(Path.Combine(this.PathProgramm, new FileInfo(file).Name), Path.Combine(this.PathProgramm, new FileInfo(file).Name))).Result)
-                            new Exception($"Ошибка копирования содержимого файла {file} в { Path.Combine(this.PathProgramm, new FileInfo(file).Name)}");
+                            throw new Exception($"Ошибка копирования содержимого файла {file} в { Path.Combine(this.PathProgramm, new FileInfo(file).Name)}");
                         else
                             this.LogMessage($"Содержимое файла {file} скопировано");
                     }
                 }
 
                 if (!Task.Run<bool>(async () => await this.Connection.CopyMem2File(Path.Combine(this.PathProgramm, sNameProgram), Path.Combine(this.PathProgramm, sNameProgram))).Result)
-                    new Exception($"Ошибка копирования содержимого файла {sNameProgram}.src в { Path.Combine(this.PathProgramm, sNameProgram)}");
+                    throw new Exception($"Ошибка копирования содержимого файла {sNameProgram}.src в { Path.Combine(this.PathProgramm, sNameProgram)}");
                 else
                     this.LogMessage($"Содержимое файла {Path.Combine(this.PathProgramm, sNameProgram)} скопировано");
             }
             catch (Exception ex)
             {
                 this.LogErrorMessage(ex.Message, ex);
+                return false;
             }
+            return true;
         }
 
         /// <summary>
@@ -811,7 +813,7 @@ namespace ForRobot.Model
                 if (Task.Run<bool>(async () => await this.Connection.Select(sFilePath)).Result)
                     this.LogMessage($"Файл программы {sFilePath} выбран");
                 else
-                    new Exception("Ошибка выбора файла " + sFilePath);
+                    throw new Exception("Ошибка выбора файла " + sFilePath);
             }
             catch (Exception ex)
             {
@@ -822,16 +824,29 @@ namespace ForRobot.Model
         /// <summary>
         /// Удаление файлов программы на ПК
         /// </summary>
-        public void DeleteProgramOnPC()
+        public bool DeleteProgramOnPC()
         {
-            Dictionary<String, String> files = Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameList(this.PathProgramm)).Result;
-            foreach (var file in files.Keys)
+            try
             {
-                if (!Task.Run<bool>(async () => await this.Connection.Delet(Path.Combine(this.PathProgramm, file))).Result)
-                    new Exception($"Ошибка удаления файла {file}");
-                else
-                    this.LogMessage($"Файл {file} удалён");
+                Dictionary<String, String> files = Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameList(this.PathProgramm)).Result;
+
+                if (files.Count <= 0)
+                    throw new Exception($"Не удалось найти папку {this.PathProgramm} или она пустая");
+
+                foreach (var file in files.Keys)
+                {
+                    if (!Task.Run<bool>(async () => await this.Connection.Delet(Path.Combine(this.PathProgramm, file))).Result)
+                        throw new Exception($"Ошибка удаления файла {file}");
+                    else
+                        this.LogMessage($"Файл {file} удалён");
+                }
             }
+            catch (Exception e)
+            {
+                this.LogErrorMessage(e.Message, e);
+                return false;
+            }
+            return true;
         }
 
         /// <summary>
@@ -866,7 +881,7 @@ namespace ForRobot.Model
                 foreach (var file in files.Keys)
                 {
                     if (!Task.Run<bool>(async () => await this.Connection.Delet(Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
-                        new Exception($"Ошибка удаления файла {Path.Combine(this.PathControllerFolder, new FileInfo(file).Name)}");
+                        throw new Exception($"Ошибка удаления файла {Path.Combine(this.PathControllerFolder, new FileInfo(file).Name)}");
                     else
                         this.LogMessage($"Файл программы {Path.Combine(this.PathControllerFolder, new FileInfo(file).Name)} удалён");
                 }

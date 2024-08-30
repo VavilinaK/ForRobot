@@ -26,10 +26,10 @@
         </Grid.ColumnDefinitions>
 
         <TreeView Grid.Column="0" x:Name="TreeViewProperties" FontSize="13">
-            <TreeViewItem Header="Общии" IsSelected="True"/>
-            <!--<TreeViewItem Header="Соединение">
-                
-            </TreeViewItem>-->
+            <TreeViewItem Header="Общии" Tag="General"/>
+
+            <TreeViewItem Header="Соединение" Tag="Connection" IsSelected="True"/>
+            
             <!--<TreeViewItem Header="Генерация"/>-->
 
             <i:Interaction.Behaviors>
@@ -41,11 +41,21 @@
             <ContentControl.Style>
                 <Style TargetType="{x:Type ContentControl}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding Path=SelectedItem.Header, ElementName=TreeViewProperties}" Value="Общии">
+                        <DataTrigger Binding="{Binding Path=SelectedItem.Tag, ElementName=TreeViewProperties}" Value="General">
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="ContentControl">
                                         <ContentControl ContentTemplate="{StaticResource GeneralProperiesTemplate}"/>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+
+                        <DataTrigger Binding="{Binding Path=SelectedItem.Tag, ElementName=TreeViewProperties}" Value="Connection">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ContentControl">
+                                        <ContentControl ContentTemplate="{StaticResource ConnectionProperiesTemplate}"/>
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>

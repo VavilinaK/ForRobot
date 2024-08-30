@@ -3,6 +3,7 @@
                     xmlns:local="clr-namespace:ForRobot.Themes"
                     xmlns:properties="clr-namespace:ForRobot.Properties" >
 
+    <!--Вкладка "Общии"-->
     <DataTemplate x:Key="GeneralProperiesTemplate" DataType="{x:Type ContentControl}">
         <DataTemplate.Resources>
             <Style TargetType="{x:Type CheckBox}">
@@ -65,6 +66,69 @@
             <Button Grid.Row="1" Content="Изменить пин-код" Margin="15" Command="{Binding Path=DataContext.EditPinCodeCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
 
         </Grid>        
+    </DataTemplate>
+
+    <!--Вкладка "Соединение"-->
+    <DataTemplate x:Key="ConnectionProperiesTemplate" DataType="{x:Type ContentControl}">
+        <DataTemplate.Resources>
+            <Style TargetType="{x:Type CheckBox}">
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
+            </Style>
+
+            <Style TargetType="{x:Type Label}">
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            </Style>
+
+            <Style TargetType="{x:Type TextBox}">
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            </Style>
+
+            <Style TargetType="{x:Type Button}">
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="Padding" Value="0, 5"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            </Style>
+        </DataTemplate.Resources>
+        
+        <Grid Background="Transparent">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <CheckBox Grid.Row="0" Content="Ограничивать время ожидания ответа от сервера"
+                      IsChecked="{Binding Path=DataContext.AutoUpdate, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Mode=TwoWay}"/>
+
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Label Grid.Column="0" Content="Время ожидания, сек."/>
+
+                <TextBox Grid.Column="1" Text="Aaaa" Padding="5"  Margin="10"/>
+            </Grid>
+
+            <GroupBox Grid.Row="2" Header="Делать запрос пользователю перед закрытием окна" FontSize="13">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    
+                </Grid>
+            </GroupBox>
+        </Grid>
     </DataTemplate>
     
 </ResourceDictionary>
