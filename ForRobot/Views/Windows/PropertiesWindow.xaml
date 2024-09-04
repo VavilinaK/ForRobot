@@ -33,7 +33,7 @@
         <TreeView Grid.Row="0" Grid.Column="0" x:Name="TreeViewProperties" FontSize="13">
             <TreeViewItem Header="Общии" Tag="General" IsSelected="True"/>
 
-            <TreeViewItem Header="Соединение" Tag="Connection"/>
+            <!--<TreeViewItem Header="Соединение" Tag="Connection"/>-->
             
             <!--<TreeViewItem Header="Генерация"/>-->
 
@@ -107,7 +107,7 @@
             </Grid.ColumnDefinitions>
 
             <Button Grid.Column="1" Content="_OK" IsDefault="True" Command="{Binding Path=SaveCommand}"/>
-            <Button Grid.Column="3" Content="_Отмена" IsCancel="True"/>
+            <Button Grid.Column="3" Content="_Отмена" IsCancel="True" Command="{Binding Path=CancelCommand}"/>
         </Grid>
     </Grid>
 </Window>

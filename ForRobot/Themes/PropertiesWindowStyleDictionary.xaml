@@ -76,13 +76,13 @@
                     </Grid.ColumnDefinitions>
 
                     <RadioButton Grid.Column="0" GroupName="CloseWindow" Content="Всегда" IsChecked="{Binding Path=DataContext.Settings.ModeClosingApp, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor},
-                                                                                                      Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static settings:ModeClosingApp.Ever}, Mode=TwoWay, TargetNullValue={StaticResource False}}"/>
+                                                                                                      Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static settings:ModeClosingApp.Ever}, Mode=TwoWay, TargetNullValue={StaticResource False}, FallbackValue={StaticResource False}}"/>
 
                     <RadioButton Grid.Column="1" GroupName="CloseWindow" Content="Никогда" IsChecked="{Binding Path=DataContext.Settings.ModeClosingApp, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor},
-                                                                                                      Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static settings:ModeClosingApp.Never}, Mode=TwoWay, TargetNullValue={StaticResource False}}"/>
+                                                                                                      Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static settings:ModeClosingApp.Never}, Mode=TwoWay, TargetNullValue={StaticResource False}, FallbackValue={StaticResource False}}"/>
 
                     <RadioButton Grid.Column="2" GroupName="CloseWindow" IsChecked="{Binding Path=DataContext.Settings.ModeClosingApp, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor},
-                                                                                     Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static settings:ModeClosingApp.HaveConnected}, Mode=TwoWay, TargetNullValue={StaticResource False}}">
+                                                                                     Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static settings:ModeClosingApp.HaveConnected}, Mode=TwoWay, TargetNullValue={StaticResource False}, FallbackValue={StaticResource False}}">
                         <RadioButton.Content>
                             <TextBlock Text="Если есть активное соединение" TextWrapping="Wrap"/>
                         </RadioButton.Content>

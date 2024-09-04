@@ -1271,8 +1271,61 @@
 
                                         <TextBlock Grid.Column="1" Text="{Binding Item1}"/>
                                         <TextBlock Grid.Column="2" Text="-"/>
-                                        <TextBlock x:Name="statusString" Grid.Column="3" Text="{Binding Item2.ProcessState}" FontWeight="Bold"
-                                                   Foreground="{Binding Path=Text, RelativeSource={RelativeSource Self}, Converter={StaticResource StatusColorConvert}}"/>
+                                        <TextBlock x:Name="statusString" Grid.Column="3" FontWeight="Bold"
+                                                   Foreground="{Binding Path=Text, RelativeSource={RelativeSource Self}, Converter={StaticResource StatusColorConvert}}">
+                                            
+                                            <TextBlock.Style>
+                                                <Style TargetType="{x:Type TextBlock}">
+                                                    <Setter Property="Text" Value="Нет соединения"/>
+
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Path=Item2.Pro_State}" Value="#P_FREE">
+                                                            <Setter Property="Text" Value="Программа не выбрана"/>
+                                                        </DataTrigger>
+
+                                                        <DataTrigger Binding="{Binding Path=Item2.Pro_State}" Value="#P_RESET">
+                                                            <Setter Property="Text">
+                                                                <Setter.Value>
+                                                                    <MultiBinding Converter="{StaticResource StringConvert}" ConverterParameter="Выбрана программа {0}">
+                                                                        <Binding Path="Item2.RobotProgramName" Mode="OneWay"/>
+                                                                    </MultiBinding>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </DataTrigger>
+
+                                                        <DataTrigger Binding="{Binding Path=Item2.Pro_State}" Value="#P_ACTIVE">
+                                                            <Setter Property="Text">
+                                                                <Setter.Value>
+                                                                    <MultiBinding Converter="{StaticResource StringConvert}" ConverterParameter="Запущена программа {0}">
+                                                                        <Binding Path="Item2.RobotProgramName" Mode="OneWay"/>
+                                                                    </MultiBinding>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </DataTrigger>
+
+                                                        <DataTrigger Binding="{Binding Path=Item2.Pro_State}" Value="#P_STOP">
+                                                            <Setter Property="Text">
+                                                                <Setter.Value>
+                                                                    <MultiBinding Converter="{StaticResource StringConvert}" ConverterParameter="Программа {0} остановлена">
+                                                                        <Binding Path="Item2.RobotProgramName" Mode="OneWay"/>
+                                                                    </MultiBinding>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </DataTrigger>
+
+                                                        <DataTrigger Binding="{Binding Path=Item2.Pro_State}" Value="#P_END">
+                                                            <Setter Property="Text">
+                                                                <Setter.Value>
+                                                                    <MultiBinding Converter="{StaticResource StringConvert}" ConverterParameter="Программа {0} завершена">
+                                                                        <Binding Path="Item2.RobotProgramName" Mode="OneWay"/>
+                                                                    </MultiBinding>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
                                     </Grid>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
