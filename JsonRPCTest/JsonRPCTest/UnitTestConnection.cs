@@ -3,9 +3,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Net.Sockets;
-
-using StreamJsonRpc;
 
 using ForRobot.Libr.Client;
 
@@ -24,24 +21,24 @@ namespace JsonRPCTest
         /// <returns></returns>
         public void TestConnection()
         {
-            string message;
             try
             {
                 JsonRpcConnection connection = new JsonRpcConnection("169.254.59.82", 3333);
                 connection.Open();
-                //while (connection.Client.Connected)
-                //{
-                //    connection.Process_State().Wait();
-                //    this.ProcessState = $"Выбрана программа {Task.Run(async () => await connection.Pro_Name()).Result.Replace("\"", "")}";
-                //}
-                //bool answer = Task.Run<bool>(async() => await connection.CopyMem2File(@"D:\ForRobot\test.dat", "KRC:\\R1\\test.dat")).Result;
+                ////while (connection.Client.Connected)
+                ////{
+                ////    connection.Process_State().Wait();
+                ////    this.ProcessState = $"Выбрана программа {Task.Run(async () => await connection.Pro_Name()).Result.Replace("\"", "")}";
+                ////}
+                bool answer = Task.Run<bool>(async () => await connection.CopyMem2File("D:\\newPrograms\\R1\\edge_0_left_stm.dat", "D:\\newPrograms\\R1\\edge_0_left_stm.dat")).Result;
+                Assert.AreEqual(answer, true);
                 //Dictionary<String, String> answer = Task.Run<Dictionary<String, String>>(async () => await connection.File_NameList("KRC:\\R1\\Program\\")).Result;
                 //bool answer = Task.Run<bool>(async () => await connection.Copy(@"D:\NewProgramm\R1\test.dat", "KRC:\\R1\\Program\\test.dat")).Result;
-                Dictionary<String, String> answer = Task.Run<Dictionary<String, String>>(async () => await connection.File_NameList("KRC:\\")).Result;
+                //Dictionary<String, String> answer = Task.Run<Dictionary<String, String>>(async () => await connection.File_NameList("KRC:\\")).Result;
             }
             catch (Exception ex)
             {
-                message = ex.Message;
+                string mess = ex.Message;
             }
         }
 
@@ -54,59 +51,59 @@ namespace JsonRPCTest
         /// <returns></returns>
         public async Task TestState()
         {
-            string message;
-            try
-            {
-                CancellationTokenSource cancellationToken = new CancellationTokenSource();
-                JsonRpcConnection connection = new JsonRpcConnection("192.168.92.129", 3333);
-                connection.Open();
-                while (connection.Client.Connected)
-                {
-                    var taskState = connection.Process_State();
-                    //var taskName = connection.Pro_Name();
+            //string message;
+            //try
+            //{
+            //    CancellationTokenSource cancellationToken = new CancellationTokenSource();
+            //    JsonRpcConnection connection = new JsonRpcConnection("192.168.92.129", 3333);
+            //    connection.Open();
+            //    while (connection.Client.Connected)
+            //    {
+            //        var taskState = connection.Process_State();
+            //        //var taskName = connection.Pro_Name();
 
-                    //await Task.WhenAll(new Task[] { delay, task });
-                    if (await Task.WhenAny(taskState, Task.Delay(5000, cancellationToken.Token)) == taskState)
-                    {
-                        string Pro_State = taskState.Result;
-                        switch (Pro_State)
-                        {
-                            case "#P_FREE":
-                                this.ProcessState = "Программа не выбрана";
-                                break;
+            //        //await Task.WhenAll(new Task[] { delay, task });
+            //        if (await Task.WhenAny(taskState, Task.Delay(5000, cancellationToken.Token)) == taskState)
+            //        {
+            //            string Pro_State = taskState.Result;
+            //            switch (Pro_State)
+            //            {
+            //                case "#P_FREE":
+            //                    this.ProcessState = "Программа не выбрана";
+            //                    break;
 
-                            case "#P_RESET":
-                                //taskName.Wait();
-                                this.ProcessState = $"Выбрана программа {Task.Run(async () => await connection.Pro_Name()).Result.Replace("\"", "")}";
-                                break;
+            //                case "#P_RESET":
+            //                    //taskName.Wait();
+            //                    this.ProcessState = $"Выбрана программа {Task.Run(async () => await connection.Pro_Name()).Result.Replace("\"", "")}";
+            //                    break;
 
-                            case "#P_ACTIVE":
-                                this.ProcessState = $"Запущена программа {Task.Run(async () => await connection.Pro_Name()).Result.Replace("\"", "")}";
-                                break;
+            //                case "#P_ACTIVE":
+            //                    this.ProcessState = $"Запущена программа {Task.Run(async () => await connection.Pro_Name()).Result.Replace("\"", "")}";
+            //                    break;
 
-                            case "#P_STOP":
-                                this.ProcessState = $"Программа {connection.Pro_Name()} остановлена";
-                                break;
+            //                case "#P_STOP":
+            //                    this.ProcessState = $"Программа {connection.Pro_Name()} остановлена";
+            //                    break;
 
-                            case "#P_END":
-                                this.ProcessState = $"Программа {connection.Pro_Name()} завершена";
-                                break;
+            //                case "#P_END":
+            //                    this.ProcessState = $"Программа {connection.Pro_Name()} завершена";
+            //                    break;
 
-                            default:
-                                this.ProcessState = "Нет соединения";
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        // timeout/cancellation logic
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                message = ex.Message;
-            }
+            //                default:
+            //                    this.ProcessState = "Нет соединения";
+            //                    break;
+            //            }
+            //        }
+            //        else
+            //        {
+            //            // timeout/cancellation logic
+            //        }
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    message = ex.Message;
+            //}
         }
 
         [TestMethod]
@@ -116,23 +113,23 @@ namespace JsonRPCTest
         /// <returns></returns>
         public async Task TestState2()
         {
-            string message;
-            try
-            {
-                CancellationTokenSource cancellationToken = new CancellationTokenSource();
-                JsonRpcConnection connection = new JsonRpcConnection("192.168.92.129", 3333);
-                connection.Open();
-                while (connection.Client.Connected)
-                {
-                    var task = connection.Process_State();
-                    await Task.WhenAll(new Task[] { Task.Delay(1000, cancellationToken.Token), task });
-                    this.ProcessState = task.Result;
-                }                
-            }
-            catch (Exception ex)
-            {
-                message = ex.Message;
-            }
+            //string message;
+            //try
+            //{
+            //    CancellationTokenSource cancellationToken = new CancellationTokenSource();
+            //    JsonRpcConnection connection = new JsonRpcConnection("192.168.92.129", 3333);
+            //    connection.Open();
+            //    while (connection.Client.Connected)
+            //    {
+            //        var task = connection.Process_State();
+            //        await Task.WhenAll(new Task[] { Task.Delay(1000, cancellationToken.Token), task });
+            //        this.ProcessState = task.Result;
+            //    }                
+            //}
+            //catch (Exception ex)
+            //{
+            //    message = ex.Message;
+            //}
         }
 
 
@@ -143,19 +140,19 @@ namespace JsonRPCTest
         /// <returns></returns>
         public void TestRepeat()
         {
-            string message;
-            try
-            {
-                JsonRpcConnection connection = new JsonRpcConnection("169.254.59.82", 3333);
-                connection.Open();
-                Dictionary<String, String> answer = Task.Run<Dictionary<String, String>>(async () => await connection.File_NameList("KRC:\\")).Result;
+            //string message;
+            //try
+            //{
+            //    JsonRpcConnection connection = new JsonRpcConnection("169.254.59.82", 3333);
+            //    connection.Open();
+            //    Dictionary<String, String> answer = Task.Run<Dictionary<String, String>>(async () => await connection.File_NameList("KRC:\\")).Result;
 
-                //bool answer = Task.Run(async () => await connection.Run("KRC:\\R1\\Program\\test_io")).Result;
-            }
-            catch (Exception ex)
-            {
-                message = ex.Message;
-            }
+            //    //bool answer = Task.Run(async () => await connection.Run("KRC:\\R1\\Program\\test_io")).Result;
+            //}
+            //catch (Exception ex)
+            //{
+            //    message = ex.Message;
+            //}
         }
     }
 

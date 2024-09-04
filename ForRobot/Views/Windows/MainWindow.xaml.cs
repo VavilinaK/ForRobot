@@ -46,19 +46,57 @@ namespace ForRobot.Views.Windows
             return IntPtr.Zero;
         }
 
+        /// <summary>
+        /// Настройки приложения
+        /// </summary>
+        private readonly ForRobot.Libr.Settings.Settings Settings = ForRobot.Libr.Settings.Settings.GetSettings();
+
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (this.MainFrame.Content is Pages.PageMain2 && ((Pages.PageMain2)this.MainFrame.Content).ViewModel.RobotsCollection.Where(robot => robot.Item2.IsConnection).Count() > 0)
+            if (this.MainFrame.Content is Pages.PageMain2)
             {
-                if (MessageBox.Show($"Закрыть соединение?", "Закрытие окна", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK)
+                switch (this.Settings.ModeClosingApp)
                 {
-                    foreach (var robot in ((Pages.PageMain2)this.MainFrame.Content).ViewModel.RobotsCollection)
-                    {
-                        robot.Item2.Dispose();
-                    }
+                    case Libr.Settings.ModeClosingApp.Never:
+                        e.Cancel = false;
+                        break;
+
+                    case Libr.Settings.ModeClosingApp.Ever:
+                        if(((Pages.PageMain2)this.MainFrame.Content).ViewModel.RobotsCollection.Where(robot => robot.Item2.IsConnection).Count() > 0)
+                        {
+                            if (MessageBox.Show($"Закрыть соединение?", "Закрытие приложения", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK)
+                            {
+                                foreach (var robot in ((Pages.PageMain2)this.MainFrame.Content).ViewModel.RobotsCollection)
+                                {
+                                    robot.Item2.Dispose();
+                                }
+                                e.Cancel = false;
+                            }
+                            else
+                                e.Cancel = true;
+                        }
+                        else if (MessageBox.Show($"Закрыть приложение?", "Закрытие приложения", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK)
+                            e.Cancel = false;
+                        else
+                            e.Cancel = true;
+                        break;
+
+                    case Libr.Settings.ModeClosingApp.HaveConnected:
+                        if (((Pages.PageMain2)this.MainFrame.Content).ViewModel.RobotsCollection.Where(robot => robot.Item2.IsConnection).Count() > 0)
+                        {
+                            if (MessageBox.Show($"Закрыть соединение?", "Закрытие приложения", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK)
+                            {
+                                foreach (var robot in ((Pages.PageMain2)this.MainFrame.Content).ViewModel.RobotsCollection)
+                                {
+                                    robot.Item2.Dispose();
+                                }
+                                e.Cancel = false;
+                            }
+                            else
+                                e.Cancel = true;
+                        }
+                        break;
                 }
-                else
-                    e.Cancel = true;
             }
             else
                 e.Cancel = false;

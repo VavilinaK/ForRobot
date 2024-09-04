@@ -42,9 +42,9 @@ namespace ForRobot.Model
 
         private List<ForRobot.Model.Controls.File> FilesCollection = new List<Controls.File>();
 
-        private decimal[] _currentArray = new decimal[] { 0, 4, 6, 5, 3, -3, -1, 2 };
+        private decimal[] _currentArray = new decimal[] { 0, 4, 6, 5, 3, -3, -1, 2 }; // Примерные данные
 
-        private decimal[] _wireFeedArray = new decimal[] { 0, 4, 6, 3, 6, -3, -1, 2 };
+        private decimal[] _wireFeedArray = new decimal[] { 0, 4, 6, 3, 6, -3, -1, 2 }; // Примерные данные
 
         #region Readonly
 
@@ -78,6 +78,9 @@ namespace ForRobot.Model
         #region Public variables
 
         [JsonIgnore]
+        /// <summary>
+        /// JSON-строка для сохранения
+        /// </summary>
         public string Json { get => JsonSerializer.Serialize<Robot>(this, options); }
 
         //[JsonIgnore]
@@ -156,7 +159,7 @@ namespace ForRobot.Model
             set
             {
                 Set(ref this._connection, value);
-                RaisePropertyChanged(nameof(this.IsConnection), nameof(this.ProcessState));
+                RaisePropertyChanged(nameof(this.IsConnection));
             }
         } 
 
@@ -187,48 +190,11 @@ namespace ForRobot.Model
         [JsonIgnore]
         public string Pro_State
         {
-            get => this._pro_state;
+            get => this.IsConnection ? this._pro_state : null;
             set
             {
-                Set(ref this._pro_state, value);
-                RaisePropertyChanged(nameof(this.ProcessState), nameof(this.RobotProgramName));
-            }
-        }
-
-        [JsonIgnore]
-        /// <summary>
-        /// Статус процесса
-        /// </summary>
-        public string ProcessState
-        {
-            get
-            {
-                if (this.IsConnection)
-                {
-                    switch (this.Pro_State)
-                    {
-                        case "#P_FREE":
-                            return "Программа не выбрана";
-
-                        case "#P_RESET":
-                            return $"Выбрана программа {this.RobotProgramName}";
-
-                        case "#P_ACTIVE":
-                            return $"Запущена программа {this.RobotProgramName}";
-
-                        case "#P_STOP":
-                            return $"Программа {this.RobotProgramName} остановлена";
-
-                        case "#P_END":
-                            return $"Программа {this.RobotProgramName} завершена";
-
-                        default:
-                            return "Нет соединения";
-                    }
-                }
-                else
-                    RaisePropertyChanged(nameof(this.IsConnection));
-                    return "Нет соединения";
+                this._pro_state = value;
+                RaisePropertyChanged(nameof(this.Pro_State), nameof(this.RobotProgramName));
             }
         }
 
@@ -236,29 +202,7 @@ namespace ForRobot.Model
         /// <summary>
         /// Название программы, выбранной на роботе
         /// </summary>
-        public string RobotProgramName
-        {
-            get => this._programName;
-            set
-            {
-                this._programName = value;
-                //Set(ref this._programName, value);
-                RaisePropertyChanged(nameof(this.RobotProgramName), nameof(this.ProcessState));
-            }
-            //get
-            //{
-            //    string name = "";
-            //    try
-            //    {
-            //        name = Task.Run(async () => await this.Connection.Pro_Name()).Result.Replace("\"", "");
-            //    }
-            //    catch(Exception ex)
-            //    {
-            //        this.LogErrorMessage(ex.Message, ex);
-            //    }
-            //    return name;
-            //}
-        }
+        public string RobotProgramName { get => this._programName; set { Set(ref this._programName, value); } }
 
         [JsonIgnore]
         public decimal Voltage { get => this._voltage; set => Set(ref this._voltage, value); }
@@ -462,9 +406,9 @@ namespace ForRobot.Model
                 this.Connection = new JsonRpcConnection(this.Host, this.Port);
                 this.Connection.Log += this.Log;
                 this.Connection.LogError += this.LogError;
-                this.Connection.Connected += (sender, e) => RaisePropertyChanged(nameof(this.IsConnection));
-                this.Connection.Aborted += (sender, e) => RaisePropertyChanged(nameof(this.IsConnection));
-                this.Connection.Disconnected += (sender, e) => RaisePropertyChanged(nameof(this.IsConnection));
+                this.Connection.Connected += (sender, e) => RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
+                this.Connection.Aborted += (sender, e) => RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
+                this.Connection.Disconnected += (sender, e) => RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
 
                 this.Connection.Open();
                 if (this.IsConnection)
@@ -905,7 +849,9 @@ namespace ForRobot.Model
 
         public void Dispose(bool disposing)
         {
-            if (this._disposed) return;
+            if (this._disposed)
+                return;
+
             if (disposing)
             {
                 this._cancelTokenSource?.Cancel();

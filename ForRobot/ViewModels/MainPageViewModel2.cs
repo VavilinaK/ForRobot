@@ -610,7 +610,7 @@ namespace ForRobot.ViewModels
                                         System.Windows.MessageBox.Show("Не выбрана папка программы", $"{robot.Item1}", MessageBoxButton.OK, MessageBoxImage.Stop);
                                         return;
                                     }
-
+                                                                        
                                     if (!await Task.Run<bool>(() => robot.Item2.DeleteProgramOnPC()) || !await Task.Run<bool>(() => robot.Item2.CopyToPC(string.Join("", this.ProgrammName, ".src"))))
                                         continue;
 
