@@ -36,24 +36,21 @@ namespace ForRobot.Libr.Client
         {
             get
             {
+                bool actived = false;
                 try
                 {
                     if (this.Client == null || !this.Client.Connected)
-                    {
-                        return false;
-                    }
+                        return actived;
                 }
                 catch (Exception ex)
                 {
-                    this.LogErrorMessage($"{this.Host}:{this.Port} Не удалось определить состояние TCP-сокета", ex);
-                    return false;
+                    throw new Exception("Не удалось определить состояние TCP-сокета", ex);
                 }
 
-                if (!this._key())
-                {
-                    return false;
-                }
-                return true;
+                if (this._key())
+                    actived = true;
+
+                return actived;
             }
         }
 
@@ -311,7 +308,8 @@ namespace ForRobot.Libr.Client
         /// <returns></returns>
         public bool Open()
         {
-            this.LogMessage($"Открытие соединения с сервером . . .");
+            bool opened = false;
+            //this.LogMessage($"Открытие соединения с сервером . . .");
             try
             {
                 this.Client = new TcpClient(this.Host, this.Port)
@@ -324,8 +322,12 @@ namespace ForRobot.Libr.Client
                 this.JsonRpc.StartListening();
                 this.JsonRpc.Disconnected += (sender, e) =>
                 {
-                    this._onAborted();
-                    this.Close();
+                    if (this._disposed == 0)
+                        this._onAborted();
+                    else
+                        this._onDisconnected();
+                    //this._onAborted();
+                    //this.Close();
                     //this.LogErrorMessage($"Соединение закрыто со стороны робота");
                 };
 
@@ -336,43 +338,42 @@ namespace ForRobot.Libr.Client
                 }
 
                 this._onConnected();
-                this.LogMessage($"Открыто соединение");
+                opened = true;
+                //this.LogMessage($"Открыто соединение");
                 //this._receive(new SocketStateObject());
             }
             catch (SocketException ex)
             {
-                this.LogErrorMessage($"Не удалось открыть соединение с сервером", ex);
-                return false;
+                throw new Exception($"Не удалось открыть соединение с сервером", ex);
             }
-
-            return true;
+            return opened;
         }
 
         /// <summary>
         /// Закрытие соединения
         /// </summary>
-        public void Close()
+        public bool Close()
         {
-            this.LogMessage($"Закрытие соединения . . .");
-
-            if (this.Client != null)
-            {
+            bool closed = false;
+            //if (this.Client != null)
+            //{
                 if (this.Client.Connected)
                 {
                     try
                     {
                         this.Client.Client.Disconnect(false);
-                        this._onDisconnected();
+                    closed = true;
+                        //this._onDisconnected();
                     }
                     catch (Exception ex)
                     {
-                        this.LogErrorMessage("Не удалось отключиться от TCP-сокета", ex);
-                    }
-                    this.LogMessage($"Соединение закрыто");
+                    throw new Exception("Не удалось отключиться от TCP-сокета", ex);
+                    }                    
                 }
-                else
-                    this.LogErrorMessage($"Соединение закрыто со стороны робота");
-            }
+            //else
+            //    this.LogErrorMessage($"Соединение закрыто со стороны робота");
+            //}
+            return closed;
         }
 
         #region Asyn
@@ -446,10 +447,7 @@ namespace ForRobot.Libr.Client
 
             string result = await this.JsonRpc.InvokeAsync<string>("Select_Select", path);
 
-            if (result == OkResponse)
-                return true;
-
-            return false;
+            return result == OkResponse;
         }
 
         /// <summary>
@@ -462,10 +460,7 @@ namespace ForRobot.Libr.Client
 
             string result = await this.JsonRpc.InvokeAsync<string>("Select_Cancel");
 
-            if (result == OkResponse)
-                return true;
-
-            return false;
+            return result == OkResponse;
         }
 
         /// <summary>
@@ -478,10 +473,7 @@ namespace ForRobot.Libr.Client
 
             string result = await this.JsonRpc.InvokeAsync<string>("File_Delete", path);
 
-            if (result == OkResponse)
-                return true;
-
-            return false;
+            return result == OkResponse;
         }
 
         /// <summary>
@@ -494,10 +486,7 @@ namespace ForRobot.Libr.Client
 
             string result = await this.JsonRpc.InvokeAsync<string>("Select_Start");
 
-            if (result == OkResponse)
-                return true;
-
-            return false;
+            return result == OkResponse;
         }
 
         /// <summary>
@@ -510,10 +499,7 @@ namespace ForRobot.Libr.Client
 
             string result = await this.JsonRpc.InvokeAsync<string>("Select_Run", path);
 
-            if (result == OkResponse)
-                return true;
-
-            return false;
+            return result == OkResponse;
         }
 
         /// <summary>
@@ -528,10 +514,7 @@ namespace ForRobot.Libr.Client
 
             string result = await this.JsonRpc.InvokeAsync<string>("Select_Stop", args);
 
-            if (result == OkResponse)
-                return true;
-
-            return false;
+            return result == OkResponse;
         }
 
         /// <summary>
@@ -581,7 +564,7 @@ namespace ForRobot.Libr.Client
                     }
                     catch (Exception ex)
                     {
-                        this.LogErrorMessage($"Не удалось закрыть TCP-клиент", ex);
+                        throw new Exception("Не удалось закрыть TCP-клиент", ex);
                     }
                     finally
                     {

@@ -407,10 +407,18 @@ namespace ForRobot.Model
                 this.Connection.Log += this.Log;
                 this.Connection.LogError += this.LogError;
                 this.Connection.Connected += (sender, e) => RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
-                this.Connection.Aborted += (sender, e) => RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
+                this.Connection.Aborted += (sender, e) =>
+                {
+                    this.LogMessage("Соединение разорвано");
+                    RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
+                };
+
                 this.Connection.Disconnected += (sender, e) => RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
 
-                this.Connection.Open();
+                this.LogMessage($"Открытие соединения с сервером . . .");
+                if(this.Connection.Open())
+                    this.LogMessage($"Открыто соединение");
+
                 if (this.IsConnection)
                 {
                     this._cancelTokenSource = new CancellationTokenSource();
@@ -849,17 +857,29 @@ namespace ForRobot.Model
 
         public void Dispose(bool disposing)
         {
-            if (this._disposed)
-                return;
-
-            if (disposing)
+            try
             {
-                this._cancelTokenSource?.Cancel();
-                if (this.IsConnection)
-                    this.Connection.Dispose();
+                if (this._disposed)
+                    return;
+
+                if (disposing)
+                {
+                    this._cancelTokenSource?.Cancel();
+                    if (this.IsConnection)
+                    {
+                        this.LogMessage($"Закрытие соединения . . .");
+                        if (this.Connection.Close())
+                            this.LogMessage($"Соединение закрыто");
+                        this.Connection.Dispose();
+                    }
+                }
+                this._disposed = true;
+                GC.SuppressFinalize(this);
             }
-            this._disposed = true;
-            GC.SuppressFinalize(this);
+            catch(Exception ex)
+            {
+                this.LogErrorMessage(ex.Message, ex);
+            }
         }
 
         #endregion
