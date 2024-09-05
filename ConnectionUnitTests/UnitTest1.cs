@@ -19,12 +19,31 @@ namespace ConnectionUnitTests
         {
             try
             {
-                JsonRpcConnection connection = new JsonRpcConnection("169.254.59.82", 3333);
+                JsonRpcConnection connection = new JsonRpcConnection("192.168.92.128", 3333);
                 connection.Open();
                 bool answer = Task.Run(async () => await connection.CopyMem2File("D:\\newPrograms\\R1\\edge_0_left_stm.dat", "D:\\newPrograms\\R1\\edge_0_left_stm.dat")).Result;
                 Assert.AreEqual(answer, true);
             }
             catch(Exception ex)
+            {
+                string mess = ex.Message;
+            }
+        }
+
+        [TestMethod]
+        /// <summary>
+        /// Запуск уже выбранной программы
+        /// </summary>
+        public void TestStart()
+        {
+            try
+            {
+                JsonRpcConnection connection = new JsonRpcConnection("192.168.92.128", 3333);
+                connection.Open();
+                bool answer = Task.Run(async () => await connection.Start()).Result;
+                Assert.AreEqual(answer, true);
+            }
+            catch (Exception ex)
             {
                 string mess = ex.Message;
             }

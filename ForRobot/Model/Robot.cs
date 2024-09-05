@@ -412,7 +412,6 @@ namespace ForRobot.Model
                     this.LogMessage("Соединение разорвано");
                     RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
                 };
-
                 this.Connection.Disconnected += (sender, e) => RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
 
                 this.LogMessage($"Открытие соединения с сервером . . .");
@@ -729,11 +728,11 @@ namespace ForRobot.Model
         /// Выбор программы
         /// </summary>
         /// <param name="sNameProgram">Имя выбираемой программы (с расширением)</param>
-        public void SelectProgramm(string sNameProgram)
+        public void SelectProgramm(string sProgramPath)
         {
             try
             {
-                if (string.IsNullOrEmpty(this.SearchPath(sNameProgram)))
+                if (string.IsNullOrEmpty(this.SearchPath(sProgramPath)))
                 {
                     this.LogErrorMessage("Не найдена директория файла!");
                     return;
@@ -760,7 +759,7 @@ namespace ForRobot.Model
                         return;
                 }
 
-                string sFilePath = Path.Combine(JsonRpcConnection.DefaulRoot, this.SearchPath(sNameProgram));
+                string sFilePath = Path.Combine(JsonRpcConnection.DefaulRoot, this.SearchPath(sProgramPath));
 
                 if (Task.Run<bool>(async () => await this.Connection.Select(sFilePath)).Result)
                     this.LogMessage($"Файл программы {sFilePath} выбран");

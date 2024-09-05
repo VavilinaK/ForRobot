@@ -15,8 +15,8 @@ namespace ForRobot.Libr.Client
     {
         #region Constants
 
-        private const string AnnouncementEnd = "}";
-        private const string AnnouncementEndAlternative = "}\n";
+        //private const string AnnouncementEnd = "}";
+        //private const string AnnouncementEndAlternative = "}\n";
         private const int DefaultPort = 0000;
         private const string DefaultHost = "0.0.0.0";
         private const string OkResponse = "Ok";
@@ -163,101 +163,6 @@ namespace ForRobot.Libr.Client
             this.Disconnected(this, null);
         }
 
-        //private void _onAnnouncement(string data)
-        //{
-        //    JObject announcement = JObject.Parse(data);
-        //    JValue param = announcement["result"] as JValue;
-
-        //    if (param == null || string.CompareOrdinal((string)param, OkResponse) != 0)
-        //        return;
-
-        //    //if (announcement["method"] == null || string.CompareOrdinal((string)announcement["method"], AnnouncementMethod) != 0
-        //    //    || param == null)
-        //    //{
-        //    //    return;
-        //    //}
-
-        //    //if (param["sender"] == null || string.CompareOrdinal((string)param["sender"], AnnouncementSender) != 0
-        //    //    || param["message"] == null)
-        //    //{
-        //    //    return;
-        //    //}
-        //    string type = (string)param["message"];
-        //}
-
-        //private void _receiveAnnouncements(IAsyncResult result)
-        //{
-        //    if (this.Disposed) return;
-
-        //    lock (this.Client.Client)
-        //    {
-        //        SocketStateObject state = result.AsyncState as SocketStateObject;
-
-        //        if (state == null || this.Client.Client == null || !this.Client.Connected)
-        //            return;
-
-        //        int read = 0;
-        //        try
-        //        {
-        //            read = this.Client.Client.EndReceive(result);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            this.LogErrorMessage("Не удалось прочитать TCP-сокет", ex);
-        //            this.Close();
-        //            this._onAborted();
-        //        }
-
-        //        if (read > 0)
-        //        {
-        //            state.Builder.Append(System.Text.Encoding.UTF8.GetString(state.Buffer, 0, read));
-        //            this._receive(state);
-        //        }
-
-        //        string data = state.Builder.ToString();
-
-        //        if (data.Length > 0 && data.Contains(AnnouncementEnd) || data.Contains(AnnouncementEndAlternative))
-        //        {
-        //            this.LogMessage("Получено объявление JSON RPC: " + data);
-
-        //            int pos = data.IndexOf(AnnouncementEnd);
-        //            if (pos < 0)
-        //            {
-        //                pos = data.IndexOf(AnnouncementEndAlternative) + AnnouncementEndAlternative.Length;
-        //            }
-        //            else
-        //            {
-        //                pos += AnnouncementEnd.Length;
-        //            }
-        //            state.Builder.Remove(0, pos);
-        //            this._onAnnouncement(data.Substring(0, pos));
-        //        }
-
-        //        this._receive(state);
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Получение данных из соединения
-        ///// </summary>
-        ///// <param name="state"></param>
-        //private void _receive(SocketStateObject state)
-        //{
-        //    if (state == null || this.Client.Client == null || !this.Client.Connected)
-        //        return;
-        //    try
-        //    {
-        //        this.Client.Client.Listen(SocketStateObject.BufferSize);
-        //        this.Client.Client.BeginAccept(SocketStateObject.BufferSize, new AsyncCallback(this._receiveAnnouncements), state);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        this.LogErrorMessage("Не удалось начать прием из TCP-сокета", ex);
-        //        this.Close();
-        //        this._onAborted();
-        //    }
-        //}
-
         /// <summary>
         /// Вызов события записи в журнал логгирования
         /// </summary>
@@ -309,7 +214,6 @@ namespace ForRobot.Libr.Client
         public bool Open()
         {
             bool opened = false;
-            //this.LogMessage($"Открытие соединения с сервером . . .");
             try
             {
                 this.Client = new TcpClient(this.Host, this.Port)
@@ -326,9 +230,6 @@ namespace ForRobot.Libr.Client
                         this._onAborted();
                     else
                         this._onDisconnected();
-                    //this._onAborted();
-                    //this.Close();
-                    //this.LogErrorMessage($"Соединение закрыто со стороны робота");
                 };
 
                 if (!this._isActive)
@@ -339,8 +240,6 @@ namespace ForRobot.Libr.Client
 
                 this._onConnected();
                 opened = true;
-                //this.LogMessage($"Открыто соединение");
-                //this._receive(new SocketStateObject());
             }
             catch (SocketException ex)
             {
@@ -355,24 +254,18 @@ namespace ForRobot.Libr.Client
         public bool Close()
         {
             bool closed = false;
-            //if (this.Client != null)
-            //{
-                if (this.Client.Connected)
+            if (this.Client.Connected)
+            {
+                try
                 {
-                    try
-                    {
-                        this.Client.Client.Disconnect(false);
+                    this.Client.Client.Disconnect(false);
                     closed = true;
-                        //this._onDisconnected();
-                    }
-                    catch (Exception ex)
-                    {
-                    throw new Exception("Не удалось отключиться от TCP-сокета", ex);
-                    }                    
                 }
-            //else
-            //    this.LogErrorMessage($"Соединение закрыто со стороны робота");
-            //}
+                catch (Exception ex)
+                {
+                    throw new Exception("Не удалось отключиться от TCP-сокета", ex);
+                }
+            }
             return closed;
         }
 
@@ -557,8 +450,6 @@ namespace ForRobot.Libr.Client
                     {
                         lock (this.Client.Client)
                         {
-                            //this.Close();
-                            //this._onDisconnected();
                             this.Client.Close();
                         }
                     }
