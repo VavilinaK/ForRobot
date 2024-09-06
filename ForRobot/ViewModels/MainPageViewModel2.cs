@@ -87,8 +87,6 @@ namespace ForRobot.ViewModels
         private RelayCommand _openCodingCommand;
         
         private RelayCommand _standartParametrsCommand;
-
-        private RelayCommand _selectGeneratorProgramCommand;
         
         private RelayCommand _addRobotCommand;
 
@@ -170,24 +168,32 @@ namespace ForRobot.ViewModels
         }
 
         /// <summary>
-        /// Путь к программе-генератору (зависит от типа детали)
+        /// выбранный тип детали
         /// </summary>
-        public string PathGenerator
+        public string SelectedDetalType
         {
-            get
-            {
-                if (DetalObject is Plita) { return Properties.Settings.Default.PlitaGenerator; }
-                else if (DetalObject is PlitaStringer) { return Properties.Settings.Default.PlitaStringerGenerator; }
-                else if (DetalObject is PlitaTreygolnik) { return Properties.Settings.Default.PlitaTreugolnikGenerator; }
-                else { return ""; }
-            }
+            get => this._selectedDetalType;
             set
             {
-                if (DetalObject is Plita) { Properties.Settings.Default.PlitaGenerator = value; }
-                else if (DetalObject is PlitaStringer) { Properties.Settings.Default.PlitaStringerGenerator = value; }
-                else if (DetalObject is PlitaTreygolnik) { Properties.Settings.Default.PlitaTreugolnikGenerator = value; }
-                Properties.Settings.Default.Save();
-                RaisePropertyChanged(nameof(this.PathGenerator));
+                this._selectedDetalType = value;
+                switch (this._selectedDetalType)
+                {
+                    case string a when a == DetalTypes.Plita:
+                        this.DetalObject = GetSavePlita();
+                        ((Plita)this.DetalObject).RibsCollection.ItemPropertyChanged += (o, e) => this.SaveDetal();
+                        break;
+
+                    case string b when b == DetalTypes.Stringer:
+                        DetalObject = GetSavePlitaStringer();
+                        break;
+
+                    case string c when c == DetalTypes.Treygolnik:
+                        DetalObject = GetSavePlitaTreygolnik();
+                        break;
+                }
+
+                this.DetalObject.Change += ChangeProperiesDetal; // Обределение события изменения свойств
+                RaisePropertyChanged(nameof(this.SelectedDetalType), nameof(this.ProgrammName));
             }
         }
 
@@ -218,49 +224,9 @@ namespace ForRobot.ViewModels
         }
 
         /// <summary>
-        /// выбранный тип детали
-        /// </summary>
-        public string SelectedDetalType
-        {
-            get => this._selectedDetalType;
-            set
-            {
-                this._selectedDetalType = value;
-                switch (this._selectedDetalType)
-                {
-                    case string a when a == DetalTypes.Plita:
-                        this.DetalObject = GetSavePlita();
-                        ((Plita)this.DetalObject).RibsCollection.ItemPropertyChanged += (o, e) => this.SaveDetal();
-                        break;
-
-                    case string b when b == DetalTypes.Stringer:
-                        DetalObject = GetSavePlitaStringer();
-                        break;
-
-                    case string c when c == DetalTypes.Treygolnik:
-                        DetalObject = GetSavePlitaTreygolnik();
-                        break;
-                }
-
-                this.DetalObject.Change += ChangeProperiesDetal; // Обределение события изменения свойств
-
-                RaisePropertyChanged(nameof(this.SelectedDetalType), nameof(this.PathGenerator), nameof(this.ProgrammName));
-            }
-        }
-
-        /// <summary>
         /// Выбранная вкладка
         /// </summary>
         public TabItem SelectedItem { get => _selectedItem; set => Set(ref this._selectedItem, value); }
-
-        ///// <summary>
-        ///// Выбранная вкладка
-        ///// </summary>
-        //public TabItem SelectedMainItem
-        //{
-        //    get => _selectedItem;
-        //    set => Set(ref this._selectedItem, value);
-        //}
 
         /// <summary>
         /// Выбранный робот для просмотра
@@ -377,27 +343,6 @@ namespace ForRobot.ViewModels
                         else if (DetalObject is PlitaTreygolnik) { this.DetalObject = new PlitaTreygolnik(DetalType.Treygolnik); }
                         this.DetalObject.Change += ChangeProperiesDetal;
                         SaveDetal();
-                    }));
-            }
-        }
-
-        /// <summary>
-        /// Команда выбора программы генератора
-        /// </summary>
-        public RelayCommand SelectGeneratorProgramCommand
-        {
-            get
-            {
-                return _selectGeneratorProgramCommand ??
-                    (_selectGeneratorProgramCommand = new RelayCommand(obj =>
-                    {
-                        using(OpenFileDialog openFileDialog = new OpenFileDialog() { RestoreDirectory = true, InitialDirectory = Directory.GetCurrentDirectory(), CheckFileExists = true, CheckPathExists = true, Multiselect = false })
-                        {
-                            if (openFileDialog.ShowDialog() == DialogResult.Cancel)
-                                return;
-
-                            this.PathGenerator = openFileDialog.FileName;
-                        }
                     }));
             }
         }
@@ -596,7 +541,7 @@ namespace ForRobot.ViewModels
                                 App.Current.Logger.Trace($"{DateTime.Now.ToString("HH:mm:ss")} Сгенерирован файл {Path.Combine(foldForGenerate, $"{this.ProgrammName}.json")}, содержащий:\n" + jObject1.ToString() + "\n");
 
                             // Генерация программы.
-                            Generation generationProcess = new Generation(this.PathGenerator, this.ProgrammName, foldForGenerate);
+                            Generation generationProcess = new Generation(this.ProgrammName, foldForGenerate);
                             generationProcess.Log += new EventHandler<LogEventArgs>(WreteLog);
                             generationProcess.LogError += new EventHandler<LogErrorEventArgs>(WreteLogError);
                             generationProcess.Start(this.DetalObject);

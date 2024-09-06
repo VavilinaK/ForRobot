@@ -1,19 +1,20 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Configuration;
 using System.Collections.Generic;
 using System.Diagnostics;
 
 //using IronPython.Hosting;
-using Microsoft.Scripting.Hosting;
+//using Microsoft.Scripting.Hosting;
 
 //using System.Collections.Generic;
 //using System.Linq;
 //using System.Text;
 //using System.Threading.Tasks;
 
-using Python.Runtime;
-using Python.Runtime.Native;
+//using Python.Runtime;
+//using Python.Runtime.Native;
 
 using ForRobot.Model;
 using ForRobot.Model.Detals;
@@ -24,20 +25,19 @@ namespace ForRobot.Libr
     {
         #region Private variables
 
-        private NLog.Logger Logger { get; } = NLog.LogManager.GetCurrentClassLogger();
-
-        /// <summary>
-        /// Все свойства Detal равны нулю
-        /// </summary>
-        /// <param name="detal"></param>
-        /// <returns></returns>
-        private static bool DetalPropertiesAreNull(Detal detal) => detal.Long == decimal.Zero && detal.Hight == decimal.Zero
-            && detal.DissolutionStart == decimal.Zero && detal.DissolutionEnd == decimal.Zero && detal.DistanceToFirst == decimal.Zero && detal.DistanceBetween == decimal.Zero
-            && detal.ThicknessPlita == decimal.Zero && detal.ThicknessRebro == decimal.Zero && detal.SearchOffsetStart == decimal.Zero && detal.SearchOffsetEnd == decimal.Zero;
-
         #endregion
 
         #region Public variables
+
+        /// <summary>
+        /// Имя главной программы
+        /// </summary>
+        public string FileName { get; set; }
+
+        /// <summary>
+        /// Путь для вывода
+        /// </summary>
+        public string PathOut { get; set; }
 
         #region Events
 
@@ -45,6 +45,7 @@ namespace ForRobot.Libr
         /// Событие логирования действия
         /// </summary>
         public event EventHandler<LogEventArgs> Log;
+
         /// <summary>
         /// Событие логирования ошибки
         /// </summary>
@@ -54,37 +55,12 @@ namespace ForRobot.Libr
 
         #endregion
 
-        #region Internal variables
-
-        /// <summary>
-        /// Имя главной программы
-        /// </summary>
-        internal string FileName { get; private set; }
-
-        /// <summary>
-        /// Путь программы-генератора
-        /// </summary>
-        internal string PathGenerator { get; private set; }
-
-        /// <summary>
-        /// Путь для вывода
-        /// </summary>
-        internal string PathOut { get; set; }
-
-        #endregion
-
         #region Constructors
 
-        public Generation() : this(null, null) { }
+        public Generation() { }
 
-        public Generation(string pathGenerator, string fileName) : this(pathGenerator, fileName, null) { }
-
-        public Generation(string pathGenerator, string fileName, string pathOut)
+        public Generation(string fileName, string pathOut)
         {
-            if (string.IsNullOrWhiteSpace(pathGenerator))
-                throw new ArgumentNullException("pathGenerator");
-
-            this.PathGenerator = pathGenerator;
             this.FileName = fileName;
             this.PathOut = pathOut;
         }
@@ -93,7 +69,50 @@ namespace ForRobot.Libr
 
         #region Private functions
 
+        /// <summary>
+        /// Проверка всех свойств на наличие значений
+        /// </summary>
+        /// <param name="detal">Проверяемый объект</param>
+        /// <returns></returns>
+        private bool CheckForNull(Object obj)
+        {
+            var value = new object(); // Значение проверяемого свойства.
+            int nullKol = 0; // Кол-во свойст равных null.
 
+            var @switch = new Dictionary<Type, Action> {
+                    { typeof(System.String), () => { if(string.IsNullOrEmpty(value as string)) nullKol++; } },
+                    { typeof(System.Decimal), () => { if((decimal)value == decimal.Zero) nullKol++; } },
+                    { typeof(int), () => { if ((int)value == 0) nullKol++; } }
+            };
+
+            int checkKol = obj.GetType().GetProperties().Where(wr => wr.Name != "Wight" && wr.Name != "BevelToStart" && wr.Name != "BevelToEnd"
+                                && @switch.ContainsKey(wr.PropertyType)).Count(); // Кол-во проверяемых свойств.
+
+            foreach (var prop in obj.GetType().GetProperties().Where(wr => wr.Name != "Wight" && wr.Name != "BevelToStart" && wr.Name != "BevelToEnd"))
+            {
+                value = prop.GetValue(obj);
+                if (@switch.ContainsKey(prop.PropertyType)) @switch[prop.PropertyType]();
+            }
+
+            return checkKol == nullKol;
+        }
+
+        /// <summary>
+        /// Метод поиска имени генератора, в зависимости от типа передаваемого объекта
+        /// </summary>
+        /// <param name="obj">Передаваемый объект</param>
+        /// <returns></returns>
+        private string GenaratorName(Object obj)
+        {
+            switch (obj)
+            {
+                case ForRobot.Model.Detals.Plita plita:
+                    return (ConfigurationManager.GetSection("app") as ForRobot.Libr.ConfigurationProperties.AppConfigurationSection).PlitaGenerator;
+
+                default:
+                    return "none";
+            }
+        }
 
         #endregion
 
@@ -128,7 +147,6 @@ namespace ForRobot.Libr
         /// <summary>
         /// Проверка завершения процесса генерации
         /// </summary>
-        /// <param name="pathProgram">Путь к папке с программой</param>
         /// <returns></returns>
         public bool ProccesEnd()
         {
@@ -160,14 +178,11 @@ namespace ForRobot.Libr
                 if (detal == null)
                     throw new ArgumentNullException("detal");
 
-                if (DetalPropertiesAreNull(detal))
+                if (this.CheckForNull(detal))
                     throw new Exception("Не заполнен ни один параметр детали");
 
-                if (!File.Exists(this.PathGenerator))
-                {
-                    this.LogErrorMessage($"Не существует файла {this.PathGenerator}");
-                    return;
-                }
+                if(!File.Exists($"Scripts/{this.GenaratorName(detal)}"))
+                    throw new Exception($"Не найден скрипт-генератор {this.GenaratorName(detal)}");
 
                 switch (detal)
                 {
@@ -194,22 +209,25 @@ namespace ForRobot.Libr
                     StartInfo = new ProcessStartInfo()
                     {
                         UseShellExecute = false,
-                        RedirectStandardOutput = true,
+                        RedirectStandardInput = false,
+                        RedirectStandardOutput = false,
                         RedirectStandardError = true,
                         CreateNoWindow = true,
-                        WorkingDirectory = new FileInfo(this.PathGenerator).DirectoryName,
+                        WorkingDirectory = new FileInfo(Path.GetFullPath($"Scripts/{this.GenaratorName(detal)}")).DirectoryName,
                         FileName = "python.exe",
-                        Arguments = this.PathGenerator + " " + string.Join(" ", args),
-                        WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal
+                        Arguments = Path.GetFullPath($"Scripts/{this.GenaratorName(detal)}") + " " + string.Join(" ", args)
                     }
                 };
                 process.Start();
+                string outStr = process.StandardError.ReadToEnd();
                 process.WaitForExit();
+
+                if (process.ExitCode != 0)
+                    throw new Exception(outStr);
             }
             catch (Exception ex)
             {
                 this.LogErrorMessage(ex.Message, ex);
-                this.Logger.Error(ex.Message);
                 return;
             }
         }
