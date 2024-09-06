@@ -1,0 +1,1023 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:ForRobot.Themes"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+                    xmlns:conv="clr-namespace:ForRobot.Libr.Converters">
+
+    <!--Data Type-->
+    <sys:Boolean x:Key="True">True</sys:Boolean>
+    <sys:Boolean x:Key="False">False</sys:Boolean>
+
+    <!--Converters-->
+    <conv:RowNumberConverter x:Key="RowNumberConvert"/>
+    <conv:RadioButtonConverter x:Key="RadioButtonConvert"/>
+    <conv:StatusColorConverter x:Key="StatusColorConvert"/>
+    <conv:StringFormatConverter x:Key="StringConvert"/>
+    <conv:ThicknessConverter x:Key="ThicknessConvert"/>
+    <conv:SelectProgramConverter x:Key="SelectProgramConvert"/>
+    <conv:NullBooleanConverter x:Key="NullBooleanConvert"/>
+
+    <!--Colors-->
+    <Color x:Key="Aqua">#00FFFF</Color>    
+    <Color x:Key="SteelBlue">#4682B4</Color>
+    <Color x:Key="LightGray">#FFC1C1C1</Color>
+    
+    <!--SolidColorBrush-->
+    <SolidColorBrush x:Key="BrushAqua" Color="{DynamicResource Aqua}"/>
+    <SolidColorBrush x:Key="BrushSteelBlue" Color="{DynamicResource SteelBlue}"/>
+    <SolidColorBrush x:Key="BrushLightGray" Color="{DynamicResource LightGray}"/>
+
+    <!--BitmapImages-->
+    <!--Button's BitmapImage-->
+    <BitmapImage x:Key="ImageGenerationOff" UriSource="/InterfaceOfRobots;component/Themes/Images/generationOff.png"/>
+    <BitmapImage x:Key="ImageGenerationOn" UriSource="/InterfaceOfRobots;component/Themes/Images/generationOn.png"/>
+
+    <BitmapImage x:Key="ImageStart" UriSource="/InterfaceOfRobots;component/Themes/Images/Start.png"/>
+    <BitmapImage x:Key="ImagePause" UriSource="/InterfaceOfRobots;component/Themes/Images/Pause.png"/>
+    <BitmapImage x:Key="ImageRepeat" UriSource="/InterfaceOfRobots;component/Themes/Images/repeat.png"/>
+    <BitmapImage x:Key="ImageCancel" UriSource="/InterfaceOfRobots;component/Themes/Images/Stop.png"/>
+    <BitmapImage x:Key="ImageSelectProgramm" UriSource="/InterfaceOfRobots;component/Themes/Images/SelectProgramm.png"/>
+
+    <BitmapImage x:Key="ImageDelete" UriSource="/InterfaceOfRobots;component/Themes/Images/delete.png"/>
+    <BitmapImage x:Key="ImageUpdate" UriSource="/InterfaceOfRobots;component/Themes/Images/update.png" x:Shared="false"/>
+    <BitmapImage x:Key="ImageAdd" UriSource="/InterfaceOfRobots;component/Themes/Images/Add.png"/>
+    <BitmapImage x:Key="ImageEdit" UriSource="/InterfaceOfRobots;component/Themes/Images/edit.png" x:Shared="false"/>
+    <BitmapImage x:Key="ImageUp" UriSource="/InterfaceOfRobots;component/Themes/Images/up.png" x:Shared="false"/>
+
+    <!--Скосы-->
+    <BitmapImage x:Key="ImageSlopeLeft" UriSource="/InterfaceOfRobots;component/Themes/Images/Slope_left.png"/>
+    <BitmapImage x:Key="ImageSlopeRight" UriSource="/InterfaceOfRobots;component/Themes/Images/Slope_right.png"/>
+    <BitmapImage x:Key="ImageTrapezoidTopParam" UriSource="/InterfaceOfRobots;component/Themes/Images/Trapezoid_top.png"/>
+    <BitmapImage x:Key="ImageTrapezoidBottomParam" UriSource="/InterfaceOfRobots;component/Themes/Images/trapezoid_bottom.png"/>
+    
+    <!--Program icon's-->
+    <BitmapImage x:Key="ImageFolderIcon" UriSource="/InterfaceOfRobots;component/Themes/Images/folder.png"/>
+    <BitmapImage x:Key="ImageDataFileIcon" UriSource="/InterfaceOfRobots;component/Themes/Images/dataFile.png"/>
+    <BitmapImage x:Key="ImageProgramFileIcon" UriSource="/InterfaceOfRobots;component/Themes/Images/programFile.png"/>
+
+
+    <!--Button's Styles-->
+    <Style x:Key="baseButtonStyle" TargetType="FrameworkElement">
+        <Setter Property="Width" Value="45"/>
+        <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
+    </Style>
+
+    <Style x:Key="baseControlTemplateStyle" TargetType="{x:Type Border}">
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="CornerRadius" Value="3"/>
+
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}" Value="True">
+                <Setter Property="Background" Value="{StaticResource BrushLightGray}"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=IsPressed, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}" Value="True">
+                <Setter Property="Background" Value="{StaticResource BrushAqua}"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    
+
+
+    <BitmapImage x:Key="ImagePlitaStart" UriSource="/InterfaceOfRobots;component/Themes/Images/StartPlita.png"/>
+    <BitmapImage x:Key="ImagePlitaBody" UriSource="/InterfaceOfRobots;component/Themes/Images/Plita.png"/>
+    <BitmapImage x:Key="ImagePlitaEnd" UriSource="/InterfaceOfRobots;component/Themes/Images/EndPlita.png"/>
+
+
+
+    <Image x:Key="ImageSettingFill" Source="/InterfaceOfRobots;component/Themes/Images/setting-fill.png" />
+    <Image x:Key="ImageSettingUnFill" Source="/InterfaceOfRobots;component/Themes/Images/setting-unfill.png" />
+
+    <BitmapImage x:Key="ImageKeyOff" UriSource="/InterfaceOfRobots;component/Themes/Images/KeyOff.png"/>
+    <BitmapImage x:Key="ImageKeyOn" UriSource="/InterfaceOfRobots;component/Themes/Images/KeyOn.png"/>
+
+    <!--<BitmapImage x:Key="ImageGenerationOff" UriSource="/InterfaceOfRobots;component/Themes/Images/generationOff.png" />
+    <BitmapImage x:Key="ImageGenerationOn" UriSource="/InterfaceOfRobots;component/Themes/Images/generationOn.png" />-->
+
+
+
+
+    <BitmapImage x:Key="ImageTransferOff" UriSource="/InterfaceOfRobots;component/Themes/Images/transferOff.png"/>
+    <BitmapImage x:Key="ImageTransferOn" UriSource="/InterfaceOfRobots;component/Themes/Images/transferOn.png"/>
+
+    <BitmapImage x:Key="ImageConnectionOff" UriSource="/InterfaceOfRobots;component/Themes/Images/ConnectionOff.png"/>
+    <BitmapImage x:Key="ImageConnectionOn" UriSource="/InterfaceOfRobots;component/Themes/Images/connectionOn.png"/>
+    <BitmapImage x:Key="ImageControls" UriSource="/InterfaceOfRobots;component/Themes/Images/controls.png"/>
+    <BitmapImage x:Key="ImageNotControls" UriSource="/InterfaceOfRobots;component/Themes/Images/notControls.png"/>
+    <BitmapImage x:Key="ImagePositionOff" UriSource="/InterfaceOfRobots;component/Themes/Images/positionOff.png"/>
+    <BitmapImage x:Key="ImagePositionOn" UriSource="/InterfaceOfRobots;component/Themes/Images/positionOn.png"/>
+    <BitmapImage x:Key="ImageWeldingOff" UriSource="/InterfaceOfRobots;component/Themes/Images/weldingOff.png"/>
+    <BitmapImage x:Key="ImageWeldingOn" UriSource="/InterfaceOfRobots;component/Themes/Images/weldingOn.png"/>
+    <BitmapImage x:Key="ImageGraph" UriSource="/InterfaceOfRobots;component/Themes/Images/graph.png"/>
+
+    <BitmapImage x:Key="Image2D" UriSource="/InterfaceOfRobots;component/Themes/Images/2d.png"/>
+    <BitmapImage x:Key="Image3D" UriSource="/InterfaceOfRobots;component/Themes/Images/3d.png"/>
+    <BitmapImage x:Key="ImageStandart" UriSource="/InterfaceOfRobots;component/Themes/Images/clear.png"/>
+    <BitmapImage x:Key="ImageExclamation" UriSource="/InterfaceOfRobots;component/Themes/Images/exclamation.png"/>
+
+    <!--<ImageBrush x:Key="ImageStart" ImageSource="/InterfaceOfRobots;component/Themes/Images/Start.png"/>-->
+    <!--<ImageBrush x:Key="ImagePause" ImageSource="/InterfaceOfRobots;component/Themes/Images/Pause.png"/>-->
+    <!--<ImageBrush x:Key="ImageRepeat" ImageSource="/InterfaceOfRobots;component/Themes/Images/repeat.png"/>-->
+    <!--<ImageBrush x:Key="ImageStop" ImageSource="/InterfaceOfRobots;component/Themes/Images/Stop.png"/>-->
+    <!--<ImageBrush x:Key="ImageSelectProgramm" ImageSource="/InterfaceOfRobots;component/Themes/Images/SelectProgramm.png"/>-->
+    <ImageBrush x:Key="ImageSearchProgramm" ImageSource="/InterfaceOfRobots;component/Themes/Images/Search.png"/>
+
+    <ControlTemplate x:Key="templateButtonsInSettings" TargetType="{x:Type ButtonBase}">
+        <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                      Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True"
+                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+        <ControlTemplate.Triggers>
+            <Trigger Property="Button.IsDefaulted" Value="True"/>
+            <Trigger Property="IsMouseOver" Value="True"/>
+            <Trigger Property="IsPressed" Value="True"/>
+            <Trigger Property="ToggleButton.IsChecked" Value="True"/>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style x:Key="buttonEditStyle" TargetType="Button" x:Shared="false">
+        <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
+
+        <Setter Property="Content">
+            <Setter.Value>
+                <Border BorderThickness="0">
+                    <Image Source="/InterfaceOfRobots;component/Themes/Images/edit.png" Stretch="Fill"/>
+                </Border>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Template" Value="{StaticResource templateButtonsInSettings}"/>
+    </Style>
+
+    <Style x:Key="textBoxInSettings" TargetType="TextBox">
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="TextWrapping" Value="NoWrap"/>
+    </Style>
+
+    <Style x:Key="toggleButtonPinCode" TargetType="ToggleButton">
+        <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
+
+        <Setter Property="Content">
+            <Setter.Value>
+                <Border BorderThickness="0">
+                    <Image Source="{StaticResource ImageKeyOff}"  Stretch="Fill"  />
+                </Border>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Content">
+                    <Setter.Value>
+                        <Border  BorderThickness="0">
+                            <Image Source="{StaticResource ImageKeyOn}"  Stretch="fill" />
+                        </Border>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--Стиль надписи статуса процесса на роботе-->
+    <Style x:Key="TextStatusStyle" TargetType="Label">
+        <Setter Property="FontSize"  Value="18"/>
+        <Setter Property="FontWeight"  Value="Bold"/>
+        <Setter Property="VerticalContentAlignment"  Value="Center"/>
+        
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=Content, RelativeSource={RelativeSource Self}}" Value="Ошибка!">
+                <Setter Property="Foreground"  Value="Red"/>
+            </DataTrigger>
+            
+            <DataTrigger Binding="{Binding Path=Content, RelativeSource={RelativeSource Self}}" Value="Ошибка генерации программы!">
+                <Setter Property="Foreground"  Value="Red"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=Content, RelativeSource={RelativeSource Self}}" Value="Уже запущен процесс">
+                <Setter Property="Foreground"  Value="#FFFFA200"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=Content, RelativeSource={RelativeSource Self}}" Value="Готов к работе">
+                <Setter Property="Foreground"  Value="#FF2BDA0E"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=Content, RelativeSource={RelativeSource Self}}" Value="Программа запущена">
+                <Setter Property="Foreground"  Value="#FF0C8700"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=Content, RelativeSource={RelativeSource Self}}" Value="Программа остановлена">
+                <Setter Property="Foreground"  Value="#FFFF6565"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=Content, RelativeSource={RelativeSource Self}}" Value="Программа сброшена">
+                <Setter Property="Foreground"  Value="#FFE4DB23"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=Content, RelativeSource={RelativeSource Self}}" Value="Программа завершена">
+                <Setter Property="Foreground"  Value="#FF2BDA0E"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=Content, RelativeSource={RelativeSource Self}}" Value="Не выбрана программа">
+                <Setter Property="Foreground"  Value="#FF489BFF"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    
+    <!--Стиль кнопки повторной генерации1-->
+    <Style x:Key="buttonRefrashStyle" TargetType="Button">
+        <Setter Property="Width" Value="0"/>
+        <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
+        <Setter Property="Visibility" Value="Hidden"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Ellipse Width="30" Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}">
+                            <Ellipse.Fill>
+                                <ImageBrush ImageSource="{StaticResource ImageRefresh}"/>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <ContentControl Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=StatusProcess1}" Value="Уже запущен процесс">
+                <Setter Property="Width"  Value="40"/>
+                <Setter Property="Visibility"  Value="Visible"/>
+                <Setter Property="ToolTip"  Value="Повторная отправка программы в директиву робота"/>
+            </DataTrigger>
+
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding Path=Visibility, RelativeSource={RelativeSource Self}}" Value="Visible"/>
+                </MultiDataTrigger.Conditions>
+
+                <MultiDataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" RepeatBehavior="Forever" AutoReverse="True" Duration="0:0:1.25"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </MultiDataTrigger.EnterActions>
+            </MultiDataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--Стиль кнопки повторной генерации2-->
+    <Style x:Key="buttonRefrashStyle2" TargetType="Button">
+        <Setter Property="Width" Value="0"/>
+        <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
+        <Setter Property="Visibility" Value="Hidden"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Ellipse Width="30" Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}">
+                            <Ellipse.Fill>
+                                <ImageBrush ImageSource="{StaticResource ImageRefresh}"/>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <ContentControl Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=StatusProcess2}" Value="Уже запущен процесс">
+                <Setter Property="Width"  Value="40"/>
+                <Setter Property="Visibility"  Value="Visible"/>
+                <Setter Property="ToolTip"  Value="Повторная отправка программы в директиву робота"/>
+            </DataTrigger>
+
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding Path=Visibility, RelativeSource={RelativeSource Self}}" Value="Visible"/>
+                </MultiDataTrigger.Conditions>
+
+                <MultiDataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" RepeatBehavior="Forever" AutoReverse="True" Duration="0:0:1.25"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </MultiDataTrigger.EnterActions>
+            </MultiDataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--Стиль кнопки запуска1-->
+    <Style x:Key="buttonStartStyle" TargetType="Button">
+        <Setter Property="Width" Value="50"/>
+        <Setter Property="Height" Value="50"/>
+        <Setter Property="IsEnabled" Value="True"/>
+        <Setter Property="Background" Value="{StaticResource ImageStart}"/>
+        <Setter Property="ToolTip" Value="Запуск программы"/>
+        <Setter Property="Command" Value="{Binding RunProgrammCommand}"/>
+
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=StatusProcess1}" Value="Программа запущена">
+                <Setter Property="ToolTip" Value="Остановить программу"/>
+                <Setter Property="Background" Value="{StaticResource ImagePause}"/>
+                <Setter Property="Command" Value="{Binding PauseProgrammCommand}"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=StatusProcess1}" Value="Программа остановлена">
+                <Setter Property="ToolTip" Value="Продолжить программу"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--Стиль кнопки запуска2-->
+    <Style x:Key="buttonStartStyle2" TargetType="Button">
+        <Setter Property="Width" Value="50"/>
+        <Setter Property="Height" Value="50"/>
+        <Setter Property="IsEnabled" Value="True"/>
+        <Setter Property="Background" Value="{StaticResource ImageStart}"/>
+        <Setter Property="ToolTip" Value="Запуск программы"/>
+        <Setter Property="Command" Value="{Binding RunProgrammCommand}"/>
+
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=StatusProcess2}" Value="Программа запущена">
+                <Setter Property="ToolTip" Value="Остановить программу"/>
+                <Setter Property="Background" Value="{StaticResource ImagePause}"/>
+                <Setter Property="Command" Value="{Binding PauseProgrammCommand}"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=StatusProcess2}" Value="Программа остановлена">
+                <Setter Property="ToolTip" Value="Продолжить программу"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--Стиль кнопки сброса-->
+    <Style x:Key="buttonStopStyle" TargetType="Button">
+        <Setter Property="Width" Value="50"/>
+        <Setter Property="Height" Value="50"/>
+        <Setter Property="IsEnabled" Value="True"/>
+        <Setter Property="Background" Value="{StaticResource ImageStop}"/>
+        <Setter Property="Command" Value="{Binding StopProgrammCommand}"/>
+        <Setter Property="ToolTip" Value="Сброс программы"/>
+
+
+        <!--<Style.Triggers>
+            <DataTrigger Binding="{Binding Path=StatusProcess1}" Value="Программа запущена">
+                <Setter Property="IsEnabled" Value="True"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=StatusProcess1}" Value="Программа остановлена">
+                <Setter Property="IsEnabled" Value="True"/>
+                <Setter Property="ToolTip" Value="Сброс программы"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=StatusProcess1}" Value="Уже запущен процесс">
+                <Setter Property="IsEnabled" Value="True"/>
+                <Setter Property="ToolTip" Value="Сброс программы"/>
+            </DataTrigger>
+        </Style.Triggers>-->
+    </Style>
+
+    <!--Стиль кнопки выбора программы-->
+    <Style x:Key="buttonSelectStyle" TargetType="Button">
+        <Setter Property="Width" Value="50"/>
+        <Setter Property="Height" Value="50"/>
+        <Setter Property="IsEnabled" Value="True"/>
+        <Setter Property="Background" Value="{StaticResource ImageSelectProgramm}"/>
+        <Setter Property="Command" Value="{Binding SelectProgrammCommand}"/>
+        <Setter Property="ToolTip" Value="Выбор сгенерированной программы"/>
+
+        <!--<Style.Triggers>
+            <DataTrigger Binding="{Binding Path=StatusProcess1}" Value="">
+                <Setter Property="IsEnabled" Value="True"/>
+                <Setter Property="ToolTip" Value="Выбор сгенерированной программы"/>
+            </DataTrigger>
+            
+            <DataTrigger Binding="{Binding Path=StatusProcess1}" Value="Готов к работе">
+                <Setter Property="IsEnabled" Value="True"/>
+                <Setter Property="ToolTip" Value="Выбор сгенерированной программы"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=StatusProcess1}" Value="Программа завершена">
+                <Setter Property="IsEnabled" Value="True"/>
+                <Setter Property="ToolTip" Value="Выбор сгенерированной программы"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=StatusProcess1}" Value="Программа сброшена">
+                <Setter Property="IsEnabled" Value="True"/>
+                <Setter Property="ToolTip" Value="Выбор сгенерированной программы"/>
+            </DataTrigger>
+        </Style.Triggers>-->
+    </Style>
+
+    <!--Стиль кнопки поиска программы-->
+    <Style x:Key="buttonSearchStyle" TargetType="ToggleButton">
+        <Setter Property="Width" Value="50"/>
+        <Setter Property="Height" Value="50"/>
+        <Setter Property="IsEnabled" Value="False"/>
+        <Setter Property="Background" Value="{StaticResource ImageSearchProgramm}"/>
+        <!--<Setter Property="Command" Value="{Binding SelectProgrammCommand}"/>-->
+        <Setter Property="ToolTip" Value="Поиск программы"/>
+    </Style>
+
+    <!--Анимация мигания надписи-->
+    <Style x:Key="BlinkStyle" TargetType="StackPanel">
+        <Setter Property="Visibility" Value="Visible"/>
+
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=StatusQuery}" Value="">
+                <Setter Property="Visibility" Value="Hidden"/>
+            </DataTrigger>
+
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding Path=Visibility, RelativeSource={RelativeSource Self}}" Value="Visible"/>
+                    <Condition Binding="{Binding StatusQuery}" Value="Ошибка генерации программы"/>
+                </MultiDataTrigger.Conditions>
+
+                <MultiDataTrigger.EnterActions>
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" RepeatBehavior="Forever" AutoReverse="True" Duration="0:0:1.25"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </MultiDataTrigger.EnterActions>
+            </MultiDataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--Стиль кнопки настроек-->
+    <Style x:Key="buttonSettingStyle" TargetType="ToggleButton">
+        <Setter Property="Height"  Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
+        
+        <Style.Triggers>
+            <Trigger Property="IsChecked" Value="False">
+                <Setter Property="Content" Value="{StaticResource ImageSettingFill}"/>
+            </Trigger>
+
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Content" Value="{StaticResource ImageSettingUnFill}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
+    <!--Стиль кнопки генерации программы-->
+    <Style x:Key="buttonGenerationStyle" TargetType="Button">
+        <Setter Property="Height"  Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
+        <Setter Property="ToolTip" Value="Генерация программ"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border BorderThickness="0" CornerRadius="3">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}" Value="True">
+                                        <Setter Property="Background" Value="#FFC1C1C1"/>
+                                    </DataTrigger>
+
+                                    <DataTrigger Binding="{Binding Path=IsPressed, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}" Value="True">
+                                        <Setter Property="Background" Value="#FF61FFB7"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+
+                        <Image Stretch="Fill">
+                            <Image.Style>
+                                <Style TargetType="Image">
+                                    <Setter Property="Source" Value="{StaticResource ImageGenerationOff}"/>
+
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}" Value="True">
+                                            <Setter Property="Source" Value="{StaticResource ImageGenerationOn}"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Binding="{Binding Path=IsPressed, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}" Value="True">
+                                            <Setter Property="Source" Value="{StaticResource ImageGenerationOn}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--Для UserControl-->
+    <Style x:Key="labelStatusStyle" TargetType="Label">
+        <Setter Property="FontSize"  Value="16"/>
+        <Setter Property="FontWeight"  Value="Bold"/>
+        <Setter Property="VerticalContentAlignment"  Value="Center"/>
+
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=Content, RelativeSource={RelativeSource Self}}" Value="Ошибка!">
+                <Setter Property="Foreground"  Value="Red"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=Content, RelativeSource={RelativeSource Self}}" Value="Ошибка генерации программы!">
+                <Setter Property="Foreground"  Value="Red"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=Content, RelativeSource={RelativeSource Self}}" Value="Уже запущен процесс">
+                <Setter Property="Foreground"  Value="#FFFFA200"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=Content, RelativeSource={RelativeSource Self}}" Value="Готов к работе">
+                <Setter Property="Foreground"  Value="#FF2BDA0E"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=Content, RelativeSource={RelativeSource Self}}" Value="Программа запущена">
+                <Setter Property="Foreground"  Value="#FF0C8700"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=Content, RelativeSource={RelativeSource Self}}" Value="Программа остановлена">
+                <Setter Property="Foreground"  Value="#FFFF6565"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=Content, RelativeSource={RelativeSource Self}}" Value="Программа сброшена">
+                <Setter Property="Foreground"  Value="#FFE4DB23"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=Content, RelativeSource={RelativeSource Self}}" Value="Программа завершена">
+                <Setter Property="Foreground"  Value="#FF2BDA0E"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=Content, RelativeSource={RelativeSource Self}}" Value="Не выбрана программа">
+                <Setter Property="Foreground"  Value="#FF489BFF"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="buttonConnectionUpDateStyle" TargetType="Button">
+        <Setter Property="Width" Value="0"/>
+        <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
+        <Setter Property="Visibility" Value="Hidden"/>
+        <Setter Property="ToolTip" Value="Повторное соединение"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border BorderThickness="0">
+                        <Image Source="{StaticResource ImageUpdate}" Stretch="Fill"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=Robot.IsConnection}" Value="False">
+                <Setter Property="Width" Value="40"/>
+                <Setter Property="Visibility" Value="Visible"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=Visibility, RelativeSource={RelativeSource Self}}" Value="Visible">
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard Name="StartBlinking">
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" RepeatBehavior="Forever" AutoReverse="True" Duration="0:0:1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+            </DataTrigger>
+        </Style.Triggers>       
+    </Style>
+
+    <Style x:Key="buttonConnectionUpDateStyle2" TargetType="Button">
+        <Setter Property="Width" Value="0"/>
+        <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
+        <Setter Property="Visibility" Value="Hidden"/>
+        <Setter Property="ToolTip" Value="Повторное соединение"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border BorderThickness="0">
+                        <Image Source="{StaticResource ImageUpdate}" Stretch="Fill"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=SelectedRobot.Item2.IsConnection}" Value="False">
+                <Setter Property="Width" Value="40"/>
+                <Setter Property="Visibility" Value="Visible"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=Visibility, RelativeSource={RelativeSource Self}}" Value="Visible">
+                <DataTrigger.EnterActions>
+                    <BeginStoryboard Name="StartBlinking">
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" RepeatBehavior="Forever" AutoReverse="True" Duration="0:0:1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </DataTrigger.EnterActions>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="buttonTransferCustStyle" TargetType="Button">
+        <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
+        <Setter Property="ToolTip" Value="Отправка программы в директорию"/>
+        
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border BorderThickness="0">
+                        <Image Source="{StaticResource ImageTransferOff}" Stretch="Fill"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Border BorderThickness="0">
+                                <Image Source="{StaticResource ImageTransferOn}" Stretch="Fill"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="buttonDeleteStyle" TargetType="Button">
+        <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
+        <Setter Property="ToolTip" Value="Удалить робота"/>
+        <Setter Property="BorderThickness" Value="0"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border>
+                        <Image Source="{StaticResource ImageDelete}"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="buttonStartCustStyle" TargetType="Button">
+        <Setter Property="Width" Value="50"/>
+        <Setter Property="Height" Value="50"/>
+        <Setter Property="IsEnabled" Value="True"/>
+        <Setter Property="Background" Value="{StaticResource ImageStart}"/>
+        <Setter Property="ToolTip" Value="Запуск программы"/>
+        <!--<Setter Property="Command" Value="{Binding RunProgrammCommand}"/>-->
+
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=StatusProcess}" Value="Программа запущена">
+                <Setter Property="ToolTip" Value="Остановить программу"/>
+                <Setter Property="Background" Value="{StaticResource ImagePause}"/>
+                <!--<Setter Property="Command" Value="{Binding PauseProgrammCommand}"/>-->
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=StatusProcess}" Value="Программа остановлена">
+                <Setter Property="ToolTip" Value="Продолжить программу"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="toggleButtonConnectionStyle" TargetType="ToggleButton">
+        <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border BorderThickness="0">
+                        <Image Source="{StaticResource ImageConnectionOff}"  Stretch="Fill"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                            <Border BorderThickness="0">
+                                <Image Source="{StaticResource ImageConnectionOn}"  Stretch="Fill"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="toggleButtonControlStyle" TargetType="ToggleButton">
+        <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border BorderThickness="0">
+                        <Image Source="{StaticResource ImageNotControls}"  Stretch="Fill"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                            <Border BorderThickness="0">
+                                <Image Source="{StaticResource ImageControls}"  Stretch="Fill"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                            <Border BorderThickness="0">
+                                <Image Source="{StaticResource ImageControls}"  Stretch="Fill"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="toggleButtonPositionStyle" TargetType="ToggleButton">
+        <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border BorderThickness="0">
+                        <Image Source="{StaticResource ImagePositionOff}"  Stretch="Fill"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                            <Border BorderThickness="0">
+                                <Image Source="{StaticResource ImagePositionOn}"  Stretch="Fill"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                            <Border BorderThickness="0">
+                                <Image Source="{StaticResource ImagePositionOn}"  Stretch="Fill"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="toggleButtonWeldingStyle" TargetType="ToggleButton">
+        <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border BorderThickness="0">
+                        <Image Source="{StaticResource ImageWeldingOff}"  Stretch="Fill"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                            <Border BorderThickness="0">
+                                <Image Source="{StaticResource ImageWeldingOn}"  Stretch="Fill"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+            
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                            <Border BorderThickness="0">
+                                <Image Source="{StaticResource ImageWeldingOn}"  Stretch="Fill"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="toggleButtonGraphStyle" TargetType="ToggleButton">
+        <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border BorderThickness="0">
+                        <Image Source="{StaticResource ImageGraph}"  Stretch="Fill"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--Кнопка добавления робота-->
+    <Style x:Key="buttonAddUserControl" TargetType="Button">
+        <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
+        <!--<Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="VerticalAlignment" Value="Bottom"/>-->
+        <Setter Property="ToolTip" Value="Добавить робота"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Ellipse Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}}" Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}">
+                            <Ellipse.Fill>
+                                <ImageBrush ImageSource="{StaticResource ImageAdd}"/>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <ContentControl Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!--ToggleButton-->
+    <!--Смена страниц-->
+    <Style x:Key="toggleButtonCordinateStyle" TargetType="{x:Type ToggleButton}">
+        <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="1"/>
+    </Style>
+
+    <Style x:Key="toggleButtonCordinateTemplateStyle" TargetType="Border">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}, Mode=FindAncestor}}" Value="True">
+                <Setter Property="Background" Value="#FFC1C1C1"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}, Mode=FindAncestor}}" Value="True">
+                <Setter Property="Background" Value="#FFC1C1C1"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=IsPressed, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}, Mode=FindAncestor}}" Value="True">
+                <Setter Property="Background" Value="#FF61FFB7"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+    
+    <!--Смена скосов-->
+    <Style x:Key="toggleButtonScosStyle" TargetType="{x:Type ToggleButton}">
+        <Setter Property="Width" Value="100"/>
+        <Setter Property="Height" Value="80"/>
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="1"/>
+    </Style>
+
+    <Style x:Key="toggleButtonScosTemplateStyle" TargetType="Border">
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}, Mode=FindAncestor}}" Value="True">
+                <Setter Property="Background" Value="#FF89C8E6"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}, Mode=FindAncestor}}" Value="True">
+                <Setter Property="Background" Value="#FF89C8E6"/>
+            </DataTrigger>
+
+            <DataTrigger Binding="{Binding Path=IsPressed, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}, Mode=FindAncestor}}" Value="True">
+                <Setter Property="Background" Value="#FF52A9E6"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!--По-умолчанию-->
+    <Style x:Key="buttonStandartStyle" TargetType="Button">
+        <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
+        <Setter Property="ToolTip" Value="Значения по-умолчанию"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border BorderThickness="0" CornerRadius="3">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}" Value="True">
+                                        <Setter Property="Background" Value="#FFC1C1C1"/>
+                                    </DataTrigger>
+
+                                    <DataTrigger Binding="{Binding Path=IsPressed, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}" Value="True">
+                                        <Setter Property="Background" Value="#FF61FFB7"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        
+                        <Image Source="{StaticResource ImageStandart}"  Stretch="Fill"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="toggleButtonInfoStyle" TargetType="ToggleButton">
+        <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
+        <Setter Property="ToolTip" Value="Информирование"/>
+        <Setter Property="IsChecked" Value="True"/>
+        <!--<Setter Property="Visibility" Value="Hidden"/>-->
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border BorderThickness="0" CornerRadius="3">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}, Mode=FindAncestor}}" Value="False">
+                                        <DataTrigger.EnterActions>
+                                            <BeginStoryboard Name="StartBlinking">
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" RepeatBehavior="Forever" AutoReverse="True" Duration="0:0:1"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.EnterActions>
+                                    </DataTrigger>
+
+                                    <DataTrigger Binding="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}, Mode=FindAncestor}}" Value="True">
+                                        <DataTrigger.EnterActions>
+                                            <RemoveStoryboard BeginStoryboardName="StartBlinking"/>
+                                        </DataTrigger.EnterActions>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+
+                        <Image Source="{StaticResource ImageExclamation}"  Stretch="Fill"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Style.Triggers>
+            <!--<MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="d_rect"/>
+                    <Condition Binding="{Binding Path=DataContext.SelectedItem.Header, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="Сварка"/>
+                </MultiDataTrigger.Conditions>
+
+                <Setter Property="IsChecked" Value="True"/>
+                <Setter Property="Visibility" Value="Visible"/>
+            </MultiDataTrigger>-->
+            
+            <!--<DataTrigger Binding="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="d_rect">
+                <Setter Property="IsChecked" Value="True"/>
+                <Setter Property="Visibility" Value="Visible"/>
+            </DataTrigger>-->
+
+            <!--<DataTrigger Binding="{Binding Path=DataContext.SelectedItem.Header, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Value="Сварка">
+                <Setter Property="IsChecked" Value="True"/>
+                <Setter Property="Visibility" Value="Visible"/>
+            </DataTrigger>-->
+        </Style.Triggers>
+    </Style>
+   
+</ResourceDictionary>  
