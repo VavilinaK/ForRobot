@@ -15,7 +15,6 @@ namespace ForRobot.Libr.Converters
 
             if (v1 == null || v2 == null)
                 return false;
-                //throw new FormatException("to use this converter, SelectProgramConverter, value and parameter shall inherit from String");
 
             return (((string)v1).Split(new char[] { '.' })[0]).ToLower() == ((string)v2).ToLower();
         }

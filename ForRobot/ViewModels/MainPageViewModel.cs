@@ -141,25 +141,26 @@ namespace ForRobot.ViewModels
         /// </summary>
         public string PathGenerator
         {
-            get
-            {
-                if (DetalObject is Plita) { return Properties.Settings.Default.PlitaGenerator; }
-                else if (DetalObject is PlitaStringer) { return Properties.Settings.Default.PlitaStringerGenerator; }
-                else if (DetalObject is PlitaTreygolnik) { return Properties.Settings.Default.PlitaTreugolnikGenerator; }
-                else { return ""; }
-            }
-            set
-            {
-                if (DetalObject is Plita) { Properties.Settings.Default.PlitaGenerator = value; }
-                else if (DetalObject is PlitaStringer) { Properties.Settings.Default.PlitaStringerGenerator = value; }
-                else if (DetalObject is PlitaTreygolnik) { Properties.Settings.Default.PlitaTreugolnikGenerator = value; }
-                Properties.Settings.Default.Save();
+            get; set;
+            //get
+            //{
+            //    if (DetalObject is Plita) { return Properties.Settings.Default.PlitaGenerator; }
+            //    else if (DetalObject is PlitaStringer) { return Properties.Settings.Default.PlitaStringerGenerator; }
+            //    else if (DetalObject is PlitaTreygolnik) { return Properties.Settings.Default.PlitaTreugolnikGenerator; }
+            //    else { return ""; }
+            //}
+            //set
+            //{
+            //    if (DetalObject is Plita) { Properties.Settings.Default.PlitaGenerator = value; }
+            //    else if (DetalObject is PlitaStringer) { Properties.Settings.Default.PlitaStringerGenerator = value; }
+            //    else if (DetalObject is PlitaTreygolnik) { Properties.Settings.Default.PlitaTreugolnikGenerator = value; }
+            //    Properties.Settings.Default.Save();
 
-                if (!string.IsNullOrWhiteSpace(value) && !string.IsNullOrWhiteSpace(this.ProgrammName))
-                    this._generation = new Generation(value, this.ProgrammName);
+            //    if (!string.IsNullOrWhiteSpace(value) && !string.IsNullOrWhiteSpace(this.ProgrammName))
+            //        this._generation = new Generation(value, this.ProgrammName);
 
-                RaisePropertyChanged("PathGenerator");
-            }
+            //    RaisePropertyChanged("PathGenerator");
+            //}
         }
 
         /// <summary>

@@ -221,7 +221,6 @@ namespace ForRobot.Libr.Client
                     ReceiveTimeout = 3000,
                     SendTimeout = 3000
                 };
-
                 this.JsonRpc = new JsonRpc(new NewLineDelimitedMessageHandler(Client.GetStream(), Client.GetStream(), new JsonMessageFormatter()));
                 this.JsonRpc.StartListening();
                 this.JsonRpc.Disconnected += (sender, e) =>

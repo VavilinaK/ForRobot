@@ -14,15 +14,6 @@
     <Setting Name="PlitaTreugolnikProgramm" Type="System.String" Scope="User">
       <Value Profile="(Default)">main_gen</Value>
     </Setting>
-    <Setting Name="PlitaGenerator" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="PlitaStringerGenerator" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="PlitaTreugolnikGenerator" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
     <Setting Name="SaveRobots" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)" />
     </Setting>

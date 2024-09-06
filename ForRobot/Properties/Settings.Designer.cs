@@ -73,42 +73,6 @@ namespace ForRobot.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string PlitaGenerator {
-            get {
-                return ((string)(this["PlitaGenerator"]));
-            }
-            set {
-                this["PlitaGenerator"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string PlitaStringerGenerator {
-            get {
-                return ((string)(this["PlitaStringerGenerator"]));
-            }
-            set {
-                this["PlitaStringerGenerator"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string PlitaTreugolnikGenerator {
-            get {
-                return ((string)(this["PlitaTreugolnikGenerator"]));
-            }
-            set {
-                this["PlitaTreugolnikGenerator"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         public global::System.Collections.Specialized.StringCollection SaveRobots {
             get {
                 return ((global::System.Collections.Specialized.StringCollection)(this["SaveRobots"]));
