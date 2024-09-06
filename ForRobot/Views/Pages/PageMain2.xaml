@@ -474,7 +474,6 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
-                                    <!--<ColumnDefinition Width="Auto"/>-->
                                 </Grid.ColumnDefinitions>
 
                                 <Label Grid.Column="0" Content="Имя программы" FontSize="16"/>
@@ -991,40 +990,45 @@
                                                                     CommandParameter="{Binding Path=.}"
                                                                     Background="{x:Null}" BorderBrush="{x:Null}" Padding="0" Height="30" Width="Auto"
                                                                     Focusable="False" ClickMode="Press">
-                                                                <Grid>
-                                                                    <Grid.ColumnDefinitions>
-                                                                        <ColumnDefinition Width="Auto"/>
-                                                                        <ColumnDefinition/>
-                                                                    </Grid.ColumnDefinitions>
 
-                                                                    <Image Grid.Column="0" Source="{Binding Icon}" Stretch="Fill"/>
-                                                                    <TextBlock Grid.Column="1" Text="{Binding Name}" Margin="5,0,0,0">
-                                                                        <TextBlock.Style>
-                                                                            <Style TargetType="{x:Type TextBlock}">
-                                                                                <Setter Property="FontWeight"  Value="Normal"/>
-                                                                                
-                                                                                <Style.Triggers>
-                                                                                    <MultiDataTrigger>
-                                                                                        <MultiDataTrigger.Conditions>
-                                                                                            <Condition Value="True">
-                                                                                                <Condition.Binding>
-                                                                                                    <MultiBinding Converter="{StaticResource SelectProgramConvert}">
-                                                                                                        <MultiBinding.Bindings>
-                                                                                                            <Binding Path="Name"/>
-                                                                                                            <Binding Path="DataContext.SelectedRobot.Item2.RobotProgramName" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type Page}}"/>
-                                                                                                        </MultiBinding.Bindings>
-                                                                                                    </MultiBinding>
-                                                                                                </Condition.Binding>
-                                                                                            </Condition>
-                                                                                        </MultiDataTrigger.Conditions>
+                                                                <Button.Template>
+                                                                    <ControlTemplate TargetType="{x:Type Button}">
+                                                                        <Grid>
+                                                                            <Grid.ColumnDefinitions>
+                                                                                <ColumnDefinition Width="Auto"/>
+                                                                                <ColumnDefinition/>
+                                                                            </Grid.ColumnDefinitions>
 
-                                                                                        <Setter Property="FontWeight" Value="Bold"/>
-                                                                                    </MultiDataTrigger>
-                                                                                </Style.Triggers>
-                                                                            </Style>
-                                                                        </TextBlock.Style>
-                                                                    </TextBlock>
-                                                                </Grid>
+                                                                            <Image Grid.Column="0" Source="{Binding Icon}" Stretch="Fill"/>
+                                                                            <TextBlock Grid.Column="1" Text="{Binding Name}" Margin="5,0,0,0">
+                                                                                <TextBlock.Style>
+                                                                                    <Style TargetType="{x:Type TextBlock}">
+                                                                                        <Setter Property="FontWeight"  Value="Normal"/>
+
+                                                                                        <Style.Triggers>
+                                                                                            <MultiDataTrigger>
+                                                                                                <MultiDataTrigger.Conditions>
+                                                                                                    <Condition Value="True">
+                                                                                                        <Condition.Binding>
+                                                                                                            <MultiBinding Converter="{StaticResource SelectProgramConvert}">
+                                                                                                                <MultiBinding.Bindings>
+                                                                                                                    <Binding Path="Name"/>
+                                                                                                                    <Binding Path="DataContext.SelectedRobot.Item2.RobotProgramName" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type Page}}"/>
+                                                                                                                </MultiBinding.Bindings>
+                                                                                                            </MultiBinding>
+                                                                                                        </Condition.Binding>
+                                                                                                    </Condition>
+                                                                                                </MultiDataTrigger.Conditions>
+
+                                                                                                <Setter Property="FontWeight" Value="Bold"/>
+                                                                                            </MultiDataTrigger>
+                                                                                        </Style.Triggers>
+                                                                                    </Style>
+                                                                                </TextBlock.Style>
+                                                                            </TextBlock>
+                                                                        </Grid>
+                                                                    </ControlTemplate>
+                                                                </Button.Template>
                                                             </Button>
                                                         </HierarchicalDataTemplate>
                                                     </TreeView.ItemTemplate>
@@ -1043,32 +1047,6 @@
                                                                     <Setter Property="Visibility" Value="Hidden"/>
                                                                     <Setter Property="Height" Value="0"/>
                                                                 </DataTrigger>
-
-                                                                <!--<MultiDataTrigger>
-                                                                    <MultiDataTrigger.Conditions>
-                                                                        -->
-                                                                <!--<Condition Binding="{Binding Path=DataContext.SelectedRobot.Item2.Pro_State, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="#P_RESET"/>-->
-                                                                <!--
-                                                                        <Condition Binding="{Binding Path=DataContext.SelectedRobot.Item2.RobotProgramName, Converter={StaticResource NullBooleanConvert}}" Value="{StaticResource False}"/>
-                                                                        <Condition Value="True">
-                                                                            <Condition.Binding>
-                                                                                <MultiBinding Converter="{StaticResource SelectProgramConvert}">
-                                                                                    <MultiBinding.Bindings>
-                                                                                        <Binding Path="Name"/>
-                                                                                        <Binding Path="DataContext.SelectedRobot.Item2.RobotProgramName" RelativeSource="{RelativeSource AncestorType={x:Type Page}}"/>
-                                                                                    </MultiBinding.Bindings>
-                                                                                </MultiBinding>
-                                                                            </Condition.Binding>
-                                                                        </Condition>
-                                                                    </MultiDataTrigger.Conditions>
-
-                                                                    <Setter Property="TextBlock.FontWeight" Value="Bold"/>
-                                                                </MultiDataTrigger>-->
-
-                                                                <!--<Trigger Property="TreeViewItem.IsSelected" Value="True">
-                                                                    <Setter Property="Panel.Background" Value="Transparent"/>
-                                                                    <Setter Property="TextElement.Foreground" Value="Black"/>
-                                                                </Trigger>-->
                                                             </Style.Triggers>
                                                         </Style>
                                                     </TreeView.ItemContainerStyle>
