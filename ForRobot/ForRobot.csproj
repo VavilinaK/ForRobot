@@ -214,6 +214,8 @@
     <Compile Include="Libr\Settings\ModeClosingApp.cs" />
     <Compile Include="Libr\Settings\Settings.cs" />
     <Compile Include="Libr\SingleGlobalInstance.cs" />
+    <Compile Include="Model\Controls\NavigationTree\INavigationTreeItem.cs" />
+    <Compile Include="Model\Controls\NavigationTree\NavigationTreeItem.cs" />
     <Compile Include="ViewModels\PropertiesWindowViewModel.cs" />
     <Compile Include="Views\Windows\PropertiesWindow.xaml.cs">
       <DependentUpon>PropertiesWindow.xaml</DependentUpon>
@@ -272,7 +274,6 @@
     </Compile>
     <Compile Include="AsyncRelayCommand.cs" />
     <Compile Include="BaseClass.cs" />
-    <Compile Include="Libr\Controls\INavTreeItem.cs" />
     <Compile Include="Libr\Converters\ImageConverter.cs" />
     <Compile Include="Libr\Converters\NullBooleanConverter.cs" />
     <Compile Include="Libr\Converters\SelectProgramConverter.cs" />
@@ -298,7 +299,6 @@
     <Compile Include="Libr\TreeViewSelectedItemBehavior.cs" />
     <Compile Include="Model\Controls\File.cs" />
     <Compile Include="Model\Controls\IFile.cs" />
-    <Compile Include="Model\Controls\NavTreeItem.cs" />
     <Compile Include="Model\Detals\DetalTypes.cs" />
     <Compile Include="Model\Detals\DistanceBetweenRebraType.cs" />
     <Compile Include="Model\Detals\Plita.cs" />

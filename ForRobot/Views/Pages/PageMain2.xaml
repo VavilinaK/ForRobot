@@ -902,7 +902,7 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
 
-                                            <TextBox Grid.Column="0" Text="{Binding Path=SelectedRobot.Item2.PathProgramm, Mode=TwoWay}"/>
+                                            <TextBox Grid.Column="0" Text="{Binding Path=SelectedRobot.Item2.PathProgramm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                             <Button Grid.Column="1" ToolTip="Изменить исходящую папку" Command="{Binding ChangePatnOnPCCommand}">
                                                 <Button.Style>
                                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource baseButtonStyle}">
