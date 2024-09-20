@@ -299,6 +299,7 @@ namespace ForRobot.ViewModels
                     {
                         if(((System.Windows.Controls.Primitives.ToggleButton)obj).IsChecked == true)
                         {
+                            string pass = "";
                             using (ForRobot.Views.Windows.InputWindow _inputWindow = new ForRobot.Views.Windows.InputWindow("Введите пин-код") { Title = "Управление процессом на роботе" })
                             {
                                 if (_inputWindow.ShowDialog() == true)
@@ -311,10 +312,11 @@ namespace ForRobot.ViewModels
                                         foreach (byte b in result)
                                             Sb.Append(b.ToString("x2"));
                                     }
-                                    if (!Equals(Sb.ToString(), Properties.Settings.Default.PinCode))
-                                        ((System.Windows.Controls.Primitives.ToggleButton)obj).IsChecked = false;
+                                    pass = Sb.ToString(); 
                                 }
                             }
+                            if (!Equals(pass, Properties.Settings.Default.PinCode))
+                                ((System.Windows.Controls.Primitives.ToggleButton)obj).IsChecked = false;
                         }
                     }));
             }
@@ -821,7 +823,7 @@ namespace ForRobot.ViewModels
         /// <param name="e"></param>
         private void WreteLog(object sender, LogEventArgs e)
         {
-            App.Current.LoggerString += e.Message;
+            App.Current.LoggerString = e.Message + App.Current.LoggerString;
             App.Current.Logger.Trace(e.Message);
         }
 
@@ -832,7 +834,7 @@ namespace ForRobot.ViewModels
         /// <param name="e"></param>
         private void WreteLogError(object sender, LogErrorEventArgs e)
         {
-            App.Current.LoggerString += e.Message;
+            App.Current.LoggerString = e.Message + App.Current.LoggerString;
             App.Current.Logger.Error(e.Message);
         }
 

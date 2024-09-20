@@ -1157,6 +1157,26 @@
                                             </lvc:CartesianChart>-->
                                     </Grid>
                                 </TabItem>
+
+                                <TabItem Header="Тест">
+                                    <Grid Margin="15">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="40"/>
+                                            <RowDefinition Height="15"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+
+                                        <control:Breadcrumb Padding="0" Root="{Binding Path=SelectedRobot.Item2.Connection.DefaulRoot}"
+                                                            Directory="{Binding Path=SelectedRobot.Item2.PathControllerFolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                            ItemsSource="{Binding Path=SelectedRobot.Item2.Files, Mode=OneWay}"/>
+
+                                        <StackPanel Grid.Row="2">
+                                            <control:NavigationTreeView
+                                                Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}"
+                                                Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </TabItem>
                             </TabControl>
                         </Grid>
                     </ScrollViewer>
@@ -1342,8 +1362,7 @@
                                  Padding="10" Margin="3" Background="White"
                                  AcceptsReturn="True" IsReadOnly="True"
                                  ScrollViewer.CanContentScroll="True"
-                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                 lib:ScrollViewerAttachedProperties.ScrollOnTextChanged="True"/>
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"/>
                     </TabItem>
                 </TabControl>
             </Grid>

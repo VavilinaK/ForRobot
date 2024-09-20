@@ -214,9 +214,13 @@
     <Compile Include="Libr\Settings\ModeClosingApp.cs" />
     <Compile Include="Libr\Settings\Settings.cs" />
     <Compile Include="Libr\SingleGlobalInstance.cs" />
-    <Compile Include="Model\Controls\NavigationTree\INavigationTreeItem.cs" />
-    <Compile Include="Model\Controls\NavigationTree\NavigationTreeItem.cs" />
+    <Compile Include="Model\Controls\NavigationTree\IFile.cs" />
+    <Compile Include="Model\Controls\NavigationTree\NavigationTreeEdge.cs" />
+    <Compile Include="Model\Controls\NavigationTree\File.cs" />
     <Compile Include="ViewModels\PropertiesWindowViewModel.cs" />
+    <Compile Include="Views\Controls\Breadcrumb.xaml.cs">
+      <DependentUpon>Breadcrumb.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Windows\PropertiesWindow.xaml.cs">
       <DependentUpon>PropertiesWindow.xaml</DependentUpon>
     </Compile>
@@ -233,6 +237,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\ToolBarTrayForRobot.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\Breadcrumb.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -392,6 +400,7 @@
     <Content Include="Scripts\test_weld_gen.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Themes\Images\none.png" />
     <None Include="Scripts\run.cmd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

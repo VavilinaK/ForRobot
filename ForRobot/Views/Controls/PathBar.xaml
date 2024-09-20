@@ -46,36 +46,47 @@
                                              IsIndeterminate="{Binding ElementName=rootControl, Path=IsIndeterminate}" 
                                              Value="{Binding ElementName=rootControl, Path=Progress}" />
 
-                                    <DockPanel>
-                                        <Button DockPanel.Dock="Right" Background="Transparent" Width="20">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <Grid Grid.Column="0" x:Name="innerDock">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <ToggleButton Grid.Column="0" x:Name="toggleTextBox" IsChecked="False" Margin="0"
+                                                      IsEnabled="{Binding ElementName=rootControl, Path=IsTextBoxEnabled}" Background="Transparent"
+                                                      Focusable="False" BorderThickness="0">
+                                                <Image Width="16" Height="16" Margin="0" Source="{Binding ElementName=rootControl, Path=Icon}"/>
+                                            </ToggleButton>
+
+                                            <DockPanel Grid.Column="1">
+                                                <ToggleButton x:Name="toggleList" IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" 
+                                                              DockPanel.Dock="Right" Margin="0"
+                                                              Background="Transparent" Focusable="False" BorderThickness="0" BorderBrush="Transparent" >
+                                                    <Path Fill="#FF000000" Data="{StaticResource ExpandedArrow}" HorizontalAlignment="Right"  VerticalAlignment="Center" 
+                                                          Margin="{TemplateBinding Padding}" IsHitTestVisible="True" />
+                                                </ToggleButton>
+                                            </DockPanel>
+
+                                            <Grid x:Name="grid" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="Transparent" >
+                                                <!--<ContentControl x:Name="bc" Visibility="{Binding ElementName=toggleTextBox, Path=IsChecked, Converter={StaticResource fbtv}}"/>
+                                                <ContentControl x:Name="tb" Visibility="{Binding ElementName=toggleTextBox, Path=IsChecked, Converter={StaticResource btv}}" />-->
+                                            </Grid>
+                                        </Grid>
+
+                                        <Button Grid.Column="1" Background="Transparent" Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}">
                                             <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
                                                 <Path Stroke="#FF000000" StrokeThickness="1" Data="{StaticResource RefreshBranch}"   />
                                                 <Path Fill="#FF000000" Data="{StaticResource RefreshArrow}"   />
                                             </Grid>
                                         </Button>
-
-                                        <DockPanel x:Name="innerDock">
-                                            <ToggleButton x:Name="toggleTextBox" IsChecked="False" DockPanel.Dock="Left" Margin="0"
-                                                      IsEnabled="{Binding ElementName=rootControl, Path=IsTextBoxEnabled}" Background="Transparent"
-                                                      Focusable="False" BorderThickness="0">
-
-                                                <Image Width="16" Height="16" Margin="0" Source="{Binding ElementName=rootControl, Path=Icon}"/>
-                                            </ToggleButton>
-
-                                            <ToggleButton x:Name="toggleList" IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" 
-                                                  DockPanel.Dock="Right" Margin="0"
-                                                  Background="Transparent" Focusable="False" BorderThickness="0" BorderBrush="Transparent" >
-
-                                                <Path Fill="#FF000000" Data="{StaticResource ExpandedArrow}" HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                                  Margin="{TemplateBinding Padding}" IsHitTestVisible="True" />
-                                            </ToggleButton>
-
-                                            <Grid x:Name="grid" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="Transparent" >
-                                                <ContentControl x:Name="bc" Visibility="{Binding ElementName=toggleTextBox, Path=IsChecked, Converter={StaticResource fbtv}}"/>
-                                                <ContentControl x:Name="tb" Visibility="{Binding ElementName=toggleTextBox, Path=IsChecked, Converter={StaticResource btv}}" />
-                                            </Grid>
-                                        </DockPanel>
-                                    </DockPanel>
+                                    </Grid>
 
                                     <Popup x:Name="PART_Popup" Placement="Bottom" PlacementTarget="{Binding ElementName=basePanel}" IsOpen="{TemplateBinding ComboBox.IsDropDownOpen}" 
                                            MinWidth="{Binding ElementName=innerDock, Path=ActualWidth}"

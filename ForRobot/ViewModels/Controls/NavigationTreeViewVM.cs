@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-using ForRobot.Libr.Controls;
 using ForRobot.Model.Controls;
 
 namespace ForRobot.ViewModels.Controls

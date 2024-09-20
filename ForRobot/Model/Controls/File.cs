@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 //using System.Text;
@@ -108,6 +109,30 @@ namespace ForRobot.Model.Controls
                     this.Flag = FileFlags.None;
                     break;
             }
+        }
+
+        public static File Search(File root, string nameToSearchFor)
+        {
+            Queue<File> Q = new Queue<File>();
+            HashSet<File> S = new HashSet<File>();
+            Q.Enqueue(root);
+            S.Add(root);
+
+            while (Q.Count > 0)
+            {
+                File e = Q.Dequeue();
+                if (e.Name == nameToSearchFor)
+                    return e;
+                foreach (File friend in e.Children)
+                {
+                    if (!S.Contains(friend))
+                    {
+                        Q.Enqueue(friend);
+                        S.Add(friend);
+                    }
+                }
+            }
+            return null;
         }
     }
 }

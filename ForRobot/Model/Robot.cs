@@ -481,7 +481,8 @@ namespace ForRobot.Model
                     List<ForRobot.Model.Controls.File> fileDatas = new List<ForRobot.Model.Controls.File>();
                     var files = Task.Run<Dictionary<string, string>>(async () => await this.Connection.File_NameList()).Result;
 
-                    foreach (var file in files.Where(item => item.Key.Split(new char[] { '\\' }).Last() != ""))
+                    foreach (var file in files.Where(item => item.Key.Split(new char[] { '\\' }).Last() != "" && !item.Key.Contains("TP") 
+                                                                                                              && !item.Key.Contains("Mada") && !item.Key.Contains("System") && !item.Key.Contains("STEU")))
                     {
                         ForRobot.Model.Controls.File fileData = new ForRobot.Model.Controls.File(file.Key, file.Value.TrimStart(';').TrimEnd(';'));
                         fileDatas.Add(fileData);
