@@ -33,11 +33,16 @@ namespace ForRobot.Views.Controls
 
         #region Private variables
 
-        private string _selectedListItem;
+        //private string _selectedListItem;
 
         #endregion
 
         #region Public variables
+
+        //public bool VisibiliityMenuToggleButton { }
+
+        public bool CanOpenMenu { get => this.ItemsSource.Cast<object>().Count() == 0 || this.SelectedFolder == null ? false 
+                                            : File.Search(this.ItemsSource.Cast<File>().First(), this.SelectedFolder).IncludeFileChildren; }
 
         /// <summary>
         /// Коллекция имен папок составляющих директорию
@@ -176,6 +181,7 @@ namespace ForRobot.Views.Controls
         {
             Breadcrumb breadcrumb = (Breadcrumb)d;
             breadcrumb.SelectedFolder = (string)e.NewValue;
+            breadcrumb.PropertyChanged?.Invoke(breadcrumb, new PropertyChangedEventArgs(nameof(breadcrumb.CanOpenMenu)));
             breadcrumb.PropertyChanged?.Invoke(breadcrumb, new PropertyChangedEventArgs(nameof(breadcrumb.ChildrenFolder)));
         }
 
@@ -197,7 +203,7 @@ namespace ForRobot.Views.Controls
                         {
                             Breadcrumb breadcrumb = ((object[])obj)[0] as Breadcrumb;
                             File file = ((object[])obj)[1] as File;
-                            breadcrumb.Directory = file.Path.TrimEnd(new char[] { '\\' });
+                            breadcrumb.Directory = breadcrumb.Root + file.Path.TrimEnd(new char[] { '\\' });
                         }
                     }));
             }

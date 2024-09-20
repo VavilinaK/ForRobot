@@ -15,7 +15,6 @@
     <conv:StringFormatConverter x:Key="StringConvert"/>
     <conv:ThicknessConverter x:Key="ThicknessConvert"/>
     <conv:SelectProgramConverter x:Key="SelectProgramConvert"/>
-    <conv:NullBooleanConverter x:Key="NullBooleanConvert"/>
 
     <!--Colors-->
     <Color x:Key="Aqua">#00FFFF</Color>    
