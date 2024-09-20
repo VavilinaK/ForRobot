@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:local="clr-namespace:ForRobot.Views.Controls"
+             xmlns:conv="clr-namespace:ForRobot.Libr.Converters"
              mc:Ignorable="d" 
              x:Name="BreadcrumbControl">
     
@@ -22,6 +24,9 @@
         <!--Geometry-->
         <Geometry x:Key="NormalArrow">M0,0 L4,3.5 0,7 z</Geometry>
         <Geometry x:Key="ExpandedArrow">M0,3 L7,3 3.5,7 z</Geometry>
+        
+        <!--Converters-->
+        <conv:ArrayMultiValueConverter x:Key="ArrayMultiValueConvert"/>
 
         <!--Styles-->
         <Style x:Key="IconStyle" TargetType="{x:Type Path}">
@@ -79,7 +84,7 @@
                                 <Border Background="Transparent" BorderThickness="0.5">
                                     <Path Fill="#FF000000" HorizontalAlignment="Center" VerticalAlignment="Center"
                                           Margin="5" IsHitTestVisible="True">
-                                        
+
                                         <Path.Style>
                                             <Style TargetType="{x:Type Path}">
                                                 <Setter Property="Data" Value="{StaticResource NormalArrow}"/>
@@ -101,7 +106,7 @@
                                                 <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}, Mode=FindAncestor}}"  Value="True">
                                                     <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
                                                 </DataTrigger>
-                                                
+
                                                 <DataTrigger Binding="{Binding Path=IsPressed, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}, Mode=FindAncestor}}"  Value="True">
                                                     <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
                                                 </DataTrigger>
@@ -123,12 +128,34 @@
                         <Border BorderBrush="Black" BorderThickness="1">
                             <ListBox FontSize="14" SelectionMode="Single" Margin="{Binding Padding}"
                                      ItemsSource="{Binding Path=ChildrenFolder, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}">
-                           
-                                <ListBox.ItemContainerStyle>
-                                    <Style TargetType="{x:Type ListBoxItem}">
-                                        <Setter Property="Template" Value="{DynamicResource itemMenuTemplate}"/>
-                                    </Style>
-                                </ListBox.ItemContainerStyle>                                
+
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <Image Grid.Column="0" Source="{Binding Icon}" Stretch="Fill" Height="25"/>
+                                            <Label Grid.Column="1" Content="{Binding Name}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="SelectionChanged">
+                                        <i:InvokeCommandAction Command="{Binding Path=SelectMenuItemCommand, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}">
+                                            <i:InvokeCommandAction.CommandParameter>
+                                                <MultiBinding Converter="{StaticResource ArrayMultiValueConvert}">
+                                                    <Binding Path="." RelativeSource="{RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}"/>
+                                                    <Binding Path="SelectedItem" RelativeSource="{RelativeSource AncestorType={x:Type ListBox}, Mode=FindAncestor}"/>
+                                                </MultiBinding>
+                                            </i:InvokeCommandAction.CommandParameter>
+                                        </i:InvokeCommandAction>
+                                        <!--CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource AncestorType={x:Type ListBox}, Mode=FindAncestor}}"-->
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
                             </ListBox>
                         </Border>
                     </Popup>
@@ -142,7 +169,7 @@
                             <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}, Mode=FindAncestor}}"  Value="True">
                                 <Setter Property="Background" Value="{DynamicResource IsSelectedBackround}"/>
                             </DataTrigger>
-                            
+
                             <DataTrigger Binding="{Binding Path=IsPressed, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}, Mode=FindAncestor}}"  Value="True">
                                 <Setter Property="Background" Value="{DynamicResource ActiveBackround}"/>
                             </DataTrigger>
@@ -159,17 +186,6 @@
                     </Style>
                 </Border.Style>
             </Border>
-        </ControlTemplate>
-
-        <ControlTemplate x:Key="itemMenuTemplate" TargetType="{x:Type ListBoxItem}">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
-                <Label Content="Nice"/>
-            </Grid>
         </ControlTemplate>
     </ComboBox.Resources>
 

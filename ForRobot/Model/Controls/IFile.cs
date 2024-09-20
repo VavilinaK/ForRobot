@@ -15,7 +15,7 @@ namespace ForRobot.Model.Controls
 
         bool IsExpanded { get; set; }
 
-        bool IncludeFileChildren { get; set; }
+        bool IncludeFileChildren { get; }
 
         FileTypes Type { get; }
 

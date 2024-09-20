@@ -42,8 +42,8 @@ namespace ForRobot.ViewModels
 
         private Detal _detal;
 
-        private ObservableCollection<Themes.ToolBarTrayForRobot> _items = new ObservableCollection<Themes.ToolBarTrayForRobot>() { new Themes.ToolBarTrayForRobot() };
-        //private ObservableCollection<Themes.ToolBarTrayForRobot> _items;
+        //private ObservableCollection<Themes.ToolBarTrayForRobot> _items = new ObservableCollection<Themes.ToolBarTrayForRobot>() { new Themes.ToolBarTrayForRobot() };
+        private ObservableCollection<Themes.ToolBarTrayForRobot> _items;
 
         private Generation _generation;
 

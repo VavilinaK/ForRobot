@@ -44,7 +44,8 @@ namespace ForRobot.Model.Controls
             get => this._isExpanded;
             set => Set(ref this._isExpanded, value);
         }
-        public bool IncludeFileChildren { get; set; } = true;
+
+        public bool IncludeFileChildren { get => this.Children.Count() != 0; }
 
         public FileTypes Type
         {
@@ -64,7 +65,7 @@ namespace ForRobot.Model.Controls
             }
         }
 
-        public FileFlags Flag { get; set; }
+        public FileFlags Flag { get; set; } = FileFlags.None;
 
         public ObservableCollection<IFile> Children
         {
@@ -74,10 +75,18 @@ namespace ForRobot.Model.Controls
 
         public File() { }
 
+        public File(string path)
+        {
+            this.Path = path;
+            this.Name = this.Path.Split(new char[] { '\\' }).Last() != string.Empty ? this.Path.Split(new char[] { '\\' }).Last()
+                : this.Path.Split(new char[] { '\\' })[this.Path.Split(new char[] { '\\' }).Count() - 2];
+        }
+
         public File(string path, string inf)
         {
             this.Path = path;
-            this.Name = this.Path.Split(new char[] { '\\' }).Last();
+            this.Name = this.Path.Split(new char[] { '\\' }).Last() != string.Empty ? this.Path.Split(new char[] { '\\' }).Last() 
+                : this.Path.Split(new char[] { '\\' })[this.Path.Split(new char[] { '\\' }).Count() - 2];
 
             switch (inf.Split(new char[] { ';' }).First())
             {

@@ -39,6 +39,9 @@ namespace ForRobot.Libr.Settings
         /// </summary>
         public double ConnectionTimeOut { get; set; } = 3;
 
+        /// <summary>
+        /// Режим закрытия приложения. Спрашивает пользователя о закрытии и/или разрыве соединения
+        /// </summary>
         public ModeClosingApp ModeClosingApp { get; set; } = ModeClosingApp.HaveConnected;
 
         #endregion

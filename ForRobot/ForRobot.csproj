@@ -211,6 +211,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Libr\ConfigurationProperties\AppConfigurationSection.cs" />
+    <Compile Include="Libr\Converters\ArrayMultiValueConverter.cs" />
     <Compile Include="Libr\Settings\ModeClosingApp.cs" />
     <Compile Include="Libr\Settings\Settings.cs" />
     <Compile Include="Libr\SingleGlobalInstance.cs" />

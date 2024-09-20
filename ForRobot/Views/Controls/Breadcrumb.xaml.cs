@@ -109,6 +109,16 @@ namespace ForRobot.Views.Controls
 
         #endregion
 
+        #region Commands
+
+        public RelayCommand SelectMenuItemCommand
+        {
+            get { return (RelayCommand)GetValue(SelectMenuItemCommandProperty); }
+            set { SetValue(SelectMenuItemCommandProperty, value); }
+        }
+
+        #endregion
+
         #region Static readonly
 
         public static readonly DependencyProperty RootProperty = DependencyProperty.Register(nameof(Root), 
@@ -126,14 +136,20 @@ namespace ForRobot.Views.Controls
                                                                                                        typeof(Breadcrumb),
                                                                                                        new PropertyMetadata("", new PropertyChangedCallback(OnSelectedFolderChanged)));
 
-        //public new static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(nameof(ItemsSource),
-        //                                                                                                typeof(List<File>),
-        //                                                                                                typeof(Breadcrumb));
-
         public static readonly DependencyProperty IconsBackgroundProperty = DependencyProperty.Register(nameof(IconsBackground),
                                                                                                         typeof(System.Windows.Media.Brush),
                                                                                                         typeof(Breadcrumb), 
                                                                                                         new PropertyMetadata(System.Windows.Media.Brushes.Black));
+
+        #region Commands
+
+        public static readonly DependencyProperty SelectMenuItemCommandProperty = DependencyProperty.Register(nameof(SelectMenuItemCommand), 
+                                                                                                              typeof(RelayCommand), 
+                                                                                                              typeof(Breadcrumb),
+                                                                                                              new PropertyMetadata(OnSelectedMenuItem));
+
+        #endregion
+
         #endregion
 
         #endregion
@@ -161,6 +177,30 @@ namespace ForRobot.Views.Controls
             Breadcrumb breadcrumb = (Breadcrumb)d;
             breadcrumb.SelectedFolder = (string)e.NewValue;
             breadcrumb.PropertyChanged?.Invoke(breadcrumb, new PropertyChangedEventArgs(nameof(breadcrumb.ChildrenFolder)));
+        }
+
+        //private static void OnSelectedMenuItem(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        //{
+
+        //}
+
+        private static RelayCommand _onSelectedMenuItem;
+
+        private static RelayCommand OnSelectedMenuItem
+        {
+            get
+            {
+                return _onSelectedMenuItem ??
+                    (_onSelectedMenuItem = new RelayCommand(obj =>
+                    {
+                        if(obj is object[] && ((object[])obj)[0]!=null && ((object[])obj)[1] != null)
+                        {
+                            Breadcrumb breadcrumb = ((object[])obj)[0] as Breadcrumb;
+                            File file = ((object[])obj)[1] as File;
+                            breadcrumb.Directory = file.Path.TrimEnd(new char[] { '\\' });
+                        }
+                    }));
+            }
         }
 
         #endregion
