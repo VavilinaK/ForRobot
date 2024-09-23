@@ -16,7 +16,6 @@
               <ResourceDictionary Source="/InterfaceOfRobots;component/Themes/General.xaml"/>
               <ResourceDictionary Source="/InterfaceOfRobots;component/Themes/TabControlStyleResourceDictionary.xaml"/>
                 <ResourceDictionary Source="/InterfaceOfRobots;component/Themes/PropertiesWindowStyleDictionary.xaml"/>
-                <ResourceDictionary Source="/InterfaceOfRobots;component/Themes/PathBarDirectory.xaml"/>
             </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </Application.Resources>

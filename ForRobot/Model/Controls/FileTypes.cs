@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ForRobot.Model
+namespace ForRobot.Model.Controls
 {
     public enum FileTypes
     {

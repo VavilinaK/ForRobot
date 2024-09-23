@@ -48,12 +48,6 @@
     <BitmapImage x:Key="ImageSlopeRight" UriSource="/InterfaceOfRobots;component/Themes/Images/Slope_right.png"/>
     <BitmapImage x:Key="ImageTrapezoidTopParam" UriSource="/InterfaceOfRobots;component/Themes/Images/Trapezoid_top.png"/>
     <BitmapImage x:Key="ImageTrapezoidBottomParam" UriSource="/InterfaceOfRobots;component/Themes/Images/trapezoid_bottom.png"/>
-    
-    <!--Program icon's-->
-    <BitmapImage x:Key="ImageFolderIcon" UriSource="/InterfaceOfRobots;component/Themes/Images/folder.png"/>
-    <BitmapImage x:Key="ImageDataFileIcon" UriSource="/InterfaceOfRobots;component/Themes/Images/dataFile.png"/>
-    <BitmapImage x:Key="ImageProgramFileIcon" UriSource="/InterfaceOfRobots;component/Themes/Images/programFile.png"/>
-
 
     <!--Button's Styles-->
     <Style x:Key="baseButtonStyle" TargetType="FrameworkElement">

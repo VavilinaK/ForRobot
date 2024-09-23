@@ -1039,10 +1039,10 @@
                                                                     <Setter Property="Height" Value="0"/>
                                                                 </DataTrigger>
 
-                                                                <DataTrigger Binding="{Binding Path=Type}" Value="{x:Static model:FileTypes.DataList}">
+                                                                <!--<DataTrigger Binding="{Binding Path=Type}" Value="{x:Static model:FileTypes.DataList}">
                                                                     <Setter Property="Visibility" Value="Hidden"/>
                                                                     <Setter Property="Height" Value="0"/>
-                                                                </DataTrigger>
+                                                                </DataTrigger>-->
 
                                                                 <!--<MultiDataTrigger>
                                                                     <MultiDataTrigger.Conditions>
@@ -1173,6 +1173,7 @@
 
                                         <StackPanel Grid.Row="2">
                                             <control:NavigationTreeView
+                                                FileCollection="{Binding Path=SelectedRobot.Item2.Files, Mode=OneWay}"
                                                 Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}"
                                                 Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}"/>
                                         </StackPanel>

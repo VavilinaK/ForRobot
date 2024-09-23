@@ -212,13 +212,9 @@
     </ApplicationDefinition>
     <Compile Include="Libr\ConfigurationProperties\AppConfigurationSection.cs" />
     <Compile Include="Libr\Converters\ArrayMultiValueConverter.cs" />
-    <Compile Include="Libr\Converters\VisibiliityMenuToggleButtonConvertrer.cs" />
     <Compile Include="Libr\Settings\ModeClosingApp.cs" />
     <Compile Include="Libr\Settings\Settings.cs" />
     <Compile Include="Libr\SingleGlobalInstance.cs" />
-    <Compile Include="Model\Controls\NavigationTree\IFile.cs" />
-    <Compile Include="Model\Controls\NavigationTree\NavigationTreeEdge.cs" />
-    <Compile Include="Model\Controls\NavigationTree\File.cs" />
     <Compile Include="ViewModels\PropertiesWindowViewModel.cs" />
     <Compile Include="Views\Controls\Breadcrumb.xaml.cs">
       <DependentUpon>Breadcrumb.xaml</DependentUpon>
@@ -226,10 +222,6 @@
     <Compile Include="Views\Windows\PropertiesWindow.xaml.cs">
       <DependentUpon>PropertiesWindow.xaml</DependentUpon>
     </Compile>
-    <Page Include="Themes\PathBarDirectory.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Themes\PropertiesWindowStyleDictionary.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -315,7 +307,7 @@
     <Compile Include="Model\Detals\ScoseTypes.cs" />
     <Compile Include="Model\FileData.cs" />
     <Compile Include="Model\FileFlags.cs" />
-    <Compile Include="Model\FileTypes.cs" />
+    <Compile Include="Model\Controls\FileTypes.cs" />
     <Compile Include="Model\StatusProcess.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>

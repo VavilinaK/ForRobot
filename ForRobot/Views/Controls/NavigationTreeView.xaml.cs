@@ -14,15 +14,33 @@ namespace ForRobot.Views.Controls
     {
         #region Properties
 
-        public ObservableCollection<File> RootFileCollection
+        public ObservableCollection<File> FileCollection
         {
-            get => (ObservableCollection<File>)GetValue(RootFileCollectionProperty);
-            set => SetValue(RootFileCollectionProperty, value);
+            get => (ObservableCollection<File>)GetValue(FileCollectionProperty);
+            set => SetValue(FileCollectionProperty, value);
         }
+
+        #region Command
+
+        public RelayCommand SelectItemCommand
+        {
+            get { return (RelayCommand)GetValue(SelectItemCommandProperty); }
+            set { SetValue(SelectItemCommandProperty, value); }
+        }
+
+        #endregion
 
         #region Static readonly
 
-        public static readonly DependencyProperty RootFileCollectionProperty = DependencyProperty.Register("RootFileCollection", typeof(ObservableCollection<File>), typeof(NavigationTreeView));
+        public static readonly DependencyProperty FileCollectionProperty = DependencyProperty.Register(nameof(FileCollection), typeof(ObservableCollection<File>), typeof(NavigationTreeView));
+
+        #region Command
+
+        public static readonly DependencyProperty SelectItemCommandProperty = DependencyProperty.Register(nameof(SelectItemCommand),
+                                                                                                          typeof(RelayCommand),
+                                                                                                          typeof(NavigationTreeView));
+
+        #endregion
 
         #endregion
 

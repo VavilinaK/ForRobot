@@ -5,6 +5,7 @@ using System.Windows.Media;
 using System.Windows.Controls;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 
 using ForRobot.Model.Controls;
@@ -50,9 +51,13 @@ namespace ForRobot.Views.Controls
         public List<String> FoldersCollection { get => this.Directory.Split('\\').Where(x => x != this.Root.Replace("\\", "")).ToList<string>(); }
 
         /// <summary>
-        /// Содержание выбранной папки
+        /// Дочернии папки выбранного каталога
         /// </summary>
-        public List<File> FolderSource { get; set; }
+        public List<File> ChildrenFolder
+        {
+            get => (this.ItemsSource.Cast<object>().Count() > 0 && this.SelectedFolder != null) ?
+                File.Search(this.ItemsSource.Cast<File>().ToList().First(), this.SelectedFolder).Children.Where(item => item.Type == FileTypes.Folder).Cast<File>().ToList() : null;
+        }
 
         #region Properties
 
@@ -85,28 +90,17 @@ namespace ForRobot.Views.Controls
             set => SetValue(SelectedFolderProperty, value);
         }
 
-        /// <summary>
-        /// Дочернии папки выбранного каталога
-        /// </summary>
-        public List<File> ChildrenFolder { get => (this.ItemsSource.Cast<object>().Count()>0 && this.SelectedFolder!=null) ? 
-                File.Search(this.ItemsSource.Cast<File>().ToList().First(), this.SelectedFolder).Children.Where(item => item.Type == ForRobot.Model.FileTypes.Folder).Cast<File>().ToList() : null; }
-
-        ///// <summary>
-        ///// 
-        ///// </summary>
-        //public new List<File> ItemsSource
-        //{
-        //    get => GetValue(ItemsSourceProperty) as List<File>;
-        //    set => SetValue(ItemsSourceProperty, value);
-        //}
-
-        //this.Directory.Split('\\').Where(x => x != this.Root.Replace("\\", "")).ToList<string>()
-
         public System.Windows.Media.Brush IconsBackground
         {
             get => (System.Windows.Media.Brush)GetValue(IconsBackgroundProperty);
             set => SetValue(IconsBackgroundProperty, value);
         }
+
+        //public System.Windows.Media.Imaging.BitmapImage FolderIcon
+        //{
+        //    get;
+        //    set;
+        //}
 
         #endregion
 
@@ -120,6 +114,24 @@ namespace ForRobot.Views.Controls
         {
             get { return (RelayCommand)GetValue(SelectMenuItemCommandProperty); }
             set { SetValue(SelectMenuItemCommandProperty, value); }
+        }
+
+        public RelayCommand SelectDirectoryCommand
+        {
+            get { return (RelayCommand)GetValue(SelectMenuItemCommandProperty); }
+            set { SetValue(SelectMenuItemCommandProperty, value); }
+        }
+
+        public RelayCommand HomeCommand
+        {
+            get { return (RelayCommand)GetValue(HomeCommandProperty); }
+            set { SetValue(HomeCommandProperty, value); }
+        }
+
+        public RelayCommand UpDateCommand
+        {
+            get { return (RelayCommand)GetValue(UpDateCommandProperty); }
+            set { SetValue(UpDateCommandProperty, value); }
         }
 
         #endregion
@@ -146,12 +158,31 @@ namespace ForRobot.Views.Controls
                                                                                                         typeof(Breadcrumb), 
                                                                                                         new PropertyMetadata(System.Windows.Media.Brushes.Black));
 
+        //public static readonly DependencyProperty FolderIconProperty = DependencyProperty.Register(nameof(FolderIcon),
+        //                                                                                        typeof(System.Windows.Media.Imaging.BitmapImage),
+        //                                                                                        typeof(Breadcrumb));
+
         #region Commands
 
-        public static readonly DependencyProperty SelectMenuItemCommandProperty = DependencyProperty.Register(nameof(SelectMenuItemCommand), 
-                                                                                                              typeof(RelayCommand), 
+        public static readonly DependencyProperty SelectMenuItemCommandProperty = DependencyProperty.Register(nameof(SelectMenuItemCommand),
+                                                                                                              typeof(RelayCommand),
                                                                                                               typeof(Breadcrumb),
                                                                                                               new PropertyMetadata(OnSelectedMenuItem));
+
+        public static readonly DependencyProperty SelectDirectoryCommandProperty = DependencyProperty.Register(nameof(SelectDirectoryCommand),
+                                                                                                               typeof(RelayCommand),
+                                                                                                               typeof(Breadcrumb),
+                                                                                                               new PropertyMetadata(OnSelectedDirectory));
+
+        public static readonly DependencyProperty HomeCommandProperty = DependencyProperty.Register(nameof(HomeCommand),
+                                                                                                    typeof(RelayCommand),
+                                                                                                    typeof(Breadcrumb),
+                                                                                                    new PropertyMetadata(OnHome));
+
+        public static readonly DependencyProperty UpDateCommandProperty = DependencyProperty.Register(nameof(UpDateCommand),
+                                                                                                      typeof(RelayCommand),
+                                                                                                      typeof(Breadcrumb),
+                                                                                                      new PropertyMetadata());
 
         #endregion
 
@@ -185,10 +216,7 @@ namespace ForRobot.Views.Controls
             breadcrumb.PropertyChanged?.Invoke(breadcrumb, new PropertyChangedEventArgs(nameof(breadcrumb.ChildrenFolder)));
         }
 
-        //private static void OnSelectedMenuItem(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        //{
-
-        //}
+        #region Commands
 
         private static RelayCommand _onSelectedMenuItem;
 
@@ -208,6 +236,43 @@ namespace ForRobot.Views.Controls
                     }));
             }
         }
+
+        private static RelayCommand _onSelectedDirectory;
+
+        private static RelayCommand OnSelectedDirectory
+        {
+            get
+            {
+                return _onSelectedDirectory ??
+                    (_onSelectedDirectory = new RelayCommand(obj =>
+                    {
+                        if (obj is object[] && ((object[])obj)[0] != null && ((object[])obj)[1] != null && ((object[])obj)[2] != null)
+                        {
+                            Breadcrumb breadcrumb = ((object[])obj)[2] as Breadcrumb;
+                            File root = ((obj as object[]).First() as ObservableCollection<File>).First();
+                            string sSearchFolder = ((object[])obj)[1] as string;
+                            breadcrumb.Directory = breadcrumb.Root + File.Search(root, sSearchFolder).Path.TrimEnd(new char[] { '\\' });
+                        }
+                    }));
+            }
+        }
+
+        private static RelayCommand _onHome;
+
+        private static RelayCommand OnHome
+        {
+            get
+            {
+                return _onHome ??
+                    (_onHome = new RelayCommand(obj =>
+                    {
+                        Breadcrumb breadcrumb = obj as Breadcrumb;
+                        breadcrumb.Directory = breadcrumb.Root + breadcrumb.FoldersCollection[0];
+                    }));
+            }
+        }
+
+        #endregion
 
         #endregion
     }

@@ -483,15 +483,16 @@ namespace ForRobot.Model
 
                     foreach (var file in files.Where(item => !item.Key.Contains("TP") && !item.Key.Contains("Mada") && !item.Key.Contains("System") && !item.Key.Contains("STEU")))
                     {
-                        ForRobot.Model.Controls.File fileData = new ForRobot.Model.Controls.File(file.Key, file.Value.TrimStart(';').TrimEnd(';'));
+                        ForRobot.Model.Controls.File fileData = new ForRobot.Model.Controls.File(file.Key.TrimEnd(new char[] { '\\' }), file.Value.TrimStart(';').TrimEnd(';'));
                         fileDatas.Add(fileData);
                     }
 
-                    GetFiles(fileDatas, null, 0);
+                    GetFiles(fileDatas.OrderBy(item => item.Path).ToList());
                 }
                 else
                 {
-                    var groupData = data.Where(x => x.Path.Split(new char[] { '\\' }).ToArray().Length - 1 > index).GroupBy(x => x.Path.Split(new char[] { '\\' }).ToArray()[index]).ToList();
+                    var groupData = data.Where(x => x.Path.Split(new char[] { '\\' }).ToArray().Length > index).GroupBy(x => x.Path.Split(new char[] { '\\' }).ToArray()[index]).ToList();
+                    //var groupData = data.Where(x => x.Path.Split(new char[] { '\\' }).ToArray().Length - 1> index).GroupBy(x => x.Path.Split(new char[] { '\\' }).ToArray()[index]).ToList();
                     foreach (var group in groupData)
                     {
                         //ForRobot.Model.Controls.File newNode = (data.Where(x => x.Path.Split(new char[] { '\\' }).Last() == group.Key).ToList().Count > 0) ?

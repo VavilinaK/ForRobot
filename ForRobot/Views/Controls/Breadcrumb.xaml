@@ -6,8 +6,7 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:local="clr-namespace:ForRobot.Views.Controls"
              xmlns:conv="clr-namespace:ForRobot.Libr.Converters"
-             mc:Ignorable="d" 
-             x:Name="BreadcrumbControl">
+             mc:Ignorable="d">
     
     <ComboBox.Resources>
         <!--Colors-->
@@ -28,8 +27,7 @@
         
         <!--Converters-->
         <conv:ArrayMultiValueConverter x:Key="ArrayMultiValueConvert"/>
-        <conv:VisibiliityMenuToggleButtonConvertrer x:Key="VisibiliityMenuToggleButtonConvertr"/>
-        <conv:NullBooleanConverter x:Key="NullBooleanConvert"/>
+        <!--<conv:NullBooleanConverter x:Key="NullBooleanConvert"/>-->
 
         <!--Styles-->
         <Style x:Key="IconStyle" TargetType="{x:Type Path}">
@@ -124,31 +122,6 @@
                                 </Border>
                             </ControlTemplate>
                         </ToggleButton.Template>
-
-                        <!--<ToggleButton.Style>
-                            <Style TargetType="{x:Type ToggleButton}">
-                                <Style.Triggers>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding Path=ItemsSource, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor},
-                                                        Converter={StaticResource NullBooleanConvert}, UpdateSourceTrigger=PropertyChanged}" 
-                                                       Value="False"/>                                   
-
-                                            <Condition Value="True">
-                                                <Condition.Binding>
-                                                    <MultiBinding Converter="{StaticResource VisibiliityMenuToggleButtonConvertr}">
-                                                        <Binding Path="ItemsSource" RelativeSource="{RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}"/>
-                                                        <Binding Path="." RelativeSource="{RelativeSource AncestorType={x:Type ListBoxItem}, Mode=FindAncestor}"/>
-                                                    </MultiBinding>
-                                                </Condition.Binding>
-                                            </Condition>
-                                        </MultiDataTrigger.Conditions>
-
-                                        <Setter Property="Visibility" Value="Hidden"/>
-                                    </MultiDataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ToggleButton.Style>-->
                     </ToggleButton>
 
                     <Popup IsOpen="{Binding Path=IsChecked, ElementName=toggleButtonMenu}" StaysOpen="True" Placement="Bottom"
@@ -190,52 +163,10 @@
                             <Border.Style>
                                 <Style TargetType="{x:Type Border}">
                                     <Style.Triggers>
-
                                         <DataTrigger Binding="{Binding Path=CanOpenMenu, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}"
-                                                 Value="False">
-
+                                                     Value="False">
                                             <Setter Property="Visibility" Value="Hidden"/>
                                         </DataTrigger>
-
-                                        <!--<MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            -->
-                                        <!--<Condition Binding="{Binding Path=ItemsSource, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}, Converter={StaticResource NullBooleanConvert}}" 
-                                                       Value="{StaticResource False}"/>-->
-                                        <!--
-
-                                            <Condition Value="True">
-                                                <Condition.Binding>
-                                                    <MultiBinding Converter="{StaticResource VisibiliityMenuToggleButtonConvertr}">
-                                                        <Binding Path="ItemsSource" RelativeSource="{RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}"/>
-                                                        <Binding Path="." RelativeSource="{RelativeSource AncestorType={x:Type ListBoxItem}, Mode=FindAncestor}"/>
-                                                    </MultiBinding>
-                                                </Condition.Binding>
-                                            </Condition>
-                                        </MultiDataTrigger.Conditions>
-
-                                        <Setter Property="Visibility" Value="Hidden"/>
-                                    </MultiDataTrigger>-->
-
-
-                                        <!--<MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding Path=ItemsSource, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor},
-                                                        Converter={StaticResource NullBooleanConvert}}" 
-                                                       Value="{StaticResource False}"/>
-
-                                            <Condition Value="True">
-                                                <Condition.Binding>
-                                                    <MultiBinding Converter="{StaticResource VisibiliityMenuToggleButtonConvertr}">
-                                                        <Binding Path="ItemsSource" RelativeSource="{RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}"/>
-                                                        <Binding Path="." RelativeSource="{RelativeSource AncestorType={x:Type ListBoxItem}, Mode=FindAncestor}"/>
-                                                    </MultiBinding>
-                                                </Condition.Binding>
-                                            </Condition>
-                                        </MultiDataTrigger.Conditions>
-
-                                        <Setter Property="Visibility" Value="Hidden"/>
-                                    </MultiDataTrigger>-->
                                     </Style.Triggers>
                                 </Style>
                             </Border.Style>
@@ -267,6 +198,18 @@
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
+
+                <Border.InputBindings>
+                    <MouseBinding MouseAction="LeftClick" Command="{Binding Path=SelectDirectoryCommand, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}">
+                        <MouseBinding.CommandParameter>
+                            <MultiBinding Converter="{StaticResource ArrayMultiValueConvert}">
+                                <Binding Path="ItemsSource" RelativeSource="{RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}"/>
+                                <Binding Path="Content" RelativeSource="{RelativeSource AncestorType={x:Type ListBoxItem}, Mode=FindAncestor}"/>
+                                <Binding Path="." RelativeSource="{RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}"/>
+                            </MultiBinding>
+                        </MouseBinding.CommandParameter>
+                    </MouseBinding>
+                </Border.InputBindings>
             </Border>
         </ControlTemplate>
     </ComboBox.Resources>
@@ -312,7 +255,9 @@
                             <Button Grid.Column="0" x:Name="buttonHome"
                                     Width="Auto" Margin="0"
                                     Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}"
-                                    Template="{StaticResource buttonTemplate}">
+                                    Template="{StaticResource buttonTemplate}"
+                                    Command="{Binding Path=HomeCommand, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}"
+                                    CommandParameter="{Binding Path=., RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}">
 
                                 <Path Style="{StaticResource IconStyle}"
                                       Data="M 9, 20 V 14 H 13 V 20 H 19 V 12 H 22 L 11, 2 L 0,12 H 3 V 20 Z"/>
@@ -407,7 +352,8 @@
                             <Button Grid.Column="2" BorderBrush="{StaticResource NotActiveBorderBrush}"
                                     Width="Auto" Margin="0" Padding="5"
                                     Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}"
-                                    Template="{StaticResource buttonTemplate}">
+                                    Template="{StaticResource buttonTemplate}"
+                                    Command="{Binding Path=UpDateCommand, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}">
 
                                 <Path Style="{StaticResource IconStyle}"
                                       Data="M 10,3 H 4 L 6,5 A 12,12 180 1,0 17,3 C 17,3 16,3 16,6 A 9,9 180 1,1 8.5,7 L 11,9 V 3 Z"/>

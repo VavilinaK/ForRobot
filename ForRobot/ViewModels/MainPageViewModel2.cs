@@ -724,9 +724,9 @@ namespace ForRobot.ViewModels
                 return _selectFileCommand ??
                     (_selectFileCommand = new AsyncRelayCommand(async obj =>
                     {
-                        ForRobot.Model.Controls.File file = (ForRobot.Model.Controls.File)obj;
-                        if (file.Type == FileTypes.Program)
-                            await Task.Run(() => this.SelectedRobot.Item2.SelectProgramm(file.Name));
+                        //ForRobot.Model.Controls.File file = (ForRobot.Model.Controls.File)obj;
+                        //if (file.Type == FileTypes.Program)
+                        //    await Task.Run(() => this.SelectedRobot.Item2.SelectProgramm(file.Name));
 
                     }, _exceptionCallback));
             }

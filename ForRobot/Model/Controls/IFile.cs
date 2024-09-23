@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Windows.Media.Imaging;
+//using System.Windows.Media.Imaging;
 using System.Collections.ObjectModel;
 
 namespace ForRobot.Model.Controls
@@ -11,7 +11,7 @@ namespace ForRobot.Model.Controls
 
         string Path { get; set; }
 
-        BitmapImage Icon { get; }
+        //BitmapImage Icon { get; }
 
         bool IsExpanded { get; set; }
 

@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 //using System.Text;
 //using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
+//using System.Windows.Media.Imaging;
 
 namespace ForRobot.Model.Controls
 {
@@ -17,27 +17,6 @@ namespace ForRobot.Model.Controls
         
         public string Name { get; set; }
         public string Path { get; set; }
-
-        public BitmapImage Icon
-        {
-            get
-            {
-                switch (this.Type)
-                {
-                    case FileTypes.Folder:
-                        return (BitmapImage)Application.Current.TryFindResource("ImageFolderIcon");
-
-                    case FileTypes.DataList:
-                        return (BitmapImage)Application.Current.TryFindResource("ImageDataFileIcon");
-
-                    case FileTypes.Program:
-                        return (BitmapImage)Application.Current.TryFindResource("ImageProgramFileIcon");
-
-                    default:
-                        return null;
-                }
-            }
-        }
 
         public bool IsExpanded
         {
