@@ -14,6 +14,12 @@ namespace ForRobot.Views.Controls
     {
         #region Properties
 
+        public bool DataFileIsHidden
+        {
+            get => (bool)GetValue(DataFileIsHiddenProperty);
+            set => SetValue(DataFileIsHiddenProperty, value);
+        }
+
         public ObservableCollection<File> FileCollection
         {
             get => (ObservableCollection<File>)GetValue(FileCollectionProperty);
@@ -22,21 +28,34 @@ namespace ForRobot.Views.Controls
 
         #region Command
 
-        public RelayCommand SelectItemCommand
+        public IAsyncCommand SelectItemCommand
         {
-            get { return (RelayCommand)GetValue(SelectItemCommandProperty); }
+            get { return (IAsyncCommand)GetValue(SelectItemCommandProperty); }
             set { SetValue(SelectItemCommandProperty, value); }
+        }
+
+        public RelayCommand SelectFolderCommand
+        {
+            get { return (RelayCommand)GetValue(SelectFolderCommandProperty); }
+            set { SetValue(SelectFolderCommandProperty, value); }
         }
 
         #endregion
 
         #region Static readonly
 
+        public static readonly DependencyProperty DataFileIsHiddenProperty = DependencyProperty.Register(nameof(DataFileIsHidden), typeof(bool), typeof(NavigationTreeView), new PropertyMetadata(true));
+
         public static readonly DependencyProperty FileCollectionProperty = DependencyProperty.Register(nameof(FileCollection), typeof(ObservableCollection<File>), typeof(NavigationTreeView));
 
         #region Command
 
         public static readonly DependencyProperty SelectItemCommandProperty = DependencyProperty.Register(nameof(SelectItemCommand),
+                                                                                                          typeof(IAsyncCommand),
+                                                                                                          typeof(NavigationTreeView),
+                                                                                                          new PropertyMetadata());
+
+        public static readonly DependencyProperty SelectFolderCommandProperty = DependencyProperty.Register(nameof(SelectFolderCommand),
                                                                                                           typeof(RelayCommand),
                                                                                                           typeof(NavigationTreeView));
 
@@ -51,8 +70,21 @@ namespace ForRobot.Views.Controls
         public NavigationTreeView()
         {
             InitializeComponent();
+            this.SelectFolderCommand = new RelayCommand(obj => { });
         }
 
         #endregion
+
+        private static RelayCommand _onSelectFolder;
+
+        private static RelayCommand OnSelectFolder
+        {
+            get
+            {
+                return _onSelectFolder ??
+                    (_onSelectFolder = new RelayCommand(obj =>
+                    {  }));
+            }
+        }
     }
 }

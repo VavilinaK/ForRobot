@@ -96,7 +96,7 @@ namespace ForRobot.ViewModels
 
         private RelayCommand _upDateFilesCommand;
 
-        private RelayCommand _changePathOnPCtCommand;
+        private RelayCommand _changePathOnPCCommand;
 
         private RelayCommand _selectRobotCommand;
 
@@ -115,6 +115,8 @@ namespace ForRobot.ViewModels
         private IAsyncCommand _selectGeneratProgramCommand;
 
         private IAsyncCommand _selectFileCommand;
+
+        private RelayCommand _selectFolderCommand;
 
         #endregion
 
@@ -439,8 +441,8 @@ namespace ForRobot.ViewModels
         {
             get
             {
-                return _changePathOnPCtCommand ??
-                    (_changePathOnPCtCommand = new RelayCommand(obj =>
+                return _changePathOnPCCommand ??
+                    (_changePathOnPCCommand = new RelayCommand(obj =>
                     {
                         using (var fbd = new FolderBrowserDialog())
                         {
@@ -454,6 +456,21 @@ namespace ForRobot.ViewModels
                                 }
                             }
                         }
+                    }));
+            }
+        }
+
+        /// <summary>
+        /// Выбор папки на контроллер
+        /// </summary>
+        public RelayCommand SelectFolderCommand
+        {
+            get
+            {
+                return _selectFolderCommand ??
+                    (_selectFolderCommand = new RelayCommand(obj =>
+                    {
+                        this.SelectedRobot.Item2.PathControllerFolder = Path.Combine(ForRobot.Libr.Client.JsonRpcConnection.DefaulRoot, obj as string);
                     }));
             }
         }
@@ -573,7 +590,7 @@ namespace ForRobot.ViewModels
 
                                     if (System.Windows.MessageBox.Show($"Копировать файлы программы в {robot.Item2.PathControllerFolder}?", $"{robot.Item1}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
                                             MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK && await Task.Run<bool>(() => robot.Item2.Copy(this.ProgrammName)))
-                                        await Task.Run(() => robot.Item2.SelectProgramm(string.Join("", this.ProgrammName, ".src")));
+                                        await Task.Run(() => robot.Item2.SelectProgramByName(string.Join("", this.ProgrammName, ".src")));
                                     else
                                         continue;
                                 }
@@ -598,7 +615,7 @@ namespace ForRobot.ViewModels
 
                                 if (System.Windows.MessageBox.Show($"Копировать файлы программы в {this.RobotForControl.PathControllerFolder}?", $"{this.SelectedNameRobot}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
                                     MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK && await Task.Run<bool>(() => this.RobotForControl.Copy(this.ProgrammName)))
-                                    await Task.Run(() => this.RobotForControl.SelectProgramm(string.Join("", this.ProgrammName, ".src")));
+                                    await Task.Run(() => this.RobotForControl.SelectProgramByName(string.Join("", this.ProgrammName, ".src")));
                                 else
                                     return;
                             }
@@ -691,9 +708,9 @@ namespace ForRobot.ViewModels
                     }, _exceptionCallback));
             }
         }
-
+        
         /// <summary>
-        /// Выбор файла программы
+        /// Выбор сгенерированной программы
         /// </summary>
         public IAsyncCommand SelectGeneratProgramCommand
         {
@@ -705,17 +722,17 @@ namespace ForRobot.ViewModels
                         if (this.SelectedNameRobot == "Все")
                             foreach (var robot in this.RobotsCollection.Select(item => item.Item2))
                             {
-                                await Task.Run(() => robot.SelectProgramm(string.Join("", this.ProgrammName, ".src")));
+                                await Task.Run(() => robot.SelectProgramByName(string.Join("", this.ProgrammName, ".src")));
                             }
                         else
-                            await Task.Run(() => this.RobotForControl.SelectProgramm(string.Join("", this.ProgrammName, ".src")));
+                            await Task.Run(() => this.RobotForControl.SelectProgramByName(string.Join("", this.ProgrammName, ".src")));
 
                     }, _exceptionCallback));
             }
         }
 
         /// <summary>
-        /// Выбор сгенерированной программы
+        /// Выбор файла программы
         /// </summary>
         public IAsyncCommand SelectFileCommand
         {
@@ -724,10 +741,8 @@ namespace ForRobot.ViewModels
                 return _selectFileCommand ??
                     (_selectFileCommand = new AsyncRelayCommand(async obj =>
                     {
-                        //ForRobot.Model.Controls.File file = (ForRobot.Model.Controls.File)obj;
-                        //if (file.Type == FileTypes.Program)
-                        //    await Task.Run(() => this.SelectedRobot.Item2.SelectProgramm(file.Name));
-
+                        string sFilePath = obj as string;
+                        await Task.Run(() => this.SelectedRobot.Item2.SelectProgramByPath(sFilePath));
                     }, _exceptionCallback));
             }
         }

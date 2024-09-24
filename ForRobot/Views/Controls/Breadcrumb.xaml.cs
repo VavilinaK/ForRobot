@@ -61,7 +61,14 @@ namespace ForRobot.Views.Controls
 
         #region Properties
 
-        //ImageBrush
+        /// <summary>
+        /// Идёт процесс закрузки файлов
+        /// </summary>
+        public bool IsProgress
+        {
+            get => (bool)GetValue(IsProgressProperty);
+            set => SetValue(IsProgressProperty, value);
+        }
 
         /// <summary>
         /// Корневой каталог
@@ -137,6 +144,11 @@ namespace ForRobot.Views.Controls
         #endregion
 
         #region Static readonly
+
+        public static readonly DependencyProperty IsProgressProperty = DependencyProperty.Register(nameof(IsProgress),
+                                                                                                   typeof(bool),
+                                                                                                   typeof(Breadcrumb),
+                                                                                                   new PropertyMetadata(false));
 
         public static readonly DependencyProperty RootProperty = DependencyProperty.Register(nameof(Root), 
                                                                                              typeof(string), 
@@ -246,11 +258,12 @@ namespace ForRobot.Views.Controls
                 return _onSelectedDirectory ??
                     (_onSelectedDirectory = new RelayCommand(obj =>
                     {
-                        if (obj is object[] && ((object[])obj)[0] != null && ((object[])obj)[1] != null && ((object[])obj)[2] != null)
+                        if (obj is object[] && ((object[])obj)[0] != null && ((obj as object[]).First() as ObservableCollection<File>).Count > 0
+                                            && ((object[])obj)[1] != null && ((object[])obj)[2] != null)
                         {
-                            Breadcrumb breadcrumb = ((object[])obj)[2] as Breadcrumb;
-                            File root = ((obj as object[]).First() as ObservableCollection<File>).First();
+                            File root = ((obj as object[]).First() as ObservableCollection<File>)[0];
                             string sSearchFolder = ((object[])obj)[1] as string;
+                            Breadcrumb breadcrumb = ((object[])obj)[2] as Breadcrumb;
                             breadcrumb.Directory = breadcrumb.Root + File.Search(root, sSearchFolder).Path.TrimEnd(new char[] { '\\' });
                         }
                     }));

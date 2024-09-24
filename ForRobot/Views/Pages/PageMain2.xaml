@@ -865,17 +865,19 @@
                                         <Style TargetType="{x:Type TextBox}">
                                             <Setter Property="FontSize" Value="16"/>
                                             <Setter Property="Padding" Value="5"/>
-                                            <Setter Property="Margin" Value="5"/>
                                             <Setter Property="HorizontalContentAlignment" Value="Center"/>
                                             <Setter Property="VerticalContentAlignment" Value="Center"/>
                                         </Style>
                                     </TabItem.Resources>
 
-                                    <Grid>
+                                    <Grid Margin="15, 0, 15, 15">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="10"/>
                                             <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="10"/>
                                             <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="10"/>
                                             <RowDefinition Height="*"/>
                                         </Grid.RowDefinitions>
                                         
@@ -896,17 +898,18 @@
                                             <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=SelectedRobot.Item2.Port, Mode=TwoWay, FallbackValue=0000, TargetNullValue=0000, UpdateSourceTrigger=LostFocus}"/>
                                         </Grid>
 
-                                        <Grid Grid.Row="1">
+                                        <Grid Grid.Row="2">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="15"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
 
                                             <TextBox Grid.Column="0" Text="{Binding Path=SelectedRobot.Item2.PathProgramm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                            <Button Grid.Column="1" ToolTip="Изменить исходящую папку" Command="{Binding ChangePatnOnPCCommand}">
+                                            <Button Grid.Column="2" ToolTip="Изменить исходящую папку" Command="{Binding ChangePatnOnPCCommand}">
                                                 <Button.Style>
                                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource baseButtonStyle}">
-                                                        <Setter Property="Width" Value="30"/>
+                                                        <Setter Property="Width" Value="35"/>
                                                         <Setter Property="Template">
                                                             <Setter.Value>
                                                                 <ControlTemplate TargetType="{x:Type Button}">
@@ -921,7 +924,19 @@
                                             </Button>
                                         </Grid>
 
-                                        <Grid Grid.Row="2">
+                                        <control:Breadcrumb Grid.Row="4" Height="40" Padding="0"
+                                                            Root="{Binding Path=SelectedRobot.Item2.Connection.DefaulRoot}"
+                                                            Directory="{Binding Path=SelectedRobot.Item2.PathControllerFolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                            ItemsSource="{Binding Path=SelectedRobot.Item2.Files, Mode=OneWay}"
+                                                            UpDateCommand="{Binding Path=DataContext.UpDateFilesCommand, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
+                                                            IsProgress="{Binding Path=SelectedRobot.Item2.IsLoadFiles}"/>
+
+                                        <control:NavigationTreeView Grid.Row="6"
+                                                FileCollection="{Binding Path=SelectedRobot.Item2.Files, Mode=OneWay}"
+                                                SelectItemCommand="{Binding Path=DataContext.SelectFileCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
+                                                SelectFolderCommand="{Binding Path=DataContext.SelectFolderCommand, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"/>
+
+                                        <!--<Grid Grid.Row="2">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="*"/>
@@ -949,15 +964,10 @@
                                                          Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}"
                                                          HorizontalContentAlignment="Left" Margin="0" IsReadOnly="False"/>
                                             </StackPanel>
-                                        </Grid>
+                                        </Grid>-->
 
-                                        <ScrollViewer Grid.Row="3" Margin="5" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                                        <!--<ScrollViewer Grid.Row="3" Margin="5" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                                             <StackPanel>
-                                                <!--<control:NavigationTreeView
-                                                    RootFileCollection="{Binding Path=SelectedRobot.Item2.Files, Mode=OneWay}"
-                                                    Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}"
-                                                    Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}"/>-->
-
                                                 <TreeView FontSize="18" HorizontalContentAlignment="Stretch"
                                                           ItemsSource="{Binding Path=SelectedRobot.Item2.Files, Mode=OneWay}"
                                                           Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}"
@@ -1039,7 +1049,7 @@
                                                                     <Setter Property="Height" Value="0"/>
                                                                 </DataTrigger>
 
-                                                                <!--<DataTrigger Binding="{Binding Path=Type}" Value="{x:Static model:FileTypes.DataList}">
+                                                                --><!--<DataTrigger Binding="{Binding Path=Type}" Value="{x:Static model:FileTypes.DataList}">
                                                                     <Setter Property="Visibility" Value="Hidden"/>
                                                                     <Setter Property="Height" Value="0"/>
                                                                 </DataTrigger>-->
@@ -1068,13 +1078,13 @@
                                                                 <!--<Trigger Property="TreeViewItem.IsSelected" Value="True">
                                                                     <Setter Property="Panel.Background" Value="Transparent"/>
                                                                     <Setter Property="TextElement.Foreground" Value="Black"/>
-                                                                </Trigger>-->
+                                                                </Trigger>--><!--
                                                             </Style.Triggers>
                                                         </Style>
                                                     </TreeView.ItemContainerStyle>
                                                 </TreeView>
                                             </StackPanel>
-                                        </ScrollViewer>
+                                        </ScrollViewer>-->
                                     </Grid>
                                 </TabItem>
 
@@ -1158,7 +1168,7 @@
                                     </Grid>
                                 </TabItem>
 
-                                <TabItem Header="Тест">
+                                <!--<TabItem Header="Тест">
                                     <Grid Margin="15">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="40"/>
@@ -1166,19 +1176,17 @@
                                             <RowDefinition Height="*"/>
                                         </Grid.RowDefinitions>
 
-                                        <control:Breadcrumb Padding="0"
+                                        --><!--<control:Breadcrumb Padding="0"
                                                             Root="{Binding Path=SelectedRobot.Item2.Connection.DefaulRoot}"
                                                             Directory="{Binding Path=SelectedRobot.Item2.PathControllerFolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                            ItemsSource="{Binding Path=SelectedRobot.Item2.Files, Mode=OneWay}"/>
+                                                            ItemsSource="{Binding Path=SelectedRobot.Item2.Files, Mode=OneWay}"/>--><!--
 
-                                        <StackPanel Grid.Row="2">
-                                            <control:NavigationTreeView
+                                        <control:NavigationTreeView Grid.Row="2"
                                                 FileCollection="{Binding Path=SelectedRobot.Item2.Files, Mode=OneWay}"
-                                                Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}"
-                                                Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}"/>
-                                        </StackPanel>
+                                                SelectItemCommand="{Binding Path=DataContext.SelectFileCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
+                                                SelectFolderCommand="{Binding Path=DataContext.SelectFolderCommand, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"/>
                                     </Grid>
-                                </TabItem>
+                                </TabItem>-->
                             </TabControl>
                         </Grid>
                     </ScrollViewer>

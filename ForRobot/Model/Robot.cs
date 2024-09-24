@@ -36,15 +36,16 @@ namespace ForRobot.Model
         private decimal _m1;
         private decimal _tracking;
 
-        private CancellationTokenSource _cancelTokenSource { get; set; }
+        private CancellationTokenSource _cancelTokenSource;
+        private CancellationTokenSource _cancelLoadedFilesToken;
 
         private ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection Config { get; set; } = ConfigurationManager.GetSection("robot") as ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection;
 
         private List<ForRobot.Model.Controls.File> FilesCollection = new List<Controls.File>();
 
-        private decimal[] _currentArray = new decimal[] { 0, 4, 6, 5, 3, -3, -1, 2 }; // Примерные данные
+        private decimal[] _currentArray = new decimal[] { }; // = new decimal[] { 0, 4, 6, 5, 3, -3, -1, 2 }; // Примерные данные
 
-        private decimal[] _wireFeedArray = new decimal[] { 0, 4, 6, 3, 6, -3, -1, 2 }; // Примерные данные
+        private decimal[] _wireFeedArray = new decimal[] { }; // new decimal[] { 0, 4, 6, 3, 6, -3, -1, 2 }; // Примерные данные
 
         #region Readonly
 
@@ -312,6 +313,47 @@ namespace ForRobot.Model
 
         #region Private function
 
+        private void LoadFiles(List<ForRobot.Model.Controls.File> data, ForRobot.Model.Controls.File node, int index)
+        {
+            if (this.IsConnection)
+            {
+                if (data == null)
+                {
+                    this.FilesCollection = new List<ForRobot.Model.Controls.File>(); ;
+
+                    List<ForRobot.Model.Controls.File> fileDatas = new List<ForRobot.Model.Controls.File>();
+                    var files = Task.Run<Dictionary<string, string>>(async () => await this.Connection.File_NameList()).Result;
+
+                    foreach (var file in files.Where(item => !item.Key.Contains("TP") && !item.Key.Contains("Mada") && !item.Key.Contains("System") && !item.Key.Contains("STEU")))
+                    {
+                        ForRobot.Model.Controls.File fileData = new ForRobot.Model.Controls.File(file.Key.TrimEnd(new char[] { '\\' }), file.Value.TrimStart(';').TrimEnd(';'));
+                        fileDatas.Add(fileData);
+                    }
+
+                    //RaisePropertyChanged(nameof(this.IsLoadFiles));
+                    LoadFiles(fileDatas.OrderBy(item => item.Path).ToList(), node, index);
+                }
+                else
+                {
+                    var groupData = data.Where(x => x.Path.Split(new char[] { '\\' }).ToArray().Length > index).GroupBy(x => x.Path.Split(new char[] { '\\' }).ToArray()[index]).ToList();
+                    foreach (var group in groupData)
+                    {
+                        ForRobot.Model.Controls.File newNode = data.Where(x => x.Name == group.Key).ToList().First();
+                        if (node == null)
+                        {
+                            this.FilesCollection.Add(newNode);
+                        }
+                        else
+                        {
+                            node.Children.Add(newNode);
+                        }
+                        //RaisePropertyChanged(nameof(this.IsLoadFiles));
+                        LoadFiles(group.ToList(), newNode, index + 1);
+                    }
+                }
+            }
+        }
+
         #region Asunc
 
         /// <summary>
@@ -464,6 +506,10 @@ namespace ForRobot.Model
             thread.Join(this._timeout_milliseconds);  // Закроется даже при неудачном подключении.
         }
 
+        private Task LoadFilesTask;
+
+        public bool IsLoadFiles { get => (this.LoadFilesTask?.Status == TaskStatus.Running) ? true : false; }
+
         /// <summary>
         /// Выборка файлов робота и сборка дерева
         /// </summary>
@@ -472,58 +518,40 @@ namespace ForRobot.Model
         /// <param name="index"></param>
         public void GetFiles(List<ForRobot.Model.Controls.File> data = null, ForRobot.Model.Controls.File node = null, int index = 0)
         {
-            if (this.IsConnection)
-            {
-                if (data == null)
-                {
-                    this.FilesCollection = new List<ForRobot.Model.Controls.File>();;
+            //this._cancelLoadedFilesToken = new CancellationTokenSource();
+            //Task.Run(async () => await Task.Factory.StartNew(() => { this.LoadFiles(data, node, index); }));
+            //myTask.Start();
 
-                    List<ForRobot.Model.Controls.File> fileDatas = new List<ForRobot.Model.Controls.File>();
-                    var files = Task.Run<Dictionary<string, string>>(async () => await this.Connection.File_NameList()).Result;
 
-                    foreach (var file in files.Where(item => !item.Key.Contains("TP") && !item.Key.Contains("Mada") && !item.Key.Contains("System") && !item.Key.Contains("STEU")))
-                    {
-                        ForRobot.Model.Controls.File fileData = new ForRobot.Model.Controls.File(file.Key.TrimEnd(new char[] { '\\' }), file.Value.TrimStart(';').TrimEnd(';'));
-                        fileDatas.Add(fileData);
-                    }
+            this.LoadFilesTask = new Task(() => { this.LoadFiles(data, node, index); });
 
-                    GetFiles(fileDatas.OrderBy(item => item.Path).ToList());
-                }
-                else
-                {
-                    var groupData = data.Where(x => x.Path.Split(new char[] { '\\' }).ToArray().Length > index).GroupBy(x => x.Path.Split(new char[] { '\\' }).ToArray()[index]).ToList();
-                    //var groupData = data.Where(x => x.Path.Split(new char[] { '\\' }).ToArray().Length - 1> index).GroupBy(x => x.Path.Split(new char[] { '\\' }).ToArray()[index]).ToList();
-                    foreach (var group in groupData)
-                    {
-                        //ForRobot.Model.Controls.File newNode = (data.Where(x => x.Path.Split(new char[] { '\\' }).Last() == group.Key).ToList().Count > 0) ?
-                        //                    data.Where(x => x.Path.Split(new char[] { '\\' }).Last() == group.Key).ToList().First()
-                        //                    : new ForRobot.Model.Controls.File() { Name = group.Key };
+            //Task.WaitAll(new Task[] 
+            //            {
+            //                Task.Run(() => this.LoadFilesTask.Start()),
+            //                //Task.Run(() => RaisePropertyChanged(nameof(this.IsLoadFiles))),
+            //                //Task.Run(() => this.LoadFilesTask.Wait())
+            //            });
 
-                        ForRobot.Model.Controls.File newNode = data.Where(x => x.Name == group.Key).ToList().First();
+            //Task.Run(() =>
+            //        {
+            //            Task.Run(() => this.LoadFilesTask.Start());
+            //            Task.Run(() => this.LoadFilesTask.Wait());
+            //            //RaisePropertyChanged(nameof(this.IsLoadFiles));
+            //        }).Wait();
 
-                        //ForRobot.Model.Controls.File newNode = (data.Where(x => x.Name == group.Key).ToList().Count > 0) ?
-                        //    data.Where(x => x.Name == group.Key).ToList().First()
-                        //    : new ForRobot.Model.Controls.File() { Name = group.Key };
+            //Task.Run(() => this.LoadFilesTask.Start()).Wait();
 
-                        if (node == null)
-                        {
-                            this.FilesCollection.Add(newNode);
-                        }
-                        else
-                        {
-                            node.Children.Add(newNode);
-                        }
-                        GetFiles(group.ToList(), newNode, index + 1);
-                    }
-                }
-            }
+            this.LoadFilesTask.Start();
+            RaisePropertyChanged(nameof(this.IsLoadFiles));
+            this.LoadFilesTask.Wait();
+
+            RaisePropertyChanged(nameof(this.Files), nameof(this.IsLoadFiles));
         }
 
         protected void BeginConnect()
         {
             this.OpenConnection();
             this.GetFiles();
-            RaisePropertyChanged(nameof(this.Files));
         }
 
         /// <summary>
@@ -536,7 +564,7 @@ namespace ForRobot.Model
             {
                 if(this.Pro_State == "#P_END")
                 {
-                    this.SelectProgramm(this.RobotProgramName + ".src");
+                    this.SelectProgramByName(this.RobotProgramName + ".src");
 
                     if (!Task.Run<bool>(async () => await this.Connection.Start()).Result)
                         throw new Exception($"Ошибка перезапуска программы {RobotProgramName}");
@@ -682,7 +710,6 @@ namespace ForRobot.Model
                     this.LogMessage($"Файл {Path.Combine(this.PathProgramm, $"{sNameProgram}.src")} скопирован ");
 
                 this.GetFiles();
-                RaisePropertyChanged(nameof(this.Files));
             }
             catch (Exception ex)
             {
@@ -733,19 +760,34 @@ namespace ForRobot.Model
         }
 
         /// <summary>
-        /// Выбор программы
+        /// Выбор программы по имени
         /// </summary>
-        /// <param name="sNameProgram">Имя выбираемой программы (с расширением)</param>
-        public void SelectProgramm(string sProgramPath)
+        /// <param name="sProgramName">Наименование программы (с расширением)</param>
+        public void SelectProgramByName(string sProgramName)
         {
             try
             {
-                if (string.IsNullOrEmpty(this.SearchPath(sProgramPath)))
+                if (string.IsNullOrEmpty(this.SearchPath(sProgramName)))
                 {
-                    this.LogErrorMessage("Не найдена директория файла!");
+                    this.LogErrorMessage($"Не найдена директория файла {sProgramName}!");
                     return;
                 }
+                this.SelectProgramByPath(this.SearchPath(sProgramName));
+            }
+            catch (Exception ex)
+            {
+                this.LogErrorMessage(ex.Message, ex);
+            }
+        }
 
+        /// <summary>
+        /// Выбор программы по пути
+        /// </summary>
+        /// <param name="sProgramPath">Путь к выбираемой программе</param>
+        public void SelectProgramByPath(string sProgramPath)
+        {
+            try
+            {
                 switch (this.Pro_State)
                 {
                     case "#P_RESET":
@@ -767,7 +809,7 @@ namespace ForRobot.Model
                         return;
                 }
 
-                string sFilePath = Path.Combine(JsonRpcConnection.DefaulRoot, this.SearchPath(sProgramPath));
+                string sFilePath = Path.Combine(JsonRpcConnection.DefaulRoot, sProgramPath);
 
                 if (Task.Run<bool>(async () => await this.Connection.Select(sFilePath)).Result)
                     this.LogMessage($"Файл программы {sFilePath} выбран");
@@ -846,7 +888,6 @@ namespace ForRobot.Model
                 }
 
                 this.GetFiles();
-                RaisePropertyChanged(nameof(this.Files));
             }
             catch (Exception ex)
             {

@@ -279,22 +279,44 @@
                                 </Border.Style>
 
                                 <Grid>
-                                    <ProgressBar Background="Transparent" BorderThickness="0"
+                                    <ProgressBar x:Name="progressBar" Panel.ZIndex="1" Background="Transparent" BorderThickness="0"
                                                  Foreground="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}"
-                                                 IsIndeterminate="{Binding ElementName=BreadcrumbControl, Path=IsIndeterminate}" 
-                                                 Value="{Binding ElementName=BreadcrumbControl, Path=Progress}"/>
+                                                 Minimum="0" Maximum="100" IsIndeterminate="True" 
+                                                 Value="{Binding ElementName=BreadcrumbControl, Path=Progress}">
+                                        <ProgressBar.Style>
+                                            <Style TargetType="{x:Type ProgressBar}">
+                                                <Setter Property="Visibility" Value="Hidden"/>
+
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=IsProgress, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ProgressBar.Style>
+                                    </ProgressBar>
 
                                     <Grid>
+                                        <Grid.Style>
+                                            <Style TargetType="{x:Type Grid}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=Visibility, ElementName=progressBar}" Value="Visible">
+                                                        <Setter Property="IsEnabled" Value="False"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Grid.Style>
+                                        
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <ToggleButton x:Name="togglePath" Grid.Column="0" IsChecked="False" Margin="0"
+                                        <ToggleButton x:Name="togglePath" Grid.Column="0" IsChecked="False" Padding="5" Margin="0"
                                                   Focusable="False" Background="Transparent" BorderThickness="0"
                                                   Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}">
 
-                                            <Image Source="{Binding ElementName=BreadcrumbControl, Path=Icon}" Stretch="Fill"/>
+                                            <Image Source="/InterfaceOfRobots;component/Themes/Images/folder.png" Stretch="Fill"/>
                                         </ToggleButton>
 
                                         <ContentControl Grid.Column="1">

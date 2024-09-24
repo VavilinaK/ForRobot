@@ -33,6 +33,10 @@
         <TreeView Grid.Row="0" Grid.Column="0" x:Name="TreeViewProperties" FontSize="13">
             <TreeViewItem Header="Общии" Tag="General" IsSelected="True"/>
 
+            <!--<TreeViewItem Header="Дерево файлов" Tag="NavigationTree" IsSelected="True">
+                
+            </TreeViewItem>-->
+            
             <!--<TreeViewItem Header="Соединение" Tag="Connection"/>-->
             
             <!--<TreeViewItem Header="Генерация"/>-->
@@ -79,6 +83,16 @@
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="ContentControl">
                                                     <ContentControl ContentTemplate="{StaticResource ConnectionProperiesTemplate}"/>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+
+                                    <DataTrigger Binding="{Binding Path=SelectedItem.Tag, ElementName=TreeViewProperties}" Value="NavigationTree">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ContentControl">
+                                                    <ContentControl ContentTemplate="{StaticResource NavigationTreeProperiesTemplate}"/>
                                                 </ControlTemplate>
                                             </Setter.Value>
                                         </Setter>
