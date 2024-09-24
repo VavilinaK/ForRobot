@@ -929,12 +929,23 @@
                                                             Directory="{Binding Path=SelectedRobot.Item2.PathControllerFolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                             ItemsSource="{Binding Path=SelectedRobot.Item2.Files, Mode=OneWay}"
                                                             UpDateCommand="{Binding Path=DataContext.UpDateFilesCommand, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
-                                                            IsProgress="{Binding Path=SelectedRobot.Item2.IsLoadFiles}"/>
+                                                            IsProgress="{Binding Path=SelectedRobot.Item2.IsLoadFiles, Mode=OneWay}"/>
 
                                         <control:NavigationTreeView Grid.Row="6"
                                                 FileCollection="{Binding Path=SelectedRobot.Item2.Files, Mode=OneWay}"
                                                 SelectItemCommand="{Binding Path=DataContext.SelectFileCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
-                                                SelectFolderCommand="{Binding Path=DataContext.SelectFolderCommand, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"/>
+                                                SelectFolderCommand="{Binding Path=DataContext.SelectFolderCommand, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}">
+                                           
+                                            <control:NavigationTreeView.Style>
+                                                <Style TargetType="{x:Type control:NavigationTreeView}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Path=SelectedRobot.Item2.IsLoadFiles, Mode=OneWay}" Value="True">
+                                                            <Setter Property="IsEnabled" Value="False"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </control:NavigationTreeView.Style>
+                                        </control:NavigationTreeView>
 
                                         <!--<Grid Grid.Row="2">
                                             <Grid.ColumnDefinitions>

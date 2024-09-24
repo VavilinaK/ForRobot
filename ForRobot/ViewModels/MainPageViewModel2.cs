@@ -429,7 +429,7 @@ namespace ForRobot.ViewModels
                 return _upDateFilesCommand ??
                     (_upDateFilesCommand = new RelayCommand(obj =>
                     {
-                        this.SelectedRobot.Item2.GetFiles();
+                        Task.Run(async () => await this.SelectedRobot.Item2.GetFiles());                        
                     }));
             }
         }

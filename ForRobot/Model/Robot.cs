@@ -37,9 +37,10 @@ namespace ForRobot.Model
         private decimal _tracking;
 
         private CancellationTokenSource _cancelTokenSource;
-        private CancellationTokenSource _cancelLoadedFilesToken;
 
         private ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection Config { get; set; } = ConfigurationManager.GetSection("robot") as ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection;
+
+        private Task LoadFilesTask;
 
         private List<ForRobot.Model.Controls.File> FilesCollection = new List<Controls.File>();
 
@@ -166,6 +167,12 @@ namespace ForRobot.Model
 
         [JsonIgnore]
         public bool IsConnection { get => (this.Connection is null) || (this.Connection.Client is null) ? false : this.Connection.Client.Connected; }
+
+        [JsonIgnore]
+        /// <summary>
+        /// Загружаются ли файлы в данный момент
+        /// </summary>
+        public bool IsLoadFiles { get => (this.LoadFilesTask?.Status == TaskStatus.Running) ? true : false; }
 
         [JsonIgnore]
         /// <summary>
@@ -329,8 +336,6 @@ namespace ForRobot.Model
                         ForRobot.Model.Controls.File fileData = new ForRobot.Model.Controls.File(file.Key.TrimEnd(new char[] { '\\' }), file.Value.TrimStart(';').TrimEnd(';'));
                         fileDatas.Add(fileData);
                     }
-
-                    //RaisePropertyChanged(nameof(this.IsLoadFiles));
                     LoadFiles(fileDatas.OrderBy(item => item.Path).ToList(), node, index);
                 }
                 else
@@ -347,7 +352,6 @@ namespace ForRobot.Model
                         {
                             node.Children.Add(newNode);
                         }
-                        //RaisePropertyChanged(nameof(this.IsLoadFiles));
                         LoadFiles(group.ToList(), newNode, index + 1);
                     }
                 }
@@ -420,6 +424,24 @@ namespace ForRobot.Model
             {
                 this.LogErrorMessage(ex.Message, ex);
             }
+        }
+
+        /// <summary>
+        /// Выборка файлов робота и сборка дерева
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="node"></param>
+        /// <param name="index"></param>
+        public async Task GetFiles(List<ForRobot.Model.Controls.File> data = null, ForRobot.Model.Controls.File node = null, int index = 0)
+        {
+            await Task.Run(() =>
+            {
+                this.LoadFilesTask = new Task(() => { this.LoadFiles(data, node, index); });
+                this.LoadFilesTask.Start();
+                RaisePropertyChanged(nameof(this.IsLoadFiles));
+                this.LoadFilesTask.Wait();
+                RaisePropertyChanged(nameof(this.Files), nameof(this.IsLoadFiles));
+            });
         }
 
         #endregion
@@ -506,52 +528,10 @@ namespace ForRobot.Model
             thread.Join(this._timeout_milliseconds);  // Закроется даже при неудачном подключении.
         }
 
-        private Task LoadFilesTask;
-
-        public bool IsLoadFiles { get => (this.LoadFilesTask?.Status == TaskStatus.Running) ? true : false; }
-
-        /// <summary>
-        /// Выборка файлов робота и сборка дерева
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="node"></param>
-        /// <param name="index"></param>
-        public void GetFiles(List<ForRobot.Model.Controls.File> data = null, ForRobot.Model.Controls.File node = null, int index = 0)
-        {
-            //this._cancelLoadedFilesToken = new CancellationTokenSource();
-            //Task.Run(async () => await Task.Factory.StartNew(() => { this.LoadFiles(data, node, index); }));
-            //myTask.Start();
-
-
-            this.LoadFilesTask = new Task(() => { this.LoadFiles(data, node, index); });
-
-            //Task.WaitAll(new Task[] 
-            //            {
-            //                Task.Run(() => this.LoadFilesTask.Start()),
-            //                //Task.Run(() => RaisePropertyChanged(nameof(this.IsLoadFiles))),
-            //                //Task.Run(() => this.LoadFilesTask.Wait())
-            //            });
-
-            //Task.Run(() =>
-            //        {
-            //            Task.Run(() => this.LoadFilesTask.Start());
-            //            Task.Run(() => this.LoadFilesTask.Wait());
-            //            //RaisePropertyChanged(nameof(this.IsLoadFiles));
-            //        }).Wait();
-
-            //Task.Run(() => this.LoadFilesTask.Start()).Wait();
-
-            this.LoadFilesTask.Start();
-            RaisePropertyChanged(nameof(this.IsLoadFiles));
-            this.LoadFilesTask.Wait();
-
-            RaisePropertyChanged(nameof(this.Files), nameof(this.IsLoadFiles));
-        }
-
         protected void BeginConnect()
         {
             this.OpenConnection();
-            this.GetFiles();
+            Task.Run(async () => await this.GetFiles());
         }
 
         /// <summary>
@@ -709,7 +689,7 @@ namespace ForRobot.Model
                 else
                     this.LogMessage($"Файл {Path.Combine(this.PathProgramm, $"{sNameProgram}.src")} скопирован ");
 
-                this.GetFiles();
+                Task.Run(async () => await this.GetFiles()).Wait();
             }
             catch (Exception ex)
             {
@@ -887,7 +867,7 @@ namespace ForRobot.Model
                         this.LogMessage($"Файл программы {Path.Combine(this.PathControllerFolder, new FileInfo(file).Name)} удалён");
                 }
 
-                this.GetFiles();
+                Task.Run(async () => await this.GetFiles());
             }
             catch (Exception ex)
             {
