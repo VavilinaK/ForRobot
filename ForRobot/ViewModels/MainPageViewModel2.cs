@@ -85,6 +85,10 @@ namespace ForRobot.ViewModels
         #region Commands
 
         private RelayCommand _openCodingCommand;
+
+        private RelayCommand _importCommand;
+
+        private RelayCommand _exportCommand;
         
         private RelayCommand _standartParametrsCommand;
         
@@ -98,11 +102,14 @@ namespace ForRobot.ViewModels
 
         private RelayCommand _changePathOnPCCommand;
 
+        private RelayCommand _selectFolderCommand;
+
         private RelayCommand _selectRobotCommand;
 
         private RelayCommand _helpCommand;
 
         private RelayCommand _propertiesCommand;
+
 
         private IAsyncCommand _generateProgramCommand;
 
@@ -115,9 +122,7 @@ namespace ForRobot.ViewModels
         private IAsyncCommand _selectGeneratProgramCommand;
 
         private IAsyncCommand _selectFileCommand;
-
-        private RelayCommand _selectFolderCommand;
-
+        
         #endregion
 
         #endregion
@@ -288,7 +293,7 @@ namespace ForRobot.ViewModels
         #endregion
 
         #region Commands
-
+            
         /// <summary>
         /// Открытие панели управления
         /// </summary>
@@ -320,6 +325,65 @@ namespace ForRobot.ViewModels
                             if (!Equals(pass, Properties.Settings.Default.PinCode))
                                 ((System.Windows.Controls.Primitives.ToggleButton)obj).IsChecked = false;
                         }
+                    }));
+            }
+        }
+
+        /// <summary>
+        /// Импорт параметров программы
+        /// </summary>
+        public RelayCommand ImportCommand
+        {
+            get
+            {
+                return _importCommand ??
+                    (_importCommand = new RelayCommand(obj =>
+                    {
+                        OpenFileDialog openFileDialog = new OpenFileDialog()
+                        {
+                            Filter = "Json files (*.json)|*.json|Text files (*.txt)|*.txt",
+                            Title = "Импорт параметров программы"
+                        };
+
+                        if (openFileDialog.ShowDialog() == DialogResult.Cancel && string.IsNullOrEmpty(openFileDialog.FileName))
+                            return;
+
+                        this.DetalObject = JsonConvert.DeserializeObject<Plita>(JObject.Parse(File.ReadAllText(openFileDialog.FileName), _jsonLoadSettings).ToString(), this._jsonSettings);
+                        this.SaveDetal();
+
+                        string message = $"{DateTime.Now.ToString("HH:mm:ss")} Импортированы параметры программы из файла {openFileDialog.FileName}\n";
+                        App.Current.LoggerString = message + App.Current.LoggerString;
+                        App.Current.Logger.Trace(message + $"Содержание файла {openFileDialog.FileName}:\n" + File.ReadAllText(openFileDialog.FileName) + "\n");
+                    }));
+            }
+        }
+
+        /// <summary>
+        /// Экспорт параметров программы
+        /// </summary>
+        public RelayCommand ExportCommand
+        {
+            get
+            {
+                return _exportCommand ??
+                    (_exportCommand = new RelayCommand(obj =>
+                    {
+                        SaveFileDialog saveFileDialog = new SaveFileDialog()
+                        {
+                            Filter = "Json files (*.json)|*.json|Text files (*.txt)|*.txt",
+                            Title = "Экспорт параметров программы"
+                        };
+
+                        if (saveFileDialog.ShowDialog() == DialogResult.Cancel && string.IsNullOrEmpty(saveFileDialog.FileName))
+                            return;
+
+                        File.WriteAllText(saveFileDialog.FileName, this.DetalObject.JsonForSave);
+                        if (File.Exists(saveFileDialog.FileName))
+                        {
+                            string message = $"{DateTime.Now.ToString("HH:mm:ss")} Параметры программы экспортированы в файл {saveFileDialog.FileName}\n";
+                            App.Current.LoggerString = message + App.Current.LoggerString;
+                            App.Current.Logger.Trace(message + $"Содержание файла {saveFileDialog.FileName}:\n" + this.DetalObject.JsonForSave + "\n");
+                        }                     
                     }));
             }
         }
@@ -865,14 +929,20 @@ namespace ForRobot.ViewModels
         private readonly JsonSerializerSettings _jsonSettings = new JsonSerializerSettings()
         {
             ContractResolver = new ForRobot.Libr.Json.SaveAttributesResolver(),
-            Formatting = Formatting.Indented
+            Formatting = Formatting.Indented,
+            
+        };
+
+        private readonly JsonLoadSettings _jsonLoadSettings = new JsonLoadSettings()
+        {
+            CommentHandling = CommentHandling.Ignore
         };
 
         /// <summary>
         /// Настройки плиты с рёбрами
         /// </summary>
         /// <returns></returns>
-        private Plita GetSavePlita() => string.IsNullOrEmpty(Properties.Settings.Default.SavePlita) ? new Plita(DetalType.Plita) : JsonConvert.DeserializeObject<Plita>(Properties.Settings.Default.SavePlita, this._jsonSettings);
+        private Plita GetSavePlita() => string.IsNullOrEmpty(Properties.Settings.Default.SavePlita) ? new Plita(DetalType.Plita) : JsonConvert.DeserializeObject<Plita>(JObject.Parse(Properties.Settings.Default.SavePlita, _jsonLoadSettings).ToString(), this._jsonSettings);
 
         /// <summary>
         /// Настройки плиты со стрингером

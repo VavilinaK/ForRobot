@@ -72,9 +72,10 @@ namespace ForRobot.Model.Detals
         {
             get
             {
-                var js = JObject.Parse(JsonConvert.SerializeObject(this.Save(), _jsonSettings).Replace(ScoseTypes.SlopeLeft, this.ScoseType));
-                //js[nameof(this.DiferentDistance)] = this._diferentDistance;
-                return js.ToString();
+                //var js = JObject.Parse(JsonConvert.SerializeObject(this.Save(), _jsonSettings).Replace(ScoseTypes.SlopeLeft, this.ScoseType));
+                ////js[nameof(this.DiferentDistance)] = this._diferentDistance;
+                //return js.ToString();
+                return JsonConvert.SerializeObject(this.Save(), _jsonSettings).Replace(ScoseTypes.SlopeLeft, this.ScoseType);
             }
         }
 
@@ -171,6 +172,7 @@ namespace ForRobot.Model.Detals
 
         [JsonIgnore]
         [SaveAttribute]
+        [JsonConverter(typeof(JsonCommentConverter), "Разное ли рассояние между рёбрами")]
         /// <summary>
         /// Различно ли расстояние между рёбрами => отступы и т.д.
         /// </summary>
