@@ -3,6 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
       xmlns:local="clr-namespace:ForRobot.Views.Pages"
       xmlns:vm="clr-namespace:ForRobot.ViewModels"
       xmlns:models="clr-namespace:ForRobot.Model.Detals"
@@ -39,6 +40,12 @@
                             </Style.Triggers>
                         </Style>
                     </Image.Style>
+
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDown">
+                            <i:InvokeCommandAction Command="{Binding Path=OpenImageCommand, RelativeSource={RelativeSource AncestorType={x:Type local:Page2D}, Mode=FindAncestor}}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
                 </Image>
             </ScrollViewer>
         </StackPanel>

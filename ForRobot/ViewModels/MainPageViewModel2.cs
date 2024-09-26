@@ -948,13 +948,13 @@ namespace ForRobot.ViewModels
         /// Настройки плиты со стрингером
         /// </summary>
         /// <returns></returns>
-        private PlitaStringer GetSavePlitaStringer() => string.IsNullOrEmpty(Properties.Settings.Default.SavePlitaStringer) ? new PlitaStringer(DetalType.Stringer) : JsonConvert.DeserializeObject<PlitaStringer>(Properties.Settings.Default.SavePlitaStringer, this._jsonSettings);
+        private PlitaStringer GetSavePlitaStringer() => string.IsNullOrEmpty(Properties.Settings.Default.SavePlitaStringer) ? new PlitaStringer(DetalType.Stringer) : JsonConvert.DeserializeObject<PlitaStringer>(JObject.Parse(Properties.Settings.Default.SavePlitaStringer, _jsonLoadSettings).ToString(), this._jsonSettings);
 
         /// <summary>
         /// Настройки плиты треугольником
         /// </summary>
         /// <returns></returns>
-        private PlitaTreygolnik GetSavePlitaTreygolnik() => string.IsNullOrEmpty(Properties.Settings.Default.SavePlitaTreygolnik) ? new PlitaTreygolnik(DetalType.Treygolnik) : JsonConvert.DeserializeObject<PlitaTreygolnik>(Properties.Settings.Default.SavePlitaTreygolnik, this._jsonSettings);
+        private PlitaTreygolnik GetSavePlitaTreygolnik() => string.IsNullOrEmpty(Properties.Settings.Default.SavePlitaTreygolnik) ? new PlitaTreygolnik(DetalType.Treygolnik) : JsonConvert.DeserializeObject<PlitaTreygolnik>(JObject.Parse(Properties.Settings.Default.SavePlitaTreygolnik, _jsonLoadSettings).ToString(), this._jsonSettings);
 
         #endregion
 

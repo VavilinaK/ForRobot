@@ -242,10 +242,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Controls\PathBar.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\Pages\Page2D.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -343,9 +339,6 @@
     <Compile Include="ViewModels\ToolBarViewModel.cs" />
     <Compile Include="Views\Controls\NavigationTreeView.xaml.cs">
       <DependentUpon>NavigationTreeView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Controls\PathBar.xaml.cs">
-      <DependentUpon>PathBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Pages\Page2D.xaml.cs">
       <DependentUpon>Page2D.xaml</DependentUpon>
