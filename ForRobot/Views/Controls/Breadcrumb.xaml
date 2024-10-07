@@ -235,7 +235,6 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
                             <Grid.Style>                                
@@ -385,32 +384,6 @@
                                 <Path Style="{StaticResource IconStyle}"
                                       Data="M 10,3 H 4 L 6,5 A 12,12 180 1,0 17,3 C 17,3 16,3 16,6 A 9,9 180 1,1 8.5,7 L 11,9 V 3 Z"/>
                             </Button>
-
-                            <!--<Button Grid.Column="3" BorderBrush="{StaticResource NotActiveBorderBrush}"
-                                    Width="Auto" Margin="0" Padding="5"
-                                    Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}"
-                                    Template="{StaticResource buttonTemplate}">
-
-                                <Border>
-                                    <Path Fill="BlanchedAlmond" Stroke="Aqua"
-                                      Data="M 21,11 C 21,16.55 17.16,21.74 12,23 C 6.84,21.74 3,16.55 3,11 V 5 L 12,1 L 21,5 V 11 
-                                      M12,21C15.75,20 19,15.54 19,11.22V6.3L12,3.18L5,6.3V11.22C5,15.54 8.25,20 12,21M12,6A3,3 0 0,1 15,9C15,10.31 14.17,11.42 13,11.83V14H15V16H13V18H11V11.83C9.83,11.42 9,10.31 9,9A3,3 0 0,1 12,6M12,8A1,1 0 0,0 11,9A1,1 0 0,0 12,10A1,1 0 0,0 13,9A1,1 0 0,0 12,8Z"/>
-                                </Border>
-                            </Button>-->
-
-                            <!--<Button Grid.Column="4" BorderBrush="{StaticResource NotActiveBorderBrush}"
-                                    Width="Auto" Margin="0" Padding="5"
-                                    Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}"
-                                    Template="{StaticResource buttonTemplate}">
-
-                                <Grid>
-                                    --><!--<Path Fill="BlanchedAlmond" Stroke="Aqua"
-                                      Data="M 0,2 C 0,1 0.5,0 2,0 H 5 L 7,2 Z"/>--><!--
-
-                                    <Path Fill="#FFCB42"
-                                      Data="M26.523841796875 6.84846328125H14.952264062500001l-3.7314957031250002 -3.731484375c-0.40874140625 -0.411584765625 -0.9652695312500001 -0.6423726562500001 -1.5453375 -0.6408207031250001H2.476158203125C1.268738671875 2.4761015625000002 0.29 3.454896875 0.29 4.6623164062499995v19.760090234375c0.0022542968750000002 1.160192578125 0.94261328125 2.09993984375 2.102805859375 2.101446484375H26.64544921875c1.139598046875 -0.001506640625 2.063044140625 -0.924952734375 2.0645507812500004 -2.0645507812500004V9.034621484375c0 -1.207340234375 -0.9788179687499999 -2.1861015624999998 -2.186158203125 -2.186158203125ZM2.476158203125 4.6623164062499995h7.19927265625l2.186158203125 2.186146875H2.476158203125Z"/>
-                                </Grid>
-                            </Button>-->
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>

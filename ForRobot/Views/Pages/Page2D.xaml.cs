@@ -43,7 +43,6 @@ namespace ForRobot.Views.Pages
             {
             }
         }
-
     }
 
     /// <summary>

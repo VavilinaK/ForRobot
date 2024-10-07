@@ -17,32 +17,23 @@ namespace ForRobot.Views.Controls
     /// </summary>
     public partial class Breadcrumb : ComboBox, INotifyPropertyChanged
     {
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        //public void RaisePropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
-        //public void RaisePropertyChanged(params string[] propertyNames)
-        //{
-        //    foreach (var prop in propertyNames)
-        //    {
-        //        this.RaisePropertyChanged(prop);
-        //    }
-        //}
-
-        //public virtual void OnPropertyChanged(string propertyName, object oldValue, object newValue) { }
-
         #region Private variables
 
-        //private string _selectedListItem;
+        #region Commands
+
+        private static RelayCommand _onSelectedMenuItem;
+
+        private static RelayCommand _onSelectedDirectory;
+
+        private static RelayCommand _onHome;
+
+        #endregion
 
         #endregion
 
         #region Public variables
 
-        //public bool VisibiliityMenuToggleButton { }
-
-        public bool CanOpenMenu { get => this.ItemsSource.Cast<object>().Count() == 0 || this.SelectedFolder == null ? false 
+        public bool CanOpenMenu { get => this.ItemsSource == null || this.ItemsSource.Cast<object>().Count() == 0 || this.SelectedFolder == null ? false 
                                             : File.Search(this.ItemsSource.Cast<File>().First(), this.SelectedFolder).IncludeFileChildren; }
 
         /// <summary>
@@ -55,7 +46,7 @@ namespace ForRobot.Views.Controls
         /// </summary>
         public List<File> ChildrenFolder
         {
-            get => (this.ItemsSource.Cast<object>().Count() > 0 && this.SelectedFolder != null) ?
+            get => (this.ItemsSource !=null && this.ItemsSource.Cast<object>().Count() > 0 && this.SelectedFolder != null) ?
                 File.Search(this.ItemsSource.Cast<File>().ToList().First(), this.SelectedFolder).Children.Where(item => item.Type == FileTypes.Folder).Cast<File>().ToList() : null;
         }
 
@@ -103,15 +94,11 @@ namespace ForRobot.Views.Controls
             set => SetValue(IconsBackgroundProperty, value);
         }
 
-        //public System.Windows.Media.Imaging.BitmapImage FolderIcon
-        //{
-        //    get;
-        //    set;
-        //}
-
         #endregion
 
-        #region Events
+        #region Event
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         #endregion
 
@@ -170,10 +157,6 @@ namespace ForRobot.Views.Controls
                                                                                                         typeof(Breadcrumb), 
                                                                                                         new PropertyMetadata(System.Windows.Media.Brushes.Black));
 
-        //public static readonly DependencyProperty FolderIconProperty = DependencyProperty.Register(nameof(FolderIcon),
-        //                                                                                        typeof(System.Windows.Media.Imaging.BitmapImage),
-        //                                                                                        typeof(Breadcrumb));
-
         #region Commands
 
         public static readonly DependencyProperty SelectMenuItemCommandProperty = DependencyProperty.Register(nameof(SelectMenuItemCommand),
@@ -230,8 +213,9 @@ namespace ForRobot.Views.Controls
 
         #region Commands
 
-        private static RelayCommand _onSelectedMenuItem;
-
+        /// <summary>
+        /// Команда выбора в всплывающем меню
+        /// </summary>
         private static RelayCommand OnSelectedMenuItem
         {
             get
@@ -249,8 +233,9 @@ namespace ForRobot.Views.Controls
             }
         }
 
-        private static RelayCommand _onSelectedDirectory;
-
+        /// <summary>
+        /// Команда выбора папки в адресной строке
+        /// </summary>
         private static RelayCommand OnSelectedDirectory
         {
             get
@@ -270,8 +255,9 @@ namespace ForRobot.Views.Controls
             }
         }
 
-        private static RelayCommand _onHome;
-
+        /// <summary>
+        /// Команда возврата к родительской папке
+        /// </summary>
         private static RelayCommand OnHome
         {
             get
