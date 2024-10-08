@@ -418,11 +418,6 @@
     <Resource Include="Themes\Images\SelectProgramm.png" />
     <Resource Include="Themes\Images\Search.png" />
     <Resource Include="Themes\Images\delete.png" />
-    <Resource Include="Themes\Images\Add.png" />
-    <Resource Include="Themes\Images\notControls.png" />
-    <Resource Include="Themes\Images\controls.png" />
-    <Resource Include="Themes\Images\ConnectionOff.png" />
-    <Resource Include="Themes\Images\connectionOn.png" />
     <Resource Include="Themes\Images\graph.png" />
     <Resource Include="Themes\Images\3d.png" />
     <Resource Include="Themes\Images\2d.png" />
@@ -444,7 +439,6 @@
     <Resource Include="Themes\Images\weldingOn.png" />
     <Resource Include="Themes\Images\transferOn.png" />
     <Resource Include="Themes\Images\transferOff.png" />
-    <Resource Include="Themes\Images\clear.png" />
     <Resource Include="Themes\Images\exclamation.png" />
     <Resource Include="Themes\Images\generationOn.png" />
     <Resource Include="Themes\Images\generationOff.png" />

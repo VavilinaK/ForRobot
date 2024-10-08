@@ -54,12 +54,19 @@ namespace ForRobot.Libr.Settings
 
         #region Public functions
 
+        /// <summary>
+        /// Сохранение настроек в json-файл во временных файлах
+        /// </summary>
         public void Save()
         {
             string sPathForSave = Path.Combine(Path.GetTempPath(), "interfaceOfRobot_settings.json");
             File.WriteAllText(sPathForSave, JsonConvert.SerializeObject(this, _jsonSettings));
         }
 
+        /// <summary>
+        /// Инициализация настроек (при первой загрузки) или выгрузка из временных файлов
+        /// </summary>
+        /// <returns></returns>
         public static Settings GetSettings()
         {
             if (File.Exists(Path.Combine(Path.GetTempPath(), "interfaceOfRobot_settings.json")))

@@ -44,8 +44,9 @@ namespace ForRobot
 
         /// <summary>
         /// Настройки приложения
+        /// (Выгружаются из временных файлов, иначе инициализируются как класс)
         /// </summary>
-        private readonly ForRobot.Libr.Settings.Settings Settings = ForRobot.Libr.Settings.Settings.GetSettings();
+        private readonly ForRobot.Libr.Settings.Settings Settings = ForRobot.Libr.Settings.Settings.GetSettings(); 
 
         #region Widows
 
@@ -68,7 +69,6 @@ namespace ForRobot
             get => this._log;
             set
             {
-                //this._log = (value + "\n");
                 this._log = value;
                 this.Log(this, null);
             }
@@ -80,8 +80,14 @@ namespace ForRobot
 
         #region Windows
 
+        /// <summary>
+        /// Главное окно
+        /// </summary>
         public Views.Windows.MainWindow MainWindowView { get => _mainWindow ?? (_mainWindow = new Views.Windows.MainWindow()); }
 
+        /// <summary>
+        /// Окно настроек
+        /// </summary>
         public Views.Windows.PropertiesWindow PropertiesWindow { get; set; }
 
         #endregion
@@ -113,12 +119,15 @@ namespace ForRobot
 
                     if (!(Process.GetProcessesByName(ResourceAssembly.GetName().Name).Length > 1)) // Проверка на существование более 1 процесса.
                     {
+                        // Проверка версии файла в папке с обновлением и запрос к пользователю.
                         if (this.Settings.AutoUpdate && File.Exists(Path.Combine(App.Current.UpdatePath, $"{ResourceAssembly.GetName().Name}.exe")) &&
                             new Version(FileVersionInfo.GetVersionInfo(Path.Combine(App.Current.UpdatePath, $"{ResourceAssembly.GetName().Name}.exe")).ProductVersion) > Assembly.GetExecutingAssembly().GetName().Version &&
                             (!this.Settings.InformUser || MessageBox.Show($"Обнаружено обновление до версии {FileVersionInfo.GetVersionInfo(Path.Combine(App.Current.UpdatePath, $"{ResourceAssembly.GetName().Name}.exe")).ProductVersion}\nОбновить приложение?", "Обновление интерфейса", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK))
                         {
                             App.Current.UpDateApp(e);
                         }
+
+                        if (this.Settings.AutoUpdate) { }
 
                         using (ClassLibraryTaskManager.SingleGlobalInstance singleMutex = new ClassLibraryTaskManager.SingleGlobalInstance(1000))
                         {
@@ -171,7 +180,7 @@ namespace ForRobot
         /// Обновление программы.
         /// Копирует файлы из каталога на сервере в нынешнюю директорию программы и перезапускает её
         /// </summary>
-        /// <param name="e"></param>
+        /// <param name="e">Аргументы командной стоки</param>
         private void UpDateApp(StartupEventArgs e)
         {
             System.Diagnostics.Process process = new System.Diagnostics.Process()
@@ -190,10 +199,6 @@ namespace ForRobot
             };
             new Thread(() => process.Start()).Start();
         }
-
-        #endregion
-
-        #region Public functions
 
         #endregion
     }
