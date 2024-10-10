@@ -841,7 +841,7 @@ namespace ForRobot.ViewModels
             robot.ChangeRobot += new EventHandler(this.ChangeRobot);
             robot.Log += new EventHandler<ForRobot.Libr.LogEventArgs>(this.WreteLog);
             robot.LogError += new EventHandler<ForRobot.Libr.LogErrorEventArgs>(WreteLogError);
-            robot.PathProgramm = (this.RobotsCollection.Count > 0) ? Path.Combine(Directory.GetParent(this.RobotsCollection.Last().Item2.PathProgramm).ToString(), $"R{this.RobotsCollection.Count + 1}") : Path.Combine(Directory.GetCurrentDirectory(), $"R{this.RobotsCollection.Count + 1}");
+            //robot.PathProgramm = (this.RobotsCollection.Count > 0) ? Path.Combine(Directory.GetParent(this.RobotsCollection.Last().Item2.PathProgramm).ToString(), $"R{this.RobotsCollection.Count + 1}") : Path.Combine(Directory.GetCurrentDirectory(), $"R{this.RobotsCollection.Count + 1}");
             robot.OpenConnection(this.ConnectionTimeOut);
             this.RobotsCollection.Add(new Tuple<string, Robot>($"Робот {this.RobotsCollection.Count + 1}", robot));
             RaisePropertyChanged(nameof(this.RobotNamesCollection));

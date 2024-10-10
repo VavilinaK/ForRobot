@@ -153,7 +153,7 @@ namespace ForRobot.Libr
             bool res = false;
             try
             {
-                foreach(var subdir in Directory.GetDirectories(this.PathOut))
+                foreach(var subdir in Directory.GetDirectories(this.PathOut).Where(path => path.Split(new char[] { '\\' }).Last() == "R1" || path.Split(new char[] { '\\' }).Last() == "R2"))
                 {
                     if (File.Exists(Path.Combine(subdir, string.Join("", this.FileName, ".src"))))
                     {

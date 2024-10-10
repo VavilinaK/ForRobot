@@ -12,6 +12,7 @@ namespace ForRobot.Views.Controls
     /// </summary>
     public partial class NavigationTreeView : UserControl
     {
+
         #region Properties
 
         public bool DataFileIsHidden
@@ -44,7 +45,7 @@ namespace ForRobot.Views.Controls
 
         #region Static readonly
 
-        public static readonly DependencyProperty DataFileIsHiddenProperty = DependencyProperty.Register(nameof(DataFileIsHidden), typeof(bool), typeof(NavigationTreeView), new PropertyMetadata(true));
+        public static readonly DependencyProperty DataFileIsHiddenProperty = DependencyProperty.Register(nameof(DataFileIsHidden), typeof(bool), typeof(NavigationTreeView));
 
         public static readonly DependencyProperty FileCollectionProperty = DependencyProperty.Register(nameof(FileCollection), typeof(ObservableCollection<File>), typeof(NavigationTreeView));
 

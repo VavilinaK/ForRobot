@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using System.Diagnostics;
+using System.Collections.Generic;
 
 using Newtonsoft.Json;
 
@@ -18,7 +18,9 @@ namespace ForRobot.Libr.Settings
         #endregion
 
         #region Public variables
-        
+
+        #region Generic
+
         /// <summary>
         /// Прилежение обновляется автоматически
         /// </summary>
@@ -43,6 +45,25 @@ namespace ForRobot.Libr.Settings
         /// Режим закрытия приложения. Спрашивает пользователя о закрытии и/или разрыве соединения
         /// </summary>
         public ModeClosingApp ModeClosingApp { get; set; } = ModeClosingApp.HaveConnected;
+
+        #endregion
+
+        #region Navigation
+
+        public bool AccessDataFile { get; set; } = false;
+
+        /// <summary>
+        /// Доступность системных папок в дереве файлов
+        /// </summary>
+        public SortedDictionary<string, bool> AvailableFolders { get; set; } = new SortedDictionary<string, bool>()
+                                                                                    {
+                                                                                        { "System", false },
+                                                                                        { "Mada", false },
+                                                                                        { "TP", false },
+                                                                                        { "STEU", false }
+                                                                                    };
+
+        #endregion
 
         #endregion
 

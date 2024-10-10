@@ -2,7 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:ForRobot.Themes"
                     xmlns:properties="clr-namespace:ForRobot.Properties"
-                    xmlns:settings="clr-namespace:ForRobot.Libr.Settings">
+                    xmlns:settings="clr-namespace:ForRobot.Libr.Settings"
+                    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity">
 
     <!--Вкладка "Общии"-->
     <DataTemplate x:Key="GeneralProperiesTemplate" DataType="{x:Type ContentControl}">
@@ -156,28 +157,29 @@
         </Grid>
     </DataTemplate>
 
-    <!--Вкладка "Дерево файлов"-->
+    <!--Вкладка "Навигация"-->
     <DataTemplate x:Key="NavigationTreeProperiesTemplate" DataType="{x:Type ContentControl}">
         <DataTemplate.Resources>
-            <Style TargetType="{x:Type CheckBox}">
-                <Setter Property="FontSize" Value="13"/>
+            <Style x:Key="LabelBase" TargetType="{x:Type FrameworkElement}">
+                <Setter Property="TextElement.FontSize" Value="13"/>
+                <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+            </Style>
+
+            <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource LabelBase}">
                 <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
             </Style>
 
-            <Style TargetType="{x:Type Label}">
-                <Setter Property="FontSize" Value="13"/>
+            <Style TargetType="{x:Type Label}" BasedOn="{StaticResource LabelBase}">
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
             </Style>
 
             <Style TargetType="{x:Type TextBox}">
-                <Setter Property="FontSize" Value="13"/>
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
             </Style>
 
-            <Style TargetType="{x:Type Button}">
-                <Setter Property="FontSize" Value="13"/>
+            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource LabelBase}">
                 <Setter Property="Padding" Value="0, 5"/>
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -188,35 +190,37 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <CheckBox Grid.Row="0" Content="Ограничивать время ожидания ответа от сервера"
-                      IsChecked="{Binding Path=DataContext.Settings.LimitedConnectionTimeOut, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Mode=TwoWay}"/>
+            <GroupBox Grid.Row="0" Header="Видимость папок:" FontSize="13">
+                <Grid>
+                    <ListBox SelectionMode="Single" FontSize="13" Padding="0" Margin="3"
+                             Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0"
+                             ItemsSource="{Binding Path=DataContext.Settings.AvailableFolders, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}">
 
-            <Grid Grid.Row="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding Value, Mode=OneWay}" Content="{Binding Key}">
 
-                <Label Grid.Column="0" Content="Время ожидания, сек."/>
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Checked">
+                                            <i:InvokeCommandAction Command="{Binding Path=DataContext.CheckBoxAvailableFolderCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}" CommandParameter="{Binding}"/>
+                                        </i:EventTrigger>
 
-                <TextBox Grid.Column="1" Text="{Binding Path=DataContext.Settings.ConnectionTimeOut, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Mode=TwoWay}" Padding="5"  Margin="10">
-                    <TextBox.Style>
-                        <Style TargetType="{x:Type TextBox}">
-                            <Setter Property="FontSize" Value="13"/>
-                            <Setter Property="VerticalContentAlignment" Value="Center"/>
-                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                        <i:EventTrigger EventName="Unchecked">
+                                            <i:InvokeCommandAction Command="{Binding Path=DataContext.CheckBoxAvailableFolderCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}" CommandParameter="{Binding}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </CheckBox>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </GroupBox>
 
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=DataContext.Settings.LimitedConnectionTimeOut, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}" Value="{StaticResource False}">
-                                    <Setter Property="IsEnabled" Value="False"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBox.Style>
-                </TextBox>
-            </Grid>
+            <CheckBox Grid.Row="1" Margin="0, 5"
+                      Content="Доступны файлы с расширением .dat" IsChecked="{Binding Path=DataContext.Settings.AccessDataFile, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Mode=TwoWay}"/>
         </Grid>
     </DataTemplate>
 

@@ -115,7 +115,7 @@
                                     </Style.Triggers>
                                 </Style>
                             </ComboBox.Style>
-                            
+
                             <ComboBox.ItemContainerStyle>
                                 <Style TargetType="{x:Type ComboBoxItem}">
                                     <Setter Property="Height" Value="45"/>
@@ -192,10 +192,10 @@
                                     <ToggleButton Grid.Column="0" Name="toggleButtonProgrammControl" Height="50" Padding="5" Margin="5,0"
                                                   VerticalAlignment="Center"
                                                   Template="{StaticResource toggleButtonTemplate}">
-                                        
+
                                         <Path Stretch="Fill" StrokeThickness="3"
                                              Data="M7 8L3 11.6923L7 16M17 8L21 11.6923L17 16M14 4L10 20">
-                                            
+
                                             <Path.Style>
                                                 <Style TargetType="{x:Type Path}">
                                                     <Setter Property="Stroke" Value="Black"/>
@@ -207,7 +207,7 @@
                                                 </Style>
                                             </Path.Style>
                                         </Path>
-                                        
+
                                         <ToggleButton.Style>
                                             <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource buttonBase}">
                                                 <Style.Triggers>
@@ -432,7 +432,7 @@
                                                       SnapsToDevicePixels="False" UseLayoutRounding="False"
                                                   Data="M19.5 0v23.378700000000002l3.43935 -3.43935 2.1212999999999997 2.1212999999999997 -6 6c-0.58575 0.58575 -1.5355500000000002 0.58575 -2.1212999999999997 0l-6.000014999999999 -6 2.12133 -2.1212999999999997L16.5 23.378700000000002V0h3Zm10.5 36c0.82845 0 1.5 -0.67155 1.5 -1.5l0 -21c0 -0.8284349999999999 -0.67155 -1.5 -1.5 -1.5h-6v3h4.5l0 18 -21 0 0 -18h4.5l0 -3H6c-0.8284199999999999 0 -1.5 0.6715800000000001 -1.5 1.5l0 21c0 0.82845 0.6715800000000001 1.5 1.5 1.5l24 0Z"/>
                                             </StackPanel>
-                                            
+
                                             <Label Grid.Column="1" Content="Импорт" FontSize="18" FontFamily="Segoe UI Historic" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
                                         </Grid>
                                     </Button>
@@ -486,7 +486,7 @@
                                     </Style>
                                 </Button.Style>
                             </Button>
-                           
+
                             <Separator HorizontalAlignment="Right" Margin="10">
                                 <Separator.LayoutTransform>
                                     <RotateTransform Angle="90" />
@@ -507,7 +507,7 @@
 
                             <RadioButton Content="Two" Width="0" Margin="3,0" Style="{StaticResource toggleButtonCordinateStyle}" Visibility="Hidden"
                                      IsChecked="{Binding Path=PageNowString, Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter=Page3D, Mode=TwoWay}">
-                                
+
                                 <RadioButton.Template>
                                     <ControlTemplate TargetType="{x:Type ToggleButton}">
                                         <Border BorderThickness="0" CornerRadius="5" Padding="2" Style="{StaticResource toggleButtonCordinateTemplateStyle}">
@@ -555,13 +555,13 @@
                                     <Grid Name="Panel">
                                         <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center" HorizontalAlignment="Center" ContentSource="Header" Margin="10, 5"/>
                                     </Grid>
-                                    
+
                                     <ControlTemplate.Triggers>
                                         <Trigger Property="IsSelected" Value="True">
                                             <Setter TargetName="Panel" Property="Background" Value="LightSkyBlue"/>
                                             <Setter TargetName="ContentSite" Property="TextElement.FontWeight" Value="DemiBold"/>
                                         </Trigger>
-                                        
+
                                         <Trigger Property="IsSelected" Value="False">
                                             <Setter TargetName="Panel" Property="Background" Value="Transparent"/>
                                         </Trigger>
@@ -761,13 +761,13 @@
 
                                     <Grid Margin="15, 0, 15, 15">
                                         <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="31*"/>
                                             <RowDefinition Height="10"/>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="10"/>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="10"/>
-                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="200*"/>
                                         </Grid.RowDefinitions>
 
                                         <Grid Grid.Row="0">
@@ -794,8 +794,8 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
 
-                                            <TextBox Grid.Column="0" Text="{Binding Path=SelectedRobot.Item2.PathProgramm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                            
+                                            <TextBox Grid.Column="0" Text="{Binding Path=SelectedRobot.Item2.PathProgramm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue='Путь для генерации на ПК'}"/>
+
                                             <Button Grid.Column="2" ToolTip="Изменить папку генерации" Command="{Binding ChangePatnOnPCCommand}">
                                                 <Button.Style>
                                                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource baseButtonStyle}">
@@ -827,10 +827,18 @@
                                                             IsProgress="{Binding Path=SelectedRobot.Item2.IsLoadFiles, Mode=OneWay}"/>
 
                                         <control:NavigationTreeView Grid.Row="6"
-                                                FileCollection="{Binding Path=SelectedRobot.Item2.Files, Mode=OneWay}"
-                                                SelectItemCommand="{Binding Path=DataContext.SelectFileCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
-                                                SelectFolderCommand="{Binding Path=DataContext.SelectFolderCommand, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}">
+                                                                    FileCollection="{Binding Path=SelectedRobot.Item2.Files}"
+                                                                    DataFileIsHidden="{Binding Path=Settings.AccessDataFile, Source={x:Static Application.Current}, Mode=TwoWay}"
+                                                                    SelectItemCommand="{Binding Path=DataContext.SelectFileCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
+                                                                    SelectFolderCommand="{Binding Path=DataContext.SelectFolderCommand, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}">
 
+                                            <!--<control:NavigationTreeView.FileCollection>
+                                                <MultiBinding Converter="{StaticResource VisibilityFolderOnRobot}">
+                                                    <Binding Path="DataContext.SelectedRobot.Item2.Files" RelativeSource="{RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}"/>
+                                                    <Binding Path="Settings.AvailableFolders" Source="{x:Static Application.Current}"/>
+                                                </MultiBinding>
+                                            </control:NavigationTreeView.FileCollection>-->
+                                            
                                             <control:NavigationTreeView.Style>
                                                 <Style TargetType="{x:Type control:NavigationTreeView}">
                                                     <Style.Triggers>
@@ -1183,7 +1191,7 @@
 
                 <TabControl Grid.Row="1" TabStripPlacement="Bottom"
                             Background="#a3a3a3" BorderBrush="#4a4a4a" BorderThickness="1.25">
-                    
+
                     <TabControl.Resources>
                         <Style TargetType="{x:Type TabItem}">
                             <Setter Property="FontSize" Value="15"/>
@@ -1221,7 +1229,7 @@
                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
                                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                  ItemsSource="{Binding Path=RobotsCollection, Mode=OneWay}">
-                            
+
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <Grid>
@@ -1232,7 +1240,7 @@
                                                 <Setter Property="TextAlignment" Value="Center"/>
                                             </Style>
                                         </Grid.Resources>
-                                        
+
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="20"/>
                                             <ColumnDefinition Width="Auto"/>
@@ -1255,7 +1263,7 @@
                                                                     </Storyboard>
                                                                 </BeginStoryboard>
                                                             </DataTrigger.EnterActions>
-                                                            
+
                                                             <DataTrigger.ExitActions>
                                                                 <StopStoryboard BeginStoryboardName="blinkAnimation"/>
                                                             </DataTrigger.ExitActions>
@@ -1263,7 +1271,7 @@
                                                     </Style.Triggers>
                                                 </Style>
                                             </Ellipse.Style>
-                                            
+
                                             <Ellipse.Fill>
                                                 <RadialGradientBrush>
                                                     <GradientStop Color="White" Offset="0"/>
@@ -1276,7 +1284,7 @@
                                         <TextBlock Grid.Column="2" Text="-"/>
                                         <TextBlock x:Name="statusString" Grid.Column="3" FontWeight="Bold"
                                                    Foreground="{Binding Path=Text, RelativeSource={RelativeSource Self}, Converter={StaticResource StatusColorConvert}}">
-                                            
+
                                             <TextBlock.Style>
                                                 <Style TargetType="{x:Type TextBlock}">
                                                     <Setter Property="Text" Value="Нет соединения"/>
@@ -1352,7 +1360,7 @@
                 </TabControl>
             </Grid>
         </Grid>
-        
+
         <DockPanel Grid.Row="2" Background="#FF1680C9">
             <Menu Background="Transparent">
                 <Menu.ItemsPanel>
@@ -1360,7 +1368,7 @@
                         <DockPanel HorizontalAlignment="Stretch"/>
                     </ItemsPanelTemplate>
                 </Menu.ItemsPanel>
-                
+
                 <Menu.Resources>
                     <Style TargetType="{x:Type TextBlock}">
                         <Setter Property="FontSize" Value="14"/>
@@ -1369,7 +1377,7 @@
                         <Setter Property="VerticalAlignment" Value="Center"/>
                     </Style>
                 </Menu.Resources>
-                
+
                 <MenuItem Background="Transparent" Width="Auto" Command="{Binding HelpCommand}" CommandParameter="{Binding Path=.}">
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
@@ -1394,7 +1402,7 @@
 
                 <MenuItem Background="Transparent" Width="Auto" HorizontalAlignment="Right" 
                           Command="{Binding Path=PropertiesCommand}">
-                    
+
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <Grid>

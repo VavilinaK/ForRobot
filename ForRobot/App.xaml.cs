@@ -43,10 +43,9 @@ namespace ForRobot
         private string FilePathOnPC { get => Directory.GetCurrentDirectory(); }
 
         /// <summary>
-        /// Настройки приложения
-        /// (Выгружаются из временных файлов, иначе инициализируются как класс)
+        /// Наименования скриптов на питоне
         /// </summary>
-        private readonly ForRobot.Libr.Settings.Settings Settings = ForRobot.Libr.Settings.Settings.GetSettings(); 
+        private readonly string[] _namesOfScripts = new string[] { "test_weld_gen" };
 
         #region Widows
 
@@ -77,6 +76,13 @@ namespace ForRobot
         public static new App Current => Application.Current as App;
 
         public NLog.Logger Logger { get; set; } = NLog.LogManager.GetCurrentClassLogger();
+
+        private static ForRobot.Libr.Settings.Settings _settings;
+        /// <summary>
+        /// Настройки приложения
+        /// (Выгружаются из временных файлов, иначе инициализируются как класс)
+        /// </summary>
+        public static ForRobot.Libr.Settings.Settings Settings { get => _settings ?? (_settings = ForRobot.Libr.Settings.Settings.GetSettings()); }
 
         #region Windows
 
@@ -120,14 +126,22 @@ namespace ForRobot
                     if (!(Process.GetProcessesByName(ResourceAssembly.GetName().Name).Length > 1)) // Проверка на существование более 1 процесса.
                     {
                         // Проверка версии файла в папке с обновлением и запрос к пользователю.
-                        if (this.Settings.AutoUpdate && File.Exists(Path.Combine(App.Current.UpdatePath, $"{ResourceAssembly.GetName().Name}.exe")) &&
+                        if (Settings.AutoUpdate && File.Exists(Path.Combine(App.Current.UpdatePath, $"{ResourceAssembly.GetName().Name}.exe")) &&
                             new Version(FileVersionInfo.GetVersionInfo(Path.Combine(App.Current.UpdatePath, $"{ResourceAssembly.GetName().Name}.exe")).ProductVersion) > Assembly.GetExecutingAssembly().GetName().Version &&
-                            (!this.Settings.InformUser || MessageBox.Show($"Обнаружено обновление до версии {FileVersionInfo.GetVersionInfo(Path.Combine(App.Current.UpdatePath, $"{ResourceAssembly.GetName().Name}.exe")).ProductVersion}\nОбновить приложение?", "Обновление интерфейса", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK))
+                            (!Settings.InformUser || MessageBox.Show($"Обнаружено обновление до версии {FileVersionInfo.GetVersionInfo(Path.Combine(App.Current.UpdatePath, $"{ResourceAssembly.GetName().Name}.exe")).ProductVersion}\nОбновить приложение?", "Обновление интерфейса", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK))
                         {
                             App.Current.UpDateApp(e);
                         }
 
-                        if (this.Settings.AutoUpdate) { }
+                        // Обновление скриптов на питоне
+                        //foreach(var script in this._namesOfScripts)
+                        //{
+                        //    if (this.Settings.AutoUpdate && Directory.GetFiles(Path.Combine(App.Current.UpdatePath, "Scripts")).Where(item => item.Contains(script)).Count() > 0)
+                        //    {
+                        //        string newScriptPath = Directory.GetFiles(Path.Combine(App.Current.UpdatePath, "Scripts")).Where(item => item.Contains(script)).OrderByDescending(item => item).First();
+                        //        var obj = (ConfigurationManager.GetSection("app") as ForRobot.Libr.ConfigurationProperties.AppConfigurationSection);
+                        //    }
+                        //}
 
                         using (ClassLibraryTaskManager.SingleGlobalInstance singleMutex = new ClassLibraryTaskManager.SingleGlobalInstance(1000))
                         {

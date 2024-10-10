@@ -80,71 +80,7 @@
                         </Button>
                     </ControlTemplate>
                 </HeaderedContentControl.Template>
-            </HeaderedContentControl>
-            
-            <!--<ContentControl>
-                <ContentControl.Template>
-                    <ControlTemplate TargetType="{x:Type ContentControl}">
-                        <Button ToolTip="{Binding Path=Path, Mode=OneTime}"
-                                Background="Transparent" BorderBrush="Transparent"
-                                Padding="0" Margin="0"
-                                Height="35" Width="Auto"
-                                Focusable="False" ClickMode="Press">
-
-                            <Grid Margin="0" VerticalAlignment="Stretch">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-
-                                <Image Grid.Column="0" Stretch="Fill">
-                                    <Image.Style>
-                                        <Style TargetType="{x:Type Image}">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Path=Type}" Value="{x:Static model:FileTypes.Folder}">
-                                                    <Setter Property="Source" Value="{StaticResource ImageFolderIcon}"/>
-                                                </DataTrigger>
-
-                                                <DataTrigger Binding="{Binding Path=Type}" Value="{x:Static model:FileTypes.DataList}">
-                                                    <Setter Property="Source" Value="{StaticResource ImageDataFileIcon}"/>
-                                                </DataTrigger>
-
-                                                <DataTrigger Binding="{Binding Path=Type}" Value="{x:Static model:FileTypes.Program}">
-                                                    <Setter Property="Source" Value="{StaticResource ImageProgramFileIcon}"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Image.Style>
-                                </Image>
-
-                                <TextBlock Grid.Column="1" Margin="5,0,0,0" Text="{Binding Name, Mode=OneTime}"
-                               TextAlignment="Left" VerticalAlignment="Center"/>
-                            </Grid>
-
-                            <Button.Style>
-                                <Style TargetType="{x:Type Button}">
-                                    <Setter Property="Command" Value="{Binding Path=SelectItemCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:NavigationTreeView}}}"/>
-                                    <Setter Property="CommandParameter" Value="{Binding Path=Path}"/>
-
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=Type}" Value="{x:Static model:FileTypes.Folder}">
-                                            <Setter Property="Command" Value="{x:Null}"/>
-                                            <Setter Property="ContextMenu">
-                                                <Setter.Value>
-                                                    <ContextMenu>
-                                                        <MenuItem Header="Выбрать" Command="{Binding Path=SelectFolderCommand, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}"
-                                                      CommandParameter="{Binding Path}"/>
-                                                    </ContextMenu>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                        </Button>
-                    </ControlTemplate>
-                </ContentControl.Template>
-            </ContentControl>-->
+            </HeaderedContentControl>            
         </HierarchicalDataTemplate>
     </UserControl.Resources>
 
@@ -165,7 +101,7 @@
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding Path=Type}" Value="{x:Static model:FileTypes.DataList}"/>
-                                    <Condition Binding="{Binding Path=DataFileIsHidden, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}" Value="True"/>
+                                    <Condition Binding="{Binding Path=DataFileIsHidden, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}" Value="False"/>
                                 </MultiDataTrigger.Conditions>
 
                                 <MultiDataTrigger.Setters>

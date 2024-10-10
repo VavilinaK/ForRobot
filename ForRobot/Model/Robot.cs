@@ -88,7 +88,6 @@ namespace ForRobot.Model
         //[JsonIgnore]
         //public int ConnectionTimeOut { get; set; }
 
-        [JsonPropertyName("pathProgram")]
         /// <summary>
         /// Путь к папке с программой
         /// </summary>
@@ -266,6 +265,9 @@ namespace ForRobot.Model
         }
 
         [JsonIgnore]
+        /// <summary>
+        /// Коллекция файлов на роботе
+        /// </summary>
         public ObservableCollection<ForRobot.Model.Controls.File> Files { get => new ObservableCollection<Controls.File>(this.FilesCollection); }
 
         [JsonIgnore]
@@ -320,23 +322,36 @@ namespace ForRobot.Model
 
         #region Private function
 
+        /// <summary>
+        /// Сборка дерева файлов
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="node"></param>
+        /// <param name="index"></param>
         private void LoadFiles(List<ForRobot.Model.Controls.File> data, ForRobot.Model.Controls.File node, int index)
         {
             if (this.IsConnection)
             {
                 if (data == null)
                 {
-                    this.FilesCollection = new List<ForRobot.Model.Controls.File>(); ;
-
+                    this.FilesCollection = new List<ForRobot.Model.Controls.File>();
                     List<ForRobot.Model.Controls.File> fileDatas = new List<ForRobot.Model.Controls.File>();
-                    var files = Task.Run<Dictionary<string, string>>(async () => await this.Connection.File_NameList()).Result;
-
-                    foreach (var file in files.Where(item => !item.Key.Contains("TP") && !item.Key.Contains("Mada") && !item.Key.Contains("System") && !item.Key.Contains("STEU")))
+                    try
                     {
-                        ForRobot.Model.Controls.File fileData = new ForRobot.Model.Controls.File(file.Key.TrimEnd(new char[] { '\\' }), file.Value.TrimStart(';').TrimEnd(';'));
-                        fileDatas.Add(fileData);
+                        var files = Task.Run<Dictionary<string, string>>(async () => await this.Connection.File_NameList()).Result;
+
+                        foreach (var file in files.Where(t2 => !App.Settings.AvailableFolders.Where(x => !x.Value).Select(s => s.Key).ToList<string>().Any(t1 => t2.Key.Contains(t1))))
+                        //foreach (var file in files)
+                        {
+                            ForRobot.Model.Controls.File fileData = new ForRobot.Model.Controls.File(file.Key.TrimEnd(new char[] { '\\' }), file.Value.TrimStart(';').TrimEnd(';'));
+                            fileDatas.Add(fileData);
+                        }
                     }
-                    LoadFiles(fileDatas.OrderBy(item => item.Path).ToList(), node, index);
+                    catch(Exception ex)
+                    {
+                        this.LogErrorMessage(ex.Message, ex);
+                    }
+                    LoadFiles(fileDatas.OrderBy(item => item.Path).ToList(), node, index);                    
                 }
                 else
                 {
