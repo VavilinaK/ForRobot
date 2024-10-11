@@ -38,7 +38,12 @@ namespace ForRobot.Libr.Converters
             if(files != null)
             {
                 var set = settings.Where(x => !x.Value).Select(s => s.Key).ToList<string>();
+                //var v = from f in files
+                //        select f;
+
                 var v = files.Where(t2 => !set.Any(t1 => t2.Path.Contains(t1)));
+
+                var v1 = files.Where(t2 => !set.Any(t1 => t2.Path.Contains(t1)));
             }
             //foreach (var file in files.Where(t2 => !App.Settings.AvailableFolders.Where(x => !x.Value).Select(s => s.Key).ToList<string>().Any(t1 => t2.Key.Contains(t1))))
             //var v = files.Where(t2 => !settings.Where(x => !x.Value).Select(s => s.Key).ToList<string>().Any(t1 => t2.Path.Contains(t1)));

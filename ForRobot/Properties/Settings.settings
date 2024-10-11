@@ -32,5 +32,8 @@
     <Setting Name="UpdatePath" Type="System.String" Scope="User">
       <Value Profile="(Default)">\\gateway\Обменник\!IT\777\Формы\ForRobot\Update</Value>
     </Setting>
+    <Setting Name="IsSettingsUpgradeRequired" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

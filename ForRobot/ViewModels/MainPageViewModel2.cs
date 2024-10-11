@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Controls;
+using System.Configuration;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -57,6 +58,8 @@ namespace ForRobot.ViewModels
         private Tuple<string, Robot> _selectedRobot;
 
         private ObservableCollection<Tuple<string, Robot>> _robotsCollection = new ObservableCollection<Tuple<string, Robot>>();
+
+        private ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection RobotConfig { get; set; } = ConfigurationManager.GetSection("robot") as ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection;
 
         #region Readonly
 
@@ -435,7 +438,12 @@ namespace ForRobot.ViewModels
                             this._isRead = false;
                         }
                         else
-                            this.AddRobot(new Robot());
+                            this.AddRobot(new Robot()
+                                                {
+                                                    PathProgramm = (this.RobotsCollection.Count > 0) ? Path.Combine(Directory.GetParent(this.RobotsCollection.Last().Item2.PathProgramm).ToString(), $"R{this.RobotsCollection.Count + 1}") 
+                                                                    : Path.Combine(this.RobotConfig.PathForGeneration, $"R{this.RobotsCollection.Count + 1}"),
+                                                    PathControllerFolder = this.RobotConfig.PathControllerFolder
+                                                });
 
                         this.SelectedRobot = this.RobotsCollection.Last();
                         this.SelectedNameRobot = this.RobotNamesCollection[0];
@@ -841,7 +849,6 @@ namespace ForRobot.ViewModels
             robot.ChangeRobot += new EventHandler(this.ChangeRobot);
             robot.Log += new EventHandler<ForRobot.Libr.LogEventArgs>(this.WreteLog);
             robot.LogError += new EventHandler<ForRobot.Libr.LogErrorEventArgs>(WreteLogError);
-            //robot.PathProgramm = (this.RobotsCollection.Count > 0) ? Path.Combine(Directory.GetParent(this.RobotsCollection.Last().Item2.PathProgramm).ToString(), $"R{this.RobotsCollection.Count + 1}") : Path.Combine(Directory.GetCurrentDirectory(), $"R{this.RobotsCollection.Count + 1}");
             robot.OpenConnection(this.ConnectionTimeOut);
             this.RobotsCollection.Add(new Tuple<string, Robot>($"Робот {this.RobotsCollection.Count + 1}", robot));
             RaisePropertyChanged(nameof(this.RobotNamesCollection));

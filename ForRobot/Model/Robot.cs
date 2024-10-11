@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Threading;
-using System.Configuration;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -37,8 +36,6 @@ namespace ForRobot.Model
         private decimal _tracking;
 
         private CancellationTokenSource _cancelTokenSource;
-
-        private ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection Config { get; set; } = ConfigurationManager.GetSection("robot") as ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection;
 
         private Task LoadFilesTask;
 
@@ -101,20 +98,12 @@ namespace ForRobot.Model
             }
         }
 
-        [JsonPropertyName("pathControllerFolder")]
         /// <summary>
         /// Путь к папке на контроллере
         /// </summary>
         public string PathControllerFolder
         {
-            get
-            {
-                if (string.IsNullOrEmpty(this._pathControllerFolder))
-                    this._pathControllerFolder = this.Config.PathControllerFolder;
-
-                return this._pathControllerFolder;
-            }
-
+            get=> this._pathControllerFolder;
             set
             {
                 Set(ref this._pathControllerFolder, value);
@@ -122,7 +111,6 @@ namespace ForRobot.Model
             }
         }
 
-        [JsonPropertyName("host")]
         public string Host
         {
             get => this.Connection.Host;
@@ -136,7 +124,6 @@ namespace ForRobot.Model
             }
         }
 
-        [JsonPropertyName("port")]
         public int Port
         {
             get => this.Connection.Port;

@@ -8,6 +8,13 @@ namespace ForRobot.Libr.ConfigurationProperties
     /// </summary>
     public class RobotConfigurationSection : System.Configuration.ConfigurationSection
     {
+        [ConfigurationProperty("FolderOfGeneration")]
+        public string PathForGeneration
+        {
+            get { return (string)this["FolderOfGeneration"]; }
+            set { this["FolderOfGeneration"] = value; }
+        }
+
         [ConfigurationProperty("ControlerFolder")]
         public string PathControllerFolder
         {

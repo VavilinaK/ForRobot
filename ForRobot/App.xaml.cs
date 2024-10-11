@@ -133,6 +133,15 @@ namespace ForRobot
                             App.Current.UpDateApp(e);
                         }
 
+                        // Обновление настроек приложения к пользовательским.
+                        if (ForRobot.Properties.Settings.Default.IsSettingsUpgradeRequired)
+                        {
+                            ForRobot.Properties.Settings.Default.Upgrade();
+                            ForRobot.Properties.Settings.Default.Reload();
+                            ForRobot.Properties.Settings.Default.IsSettingsUpgradeRequired = false;
+                            ForRobot.Properties.Settings.Default.Save();
+                        }
+
                         // Обновление скриптов на питоне
                         //foreach(var script in this._namesOfScripts)
                         //{

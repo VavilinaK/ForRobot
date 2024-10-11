@@ -57,6 +57,15 @@
   <PropertyGroup>
     <StartupObject>ForRobot.App</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>InterfaceOfRobots.pfx</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DelaySign>false</DelaySign>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="AustinHarris.JsonRpc, Version=1.2.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\AustinHarris.JsonRpc.1.2.3\lib\netstandard2.0\AustinHarris.JsonRpc.dll</HintPath>
@@ -389,6 +398,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="Themes\Images\none.png" />
+    <None Include="InterfaceOfRobots.pfx" />
     <None Include="Scripts\run.cmd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

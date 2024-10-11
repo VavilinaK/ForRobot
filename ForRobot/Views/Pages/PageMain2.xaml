@@ -685,27 +685,19 @@
                                 </Button.Style>
                             </Button>
 
-                            <Button Grid.Row="0" Grid.Column="3" ToolTip="Добавить робота"
+                            <Button Grid.Row="0" Grid.Column="3" Height="40"
+                                    ToolTip="Добавить робота"
+                                    Template="{StaticResource buttonTemplate}"
                                     Command="{Binding Path=AddRobotCommand}">
-                                <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource baseButtonStyle}">
-                                        <Setter Property="Width" Value="40"/>
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="{x:Type Button}">
-                                                    <Path Stroke="Black" StrokeThickness="2" Stretch="Fill">
-                                                        <Path.Data>
-                                                            <GeometryGroup>
-                                                                <EllipseGeometry RadiusX="10" RadiusY="10" Center="12,12"/>
-                                                                <PathGeometry Figures="M 15 12 L12 12M12 12L9 12M12 12L12 9M12 12L12 15"/>
-                                                            </GeometryGroup>
-                                                        </Path.Data>
-                                                    </Path>
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </Button.Style>
+                                
+                                <Path Stroke="Black" StrokeThickness="2" Stretch="Fill">
+                                    <Path.Data>
+                                        <GeometryGroup>
+                                            <EllipseGeometry RadiusX="10" RadiusY="10" Center="12,12"/>
+                                            <PathGeometry Figures="M 15 12 L12 12M12 12L9 12M12 12L12 9M12 12L12 15"/>
+                                        </GeometryGroup>
+                                    </Path.Data>
+                                </Path>
                             </Button>
 
                             <TabControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" TabStripPlacement="Bottom"
@@ -761,7 +753,7 @@
 
                                     <Grid Margin="15, 0, 15, 15">
                                         <Grid.RowDefinitions>
-                                            <RowDefinition Height="31*"/>
+                                            <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="10"/>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="10"/>
@@ -794,28 +786,19 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
 
-                                            <TextBox Grid.Column="0" Text="{Binding Path=SelectedRobot.Item2.PathProgramm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue='Путь для генерации на ПК'}"/>
+                                            <TextBox Grid.Column="0" Text="{Binding Path=SelectedRobot.Item2.PathProgramm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                                            <Button Grid.Column="2" ToolTip="Изменить папку генерации" Command="{Binding ChangePatnOnPCCommand}">
-                                                <Button.Style>
-                                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource baseButtonStyle}">
-                                                        <Setter Property="Width" Value="35"/>
-                                                        <Setter Property="Template">
-                                                            <Setter.Value>
-                                                                <ControlTemplate TargetType="{x:Type Button}">
-                                                                    <Border BorderThickness="0" Style="{StaticResource baseControlTemplateStyle}">
-                                                                        <Path Fill="Black" Stretch="Fill"
-                                                                              Data="M 277.974 49.076c65.267-65.379 171.733-65.49 237.448 0l232.186 232.187 1055.697 1055.809L1919.958 1920l-582.928-116.653-950.128-950.015 79.15-79.15 801.792 801.68 307.977-307.976-907.362-907.474L281.22 747.65 49.034 515.464c-65.379-65.603-65.379-172.069 0-237.448Zm1376.996 1297.96-307.977 307.976 45.117 45.116 384.999 77.023-77.023-385-45.116-45.116ZM675.355 596.258l692.304 692.304-79.149 79.15-692.304-692.305 79.149-79.15ZM396.642 111.88c-14.33 0-28.547 5.374-39.519 16.345l-228.94 228.94c-21.718 21.718-21.718 57.318 0 79.149l153.038 153.037 308.089-308.09-153.037-153.036c-10.972-10.971-25.301-16.345-39.63-16.345Z">
-                                                                            <Path.LayoutTransform>
-                                                                                <RotateTransform Angle="90"/>
-                                                                            </Path.LayoutTransform>
-                                                                        </Path>
-                                                                    </Border>
-                                                                </ControlTemplate>
-                                                            </Setter.Value>
-                                                        </Setter>
-                                                    </Style>
-                                                </Button.Style>
+                                            <Button Grid.Column="2" Height="40" Padding="5" Margin="0"
+                                                    ToolTip="Изменить папку генерации"
+                                                    Command="{Binding ChangePatnOnPCCommand}"
+                                                    Template="{StaticResource buttonTemplate}">
+
+                                                <Path Fill="Black" Stretch="Fill"
+                                                      Data="M 277.974 49.076c65.267-65.379 171.733-65.49 237.448 0l232.186 232.187 1055.697 1055.809L1919.958 1920l-582.928-116.653-950.128-950.015 79.15-79.15 801.792 801.68 307.977-307.976-907.362-907.474L281.22 747.65 49.034 515.464c-65.379-65.603-65.379-172.069 0-237.448Zm1376.996 1297.96-307.977 307.976 45.117 45.116 384.999 77.023-77.023-385-45.116-45.116ZM675.355 596.258l692.304 692.304-79.149 79.15-692.304-692.305 79.149-79.15ZM396.642 111.88c-14.33 0-28.547 5.374-39.519 16.345l-228.94 228.94c-21.718 21.718-21.718 57.318 0 79.149l153.038 153.037 308.089-308.09-153.037-153.036c-10.972-10.971-25.301-16.345-39.63-16.345Z">
+                                                    <Path.LayoutTransform>
+                                                        <RotateTransform Angle="90"/>
+                                                    </Path.LayoutTransform>
+                                                </Path>
                                             </Button>
                                         </Grid>
 

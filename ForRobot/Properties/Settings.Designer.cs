@@ -141,5 +141,17 @@ namespace ForRobot.Properties {
                 this["UpdatePath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IsSettingsUpgradeRequired {
+            get {
+                return ((bool)(this["IsSettingsUpgradeRequired"]));
+            }
+            set {
+                this["IsSettingsUpgradeRequired"] = value;
+            }
+        }
     }
 }
