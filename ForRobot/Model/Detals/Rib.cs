@@ -10,15 +10,28 @@ namespace ForRobot.Model.Detals
     public class Rib : BaseClass
     {
         private decimal _distance;
+        private decimal _distanceLeft;
+        private decimal _distanceRight;
         private decimal _distanceToStart;
         private decimal _distanceToEnd;
-
 
         [JsonProperty("d_dis")]
         /// <summary>
         /// Расстояние до следующего ребра
         /// </summary>
         public decimal Distance { get => this._distance; set => Set(ref this._distance, value); }
+
+        [JsonIgnore]
+        /// <summary>
+        /// Расстояние до ребра по левому краю
+        /// </summary>
+        public decimal DistanceLeft { get => this._distanceLeft; set => Set(ref this._distanceLeft, value); }
+
+        [JsonIgnore]
+        /// <summary>
+        /// Расстояние до ребра по правому краю
+        /// </summary>
+        public decimal DistanceRight { get => this._distanceRight; set => Set(ref this._distanceRight, value); }
 
         [JsonProperty("d_l1")]
         /// <summary>
@@ -31,5 +44,11 @@ namespace ForRobot.Model.Detals
         /// Отступ справа
         /// </summary>
         public decimal DistanceToEnd { get => this._distanceToEnd; set => Set(ref this._distanceToEnd, value); }
+
+        public Rib()
+        {
+            this.DistanceLeft = this.Distance;
+            this.DistanceRight = this.Distance;
+        }
     }
 }
