@@ -193,21 +193,9 @@
                                  IsChecked="{Binding Path=DataContext.DetalObject.DiferentDistance, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
                                             Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={StaticResource False}, Mode=TwoWay, TargetNullValue={StaticResource False}}"/>
 
-                    <RadioButton Grid.Row="0" Grid.Column="1" Content="Разное" IsEnabled="False"
+                    <RadioButton Grid.Row="0" Grid.Column="1" Content="Разное"
                                  IsChecked="{Binding Path=DataContext.DetalObject.DiferentDistance, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
                                             Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={StaticResource True}, Mode=TwoWay, TargetNullValue={StaticResource False}}">
-
-                        <!--<RadioButton.Style>
-                            <Style TargetType="RadioButton">
-                                <Setter Property="Visibility" Value="Hidden"/>
-
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="d_rect">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </RadioButton.Style>-->
                     </RadioButton>
 
                     <ContentControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">

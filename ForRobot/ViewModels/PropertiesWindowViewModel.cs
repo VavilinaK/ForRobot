@@ -1,10 +1,12 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Configuration;
 using System.ComponentModel;
 using System.Security.Cryptography;
+using System.Collections.Generic;
 
 namespace ForRobot.ViewModels
 {
@@ -12,7 +14,11 @@ namespace ForRobot.ViewModels
     {
         #region Private variables
 
+        //private System.Windows.Controls.TreeViewItem _selectedItem;
+
         #region Commands
+
+        private RelayCommand _selectClosedTabCommand;
 
         private RelayCommand _saveCommand;
 
@@ -22,6 +28,8 @@ namespace ForRobot.ViewModels
 
         private RelayCommand _editPinCodeCommand;
 
+        private RelayCommand _checkBoxAvailableFolderCommand;
+
         #endregion
 
         #endregion
@@ -30,7 +38,66 @@ namespace ForRobot.ViewModels
 
         public ForRobot.Libr.Settings.Settings Settings { get; set; } = ForRobot.Libr.Settings.Settings.GetSettings();
 
+        //public System.Windows.Controls.TreeViewItem SelectedItem { get => this._selectedItem; set => Set(ref this._selectedItem, value); }
+
         #region Commands
+
+        /// <summary>
+        /// Выбор закрытой вкладки
+        /// </summary>
+        public RelayCommand SelectClosedTabCommand
+        {
+            get
+            {
+                return _selectClosedTabCommand ??
+                    (_selectClosedTabCommand = new RelayCommand(obj =>
+                    {
+                        var control = (System.Windows.Controls.TreeView)obj;
+                        if (!this.EqualsPinCode())
+                        {
+                            control.Items.Cast<System.Windows.Controls.TreeViewItem>().Where(w => w.IsSelected).First().IsSelected = false;
+
+                            var item = control.Items.Cast<System.Windows.Controls.TreeViewItem>().Where(w => (string)w.Tag == "General").First();
+                            item.IsSelected = true;
+                            //RaisePropertyChanged(nameof(item.IsSelected));
+
+
+                            //this.SelectedItem = null;
+                            //this.SelectedItem = control.Items.Cast<System.Windows.Controls.TreeViewItem>().Where(item => (string)item.Tag == "General").First();
+                        }
+
+                        //var control = (System.Windows.Controls.TreeViewItem)obj;
+                        //if (control.IsSelected && !this.EqualsPinCode())
+                        //{
+                        //    control.IsSelected = false;
+                        //    //((System.Windows.Controls.TreeView)control.Parent).SelectedItem = ((System.Windows.Controls.TreeView)control.Parent).ItemsSource.Cast<System.Windows.Controls.TreeViewItem>().Where(item => (string)item.Tag == "General").First();
+                        //}
+
+
+                        //if (((System.Windows.Controls.Primitives.ToggleButton)obj).IsChecked == true)
+                        //{
+                        //    string pass = "";
+                        //    using (ForRobot.Views.Windows.InputWindow _inputWindow = new ForRobot.Views.Windows.InputWindow("Введите пин-код") { Title = "Управление процессом на роботе" })
+                        //    {
+                        //        if (_inputWindow.ShowDialog() == true)
+                        //        {
+                        //            StringBuilder Sb = new StringBuilder();
+                        //            using (var hash = SHA256.Create())
+                        //            {
+                        //                Encoding enc = Encoding.UTF8;
+                        //                byte[] result = hash.ComputeHash(Encoding.UTF8.GetBytes(_inputWindow.Answer));
+                        //                foreach (byte b in result)
+                        //                    Sb.Append(b.ToString("x2"));
+                        //            }
+                        //            pass = Sb.ToString();
+                        //        }
+                        //    }
+                        //    if (!Equals(pass, Properties.Settings.Default.PinCode))
+                        //        ((System.Windows.Controls.Primitives.ToggleButton)obj).IsChecked = false;
+                        //}
+                    }));
+            }
+        }
 
         /// <summary>
         /// Сохранение настроек
@@ -128,6 +195,23 @@ namespace ForRobot.ViewModels
                                 Properties.Settings.Default.Save();
                             }
                         }
+                    }));
+            }
+        }
+
+        /// <summary>
+        /// Выбор отображающихся папок
+        /// </summary>
+        public RelayCommand CheckBoxAvailableFolderCommand
+        {
+            get
+            {
+                return _checkBoxAvailableFolderCommand ??
+                    (_checkBoxAvailableFolderCommand = new RelayCommand(obj =>
+                    {
+                        var tuple = (System.Collections.Generic.KeyValuePair<string, bool>)obj;
+                        this.Settings.AvailableFolders.Remove(this.Settings.AvailableFolders.Where(x => x.Key == tuple.Key).First().Key);
+                        this.Settings.AvailableFolders.Add(tuple.Key, !tuple.Value);
                     }));
             }
         }

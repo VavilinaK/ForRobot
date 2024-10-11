@@ -4,34 +4,115 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ForRobot.Views.Controls"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             xmlns:model="clr-namespace:ForRobot.Model.Controls"
+             mc:Ignorable="d">
     
     <UserControl.Resources>
-        <HierarchicalDataTemplate x:Key="NavTreeTempl" ItemsSource="{Binding Path=Children}">
-            <Button ToolTip="{Binding Path=Path, Mode=OneTime}"
-                    Command="{Binding Path=DataContext.SelectedPathFromTreeCommand,
-                        RelativeSource = {RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
-                    CommandParameter="{Binding FullPathName}"
-                    Background="{x:Null}" BorderBrush="{x:Null}" Padding="0" Height="20"
-                    Focusable="False" ClickMode="Press">
-                
-                <StackPanel Orientation="Horizontal" Margin="0" VerticalAlignment="Stretch" >
-                    <Image Source="{Binding Path=Icon, Mode=OneTime}" Stretch="Fill"/>
-                    <TextBlock Margin="5,0,0,0" Text="{Binding Name, Mode=OneTime}"/>
-                </StackPanel>
-            </Button>
+        <BitmapImage x:Key="ImageFolderIcon" UriSource="/InterfaceOfRobots;component/Themes/Images/folder.png"/>
+        <BitmapImage x:Key="ImageDataFileIcon" UriSource="/InterfaceOfRobots;component/Themes/Images/dataFile.png"/>
+        <BitmapImage x:Key="ImageProgramFileIcon" UriSource="/InterfaceOfRobots;component/Themes/Images/programFile.png"/>
+
+        <HierarchicalDataTemplate x:Key="NavTreeItemTemplate"
+                                  ItemsSource="{Binding Path=Children, Mode=OneWay, NotifyOnSourceUpdated=True}"
+                                  DataType="{x:Type model:File}">
+            <HeaderedContentControl>
+                <HeaderedContentControl.Template>
+                    <ControlTemplate TargetType="{x:Type HeaderedContentControl}">
+                        <Button ToolTip="{Binding Path=Path, Mode=OneTime}"
+                                Background="Transparent" BorderBrush="Transparent"
+                                Padding="0" Margin="0" Height="45"
+                                Focusable="False" ClickMode="Press"
+                                Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}}}">
+
+                            <Grid Margin="0, 5" VerticalAlignment="Stretch">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Path Grid.Column="0" Margin="5, 0">
+                                    <Path.Style>
+                                        <Style TargetType="{x:Type Path}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=Type}" Value="{x:Static model:FileTypes.Folder}">
+                                                    <Setter Property="Fill" Value="#FFCB42"/>
+                                                    <Setter Property="Data" Value="M25.5 27.599999999999998C27.8195 27.599874999999997 29.700000000000003 25.719500000000004 29.700000000000003 23.4V17.1C29.700000000000003 14.7805 27.8195 12.900125 25.5 12.9H4.5C2.1803749999999997 12.899875000000002 0.3 14.780375 0.3 17.1V23.4C0.3 25.719625 2.1803749999999997 27.600125000000002 4.5 27.599999999999998H25.5ZM0.3 12.404375000000002V6.6000000000000005C0.3 4.280375 2.1803749999999997 2.4 4.5 2.4H12.030624999999999C12.8655 2.400375 13.66625 2.73225 14.256625 3.3226250000000004L17.227375000000002 6.292C17.423375 6.489374999999999 17.69075 6.6000000000000005 17.969375 6.6000000000000005H25.5C27.819625000000002 6.6000000000000005 29.700000000000003 8.480375 29.700000000000003 10.8V12.404375000000002C28.546125 11.36925 27.050125 10.797749999999999 25.5 10.8H4.5C2.949875 10.797749999999999 1.453875 11.36925 0.3 12.404375000000002Z"/>
+                                                </DataTrigger>
+
+                                                <DataTrigger Binding="{Binding Path=Type}" Value="{x:Static model:FileTypes.DataList}">
+                                                    <Setter Property="Fill" Value="Black"/>
+                                                    <Setter Property="Data" Value="M26.204116796875 8.261261718750001 18.552580078124997 0.609725c-0.20516367187499998 -0.20493710937499998 -0.48335976562499994 -0.31995156249999995 -0.7733484375 -0.319725H4.662305078125c-1.20741953125 -0.000056640625 -2.186146875 0.9787386718750001 -2.186146875 2.186158203125v24.047683593749998c0 1.20741953125 0.9787273437499999 2.1862148437499997 2.186146875 2.186158203125h19.67538984375c1.20741953125 0.000056640625 2.186146875 -0.9787386718750001 2.186146875 -2.186158203125V9.034621484375c0.0002265625 -0.29 -0.11478789062500001 -0.568184765625 -0.319725 -0.773359765625Zm-7.33181171875 12.7972015625H10.127694921875c-0.841453125 -0.0000453125 -1.3673726562500002 -0.9109625000000001 -0.946612109375 -1.63965546875 0.195262890625 -0.338178515625 0.556108984375 -0.546502734375 0.946612109375 -0.546502734375h8.74461015625c0.841453125 0 1.3673613281249999 0.9108945312500001 0.946634765625 1.639621484375 -0.1952515625 0.338178515625 -0.556131640625 0.5465140625 -0.946634765625 0.54653671875Zm0 -4.372305078125H10.127694921875c-0.841453125 -0.0000453125 -1.3673726562500002 -0.9109625000000001 -0.946612109375 -1.6396667968749998C9.376345703125 14.70832421875 9.737191796875 14.5 10.127694921875 14.5h8.74461015625c0.841453125 0 1.3673613281249999 0.9108945312500001 0.946634765625 1.63961015625 -0.1952515625 0.33818984375 -0.556131640625 0.5465253906249999 -0.946634765625 0.546548046875Zm-1.0930734375 -7.65153671875V3.022694921875l6.0119265625 6.0119265625Z"/>
+                                                </DataTrigger>
+
+                                                <DataTrigger Binding="{Binding Path=Type}" Value="{x:Static model:FileTypes.Program}">
+                                                    <Setter Property="Fill" Value="Black"/>
+                                                    <Setter Property="Data" Value="M26.523841796875 2.476158203125H2.476158203125C1.268738671875 2.4761015625000002 0.29 3.454885546875 0.29 4.662305078125v19.67538984375c0 1.207408203125 0.9787386718750001 2.186203515625 2.186158203125 2.186146875h24.047683593749998c1.207340234375 -0.0000453125 2.186158203125 -0.9788066406249999 2.186158203125 -2.186146875V4.662305078125c0 -1.20737421875 -0.97877265625 -2.186146875 -2.186158203125 -2.186146875Zm-12.43375 12.877812500000001 -5.465378515625 4.372305078125c-0.657382421875 0.525908203125 -1.637559765625 0.1429609375 -1.764321484375 -0.689305078125 -0.058826953125 -0.386255078125 0.09287929687499999 -0.7745605468750001 0.397968359375 -1.0186250000000001L11.656629296875 14.5 7.258360156250001 10.981654296875c-0.657382421875 -0.525908203125 -0.4989359375 -1.566237890625 0.285208203125 -1.872595703125 0.363916015625 -0.142179296875 0.776055859375 -0.07941015624999999 1.081144921875 0.164665625l5.465378515625 4.372305078125c0.547680859375 0.43759414062499996 0.547680859375 1.270347265625 0 1.70794140625Zm6.968371484375 4.611419140625h-5.465389843750001c-0.841441796875 -0.0000453125 -1.3673613281249999 -0.9109625000000001 -0.9466007812499999 -1.6396667968749998 0.195262890625 -0.33816718749999997 0.556108984375 -0.54649140625 0.9466007812499999 -0.54649140625h5.465389843750001c0.841453125 0 1.3673613281249999 0.9108945312500001 0.946634765625 1.63961015625 -0.1952515625 0.33818984375 -0.556131640625 0.5465253906249999 -0.946634765625 0.546548046875Z"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Path.Style>
+                                </Path>
+
+                                <TextBlock Grid.Column="1" Margin="5, 0" Text="{Binding Name, Mode=OneTime}"
+                                           TextAlignment="Left" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}">
+                                    <Setter Property="Command" Value="{Binding Path=SelectItemCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:NavigationTreeView}}}"/>
+                                    <Setter Property="CommandParameter" Value="{Binding Path=Path}"/>
+
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=Type}" Value="{x:Static model:FileTypes.Folder}">
+                                            <Setter Property="Command" Value="{x:Null}"/>
+                                            <Setter Property="ContextMenu">
+                                                <Setter.Value>
+                                                    <ContextMenu>
+                                                        <MenuItem Header="Выбрать" Command="{Binding Path=PlacementTarget.Tag.SelectFolderCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
+                                                                  CommandParameter="{Binding Path=Path}"/>
+                                                    </ContextMenu>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </ControlTemplate>
+                </HeaderedContentControl.Template>
+            </HeaderedContentControl>            
         </HierarchicalDataTemplate>
     </UserControl.Resources>
-    
-    <TreeView BorderThickness="0"
-              ItemsSource="{Binding Path=RootFileCollection, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}"
-              ItemTemplate="{StaticResource NavTreeTempl}" >
 
-        <TreeView.ItemContainerStyle>
-            <Style TargetType="{x:Type TreeViewItem}">
-                <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}"/>
-            </Style>
-        </TreeView.ItemContainerStyle>
-    </TreeView>
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+        <StackPanel>
+            <FrameworkElement Visibility="Hidden" x:Name="dummy"/>
+            <TreeView FontSize="18" BorderThickness="0" Padding="10"
+                      ItemsSource="{Binding Path=FileCollection, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}"
+                      ItemTemplate="{StaticResource NavTreeItemTemplate}"
+                      Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}"
+                      Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}">
+
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}"/>
+
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding Path=Type}" Value="{x:Static model:FileTypes.DataList}"/>
+                                    <Condition Binding="{Binding Path=DataFileIsHidden, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}" Value="False"/>
+                                </MultiDataTrigger.Conditions>
+
+                                <MultiDataTrigger.Setters>
+                                    <Setter Property="Visibility" Value="Hidden"/>
+                                    <Setter Property="Height" Value="0"/>
+                                </MultiDataTrigger.Setters>
+                            </MultiDataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TreeView.ItemContainerStyle>
+            </TreeView>
+        </StackPanel>
+    </ScrollViewer> 
 </UserControl>

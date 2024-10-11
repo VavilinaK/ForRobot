@@ -15,17 +15,19 @@
     <conv:StringFormatConverter x:Key="StringConvert"/>
     <conv:ThicknessConverter x:Key="ThicknessConvert"/>
     <conv:SelectProgramConverter x:Key="SelectProgramConvert"/>
-    <conv:NullBooleanConverter x:Key="NullBooleanConvert"/>
+    <conv:VisibilityFolderOnRobot x:Key="VisibilityFolderOnRobot"/>
 
     <!--Colors-->
     <Color x:Key="Aqua">#00FFFF</Color>    
     <Color x:Key="SteelBlue">#4682B4</Color>
     <Color x:Key="LightGray">#FFC1C1C1</Color>
-    
+    <Color x:Key="DarkGray">#616161</Color>
+
     <!--SolidColorBrush-->
     <SolidColorBrush x:Key="BrushAqua" Color="{DynamicResource Aqua}"/>
     <SolidColorBrush x:Key="BrushSteelBlue" Color="{DynamicResource SteelBlue}"/>
     <SolidColorBrush x:Key="BrushLightGray" Color="{DynamicResource LightGray}"/>
+    <SolidColorBrush x:Key="BrushDarkGray" Color="{DynamicResource DarkGray}"/>
 
     <!--BitmapImages-->
     <!--Button's BitmapImage-->
@@ -49,12 +51,6 @@
     <BitmapImage x:Key="ImageSlopeRight" UriSource="/InterfaceOfRobots;component/Themes/Images/Slope_right.png"/>
     <BitmapImage x:Key="ImageTrapezoidTopParam" UriSource="/InterfaceOfRobots;component/Themes/Images/Trapezoid_top.png"/>
     <BitmapImage x:Key="ImageTrapezoidBottomParam" UriSource="/InterfaceOfRobots;component/Themes/Images/trapezoid_bottom.png"/>
-    
-    <!--Program icon's-->
-    <BitmapImage x:Key="ImageFolderIcon" UriSource="/InterfaceOfRobots;component/Themes/Images/folder.png"/>
-    <BitmapImage x:Key="ImageDataFileIcon" UriSource="/InterfaceOfRobots;component/Themes/Images/dataFile.png"/>
-    <BitmapImage x:Key="ImageProgramFileIcon" UriSource="/InterfaceOfRobots;component/Themes/Images/programFile.png"/>
-
 
     <!--Button's Styles-->
     <Style x:Key="baseButtonStyle" TargetType="FrameworkElement">
@@ -719,7 +715,7 @@
     </Style>
 
     <Style x:Key="toggleButtonControlStyle" TargetType="ToggleButton">
-        <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
+        <Setter Property="Width" Value="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"/>
         <Setter Property="BorderThickness" Value="0"/>
 
         <Setter Property="Template">
@@ -932,7 +928,7 @@
     </Style>
 
     <!--По-умолчанию-->
-    <Style x:Key="buttonStandartStyle" TargetType="Button">
+    <!--<Style x:Key="buttonStandartStyle" TargetType="Button">
         <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
         <Setter Property="ToolTip" Value="Значения по-умолчанию"/>
         <Setter Property="Template">
@@ -958,7 +954,7 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>
+    </Style>-->
 
     <Style x:Key="toggleButtonInfoStyle" TargetType="ToggleButton">
         <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>

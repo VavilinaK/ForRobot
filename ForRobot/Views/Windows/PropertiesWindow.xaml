@@ -31,14 +31,33 @@
         </Grid.ColumnDefinitions>
 
         <TreeView Grid.Row="0" Grid.Column="0" x:Name="TreeViewProperties" FontSize="13">
-            <TreeViewItem Header="Общии" Tag="General" IsSelected="True"/>
+
+            <TreeViewItem Header="Общие" Tag="General" IsSelected="True"/>
+
+            <TreeViewItem Header="Навигация" Tag="NavigationTree">
+                <!--<i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Selected">
+                        <i:InvokeCommandAction Command="{Binding Path=SelectClosedTabCommand}" CommandParameter="{Binding Path=., RelativeSource={RelativeSource AncestorType={x:Type TreeView}, Mode=FindAncestor}}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>-->
+            </TreeViewItem>
 
             <!--<TreeViewItem Header="Соединение" Tag="Connection"/>-->
             
             <!--<TreeViewItem Header="Генерация"/>-->
 
+            <!--<TreeView.Style>
+                <Style TargetType="{x:Type TreeView}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path=SelectedItem, RelativeSource={RelativeSource Self}}" Value="{x:Null}">
+                            <Setter Property="SelectedValuePath" Value="General"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TreeView.Style>-->
+
             <i:Interaction.Behaviors>
-                <lib:TreeViewSelectedItemBehavior SelectedItem="{Binding Path=.}" />
+                <lib:TreeViewSelectedItemBehavior SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay}"/>
             </i:Interaction.Behaviors>
         </TreeView>
 
@@ -79,6 +98,16 @@
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="ContentControl">
                                                     <ContentControl ContentTemplate="{StaticResource ConnectionProperiesTemplate}"/>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+
+                                    <DataTrigger Binding="{Binding Path=SelectedItem.Tag, ElementName=TreeViewProperties}" Value="NavigationTree">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ContentControl">
+                                                    <ContentControl ContentTemplate="{StaticResource NavigationTreeProperiesTemplate}"/>
                                                 </ControlTemplate>
                                             </Setter.Value>
                                         </Setter>

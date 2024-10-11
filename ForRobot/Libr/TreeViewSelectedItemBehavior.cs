@@ -2,8 +2,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interactivity;
-using System.Diagnostics;
-using System.ComponentModel;
 
 namespace ForRobot.Libr
 {
@@ -17,8 +15,10 @@ namespace ForRobot.Libr
             set { SetValue(SelectedItemProperty, value); }
         }
 
-        public static readonly DependencyProperty SelectedItemProperty =
-            DependencyProperty.Register("SelectedItem", typeof(object), typeof(TreeViewSelectedItemBehavior), new UIPropertyMetadata(null, OnSelectedItemChanged));
+        public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register(nameof(SelectedItem), 
+                                                                                                     typeof(object),
+                                                                                                     typeof(TreeViewSelectedItemBehavior),
+                                                                                                     new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnSelectedItemChanged));
 
         private static void OnSelectedItemChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
@@ -29,7 +29,38 @@ namespace ForRobot.Libr
             }
         }
 
+        //private static void OnSelectedItemChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+        //{
+        //    var behavior = (TreeViewSelectedItemBehavior)sender;
+        //    if (behavior._modelHandled) return;
+
+        //    if (behavior.AssociatedObject == null)
+        //        return;
+
+        //    behavior._modelHandled = true;
+        //    behavior.UpdateAllTreeViewItems();
+        //    behavior._modelHandled = false;
+        //}
+
         #endregion
+
+        //public IsChildOfPredicate HierarchyPredicate
+        //{
+        //    get => (IsChildOfPredicate)GetValue(HierarchyPredicateProperty);
+        //    set => SetValue(HierarchyPredicateProperty, value);
+        //}
+
+        //// Should expand selected?
+        //public bool ExpandSelected
+        //{
+        //    get => (bool)GetValue(ExpandSelectedProperty);
+        //    set => SetValue(ExpandSelectedProperty, value);
+        //}
+
+
+
+
+
 
         protected override void OnAttached()
         {

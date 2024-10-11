@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using System.Diagnostics;
+using System.Collections.Generic;
 
 using Newtonsoft.Json;
 
@@ -18,7 +18,9 @@ namespace ForRobot.Libr.Settings
         #endregion
 
         #region Public variables
-        
+
+        #region Generic
+
         /// <summary>
         /// Прилежение обновляется автоматически
         /// </summary>
@@ -39,7 +41,29 @@ namespace ForRobot.Libr.Settings
         /// </summary>
         public double ConnectionTimeOut { get; set; } = 3;
 
+        /// <summary>
+        /// Режим закрытия приложения. Спрашивает пользователя о закрытии и/или разрыве соединения
+        /// </summary>
         public ModeClosingApp ModeClosingApp { get; set; } = ModeClosingApp.HaveConnected;
+
+        #endregion
+
+        #region Navigation
+
+        public bool AccessDataFile { get; set; } = false;
+
+        /// <summary>
+        /// Доступность системных папок в дереве файлов
+        /// </summary>
+        public SortedDictionary<string, bool> AvailableFolders { get; set; } = new SortedDictionary<string, bool>()
+                                                                                    {
+                                                                                        { "System", false },
+                                                                                        { "Mada", false },
+                                                                                        { "TP", false },
+                                                                                        { "STEU", false }
+                                                                                    };
+
+        #endregion
 
         #endregion
 
@@ -51,12 +75,19 @@ namespace ForRobot.Libr.Settings
 
         #region Public functions
 
+        /// <summary>
+        /// Сохранение настроек в json-файл во временных файлах
+        /// </summary>
         public void Save()
         {
             string sPathForSave = Path.Combine(Path.GetTempPath(), "interfaceOfRobot_settings.json");
             File.WriteAllText(sPathForSave, JsonConvert.SerializeObject(this, _jsonSettings));
         }
 
+        /// <summary>
+        /// Инициализация настроек (при первой загрузки) или выгрузка из временных файлов
+        /// </summary>
+        /// <returns></returns>
         public static Settings GetSettings()
         {
             if (File.Exists(Path.Combine(Path.GetTempPath(), "interfaceOfRobot_settings.json")))

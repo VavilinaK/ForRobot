@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Controls;
+using System.Configuration;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -58,6 +59,8 @@ namespace ForRobot.ViewModels
 
         private ObservableCollection<Tuple<string, Robot>> _robotsCollection = new ObservableCollection<Tuple<string, Robot>>();
 
+        private ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection RobotConfig { get; set; } = ConfigurationManager.GetSection("robot") as ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection;
+
         #region Readonly
 
         /// <summary>
@@ -85,6 +88,10 @@ namespace ForRobot.ViewModels
         #region Commands
 
         private RelayCommand _openCodingCommand;
+
+        private RelayCommand _importCommand;
+
+        private RelayCommand _exportCommand;
         
         private RelayCommand _standartParametrsCommand;
         
@@ -96,13 +103,16 @@ namespace ForRobot.ViewModels
 
         private RelayCommand _upDateFilesCommand;
 
-        private RelayCommand _changePathOnPCtCommand;
+        private RelayCommand _changePathOnPCCommand;
+
+        private RelayCommand _selectFolderCommand;
 
         private RelayCommand _selectRobotCommand;
 
         private RelayCommand _helpCommand;
 
         private RelayCommand _propertiesCommand;
+
 
         private IAsyncCommand _generateProgramCommand;
 
@@ -115,7 +125,7 @@ namespace ForRobot.ViewModels
         private IAsyncCommand _selectGeneratProgramCommand;
 
         private IAsyncCommand _selectFileCommand;
-
+        
         #endregion
 
         #endregion
@@ -286,7 +296,7 @@ namespace ForRobot.ViewModels
         #endregion
 
         #region Commands
-
+            
         /// <summary>
         /// Открытие панели управления
         /// </summary>
@@ -299,6 +309,7 @@ namespace ForRobot.ViewModels
                     {
                         if(((System.Windows.Controls.Primitives.ToggleButton)obj).IsChecked == true)
                         {
+                            string pass = "";
                             using (ForRobot.Views.Windows.InputWindow _inputWindow = new ForRobot.Views.Windows.InputWindow("Введите пин-код") { Title = "Управление процессом на роботе" })
                             {
                                 if (_inputWindow.ShowDialog() == true)
@@ -311,11 +322,71 @@ namespace ForRobot.ViewModels
                                         foreach (byte b in result)
                                             Sb.Append(b.ToString("x2"));
                                     }
-                                    if (!Equals(Sb.ToString(), Properties.Settings.Default.PinCode))
-                                        ((System.Windows.Controls.Primitives.ToggleButton)obj).IsChecked = false;
+                                    pass = Sb.ToString(); 
                                 }
                             }
+                            if (!Equals(pass, Properties.Settings.Default.PinCode))
+                                ((System.Windows.Controls.Primitives.ToggleButton)obj).IsChecked = false;
                         }
+                    }));
+            }
+        }
+
+        /// <summary>
+        /// Импорт параметров программы
+        /// </summary>
+        public RelayCommand ImportCommand
+        {
+            get
+            {
+                return _importCommand ??
+                    (_importCommand = new RelayCommand(obj =>
+                    {
+                        OpenFileDialog openFileDialog = new OpenFileDialog()
+                        {
+                            Filter = "Json files (*.json)|*.json|Text files (*.txt)|*.txt",
+                            Title = "Импорт параметров программы"
+                        };
+
+                        if (openFileDialog.ShowDialog() == DialogResult.Cancel && string.IsNullOrEmpty(openFileDialog.FileName))
+                            return;
+
+                        this.DetalObject = JsonConvert.DeserializeObject<Plita>(JObject.Parse(File.ReadAllText(openFileDialog.FileName), _jsonLoadSettings).ToString(), this._jsonSettings);
+                        this.SaveDetal();
+
+                        string message = $"{DateTime.Now.ToString("HH:mm:ss")} Импортированы параметры программы из файла {openFileDialog.FileName}\n";
+                        App.Current.LoggerString = message + App.Current.LoggerString;
+                        App.Current.Logger.Trace(message + $"Содержание файла {openFileDialog.FileName}:\n" + File.ReadAllText(openFileDialog.FileName) + "\n");
+                    }));
+            }
+        }
+
+        /// <summary>
+        /// Экспорт параметров программы
+        /// </summary>
+        public RelayCommand ExportCommand
+        {
+            get
+            {
+                return _exportCommand ??
+                    (_exportCommand = new RelayCommand(obj =>
+                    {
+                        SaveFileDialog saveFileDialog = new SaveFileDialog()
+                        {
+                            Filter = "Json files (*.json)|*.json|Text files (*.txt)|*.txt",
+                            Title = "Экспорт параметров программы"
+                        };
+
+                        if (saveFileDialog.ShowDialog() == DialogResult.Cancel && string.IsNullOrEmpty(saveFileDialog.FileName))
+                            return;
+
+                        File.WriteAllText(saveFileDialog.FileName, this.DetalObject.JsonForSave);
+                        if (File.Exists(saveFileDialog.FileName))
+                        {
+                            string message = $"{DateTime.Now.ToString("HH:mm:ss")} Параметры программы экспортированы в файл {saveFileDialog.FileName}\n";
+                            App.Current.LoggerString = message + App.Current.LoggerString;
+                            App.Current.Logger.Trace(message + $"Содержание файла {saveFileDialog.FileName}:\n" + this.DetalObject.JsonForSave + "\n");
+                        }                     
                     }));
             }
         }
@@ -367,7 +438,12 @@ namespace ForRobot.ViewModels
                             this._isRead = false;
                         }
                         else
-                            this.AddRobot(new Robot());
+                            this.AddRobot(new Robot()
+                                                {
+                                                    PathProgramm = (this.RobotsCollection.Count > 0) ? Path.Combine(Directory.GetParent(this.RobotsCollection.Last().Item2.PathProgramm).ToString(), $"R{this.RobotsCollection.Count + 1}") 
+                                                                    : Path.Combine(this.RobotConfig.PathForGeneration, $"R{this.RobotsCollection.Count + 1}"),
+                                                    PathControllerFolder = this.RobotConfig.PathControllerFolder
+                                                });
 
                         this.SelectedRobot = this.RobotsCollection.Last();
                         this.SelectedNameRobot = this.RobotNamesCollection[0];
@@ -425,7 +501,7 @@ namespace ForRobot.ViewModels
                 return _upDateFilesCommand ??
                     (_upDateFilesCommand = new RelayCommand(obj =>
                     {
-                        this.SelectedRobot.Item2.GetFiles();
+                        Task.Run(async () => await this.SelectedRobot.Item2.GetFiles());                        
                     }));
             }
         }
@@ -437,13 +513,12 @@ namespace ForRobot.ViewModels
         {
             get
             {
-                return _changePathOnPCtCommand ??
-                    (_changePathOnPCtCommand = new RelayCommand(obj =>
+                return _changePathOnPCCommand ??
+                    (_changePathOnPCCommand = new RelayCommand(obj =>
                     {
                         using (var fbd = new FolderBrowserDialog())
                         {
                             DialogResult result = fbd.ShowDialog();
-
                             if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
                             {
                                 for(int i=0; i < this.RobotsCollection.Count; i++)
@@ -452,6 +527,21 @@ namespace ForRobot.ViewModels
                                 }
                             }
                         }
+                    }));
+            }
+        }
+
+        /// <summary>
+        /// Выбор папки на контроллер
+        /// </summary>
+        public RelayCommand SelectFolderCommand
+        {
+            get
+            {
+                return _selectFolderCommand ??
+                    (_selectFolderCommand = new RelayCommand(obj =>
+                    {
+                        this.SelectedRobot.Item2.PathControllerFolder = Path.Combine(ForRobot.Libr.Client.JsonRpcConnection.DefaulRoot, obj as string);
                     }));
             }
         }
@@ -571,7 +661,7 @@ namespace ForRobot.ViewModels
 
                                     if (System.Windows.MessageBox.Show($"Копировать файлы программы в {robot.Item2.PathControllerFolder}?", $"{robot.Item1}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
                                             MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK && await Task.Run<bool>(() => robot.Item2.Copy(this.ProgrammName)))
-                                        await Task.Run(() => robot.Item2.SelectProgramm(string.Join("", this.ProgrammName, ".src")));
+                                        await Task.Run(() => robot.Item2.SelectProgramByName(string.Join("", this.ProgrammName, ".src")));
                                     else
                                         continue;
                                 }
@@ -596,7 +686,7 @@ namespace ForRobot.ViewModels
 
                                 if (System.Windows.MessageBox.Show($"Копировать файлы программы в {this.RobotForControl.PathControllerFolder}?", $"{this.SelectedNameRobot}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
                                     MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK && await Task.Run<bool>(() => this.RobotForControl.Copy(this.ProgrammName)))
-                                    await Task.Run(() => this.RobotForControl.SelectProgramm(string.Join("", this.ProgrammName, ".src")));
+                                    await Task.Run(() => this.RobotForControl.SelectProgramByName(string.Join("", this.ProgrammName, ".src")));
                                 else
                                     return;
                             }
@@ -689,9 +779,9 @@ namespace ForRobot.ViewModels
                     }, _exceptionCallback));
             }
         }
-
+        
         /// <summary>
-        /// Выбор файла программы
+        /// Выбор сгенерированной программы
         /// </summary>
         public IAsyncCommand SelectGeneratProgramCommand
         {
@@ -703,17 +793,17 @@ namespace ForRobot.ViewModels
                         if (this.SelectedNameRobot == "Все")
                             foreach (var robot in this.RobotsCollection.Select(item => item.Item2))
                             {
-                                await Task.Run(() => robot.SelectProgramm(string.Join("", this.ProgrammName, ".src")));
+                                await Task.Run(() => robot.SelectProgramByName(string.Join("", this.ProgrammName, ".src")));
                             }
                         else
-                            await Task.Run(() => this.RobotForControl.SelectProgramm(string.Join("", this.ProgrammName, ".src")));
+                            await Task.Run(() => this.RobotForControl.SelectProgramByName(string.Join("", this.ProgrammName, ".src")));
 
                     }, _exceptionCallback));
             }
         }
 
         /// <summary>
-        /// Выбор сгенерированной программы
+        /// Выбор файла программы
         /// </summary>
         public IAsyncCommand SelectFileCommand
         {
@@ -722,10 +812,8 @@ namespace ForRobot.ViewModels
                 return _selectFileCommand ??
                     (_selectFileCommand = new AsyncRelayCommand(async obj =>
                     {
-                        ForRobot.Model.Controls.File file = (ForRobot.Model.Controls.File)obj;
-                        if (file.Type == FileTypes.Program)
-                            await Task.Run(() => this.SelectedRobot.Item2.SelectProgramm(file.Name));
-
+                        string sFilePath = obj as string;
+                        await Task.Run(() => this.SelectedRobot.Item2.SelectProgramByPath(sFilePath));
                     }, _exceptionCallback));
             }
         }
@@ -761,7 +849,6 @@ namespace ForRobot.ViewModels
             robot.ChangeRobot += new EventHandler(this.ChangeRobot);
             robot.Log += new EventHandler<ForRobot.Libr.LogEventArgs>(this.WreteLog);
             robot.LogError += new EventHandler<ForRobot.Libr.LogErrorEventArgs>(WreteLogError);
-            robot.PathProgramm = (this.RobotsCollection.Count > 0) ? Path.Combine(Directory.GetParent(this.RobotsCollection.Last().Item2.PathProgramm).ToString(), $"R{this.RobotsCollection.Count + 1}") : Path.Combine(Directory.GetCurrentDirectory(), $"R{this.RobotsCollection.Count + 1}");
             robot.OpenConnection(this.ConnectionTimeOut);
             this.RobotsCollection.Add(new Tuple<string, Robot>($"Робот {this.RobotsCollection.Count + 1}", robot));
             RaisePropertyChanged(nameof(this.RobotNamesCollection));
@@ -821,7 +908,7 @@ namespace ForRobot.ViewModels
         /// <param name="e"></param>
         private void WreteLog(object sender, LogEventArgs e)
         {
-            App.Current.LoggerString += e.Message;
+            App.Current.LoggerString = e.Message + App.Current.LoggerString;
             App.Current.Logger.Trace(e.Message);
         }
 
@@ -832,7 +919,7 @@ namespace ForRobot.ViewModels
         /// <param name="e"></param>
         private void WreteLogError(object sender, LogErrorEventArgs e)
         {
-            App.Current.LoggerString += e.Message;
+            App.Current.LoggerString = e.Message + App.Current.LoggerString;
             App.Current.Logger.Error(e.Message);
         }
 
@@ -848,26 +935,32 @@ namespace ForRobot.ViewModels
         private readonly JsonSerializerSettings _jsonSettings = new JsonSerializerSettings()
         {
             ContractResolver = new ForRobot.Libr.Json.SaveAttributesResolver(),
-            Formatting = Formatting.Indented
+            Formatting = Formatting.Indented,
+            
+        };
+
+        private readonly JsonLoadSettings _jsonLoadSettings = new JsonLoadSettings()
+        {
+            CommentHandling = CommentHandling.Ignore
         };
 
         /// <summary>
         /// Настройки плиты с рёбрами
         /// </summary>
         /// <returns></returns>
-        private Plita GetSavePlita() => string.IsNullOrEmpty(Properties.Settings.Default.SavePlita) ? new Plita(DetalType.Plita) : JsonConvert.DeserializeObject<Plita>(Properties.Settings.Default.SavePlita, this._jsonSettings);
+        private Plita GetSavePlita() => string.IsNullOrEmpty(Properties.Settings.Default.SavePlita) ? new Plita(DetalType.Plita) : JsonConvert.DeserializeObject<Plita>(JObject.Parse(Properties.Settings.Default.SavePlita, _jsonLoadSettings).ToString(), this._jsonSettings);
 
         /// <summary>
         /// Настройки плиты со стрингером
         /// </summary>
         /// <returns></returns>
-        private PlitaStringer GetSavePlitaStringer() => string.IsNullOrEmpty(Properties.Settings.Default.SavePlitaStringer) ? new PlitaStringer(DetalType.Stringer) : JsonConvert.DeserializeObject<PlitaStringer>(Properties.Settings.Default.SavePlitaStringer, this._jsonSettings);
+        private PlitaStringer GetSavePlitaStringer() => string.IsNullOrEmpty(Properties.Settings.Default.SavePlitaStringer) ? new PlitaStringer(DetalType.Stringer) : JsonConvert.DeserializeObject<PlitaStringer>(JObject.Parse(Properties.Settings.Default.SavePlitaStringer, _jsonLoadSettings).ToString(), this._jsonSettings);
 
         /// <summary>
         /// Настройки плиты треугольником
         /// </summary>
         /// <returns></returns>
-        private PlitaTreygolnik GetSavePlitaTreygolnik() => string.IsNullOrEmpty(Properties.Settings.Default.SavePlitaTreygolnik) ? new PlitaTreygolnik(DetalType.Treygolnik) : JsonConvert.DeserializeObject<PlitaTreygolnik>(Properties.Settings.Default.SavePlitaTreygolnik, this._jsonSettings);
+        private PlitaTreygolnik GetSavePlitaTreygolnik() => string.IsNullOrEmpty(Properties.Settings.Default.SavePlitaTreygolnik) ? new PlitaTreygolnik(DetalType.Treygolnik) : JsonConvert.DeserializeObject<PlitaTreygolnik>(JObject.Parse(Properties.Settings.Default.SavePlitaTreygolnik, _jsonLoadSettings).ToString(), this._jsonSettings);
 
         #endregion
 

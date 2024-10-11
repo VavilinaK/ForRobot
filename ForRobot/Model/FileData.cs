@@ -37,46 +37,46 @@ namespace ForRobot.Model
             }
         }
 
-        public FileTypes Type
-        {
-            get
-            {
-                switch (this.Name)
-                {
-                    case string a when a.Contains(".dat"):
-                        return FileTypes.DataList;
+        //public FileTypes Type
+        //{
+        //    get
+        //    {
+        //        switch (this.Name)
+        //        {
+        //            case string a when a.Contains(".dat"):
+        //                return FileTypes.DataList;
 
-                    case string b when b.Contains(".src"):
-                        return FileTypes.Program;
+        //            case string b when b.Contains(".src"):
+        //                return FileTypes.Program;
 
-                    default:
-                        return FileTypes.Folder;
-                }
-            }
-        }
+        //            default:
+        //                return FileTypes.Folder;
+        //        }
+        //    }
+        //}
 
         public FileFlags Flag { get; set; }
 
-        public BitmapImage Icon
-        {
-            get
-            {
-                switch (this.Type)
-                {
-                    case FileTypes.Folder:
-                        return (BitmapImage)Application.Current.TryFindResource("ImageFolderIcon");
+        //public BitmapImage Icon
+        //{
+        //    get
+        //    {
+        //        switch (this.Type)
+        //        {
+        //            case FileTypes.Folder:
+        //                return (BitmapImage)Application.Current.TryFindResource("ImageFolderIcon");
 
-                    case FileTypes.DataList:
-                        return (BitmapImage)Application.Current.TryFindResource("ImageDataFileIcon");
+        //            case FileTypes.DataList:
+        //                return (BitmapImage)Application.Current.TryFindResource("ImageDataFileIcon");
 
-                    case FileTypes.Program:
-                        return (BitmapImage)Application.Current.TryFindResource("ImageProgramFileIcon");
+        //            case FileTypes.Program:
+        //                return (BitmapImage)Application.Current.TryFindResource("ImageProgramFileIcon");
 
-                    default:
-                        return null;
-                }
-            }
-        }
+        //            default:
+        //                return null;
+        //        }
+        //    }
+        //}
 
         public bool ChildrenLoaded { get; set; } = false;
 

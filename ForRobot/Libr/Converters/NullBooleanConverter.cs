@@ -9,18 +9,13 @@ namespace ForRobot.Libr.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null)
-                return false;
-
-            return value;
+            IComparable v1 = value as IComparable;
+            return v1 == null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null)
-                return null;
-
-            return value;
+            throw new NotImplementedException();
         }
     }
 }

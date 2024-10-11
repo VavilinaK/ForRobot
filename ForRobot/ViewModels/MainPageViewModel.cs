@@ -42,8 +42,8 @@ namespace ForRobot.ViewModels
 
         private Detal _detal;
 
-        private ObservableCollection<Themes.ToolBarTrayForRobot> _items = new ObservableCollection<Themes.ToolBarTrayForRobot>() { new Themes.ToolBarTrayForRobot() };
-        //private ObservableCollection<Themes.ToolBarTrayForRobot> _items;
+        //private ObservableCollection<Themes.ToolBarTrayForRobot> _items = new ObservableCollection<Themes.ToolBarTrayForRobot>() { new Themes.ToolBarTrayForRobot() };
+        private ObservableCollection<Themes.ToolBarTrayForRobot> _items;
 
         private Generation _generation;
 
@@ -499,7 +499,7 @@ namespace ForRobot.ViewModels
             ((ToolBarViewModel)item.DataContext).Robot.PathProgramm = robot.PathProgramm;
             //((ToolBarViewModel)item.DataContext).Robot.PathControllerFolder = robot.PathControllerFolder;
             ((ToolBarViewModel)item.DataContext).Send += SendFile;
-            ((ToolBarViewModel)item.DataContext).SelectProgramm += SelectFile;
+            //((ToolBarViewModel)item.DataContext).SelectProgramm += SelectFile;
             this.Items.Add(item);
         }
 
@@ -658,8 +658,9 @@ namespace ForRobot.ViewModels
                     return;
 
                 //await Task.Run(() => dat.Robot.DeleteProgramm("controller"));
-                if (await Task.Run<bool>(() => dat.Robot.Copy(this.ProgrammName)))
-                    await Task.Run(() => dat.Robot.SelectProgramm(string.Join("", this.ProgrammName, ".src")));
+
+                //if (await Task.Run<bool>(() => dat.Robot.Copy(this.ProgrammName)))
+                //    await Task.Run(() => dat.Robot.SelectProgramm(string.Join("", this.ProgrammName, ".src")));
             }
         }
 
@@ -669,7 +670,7 @@ namespace ForRobot.ViewModels
         /// <param name="sender"></param>
         /// <param name="e"></param>
         /// <returns></returns>
-        private async Task SelectFile(object sender, EventArgs e) => await Task.Run(() => ((ToolBarViewModel)sender).Robot.SelectProgramm(Path.Combine(string.Join("", this.ProgrammName, ".src"))));
+        //private async Task SelectFile(object sender, EventArgs e) => await Task.Run(() => ((ToolBarViewModel)sender).Robot.SelectProgramm(Path.Combine(string.Join("", this.ProgrammName, ".src"))));
 
         /// <summary>
         /// Изменение изображения робота

@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Windows;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-//using System.Text;
-//using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
 
 namespace ForRobot.Model.Controls
 {
@@ -17,33 +14,13 @@ namespace ForRobot.Model.Controls
         public string Name { get; set; }
         public string Path { get; set; }
 
-        public BitmapImage Icon
-        {
-            get
-            {
-                switch (this.Type)
-                {
-                    case FileTypes.Folder:
-                        return (BitmapImage)Application.Current.TryFindResource("ImageFolderIcon");
-
-                    case FileTypes.DataList:
-                        return (BitmapImage)Application.Current.TryFindResource("ImageDataFileIcon");
-
-                    case FileTypes.Program:
-                        return (BitmapImage)Application.Current.TryFindResource("ImageProgramFileIcon");
-
-                    default:
-                        return null;
-                }
-            }
-        }
-
         public bool IsExpanded
         {
             get => this._isExpanded;
             set => Set(ref this._isExpanded, value);
         }
-        public bool IncludeFileChildren { get; set; } = true;
+
+        public bool IncludeFileChildren { get => this.Children.Count() != 0; }
 
         public FileTypes Type
         {
@@ -63,7 +40,7 @@ namespace ForRobot.Model.Controls
             }
         }
 
-        public FileFlags Flag { get; set; }
+        public FileFlags Flag { get; set; } = FileFlags.None;
 
         public ObservableCollection<IFile> Children
         {
@@ -73,10 +50,18 @@ namespace ForRobot.Model.Controls
 
         public File() { }
 
+        public File(string path)
+        {
+            this.Path = path;
+            this.Name = this.Path.Split(new char[] { '\\' }).Last() != string.Empty ? this.Path.Split(new char[] { '\\' }).Last()
+                : this.Path.Split(new char[] { '\\' })[this.Path.Split(new char[] { '\\' }).Count() - 2];
+        }
+
         public File(string path, string inf)
         {
             this.Path = path;
-            this.Name = this.Path.Split(new char[] { '\\' }).Last();
+            this.Name = this.Path.Split(new char[] { '\\' }).Last() != string.Empty ? this.Path.Split(new char[] { '\\' }).Last() 
+                : this.Path.Split(new char[] { '\\' })[this.Path.Split(new char[] { '\\' }).Count() - 2];
 
             switch (inf.Split(new char[] { ';' }).First())
             {
@@ -108,6 +93,30 @@ namespace ForRobot.Model.Controls
                     this.Flag = FileFlags.None;
                     break;
             }
+        }
+
+        public static File Search(File root, string nameToSearchFor)
+        {
+            Queue<File> Q = new Queue<File>();
+            HashSet<File> S = new HashSet<File>();
+            Q.Enqueue(root);
+            S.Add(root);
+
+            while (Q.Count > 0)
+            {
+                File e = Q.Dequeue();
+                if (e.Name == nameToSearchFor)
+                    return e;
+                foreach (File friend in e.Children)
+                {
+                    if (!S.Contains(friend))
+                    {
+                        Q.Enqueue(friend);
+                        S.Add(friend);
+                    }
+                }
+            }
+            return null;
         }
     }
 }
