@@ -607,9 +607,9 @@
 
             <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.TechOffsetSeamEnd, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
 
-            <TextBox Grid.Row="8" Grid.Column="1" Text=""/>
+            <TextBox Grid.Row="8" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DistanceForWelding, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
 
-            <TextBox Grid.Row="9" Grid.Column="1" Text=""/>
+            <TextBox Grid.Row="9" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DistanceForSearch, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
         </Grid>
     </DataTemplate>
     

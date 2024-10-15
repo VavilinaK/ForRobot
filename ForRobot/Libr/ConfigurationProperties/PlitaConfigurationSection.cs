@@ -141,6 +141,20 @@ namespace ForRobot.Libr.ConfigurationProperties
             set { this["BevelToEnd"] = value; }
         }
 
+        [ConfigurationProperty("DistanceForWelding")]
+        public decimal DistanceForWelding
+        {
+            get { return (decimal)this["DistanceForWelding"]; }
+            set { this["DistanceForWelding"] = value; }
+        }
+
+        [ConfigurationProperty("DistanceForSearch")]
+        public decimal DistanceForSearch
+        {
+            get { return (decimal)this["DistanceForSearch"]; }
+            set { this["DistanceForSearch"] = value; }
+        }
+
         [ConfigurationProperty("WildingSpead")]
         public int WildingSpead
         {

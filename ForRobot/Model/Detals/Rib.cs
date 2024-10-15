@@ -21,13 +21,13 @@ namespace ForRobot.Model.Detals
         /// </summary>
         public decimal Distance { get => this._distance; set => Set(ref this._distance, value); }
 
-        [JsonIgnore]
+        [JsonProperty("d_dis1")]
         /// <summary>
         /// Расстояние до ребра по левому краю
         /// </summary>
         public decimal DistanceLeft { get => this._distanceLeft; set => Set(ref this._distanceLeft, value); }
 
-        [JsonIgnore]
+        [JsonProperty("d_dis2")]
         /// <summary>
         /// Расстояние до ребра по правому краю
         /// </summary>
@@ -47,8 +47,8 @@ namespace ForRobot.Model.Detals
 
         public Rib()
         {
-            this.DistanceLeft = this.Distance;
-            this.DistanceRight = this.Distance;
+            //this.DistanceLeft = this.Distance;
+            //this.DistanceRight = this.Distance;
         }
     }
 }

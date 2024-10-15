@@ -4,27 +4,10 @@ using System.Windows.Data;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
+using ForRobot.Model.Controls;
+
 namespace ForRobot.Libr.Converters
 {
-    ///// <summary>
-    ///// Вставляет Binding внутрь строки
-    ///// </summary>
-    ///// <example>
-    ///// <code>Converter={StaticResource ResourceKey=StringFormat}, ConverterParameter='Hello {0}'</code>
-    ///// </example>
-    //public class StringFormatConverter : IValueConverter
-    //{
-    //    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-    //    {
-    //        return string.Format(parameter as string, value);
-    //    }
-
-    //    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-    //    {
-    //        return null;
-    //    }
-    //}
-
     /// <summary>
     /// Скрывает папки на роботе, запрещённые настройками
     /// </summary>
@@ -34,19 +17,42 @@ namespace ForRobot.Libr.Converters
         {
             ObservableCollection<ForRobot.Model.Controls.File> files = values[0] as ObservableCollection<ForRobot.Model.Controls.File>; // Коллекция файлов на роботе.
             SortedDictionary<string, bool> settings = values[1] as SortedDictionary<string, bool>; // Коллекция доступных для блокировки папок из настроек.
-
+            
             if(files != null)
             {
                 var set = settings.Where(x => !x.Value).Select(s => s.Key).ToList<string>();
-                //var v = from f in files
-                //        select f;
 
-                var v = files.Where(t2 => !set.Any(t1 => t2.Path.Contains(t1)));
+                for(int i = 0; i < files.Count(); i++)
+                {
+                    var file = files.ToArray<ForRobot.Model.Controls.File>()[i];
 
-                var v1 = files.Where(t2 => !set.Any(t1 => t2.Path.Contains(t1)));
+                    if (set.Contains(file.Name))
+                    {
+                        files.Remove(file);
+                        i--;
+                        continue;
+                    }
+
+                    var q = new Queue<ForRobot.Model.Controls.File>();
+                    q.Enqueue(file);
+
+                    while (q.Count > 0)
+                    {
+                        var node = q.Dequeue();
+
+                        for (int y = 0; y < node.Children.Count; y++)
+                        {
+                            q.Enqueue(node.Children[y] as ForRobot.Model.Controls.File);
+
+                            if (set.Contains(node.Children[y].Name))
+                            {
+                                node.Children.Remove(node.Children[y] as ForRobot.Model.Controls.File);
+                                y--;
+                            }
+                        }
+                    }
+                }
             }
-            //foreach (var file in files.Where(t2 => !App.Settings.AvailableFolders.Where(x => !x.Value).Select(s => s.Key).ToList<string>().Any(t1 => t2.Key.Contains(t1))))
-            //var v = files.Where(t2 => !settings.Where(x => !x.Value).Select(s => s.Key).ToList<string>().Any(t1 => t2.Path.Contains(t1)));
 
             return files;
         }

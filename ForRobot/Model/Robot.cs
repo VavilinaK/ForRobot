@@ -325,10 +325,9 @@ namespace ForRobot.Model
                     List<ForRobot.Model.Controls.File> fileDatas = new List<ForRobot.Model.Controls.File>();
                     try
                     {
-                        var files = Task.Run<Dictionary<string, string>>(async () => await this.Connection.File_NameList()).Result;
-
-                        foreach (var file in files.Where(t2 => !App.Settings.AvailableFolders.Where(x => !x.Value).Select(s => s.Key).ToList<string>().Any(t1 => t2.Key.Contains(t1))))
-                        //foreach (var file in files)
+                        var files = Task.Run<Dictionary<string, string>>(async () => await this.Connection.File_NameList()).Result;                   
+                        
+                        foreach (var file in files)
                         {
                             ForRobot.Model.Controls.File fileData = new ForRobot.Model.Controls.File(file.Key.TrimEnd(new char[] { '\\' }), file.Value.TrimStart(';').TrimEnd(';'));
                             fileDatas.Add(fileData);

@@ -141,6 +141,10 @@ namespace ForRobot
                             ForRobot.Properties.Settings.Default.IsSettingsUpgradeRequired = false;
                             ForRobot.Properties.Settings.Default.Save();
                         }
+                        else
+                        {
+                            // Сюда обновление скрипта.
+                        }
 
                         // Обновление скриптов на питоне
                         //foreach(var script in this._namesOfScripts)

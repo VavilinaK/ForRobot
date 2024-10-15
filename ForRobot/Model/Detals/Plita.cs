@@ -28,6 +28,8 @@ namespace ForRobot.Model.Detals
 
         private decimal _bevelToStart;
         private decimal _bevelToEnd;
+        private decimal _distanceForSearch;
+        private decimal _distanceForWelding;
 
         private BitmapImage _rebraImage;
         private BitmapImage _plitaImage;
@@ -468,11 +470,40 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.ProgramNom = value;
-                if (!Equals(this.Change, null))
-                    this.Change.Invoke(this, null);
+                this.Change?.Invoke(this, null);
             }
         }
-       
+
+        [JsonProperty("weld_gantry_radius")]
+        [JsonConverter(typeof(JsonCommentConverter), "Дистанция до позиционера для сварки")]
+        /// <summary>
+        /// Дистанция до позиционера для сварки
+        /// </summary>
+        public decimal DistanceForWelding
+        {
+            get => this._distanceForWelding;
+            set
+            {
+                this._distanceForWelding = value;
+                this.Change?.Invoke(this, null);
+            }
+        }
+
+        [JsonProperty("search_gantry_radius")]
+        [JsonConverter(typeof(JsonCommentConverter), "Дистанция до позиционера для поиска")]
+        /// <summary>
+        /// Дистанция до позиционера для поиска
+        /// </summary>
+        public decimal DistanceForSearch
+        {
+            get => this._distanceForSearch;
+            set
+            {
+                this._distanceForSearch = value;
+                this.Change?.Invoke(this, null);
+            }
+        }
+
         [JsonIgnore]
         [JsonProperty("d_W2"), DefferentDistanceAttribute, SaveAttribute]
         /// <summary>
@@ -579,6 +610,8 @@ namespace ForRobot.Model.Detals
             this.Wight = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).Wight;
             this.BevelToStart = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).BevelToStart;
             this.BevelToEnd = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).BevelToEnd;
+            this.DistanceForWelding = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).DistanceForWelding;
+            this.DistanceForSearch = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).DistanceForSearch;
         }
 
         #endregion
@@ -618,6 +651,8 @@ namespace ForRobot.Model.Detals
             TechOffsetSeamEnd = this.TechOffsetSeamEnd,
             BevelToStart = this._bevelToStart,
             BevelToEnd = this._bevelToEnd,
+            DistanceForWelding = this.DistanceForWelding,
+            DistanceForSearch = this.DistanceForSearch,
             WildingSpead = this.WildingSpead,
             ProgramNom = this.ProgramNom,
             DiferentDistance = this.DiferentDistance,

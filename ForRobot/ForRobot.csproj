@@ -229,6 +229,9 @@
     <Compile Include="Views\Controls\Breadcrumb.xaml.cs">
       <DependentUpon>Breadcrumb.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Controls\DragAndDropPopup.xaml.cs">
+      <DependentUpon>DragAndDropPopup.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Windows\PropertiesWindow.xaml.cs">
       <DependentUpon>PropertiesWindow.xaml</DependentUpon>
     </Compile>
@@ -245,6 +248,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\Breadcrumb.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\DragAndDropPopup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -388,26 +395,23 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Content Include="Scripts\coord_templates.py">
+    <EmbeddedResource Include="Scripts\coord_templates.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Scripts\krl_templates.py">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Scripts\krl_templates.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Scripts\test_weld_gen.py">
+    </EmbeddedResource>
+    <EmbeddedResource Include="Scripts\test_weld_gen.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Scripts\__pycache__\coord_templates.cpython-312.pyc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Scripts\__pycache__\krl_templates.cpython-312.pyc">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <Resource Include="Themes\Images\none.png" />
     <None Include="InterfaceOfRobots.pfx" />
-    <None Include="Scripts\run.cmd">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\__pycache__\coord_templates.cpython-312.pyc">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\__pycache__\krl_templates.cpython-312.pyc">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <Resource Include="Themes\Images\settings.png" />
     <Resource Include="robot_icon.ico" />
     <Resource Include="Themes\Images\settingsWhite.png" />
