@@ -130,6 +130,7 @@ namespace ForRobot
                             new Version(FileVersionInfo.GetVersionInfo(Path.Combine(App.Current.UpdatePath, $"{ResourceAssembly.GetName().Name}.exe")).ProductVersion) > Assembly.GetExecutingAssembly().GetName().Version &&
                             (!Settings.InformUser || MessageBox.Show($"Обнаружено обновление до версии {FileVersionInfo.GetVersionInfo(Path.Combine(App.Current.UpdatePath, $"{ResourceAssembly.GetName().Name}.exe")).ProductVersion}\nОбновить приложение?", "Обновление интерфейса", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK))
                         {
+                            this.Logger.Info($"Обновление приложения до версии {FileVersionInfo.GetVersionInfo(Path.Combine(App.Current.UpdatePath, $"{ResourceAssembly.GetName().Name}.exe")).ProductVersion}");
                             App.Current.UpDateApp(e);
                         }
 
@@ -143,18 +144,20 @@ namespace ForRobot
                         }
                         else
                         {
-                            // Сюда обновление скрипта.
-                        }
+                            Version oldVersion = Version.Parse(File.ReadLines(Path.Combine(this.FilePathOnPC, "Scripts\\test_weld_gen.py")).First().Split(new char[] { '=' }).Last().TrimStart().Trim(new char[] { '\'' }));
+                            Version newVersion = Version.Parse(File.ReadLines(Path.Combine(App.Current.UpdatePath, "Scripts\\test_weld_gen.py")).First().Split(new char[] { '=' }).Last().TrimStart().Trim(new char[] { '\'' }));
 
-                        // Обновление скриптов на питоне
-                        //foreach(var script in this._namesOfScripts)
-                        //{
-                        //    if (this.Settings.AutoUpdate && Directory.GetFiles(Path.Combine(App.Current.UpdatePath, "Scripts")).Where(item => item.Contains(script)).Count() > 0)
-                        //    {
-                        //        string newScriptPath = Directory.GetFiles(Path.Combine(App.Current.UpdatePath, "Scripts")).Where(item => item.Contains(script)).OrderByDescending(item => item).First();
-                        //        var obj = (ConfigurationManager.GetSection("app") as ForRobot.Libr.ConfigurationProperties.AppConfigurationSection);
-                        //    }
-                        //}
+                            //Version oldVersion = Version.Parse(File.ReadLines(Path.Combine(this.FilePathOnPC, "Scripts\\test_weld_gen.py")).First().Split(new char[] { '=' }).Last().TrimStart().Trim(new char[] { '\'' }));
+                            //Version newVersion = Version.Parse(File.ReadLines(Path.Combine(App.Current.UpdatePath, "Scripts\\test_weld_gen.py")).First().Split(new char[] { '=' }).Last().TrimStart().Trim(new char[] { '\'' }));
+
+                            if (Settings.AutoUpdate && (File.Exists(Path.Combine(this.FilePathOnPC, "Scripts\\test_weld_gen.py")) && File.Exists(Path.Combine(App.Current.UpdatePath, "Scripts\\test_weld_gen.py")) &&
+                                newVersion > oldVersion &&
+                                (!Settings.InformUser || MessageBox.Show($"Обнаружено обновление скрипта до версии {newVersion}\nОбновить скрипт?", "Обновление скрипта-генерации", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK)))
+                            {
+                                this.Logger.Info($"Обновление скрипта test_weld_gen.py до версии {newVersion}");
+                                this.UpDateScript();
+                            }
+                        }
 
                         using (ClassLibraryTaskManager.SingleGlobalInstance singleMutex = new ClassLibraryTaskManager.SingleGlobalInstance(1000))
                         {
@@ -225,6 +228,17 @@ namespace ForRobot
                 }
             };
             new Thread(() => process.Start()).Start();
+        }
+
+        /// <summary>
+        /// Обновление скрипта-генератора
+        /// </summary>
+        private void UpDateScript()
+        {
+            foreach (var file in Directory.GetFiles(Path.Combine(App.Current.UpdatePath, "Scripts")))
+            {
+                File.Copy(file, Path.Combine(this.FilePathOnPC, $"Scripts\\{new FileInfo(file).Name}"), true);
+            }
         }
 
         #endregion

@@ -165,6 +165,15 @@ namespace ForRobot.Model
             }
             return null;
         }
+
+        public static IEnumerable<FileData> Exclude(IEnumerable<FileData> files, params string[] excludeString)
+        {
+            foreach (var file in files)
+            {
+                //var v = 
+            }
+            return files;
+        }
     }
 
     //public class FileData : BaseClass

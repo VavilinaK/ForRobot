@@ -26,33 +26,6 @@
     </Page.Title>
 
     <Page.Resources>
-        <Style x:Key="buttonBase" TargetType="{x:Type FrameworkElement}">
-            <Setter Property="Width"  Value="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"/>
-        </Style>
-
-        <ControlTemplate x:Key="buttonTemplate" TargetType="{x:Type Button}">
-            <Border Name="buttonPanel" BorderThickness="0" CornerRadius="5">
-                <ContentPresenter x:Name="buttonContent"
-                                  VerticalAlignment="Center" HorizontalAlignment="Center"
-                                  ContentSource="Content"
-                                  Margin="{Binding Padding, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}"/>
-
-                <Border.Style>
-                    <Style TargetType="{x:Type Border}">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}" Value="True">
-                                <Setter Property="Background" Value="{StaticResource BrushLightGray}"/>
-                            </DataTrigger>
-
-                            <DataTrigger Binding="{Binding Path=IsPressed, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}" Value="True">
-                                <Setter Property="Background" Value="{StaticResource BrushAqua}"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Border.Style>
-            </Border>
-        </ControlTemplate>
-
         <ControlTemplate x:Key="toggleButtonTemplate" TargetType="{x:Type ToggleButton}">
             <Border Name="buttonPanel" BorderThickness="0" CornerRadius="5">
                 <ContentPresenter x:Name="buttonContent"
@@ -84,6 +57,40 @@
             <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
 
+        <!--<Popup
+            Placement="Bottom"
+            AllowsTransparency="True"
+            PopupAnimation="Slide"
+            IsOpen="{Binding Path=IsChecked, ElementName=menuItemFileTransfer}"
+            PlacementTarget="{Binding ElementName=menuItemFileTransfer}">
+            <Border Background="Azure" 
+            BorderBrush="Aquamarine" BorderThickness="5" CornerRadius="8">
+
+                <Grid Margin="15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Background="Azure"
+                    BorderBrush="Aquamarine" BorderThickness="5" CornerRadius="8">
+
+                    </Border>
+
+                    <Button Grid.Column="1" Margin="10">
+
+                    </Button>
+                </Grid>
+            </Border>
+        </Popup>-->
+
+        <control:DragAndDropPopup
+            Placement="Bottom"
+            AllowsTransparency="True"
+            PopupAnimation="Slide"
+            IsOpen="{Binding Path=IsChecked, ElementName=menuItemFileTransfer}"
+            PlacementTarget="{Binding ElementName=menuItemFileTransfer}"/>
+
         <Menu Grid.Row="0">
             <Menu.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -95,7 +102,7 @@
                 <MenuItem.Template>
                     <ControlTemplate TargetType="{x:Type MenuItem}">
                         <ComboBox FontSize="18" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                                  Width="Auto" MinWidth="200" Margin="42,10,0,10"
+                                  Width="Auto" MinWidth="200" Margin="42,10,10,10"
                                   ItemsSource="{Binding Path=RobotNamesCollection, Mode=OneWay}"
                                   SelectedItem="{Binding Path=SelectedNameRobot, Mode=TwoWay}"
                                   SelectedIndex="0">
@@ -137,7 +144,7 @@
             <MenuItem>
                 <MenuItem.Template>
                     <ControlTemplate TargetType="{x:Type MenuItem}">
-                        <Button Grid.Column="1" Height="50" Padding="5" Margin="15,0" ToolTip="Генерация программ"
+                        <Button Grid.Column="1" Height="50" Padding="5" Margin="5, 0" ToolTip="Генерация программ"
                                 HorizontalAlignment="Left" VerticalAlignment="Center" Visibility="Visible" 
                                 Command="{Binding Path=GenerateProgramCommand}"
                                 Template="{StaticResource buttonTemplate}">
@@ -161,7 +168,7 @@
                             </Image>
 
                             <Button.Style>
-                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource buttonBase}">
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource buttonBaseStyle}">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Path=RobotsCollection.Count}" Value="0">
                                             <Setter Property="IsEnabled" Value="False"/>
@@ -178,6 +185,36 @@
                 </MenuItem.Template>
             </MenuItem>
 
+            <MenuItem x:Name="menuItemFileTransfer">
+                <MenuItem.Template>
+                    <ControlTemplate TargetType="{x:Type MenuItem}">
+                        <ToggleButton ToolTip="Отправка файлов на робота"
+                                      Height="50" Width="50" Padding="6" Margin="5,0"
+                                      HorizontalAlignment="Left" VerticalAlignment="Center"
+                                      Template="{StaticResource toggleButtonTemplate}">
+
+                            <Path Stretch="Fill"
+                                  Data="M0 0v1h8v-1h-8zm4 2l-3 3h2v3h2v-3h2l-3-3z">
+                                <Path.Style>
+                                    <Style TargetType="{x:Type Path}">
+                                        <Setter Property="Fill" Value="Black"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}, Mode=FindAncestor}}" Value="True">
+                                                <Setter Property="Fill" Value="#FFFFA21B"/>
+                                            </DataTrigger>
+
+                                            <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}, Mode=FindAncestor}}" Value="True">
+                                                <Setter Property="Fill" Value="#FFFFA21B"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Path.Style>
+                            </Path>
+                        </ToggleButton>
+                    </ControlTemplate>
+                </MenuItem.Template>
+            </MenuItem>
+
             <MenuItem>
                 <MenuItem.Template>
                     <ControlTemplate TargetType="{x:Type MenuItem}">
@@ -190,7 +227,7 @@
                                     </Grid.ColumnDefinitions>
 
                                     <ToggleButton Grid.Column="0" Name="toggleButtonProgrammControl" Height="50" Padding="5" Margin="5,0"
-                                                  VerticalAlignment="Center"
+                                                  IsChecked="True" VerticalAlignment="Center"
                                                   Template="{StaticResource toggleButtonTemplate}">
 
                                         <Path Stretch="Fill" StrokeThickness="3"
@@ -209,7 +246,7 @@
                                         </Path>
 
                                         <ToggleButton.Style>
-                                            <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource buttonBase}">
+                                            <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource buttonBaseStyle}">
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Path=RobotsCollection.Count}" Value="0">
                                                         <Setter Property="IsChecked" Value="False"/>
@@ -232,6 +269,14 @@
                                     </ToggleButton>
 
                                     <Border Grid.Column="1" Margin="3" BorderThickness="0">
+                                        <Border.Resources>
+                                            <Style TargetType="{x:Type Label}">
+                                                <Setter Property="FontSize" Value="18"/>
+                                                <Setter Property="FontFamily" Value="Segoe UI Historic"/>
+                                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                            </Style>
+                                        </Border.Resources>
                                         <Border.Style>
                                             <Style TargetType="Border">
                                                 <Style.Triggers>
@@ -250,17 +295,41 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
 
-                                            <Button Grid.Column="0">
+                                            <Button Grid.Column="0" Height="45"
+                                                    Template="{StaticResource buttonTemplate}">
                                                 <Button.Style>
                                                     <Style TargetType="{x:Type Button}">
                                                         <Setter Property="Margin" Value="5, 0"/>
                                                         <Setter Property="ToolTip" Value="Запуск программы"/>
                                                         <Setter Property="Command" Value="{Binding Path=RunProgramCommand}"/>
+                                                        <Setter Property="Content">
+                                                            <Setter.Value>
+                                                                <Grid>
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="Auto"/>
+                                                                        <ColumnDefinition Width="Auto"/>
+                                                                    </Grid.ColumnDefinitions>
+                                                                    
+                                                                    <Border Grid.Column="0" Padding="5">
+                                                                        <Path Fill="#FF26D300" Stretch="Uniform">
+                                                                            <Path.Data>
+                                                                                <GeometryGroup>
+                                                                                    <PathGeometry Figures="M810.666667 896H213.333333c-46.933333 0-85.333333-38.4-85.333333-85.333333V213.333333c0-46.933333 38.4-85.333333 85.333333-85.333333h597.333334c46.933333 0 85.333333 38.4 85.333333 85.333333v597.333334c0 46.933333-38.4 85.333333-85.333333 85.333333z"/>
+                                                                                    <PathGeometry Figures="M661.333333 512l-234.666666-170.666667v341.333334z"/>
+                                                                                </GeometryGroup>
+                                                                            </Path.Data>
+                                                                        </Path>
+                                                                    </Border>
 
-                                                        <Setter Property="Template">
+                                                                    <Label Grid.Column="1" Content="Пуск"/>
+                                                                </Grid>
+                                                            </Setter.Value>
+                                                        </Setter>
+
+                                                        <!--<Setter Property="Template">
                                                             <Setter.Value>
                                                                 <ControlTemplate TargetType="{x:Type Button}">
-                                                                    <Border x:Name="Panel" Padding="5,0" Style="{StaticResource baseControlTemplateStyle}">
+                                                                    <Border x:Name="Panel" Padding="5,0">
                                                                         <Grid>
                                                                             <Grid.ColumnDefinitions>
                                                                                 <ColumnDefinition Width="Auto"/>
@@ -285,7 +354,7 @@
                                                                     </ControlTemplate.Triggers>
                                                                 </ControlTemplate>
                                                             </Setter.Value>
-                                                        </Setter>
+                                                        </Setter>-->
 
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding Path=RobotForControl.Pro_State}" Value="#P_ACTIVE">
@@ -295,17 +364,64 @@
 
                                                             <DataTrigger Binding="{Binding Path=RobotForControl.Pro_State}" Value="#P_STOP">
                                                                 <Setter Property="ToolTip" Value="Продолжить программу"/>
+                                                                <Setter Property="Content">
+                                                                    <Setter.Value>
+                                                                        <Grid>
+                                                                            <Grid.ColumnDefinitions>
+                                                                                <ColumnDefinition Width="Auto"/>
+                                                                                <ColumnDefinition Width="Auto"/>
+                                                                            </Grid.ColumnDefinitions>
+
+                                                                            <Border Grid.Column="0" Padding="5">
+                                                                                <Path Fill="#FF26D300" Stretch="Uniform">
+                                                                                    <Path.Data>
+                                                                                        <GeometryGroup>
+                                                                                            <PathGeometry Figures="M810.666667 896H213.333333c-46.933333 0-85.333333-38.4-85.333333-85.333333V213.333333c0-46.933333 38.4-85.333333 85.333333-85.333333h597.333334c46.933333 0 85.333333 38.4 85.333333 85.333333v597.333334c0 46.933333-38.4 85.333333-85.333333 85.333333z"/>
+                                                                                            <PathGeometry Figures="M661.333333 512l-234.666666-170.666667v341.333334z"/>
+                                                                                        </GeometryGroup>
+                                                                                    </Path.Data>
+                                                                                </Path>
+                                                                            </Border>
+                                                                            
+                                                                            <Label Grid.Column="1" Content="Продолжить"/>
+                                                                        </Grid>
+                                                                    </Setter.Value>
+                                                                </Setter>
                                                             </DataTrigger>
 
                                                             <DataTrigger Binding="{Binding Path=RobotForControl.Pro_State}" Value="#P_END">
                                                                 <Setter Property="ToolTip" Value="Перезапуск программы"/>
+                                                                <Setter Property="Content">
+                                                                    <Setter.Value>
+                                                                        <Grid>
+                                                                            <Grid.ColumnDefinitions>
+                                                                                <ColumnDefinition Width="Auto"/>
+                                                                                <ColumnDefinition Width="Auto"/>
+                                                                            </Grid.ColumnDefinitions>
+
+                                                                            <Border Grid.Column="0" Padding="5">
+                                                                                <Path Fill="#3b88c3" Stretch="Uniform">
+                                                                                    <Path.Data>
+                                                                                        <GeometryGroup>
+                                                                                            <PathGeometry Figures="M36 32a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4h28a4 4 0 0 1 4 4v28z"/>
+                                                                                            <PathGeometry Figures="M30.2 10L23 4v4h-8C9.477 8 5 12.477 5 18c0 1.414.297 2.758.827 3.978l3.3-2.75A6 6 0 0 1 15 12h8v4l7.2-6zm-.026 4.023l-3.301 2.75A6 6 0 0 1 21 24h-8v-4l-7.2 6l7.2 6v-4h8c5.522 0 10-4.478 10-10a9.965 9.965 0 0 0-.826-3.977z"/>
+                                                                                        </GeometryGroup>
+                                                                                    </Path.Data>
+                                                                                </Path>
+                                                                            </Border>
+
+                                                                            <Label Grid.Column="1" Content="Перезапустить"/>
+                                                                        </Grid>
+                                                                    </Setter.Value>
+                                                                </Setter>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
                                                 </Button.Style>
                                             </Button>
 
-                                            <Button Grid.Column="1">
+                                            <Button Grid.Column="1" Height="45" 
+                                                    Template="{StaticResource buttonTemplate}">
                                                 <Button.Style>
                                                     <Style TargetType="{x:Type Button}">
                                                         <Setter Property="Width" Value="0"/>
@@ -313,22 +429,27 @@
                                                         <Setter Property="ToolTip" Value="Остановка программы"/>
                                                         <Setter Property="Command" Value="{Binding Path=PauseProgramCommand}"/>
 
-                                                        <Setter Property="Template">
+                                                        <Setter Property="Content">
                                                             <Setter.Value>
-                                                                <ControlTemplate TargetType="{x:Type Button}">
-                                                                    <Border x:Name="Panel" Padding="5,0" Style="{StaticResource baseControlTemplateStyle}">
-                                                                        <Grid>
-                                                                            <Grid.ColumnDefinitions>
-                                                                                <ColumnDefinition Width="Auto"/>
-                                                                                <ColumnDefinition Width="Auto"/>
-                                                                            </Grid.ColumnDefinitions>
+                                                                <Grid>
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="Auto"/>
+                                                                        <ColumnDefinition Width="Auto"/>
+                                                                    </Grid.ColumnDefinitions>
 
-                                                                            <Image x:Name="ButtonImage" Grid.Column="0" Width="45" Height="45" Stretch="Fill" Source="{StaticResource ImagePause}"/>
-
-                                                                            <Label x:Name="ButtonText" Grid.Column="1" Content="Остановить" FontSize="18" FontFamily="Segoe UI Historic" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
-                                                                        </Grid>
+                                                                    <Border Grid.Column="0" Padding="5">
+                                                                        <Path Fill="Red" Stretch="Uniform">
+                                                                            <Path.Data>
+                                                                                <GeometryGroup>
+                                                                                    <PathGeometry Figures="M36 32a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4h28a4 4 0 0 1 4 4v28z"/>
+                                                                                    <PathGeometry Figures="M20 7h5v22h-5zm-9 0h5v22h-5z"/>
+                                                                                </GeometryGroup>
+                                                                            </Path.Data>
+                                                                        </Path>
                                                                     </Border>
-                                                                </ControlTemplate>
+
+                                                                    <Label Grid.Column="1" Content="Остановить"/>
+                                                                </Grid>
                                                             </Setter.Value>
                                                         </Setter>
 
@@ -347,38 +468,58 @@
                                                 </Button.Style>
                                             </Button>
 
-                                            <Button Grid.Column="2" Margin="5, 0" ToolTip="Аннулировать программу" Command="{Binding CancelProgramCommand}">
-                                                <Button.Style>
-                                                    <Style TargetType="{x:Type Button}">
-                                                        <Setter Property="Template">
-                                                            <Setter.Value>
-                                                                <ControlTemplate TargetType="{x:Type Button}">
-                                                                    <Border x:Name="Panel" Padding="5,0" Style="{StaticResource baseControlTemplateStyle}">
-                                                                        <Grid>
-                                                                            <Grid.ColumnDefinitions>
-                                                                                <ColumnDefinition Width="Auto"/>
-                                                                                <ColumnDefinition Width="Auto"/>
-                                                                            </Grid.ColumnDefinitions>
+                                            <Button Grid.Column="2" Height="45" ToolTip="Аннулировать программу"
+                                                    Template="{StaticResource buttonTemplate}"
+                                                    Command="{Binding CancelProgramCommand}">
 
-                                                                            <Image x:Name="ButtonImage" Grid.Column="0" Width="45" Height="45" Stretch="Fill" Source="{StaticResource ImageCancel}"/>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
 
-                                                                            <Label x:Name="ButtonText" Grid.Column="1" Content="Аннулировать" FontSize="18" FontFamily="Segoe UI Historic" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
-                                                                        </Grid>
-                                                                    </Border>
-                                                                </ControlTemplate>
-                                                            </Setter.Value>
-                                                        </Setter>
-                                                    </Style>
-                                                </Button.Style>
+                                                    <Border Grid.Column="0" Padding="5">
+                                                        <Path Fill="Red" Stretch="Uniform">
+                                                            <Path.Data>
+                                                                <GeometryGroup>
+                                                                    <PathGeometry Figures="M36 32a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4h28a4 4 0 0 1 4 4v28z"/>
+                                                                    <PathGeometry Figures="M 15 12 a 2 2 0 0 0-2 2 v 8 a 2 2 0 0 0 2 2 h 8 a2 2 0 0 0 2-2 V 14 a 2 2 0 0 0-2-2 H 13Z"/>
+                                                                </GeometryGroup>
+                                                            </Path.Data>
+                                                        </Path>
+                                                    </Border>
+
+                                                    <Label Grid.Column="1" Content="Аннулировать"/>
+                                                </Grid>
                                             </Button>
 
-                                            <Button Grid.Column="3" ToolTip="Выбор сгенерированной программы" Command="{Binding Path=SelectGeneratProgramCommand}">
-                                                <Button.Style>
+                                            <Button Grid.Column="3" Height="45"
+                                                    ToolTip="Выбор сгенерированной программы" 
+                                                    Template="{StaticResource buttonTemplate}"
+                                                    Command="{Binding Path=SelectGeneratProgramCommand}">
+
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="45"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <Border Grid.Column="0" Padding="5">
+                                                        <Path Fill="#FF008AD8" Stretch="Fill" 
+                                                              Data="M18,7a1,1,0,0,0-1-1H7A1,1,0,0,0,6,7V17a1,1,0,0,0,1,1H17a1,1,0,0,0,1-1Zm-2,9H8V8h8ZM13,2V4H11V2Zm5,2H16V2h2ZM8,4H6V2H8ZM4,2,2,4V2ZM22,4,20,2h2ZM11,22V20h2v2Zm5-2h2v2H16ZM6,20H8v2H6Zm16-7H20V11h2Zm0,5H20V16h2ZM22,8H20V6h2ZM4,13H2V11H4Zm0,5H2V16H4ZM4,8H2V6H4ZM2,20l2,2H2Zm18,2,2-2v2Z"/>
+                                                    </Border>
+
+                                                    <Label Grid.Column="1" Content="Выбрать"/>
+                                                </Grid>
+                                                
+                                                <!--<Image x:Name="ButtonImage" Grid.Column="0" Width="45" Height="45" Stretch="Fill" Source="{StaticResource ImageSelectProgramm}"/>-->
+
+                                                <!--<Button.Style>
                                                     <Style TargetType="{x:Type Button}">
                                                         <Setter Property="Template">
                                                             <Setter.Value>
                                                                 <ControlTemplate TargetType="{x:Type Button}">
-                                                                    <Border x:Name="Panel" Style="{StaticResource baseControlTemplateStyle}">
+                                                                    <Border x:Name="Panel">
                                                                         <Grid>
                                                                             <Grid.ColumnDefinitions>
                                                                                 <ColumnDefinition Width="Auto"/>
@@ -387,14 +528,15 @@
 
                                                                             <Image x:Name="ButtonImage" Grid.Column="0" Width="45" Height="45" Stretch="Fill" Source="{StaticResource ImageSelectProgramm}"/>
 
-                                                                            <!--<Label x:Name="ButtonText" Grid.Column="1" Content="Аннулировать" FontSize="18" FontFamily="Segoe UI Historic" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>-->
+                                                                            --><!--<Label x:Name="ButtonText" Grid.Column="1" Content="Аннулировать" FontSize="18" FontFamily="Segoe UI Historic" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>--><!--
                                                                         </Grid>
                                                                     </Border>
                                                                 </ControlTemplate>
                                                             </Setter.Value>
                                                         </Setter>
                                                     </Style>
-                                                </Button.Style>
+                                                </Button.Style>-->
+                                                
                                             </Button>
                                         </Grid>
                                     </Border>
@@ -481,7 +623,7 @@
                                 </Path>
 
                                 <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource buttonBase}">
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource buttonBaseStyle}">
                                         <Setter Property="Height" Value="50"/>
                                     </Style>
                                 </Button.Style>
@@ -596,21 +738,11 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <Button Grid.Row="0" Grid.Column="0" ToolTip="Удалить робота"
+                            <Button Grid.Row="0" Grid.Column="0" Height="45" ToolTip="Удалить робота"
+                                    Template="{StaticResource buttonTemplate}"
                                     Command="{Binding Path=DeleteRobotCommand}">
-                                <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource baseButtonStyle}">
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="{x:Type Button}">
-                                                    <Border BorderThickness="0" Style="{StaticResource baseControlTemplateStyle}">
-                                                        <Image Stretch="Fill" Source="{StaticResource ImageDelete}"/>
-                                                    </Border>
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </Button.Style>
+                                
+                                <Image Stretch="Fill" Source="{StaticResource ImageDelete}"/>
                             </Button>
 
                             <ComboBox Grid.Row="0" Grid.Column="1" Margin="5" FontSize="18"
@@ -652,19 +784,12 @@
                                 </i:Interaction.Triggers>-->
                             </ComboBox>
 
-                            <Button Grid.Row="0" Grid.Column="2" ToolTip="Повторное соединение" Command="{Binding UpDateConnectionCommand}">
+                            <Button Grid.Row="0" Grid.Column="2" ToolTip="Повторное соединение"
+                                    Template="{StaticResource buttonTemplate}"
+                                    Command="{Binding UpDateConnectionCommand}">
                                 <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource baseButtonStyle}">
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource buttonBaseStyle}">
                                         <Setter Property="Width" Value="0"/>
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="{x:Type Button}">
-                                                    <Border BorderThickness="0" Style="{StaticResource baseControlTemplateStyle}">
-                                                        <Image Stretch="Fill" Source="{StaticResource ImageUpdate}"/>
-                                                    </Border>
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
 
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding Path=SelectedRobot.Item2.IsConnection}" Value="False">
@@ -683,6 +808,8 @@
                                         </Style.Triggers>
                                     </Style>
                                 </Button.Style>
+
+                                <Image Stretch="Fill" Source="{StaticResource ImageUpdate}"/>
                             </Button>
 
                             <Button Grid.Row="0" Grid.Column="3" Height="40"
@@ -782,7 +909,7 @@
                                         <Grid Grid.Row="2">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="15"/>
+                                                <ColumnDefinition Width="10"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
 
@@ -810,17 +937,17 @@
                                                             IsProgress="{Binding Path=SelectedRobot.Item2.IsLoadFiles, Mode=OneWay}"/>
 
                                         <control:NavigationTreeView Grid.Row="6"
-                                                                    FileCollection="{Binding Path=SelectedRobot.Item2.Files}"
                                                                     DataFileIsHidden="{Binding Path=Settings.AccessDataFile, Source={x:Static Application.Current}, Mode=TwoWay}"
                                                                     SelectItemCommand="{Binding Path=DataContext.SelectFileCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
-                                                                    SelectFolderCommand="{Binding Path=DataContext.SelectFolderCommand, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}">
+                                                                    SelectFolderCommand="{Binding Path=DataContext.SelectFolderCommand, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
+                                                                    DeleteNodeCommand="{Binding Path=DataContext.DeleteFileCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}">
 
-                                            <!--<control:NavigationTreeView.FileCollection>
+                                            <control:NavigationTreeView.FileCollection>
                                                 <MultiBinding Converter="{StaticResource VisibilityFolderOnRobot}">
                                                     <Binding Path="DataContext.SelectedRobot.Item2.Files" RelativeSource="{RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}"/>
                                                     <Binding Path="Settings.AvailableFolders" Source="{x:Static Application.Current}"/>
                                                 </MultiBinding>
-                                            </control:NavigationTreeView.FileCollection>-->
+                                            </control:NavigationTreeView.FileCollection>
                                             
                                             <control:NavigationTreeView.Style>
                                                 <Style TargetType="{x:Type control:NavigationTreeView}">

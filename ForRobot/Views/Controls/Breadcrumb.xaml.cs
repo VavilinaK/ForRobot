@@ -34,7 +34,7 @@ namespace ForRobot.Views.Controls
         #region Public variables
 
         public bool CanOpenMenu { get => this.ItemsSource == null || this.ItemsSource.Cast<object>().Count() == 0 || this.SelectedFolder == null ? false 
-                                            : File.Search(this.ItemsSource.Cast<File>().First(), this.SelectedFolder).IncludeFileChildren; }
+                                            : this.ItemsSource.Cast<File>().First().Search(this.SelectedFolder).IncludeFileChildren; }
 
         /// <summary>
         /// Коллекция имен папок составляющих директорию
@@ -47,7 +47,7 @@ namespace ForRobot.Views.Controls
         public List<File> ChildrenFolder
         {
             get => (this.ItemsSource !=null && this.ItemsSource.Cast<object>().Count() > 0 && this.SelectedFolder != null) ?
-                File.Search(this.ItemsSource.Cast<File>().ToList().First(), this.SelectedFolder).Children.Where(item => item.Type == FileTypes.Folder).Cast<File>().ToList() : null;
+                this.ItemsSource.Cast<File>().ToList().First().Search(this.SelectedFolder).Children.Where(item => item.Type == FileTypes.Folder).Cast<File>().ToList() : null;
         }
 
         #region Properties
@@ -249,7 +249,7 @@ namespace ForRobot.Views.Controls
                             File root = ((obj as object[]).First() as ObservableCollection<File>)[0];
                             string sSearchFolder = ((object[])obj)[1] as string;
                             Breadcrumb breadcrumb = ((object[])obj)[2] as Breadcrumb;
-                            breadcrumb.Directory = breadcrumb.Root + File.Search(root, sSearchFolder).Path.TrimEnd(new char[] { '\\' });
+                            breadcrumb.Directory = breadcrumb.Root + root.Search(sSearchFolder).Path.TrimEnd(new char[] { '\\' });
                         }
                     }));
             }

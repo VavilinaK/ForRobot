@@ -61,6 +61,14 @@
                                 <Style TargetType="{x:Type Button}">
                                     <Setter Property="Command" Value="{Binding Path=SelectItemCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:NavigationTreeView}}}"/>
                                     <Setter Property="CommandParameter" Value="{Binding Path=Path}"/>
+                                    <Setter Property="ContextMenu">
+                                        <Setter.Value>
+                                            <ContextMenu>
+                                                <MenuItem Header="Удалить" Command="{Binding Path=PlacementTarget.Tag.DeleteNodeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
+                                                          CommandParameter="{Binding Path=Path}"/>
+                                            </ContextMenu>
+                                        </Setter.Value>
+                                    </Setter>
 
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Path=Type}" Value="{x:Static model:FileTypes.Folder}">
@@ -69,6 +77,8 @@
                                                 <Setter.Value>
                                                     <ContextMenu>
                                                         <MenuItem Header="Выбрать" Command="{Binding Path=PlacementTarget.Tag.SelectFolderCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
+                                                                  CommandParameter="{Binding Path=Path}"/>
+                                                        <MenuItem Header="Удалить" Command="{Binding Path=PlacementTarget.Tag.DeleteNodeCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
                                                                   CommandParameter="{Binding Path=Path}"/>
                                                     </ContextMenu>
                                                 </Setter.Value>

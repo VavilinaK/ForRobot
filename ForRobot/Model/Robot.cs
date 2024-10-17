@@ -445,6 +445,49 @@ namespace ForRobot.Model
             });
         }
 
+        /// <summary>
+        /// Удаление файла по пути
+        /// </summary>
+        /// <param name="pathToFile">Путь файла</param>
+        /// <returns></returns>
+        public async Task DeleteFile(string sPathToFile)
+        {
+            try
+            {
+                switch (this.Pro_State)
+                {
+                    case "#P_RESET":
+                    case "#P_END":
+                        if (!Task.Run<bool>(async () => await this.Connection.SelectCancel()).Result)
+                        {
+                            this.LogErrorMessage("Не удаётся отменить выбор программы");
+                            return;
+                        }
+                        else
+                            this.LogMessage("Текущий выбор отменён");
+
+                        System.Threading.Thread.Sleep(1000);
+                        break;
+
+                    case "#P_ACTIVE":
+                    case "#P_STOP":
+                        this.LogMessage("Отмена удаления: уже запущен процесс!");
+                        return;
+                }
+
+                if (!Task.Run<bool>(async () => await this.Connection.Delet(sPathToFile)).Result)
+                    throw new Exception($"Ошибка удаления файла {sPathToFile}");
+                else
+                    this.LogMessage($"Файл программы {sPathToFile} удалён");
+
+                await this.GetFiles();
+            }
+            catch (Exception ex)
+            {
+                this.LogErrorMessage(ex.Message, ex);
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -829,51 +872,6 @@ namespace ForRobot.Model
                 return false;
             }
             return true;
-        }
-
-        /// <summary>
-        /// Удаление файлов из папки на контроллере
-        /// </summary>
-        public void DeleteProgramm()
-        {
-            try
-            {
-                switch (this.Pro_State)
-                {
-                    case "#P_RESET":
-                    case "#P_END":
-                        if (!Task.Run<bool>(async () => await this.Connection.SelectCancel()).Result)
-                        {
-                            this.LogErrorMessage("Не удаётся отменить выбор программы");
-                            return;
-                        }
-                        else
-                            this.LogMessage("Текущий выбор отменён");
-
-                        System.Threading.Thread.Sleep(1000);
-                        break;
-
-                    case "#P_ACTIVE":
-                    case "#P_STOP":
-                        this.LogMessage("Отмена удаления: уже запущен процесс!");
-                        return;
-                }
-
-                Dictionary<String, String> files = Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameList(this.PathControllerFolder)).Result;
-                foreach (var file in files.Keys)
-                {
-                    if (!Task.Run<bool>(async () => await this.Connection.Delet(Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
-                        throw new Exception($"Ошибка удаления файла {Path.Combine(this.PathControllerFolder, new FileInfo(file).Name)}");
-                    else
-                        this.LogMessage($"Файл программы {Path.Combine(this.PathControllerFolder, new FileInfo(file).Name)} удалён");
-                }
-
-                Task.Run(async () => await this.GetFiles());
-            }
-            catch (Exception ex)
-            {
-                this.LogErrorMessage(ex.Message, ex);
-            }
         }
 
         #endregion

@@ -125,7 +125,9 @@ namespace ForRobot.ViewModels
         private IAsyncCommand _selectGeneratProgramCommand;
 
         private IAsyncCommand _selectFileCommand;
-        
+
+        private IAsyncCommand _deleteFileCommand;
+
         #endregion
 
         #endregion
@@ -655,7 +657,21 @@ namespace ForRobot.ViewModels
 
                                     if (System.Windows.MessageBox.Show($"Удалить все файлы из {robot.Item2.PathControllerFolder}?", $"{robot.Item1}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
                                         MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK)
-                                        await Task.Run(() => robot.Item2.DeleteProgramm());
+                                    {
+                                        await robot.Item2.GetFiles();
+                                        foreach (var item in robot.Item2.Files)
+                                        {
+                                            var folder = item.Search(robot.Item2.PathControllerFolder.Split(new char[] { '\\' }).Last());
+
+                                            if (folder == null)
+                                                continue;
+
+                                            foreach(var child in folder.Children.Where(f => f.Type == Model.Controls.FileTypes.DataList || f.Type == Model.Controls.FileTypes.Program))
+                                            {
+                                                await robot.Item2.DeleteFile(Path.Combine(ForRobot.Libr.Client.JsonRpcConnection.DefaulRoot, child.Path));
+                                            }
+                                        }
+                                    }
                                     else
                                         continue;
 
@@ -680,7 +696,21 @@ namespace ForRobot.ViewModels
 
                                 if (System.Windows.MessageBox.Show($"Удалить все файлы из {this.RobotForControl.PathControllerFolder}?", $"{this.SelectedNameRobot}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
                                     MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK)
-                                    await Task.Run(() => this.RobotForControl.DeleteProgramm());
+                                {
+                                    await this.RobotForControl.GetFiles();
+                                    foreach (var item in this.RobotForControl.Files)
+                                    {
+                                        var folder = item.Search(this.RobotForControl.PathControllerFolder.Split(new char[] { '\\' }).Last());
+
+                                        if (folder == null)
+                                            continue;
+
+                                        foreach (var child in folder.Children.Where(f => f.Type == Model.Controls.FileTypes.DataList || f.Type == Model.Controls.FileTypes.Program))
+                                        {
+                                            await this.RobotForControl.DeleteFile(Path.Combine(ForRobot.Libr.Client.JsonRpcConnection.DefaulRoot, child.Path));
+                                        }
+                                    }
+                                }
                                 else
                                     return;
 
@@ -814,6 +844,22 @@ namespace ForRobot.ViewModels
                     {
                         string sFilePath = obj as string;
                         await Task.Run(() => this.SelectedRobot.Item2.SelectProgramByPath(sFilePath));
+                    }, _exceptionCallback));
+            }
+        }
+
+        /// <summary>
+        /// Удаление узла
+        /// </summary>
+        public IAsyncCommand DeleteFileCommand
+        {
+            get
+            {
+                return _deleteFileCommand ??
+                    (_deleteFileCommand = new AsyncRelayCommand(async obj =>
+                    {
+                        string sFilePath = obj as string;
+                        await this.SelectedRobot.Item2.DeleteFile(Path.Combine(ForRobot.Libr.Client.JsonRpcConnection.DefaulRoot, sFilePath));
                     }, _exceptionCallback));
             }
         }

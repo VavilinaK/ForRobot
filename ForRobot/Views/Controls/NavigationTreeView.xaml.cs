@@ -35,6 +35,12 @@ namespace ForRobot.Views.Controls
             set { SetValue(SelectItemCommandProperty, value); }
         }
 
+        public IAsyncCommand DeleteNodeCommand
+        {
+            get { return (IAsyncCommand)GetValue(DeleteNodeCommandProperty); }
+            set { SetValue(DeleteNodeCommandProperty, value); }
+        }
+
         public RelayCommand SelectFolderCommand
         {
             get { return (RelayCommand)GetValue(SelectFolderCommandProperty); }
@@ -56,9 +62,14 @@ namespace ForRobot.Views.Controls
                                                                                                           typeof(NavigationTreeView),
                                                                                                           new PropertyMetadata());
 
+        public static readonly DependencyProperty DeleteNodeCommandProperty = DependencyProperty.Register(nameof(DeleteNodeCommand),
+                                                                                                          typeof(IAsyncCommand),
+                                                                                                          typeof(NavigationTreeView),
+                                                                                                          new PropertyMetadata());
+
         public static readonly DependencyProperty SelectFolderCommandProperty = DependencyProperty.Register(nameof(SelectFolderCommand),
-                                                                                                          typeof(RelayCommand),
-                                                                                                          typeof(NavigationTreeView));
+                                                                                                            typeof(RelayCommand),
+                                                                                                            typeof(NavigationTreeView));
 
         #endregion
 

@@ -95,12 +95,12 @@ namespace ForRobot.Model.Controls
             }
         }
 
-        public static File Search(File root, string nameToSearchFor)
+        public File Search(string nameToSearchFor)
         {
             Queue<File> Q = new Queue<File>();
             HashSet<File> S = new HashSet<File>();
-            Q.Enqueue(root);
-            S.Add(root);
+            Q.Enqueue(this);
+            S.Add(this);
 
             while (Q.Count > 0)
             {
