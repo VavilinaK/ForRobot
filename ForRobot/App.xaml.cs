@@ -144,11 +144,8 @@ namespace ForRobot
                         }
                         else
                         {
-                            Version oldVersion = Version.Parse(File.ReadLines(Path.Combine(this.FilePathOnPC, "Scripts\\test_weld_gen.py")).First().Split(new char[] { '=' }).Last().TrimStart().Trim(new char[] { '\'' }));
-                            Version newVersion = Version.Parse(File.ReadLines(Path.Combine(App.Current.UpdatePath, "Scripts\\test_weld_gen.py")).First().Split(new char[] { '=' }).Last().TrimStart().Trim(new char[] { '\'' }));
-
-                            //Version oldVersion = Version.Parse(File.ReadLines(Path.Combine(this.FilePathOnPC, "Scripts\\test_weld_gen.py")).First().Split(new char[] { '=' }).Last().TrimStart().Trim(new char[] { '\'' }));
-                            //Version newVersion = Version.Parse(File.ReadLines(Path.Combine(App.Current.UpdatePath, "Scripts\\test_weld_gen.py")).First().Split(new char[] { '=' }).Last().TrimStart().Trim(new char[] { '\'' }));
+                            Version oldVersion = Version.Parse(File.ReadLines(Path.Combine(this.FilePathOnPC, "Scripts\\test_weld_gen.py")).Where(str => str.Contains("__version__")).First().Split(new char[] { '=' }).Last().TrimStart().Trim(new char[] { '\'' }));
+                            Version newVersion = Version.Parse(File.ReadLines(Path.Combine(App.Current.UpdatePath, "Scripts\\test_weld_gen.py")).Where(str => str.Contains("__version__")).First().Split(new char[] { '=' }).Last().TrimStart().Trim(new char[] { '\'' }));
 
                             if (Settings.AutoUpdate && (File.Exists(Path.Combine(this.FilePathOnPC, "Scripts\\test_weld_gen.py")) && File.Exists(Path.Combine(App.Current.UpdatePath, "Scripts\\test_weld_gen.py")) &&
                                 newVersion > oldVersion &&
