@@ -212,10 +212,13 @@
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
 
-                            <RadioButton Name="parallele" Grid.Column="0" Content="Параллельны"
-                                 IsChecked="true"/>
+                            <RadioButton Grid.Column="0" Content="Параллельны"
+                                         IsChecked="{Binding Path=DataContext.DetalObject.ParalleleRibs, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
+                                                    Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={StaticResource True}, Mode=TwoWay, TargetNullValue={StaticResource False}}"/>
 
-                            <RadioButton Name="notParallele" Grid.Column="1" Content="Не параллельны"/>
+                            <RadioButton Grid.Column="1" Content="Не параллельны"
+                                         IsChecked="{Binding Path=DataContext.DetalObject.ParalleleRibs, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
+                                                    Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={StaticResource False}, Mode=TwoWay, TargetNullValue={StaticResource False}}"/>
                         </Grid>
                     </GroupBox>
 
@@ -295,7 +298,7 @@
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
                                             <Condition Binding="{Binding Path=DataContext.DetalObject.DiferentDistance, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="{StaticResource True}"/>
-                                            <Condition Binding="{Binding Path=IsChecked, ElementName=parallele}" Value="True"/>
+                                            <Condition Binding="{Binding Path=DataContext.DetalObject.ParalleleRibs, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="{StaticResource True}"/>
                                         </MultiDataTrigger.Conditions>
 
                                         <Setter Property="Template">
@@ -336,7 +339,7 @@
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
                                             <Condition Binding="{Binding Path=DataContext.DetalObject.DiferentDistance, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="{StaticResource True}"/>
-                                            <Condition Binding="{Binding Path=IsChecked, ElementName=notParallele}" Value="True"/>
+                                            <Condition Binding="{Binding Path=DataContext.DetalObject.ParalleleRibs, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="{StaticResource False}"/>
                                         </MultiDataTrigger.Conditions>
 
                                         <Setter Property="Template">

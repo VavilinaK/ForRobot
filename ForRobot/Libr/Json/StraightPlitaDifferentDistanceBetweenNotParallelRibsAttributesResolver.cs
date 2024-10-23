@@ -6,14 +6,14 @@ using Newtonsoft.Json.Serialization;
 
 namespace ForRobot.Libr.Json
 {
-    public class SameDistanceAttributesResolver : DefaultContractResolver
+    public class StraightPlitaDifferentDistanceBetweenNotParallelRibsAttributesResolver : DefaultContractResolver
     {
         protected override IList<Newtonsoft.Json.Serialization.JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
         {
             IList<Newtonsoft.Json.Serialization.JsonProperty> props = base.CreateProperties(type, memberSerialization);
             foreach (var prop in props)
             {
-                if (Attribute.IsDefined(type.GetProperty(prop.UnderlyingName), typeof(SameDistanceAttribute)))
+                if (Attribute.IsDefined(type.GetProperty(prop.UnderlyingName), typeof(StraightPliteDifferentDistanceBetweenNotParallelRibsAttribute)))
                 {
                     prop.Ignored = false;
                 }

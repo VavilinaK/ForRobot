@@ -25,6 +25,7 @@ namespace ForRobot.Model.Detals
         private string _scoseType;
 
         private bool _diferentDistance = false;
+        private bool _paralleleRibs = true;
 
         private decimal _bevelToStart;
         private decimal _bevelToEnd;
@@ -41,7 +42,6 @@ namespace ForRobot.Model.Detals
 
         private readonly JsonSerializerSettings _jsonSettings = new JsonSerializerSettings()
         {
-            ContractResolver = new SaveAttributesResolver(),
             Formatting = Formatting.Indented
         };
 
@@ -57,12 +57,48 @@ namespace ForRobot.Model.Detals
         {
             get
             {
-                if (DiferentDistance)
-                    this._jsonSettings.ContractResolver = new DefferentDistanceAttributesResolver();
+                if (this.ScoseType == ScoseTypes.Rect)
+                {
+                    if (this.DiferentDistance)
+                    {
+                        if (this.ParalleleRibs)
+                        {
+                            this._jsonSettings.ContractResolver = new StraightPlitaDifferentDistanceBetweenParallelRibsAttributesResolver();
+                            return JsonConvert.SerializeObject(this, _jsonSettings).Replace("d_W2", "d_w2");
+                        }
+                        else
+                        {
+                            this._jsonSettings.ContractResolver = new StraightPlitaDifferentDistanceBetweenNotParallelRibsAttributesResolver();
+                            return JsonConvert.SerializeObject(this, _jsonSettings).Replace("d_W2", "d_w2").Replace("d_dis1", "d_dis");
+                        }
+                    }
+                    else
+                    {
+                        this._jsonSettings.ContractResolver = new StraightPlitaEqualDistanceBetweenRibsAttributesResolver();
+                    }
+                }
                 else
-                    this._jsonSettings.ContractResolver = new SameDistanceAttributesResolver();
+                {
+                    if (this.DiferentDistance)
+                    {
+                        if (this.ParalleleRibs)
+                        {
+                            this._jsonSettings.ContractResolver = new BeveledPlitaDifferentDistanceBetweenParallelRibsAttributesResolver();
+                            return JsonConvert.SerializeObject(this, _jsonSettings).Replace("d_W2", "d_w2");
+                        }
+                        else
+                        {
+                            this._jsonSettings.ContractResolver = new BeveledPlitaDifferentDistanceBetweenNotParallelRibsAttributesResolver();
+                            return JsonConvert.SerializeObject(this, _jsonSettings).Replace("d_W2", "d_w2").Replace("d_dis1", "d_dis");
+                        }
+                    }
+                    else
+                    {
+                        this._jsonSettings.ContractResolver = new BeveledPlitaEqualDistanceBetweenRibsAttributesResolver();
+                    }
+                }
 
-                return JsonConvert.SerializeObject(this, _jsonSettings).Replace("d_W2", "d_w2"); // Заменяется при разном расстоянии.
+                return JsonConvert.SerializeObject(this, _jsonSettings);
             }
         }
 
@@ -74,6 +110,7 @@ namespace ForRobot.Model.Detals
         {
             get
             {
+                this._jsonSettings.ContractResolver = new SaveAttributesResolver();
                 //var js = JObject.Parse(JsonConvert.SerializeObject(this.Save(), _jsonSettings).Replace(ScoseTypes.SlopeLeft, this.ScoseType));
                 ////js[nameof(this.DiferentDistance)] = this._diferentDistance;
                 //return js.ToString();
@@ -82,6 +119,39 @@ namespace ForRobot.Model.Detals
         }
 
         [JsonIgnore]
+        [SaveAttribute]
+        [JsonConverter(typeof(JsonCommentConverter), "Разное ли рассояние между рёбрами")]
+        /// <summary>
+        /// Различно ли расстояние между рёбрами => отступы и т.д.
+        /// </summary>
+        public bool DiferentDistance
+        {
+            get => this._diferentDistance;
+            set
+            {
+                Set(ref this._diferentDistance, value);
+                this.Change?.Invoke(this, null);
+            }
+        }
+
+        [JsonIgnore]
+        [SaveAttribute]
+        [JsonConverter(typeof(JsonCommentConverter), "Параллельлны ли рёбра")]
+        /// <summary>
+        /// Паралельны ли рёбра друг к другу
+        /// </summary>
+        public bool ParalleleRibs
+        {
+            get => this._paralleleRibs;
+            set
+            {
+                Set(ref this._paralleleRibs, value);
+                this.Change?.Invoke(this, null);
+            }
+        }
+
+        [JsonIgnore]
+        [SaveAttribute]
         /// <summary>
         /// Тип детали
         /// </summary>
@@ -119,7 +189,8 @@ namespace ForRobot.Model.Detals
             }
         }
 
-        [JsonProperty("w")]
+        [JsonIgnore]
+        [JsonProperty("w"), BeveledPlitaEqualDistanceBetweenRibsAttribute, BeveledPlitaDifferentDistanceBetweenParallelRibsAttribute, BeveledPlitaDifferentDistanceBetweenNotParallelRibsAttribute, SaveAttribute]
         [JsonConverter(typeof(JsonCommentConverter), "Ширина настила")]
         /// <summary>
         /// Ширина настила
@@ -141,7 +212,7 @@ namespace ForRobot.Model.Detals
         }
 
         [JsonProperty("h")]
-        [JsonConverter(typeof(JsonCommentConverter), "Высота настила")]
+        [JsonConverter(typeof(JsonCommentConverter), "Высота ребра")]
         /// <summary>
         /// Высота ребра
         /// </summary>
@@ -173,23 +244,7 @@ namespace ForRobot.Model.Detals
         }
 
         [JsonIgnore]
-        [SaveAttribute]
-        [JsonConverter(typeof(JsonCommentConverter), "Разное ли рассояние между рёбрами")]
-        /// <summary>
-        /// Различно ли расстояние между рёбрами => отступы и т.д.
-        /// </summary>
-        public bool DiferentDistance
-        {
-            get => this._diferentDistance;
-            set
-            {
-                Set(ref this._diferentDistance, value);
-                this.Change?.Invoke(this, null);
-            }
-        }
-
-        [JsonIgnore]
-        [JsonProperty("d_w2"), SameDistanceAttribute, SaveAttribute]
+        [JsonProperty("d_w2"), StraightPlitaEqualDistanceBetweenRibsAttribute, BeveledPlitaEqualDistanceBetweenRibsAttribute, SaveAttribute]
         [JsonConverter(typeof(JsonCommentConverter), "Расстояние между осевыми линиями рёбер")]
         /// <summary>
         /// Расстояние между осевыми линиями рёбер
@@ -206,7 +261,7 @@ namespace ForRobot.Model.Detals
         }
 
         [JsonIgnore]
-        [JsonProperty("d_l1"), SameDistanceAttribute, SaveAttribute]
+        [JsonProperty("d_l1"), StraightPlitaEqualDistanceBetweenRibsAttribute, BeveledPlitaEqualDistanceBetweenRibsAttribute, SaveAttribute]
         [JsonConverter(typeof(JsonCommentConverter), "Расстояние торца ребра в начале")]
         /// <summary>
         /// Расстояние торца ребра в начале
@@ -223,7 +278,7 @@ namespace ForRobot.Model.Detals
         }
 
         [JsonIgnore]
-        [JsonProperty("d_l2"), SameDistanceAttribute, SaveAttribute]
+        [JsonProperty("d_l2"), StraightPlitaEqualDistanceBetweenRibsAttribute, BeveledPlitaEqualDistanceBetweenRibsAttribute, SaveAttribute]
         [JsonConverter(typeof(JsonCommentConverter), "Расстояние торца ребра в конце")]
         /// <summary>
         /// Расстояние торца ребра в конце
@@ -400,7 +455,8 @@ namespace ForRobot.Model.Detals
             }
         }
 
-        [JsonProperty("d_b1")]
+        [JsonIgnore]
+        [JsonProperty("d_b1"), BeveledPlitaEqualDistanceBetweenRibsAttribute, BeveledPlitaDifferentDistanceBetweenParallelRibsAttribute, BeveledPlitaDifferentDistanceBetweenNotParallelRibsAttribute, SaveAttribute]
         [JsonConverter(typeof(JsonCommentConverter), "Скос слева")]
         /// <summary>
         /// Скос слева
@@ -422,7 +478,8 @@ namespace ForRobot.Model.Detals
             }
         }
 
-        [JsonProperty("d_b2")]
+        [JsonIgnore]
+        [JsonProperty("d_b2"), BeveledPlitaEqualDistanceBetweenRibsAttribute, BeveledPlitaDifferentDistanceBetweenParallelRibsAttribute, BeveledPlitaDifferentDistanceBetweenNotParallelRibsAttribute, SaveAttribute]
         [JsonConverter(typeof(JsonCommentConverter), "Скос справа")]
         /// <summary>
         /// Скос справа
@@ -505,7 +562,8 @@ namespace ForRobot.Model.Detals
         }
 
         [JsonIgnore]
-        [JsonProperty("d_W2"), DefferentDistanceAttribute, SaveAttribute]
+        [JsonProperty("d_W2"), StraightPliteDifferentDistanceBetweenParallelRibsAttribute, StraightPliteDifferentDistanceBetweenNotParallelRibsAttribute, 
+            BeveledPlitaDifferentDistanceBetweenParallelRibsAttribute, BeveledPlitaDifferentDistanceBetweenNotParallelRibsAttribute, SaveAttribute]
         /// <summary>
         /// Коллекция рёбер
         /// </summary>
@@ -656,6 +714,7 @@ namespace ForRobot.Model.Detals
             WildingSpead = this.WildingSpead,
             ProgramNom = this.ProgramNom,
             DiferentDistance = this.DiferentDistance,
+            ParalleleRibs = this.ParalleleRibs,
             SumReber = this.SumReber,
             RibsCollection = this.RibsCollection
         };
@@ -674,13 +733,21 @@ namespace ForRobot.Model.Detals
                 rib = new Rib()
                 {
                     DistanceToStart = this.DistanceToStart,
-                    DistanceToEnd = this.DistanceToEnd
+                    DistanceToEnd = this.DistanceToEnd,
                 };
 
                 if (i == 0)
+                {
                     rib.Distance = this.DistanceToFirst;
+                    rib.DistanceLeft = this.DistanceToFirst;
+                    rib.DistanceRight = this.DistanceToFirst;
+                }
                 else
+                {
                     rib.Distance = this.DistanceBetween;
+                    rib.DistanceLeft = this.DistanceBetween;
+                    rib.DistanceRight = this.DistanceBetween;
+                }
 
                 ribs.Add(rib);
             }

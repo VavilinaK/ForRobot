@@ -408,7 +408,8 @@ namespace ForRobot.ViewModels
                             this.DetalObject = new Plita(DetalType.Plita)
                             {
                                 ScoseType = ((Plita)this.DetalObject).ScoseType,
-                                DiferentDistance = (((Plita)this.DetalObject).ScoseType == ScoseTypes.Rect) ? ((Plita)this.DetalObject).DiferentDistance : false
+                                DiferentDistance = ((Plita)this.DetalObject).DiferentDistance,
+                                ParalleleRibs = ((Plita)this.DetalObject).ParalleleRibs
                             };
                             ((Plita)this.DetalObject).RibsCollection.ItemPropertyChanged += (o, e) => this.SaveDetal();
                         }
@@ -624,6 +625,12 @@ namespace ForRobot.ViewModels
                     {
                         try
                         {
+                            //Page page = App.Current.MainWindowView.MainFrame.Content as Page;
+                            //page.UpdateLayout();
+                            //page.Keyboard.ClearFocus();
+                            //System.Windows.Input.Keyboard.ClearFocus();
+                            //System.Windows.Input.Keyboard.Focus(App.Current.MainWindowView);
+
                             string foldForGenerate = Directory.GetParent(this.RobotsCollection.First().Item2.PathProgramm).ToString();
 
                             // Запись Json-файла

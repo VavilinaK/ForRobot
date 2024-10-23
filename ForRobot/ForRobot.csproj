@@ -219,9 +219,22 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Libr\Behavior\ClearFocusBehavior.cs" />
     <Compile Include="Libr\ConfigurationProperties\AppConfigurationSection.cs" />
     <Compile Include="Libr\Converters\ArrayMultiValueConverter.cs" />
     <Compile Include="Libr\Converters\VisibilityFolderOnRobot.cs" />
+    <Compile Include="Libr\Json\BeveledPlitaDifferentDistanceBetweenNotParallelRibsAttribute.cs" />
+    <Compile Include="Libr\Json\BeveledPlitaDifferentDistanceBetweenNotParallelRibsAttributesResolver.cs" />
+    <Compile Include="Libr\Json\BeveledPlitaDifferentDistanceBetweenParallelRibsAttribute.cs" />
+    <Compile Include="Libr\Json\BeveledPlitaDifferentDistanceBetweenParallelRibsAttributesResolver.cs" />
+    <Compile Include="Libr\Json\BeveledPlitaEqualDistanceBetweenRibsAttribute.cs" />
+    <Compile Include="Libr\Json\BeveledPlitaEqualDistanceBetweenRibsAttributesResolver.cs" />
+    <Compile Include="Libr\Json\StraightPlitaDifferentDistanceBetweenNotParallelRibsAttributesResolver.cs" />
+    <Compile Include="Libr\Json\StraightPlitaDifferentDistanceBetweenParallelRibsAttributesResolver.cs" />
+    <Compile Include="Libr\Json\StraightPlitaEqualDistanceBetweenRibsAttribute.cs" />
+    <Compile Include="Libr\Json\StraightPlitaEqualDistanceBetweenRibsAttributesResolver.cs" />
+    <Compile Include="Libr\Json\StraightPliteDifferentDistanceBetweenNotParallelRibsAttribute.cs" />
+    <Compile Include="Libr\Json\StraightPliteDifferentDistanceBetweenParallelRibsAttribute.cs" />
     <Compile Include="Libr\Settings\ModeClosingApp.cs" />
     <Compile Include="Libr\Settings\Settings.cs" />
     <Compile Include="Libr\SingleGlobalInstance.cs" />
@@ -300,10 +313,6 @@
     <Compile Include="Libr\Generation.cs" />
     <Compile Include="Libr\AutoScrollBehavior.cs" />
     <Compile Include="Libr\ItemPropertyChangedEventArgs.cs" />
-    <Compile Include="Libr\Json\DefferentDistanceAttribute.cs" />
-    <Compile Include="Libr\Json\DefferentDistanceAttributesResolver.cs" />
-    <Compile Include="Libr\Json\SameDistanceAttribute.cs" />
-    <Compile Include="Libr\Json\SameDistanceAttributesResolver.cs" />
     <Compile Include="Libr\Json\SaveAttribute.cs" />
     <Compile Include="Libr\Json\SaveAttributesResolver.cs" />
     <Compile Include="Libr\ConfigurationProperties\PlitaConfigurationSection.cs" />
