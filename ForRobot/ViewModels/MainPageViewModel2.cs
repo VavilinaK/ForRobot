@@ -409,7 +409,9 @@ namespace ForRobot.ViewModels
                             {
                                 ScoseType = ((Plita)this.DetalObject).ScoseType,
                                 DiferentDistance = ((Plita)this.DetalObject).DiferentDistance,
-                                ParalleleRibs = ((Plita)this.DetalObject).ParalleleRibs
+                                ParalleleRibs = ((Plita)this.DetalObject).ParalleleRibs,
+                                DiferentDissolutionLeft = ((Plita)this.DetalObject).DiferentDissolutionLeft,
+                                DiferentDissolutionRight = ((Plita)this.DetalObject).DiferentDissolutionRight
                             };
                             ((Plita)this.DetalObject).RibsCollection.ItemPropertyChanged += (o, e) => this.SaveDetal();
                         }

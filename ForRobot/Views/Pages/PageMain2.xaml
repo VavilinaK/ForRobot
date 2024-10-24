@@ -58,39 +58,21 @@
             <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
 
-        <!--<Popup
+        <Popup
             Placement="Bottom"
             AllowsTransparency="True"
             PopupAnimation="Slide"
             IsOpen="{Binding Path=IsChecked, ElementName=menuItemFileTransfer}"
             PlacementTarget="{Binding ElementName=menuItemFileTransfer}">
-            <Border Background="Azure" 
-            BorderBrush="Aquamarine" BorderThickness="5" CornerRadius="8">
+            
+            <Border Background="#FF818181"
+                    BorderBrush="#FFFFA21B" BorderThickness="5" CornerRadius="8">
 
                 <Grid Margin="15">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-
-                    <Border Grid.Column="0" Background="Azure"
-                    BorderBrush="Aquamarine" BorderThickness="5" CornerRadius="8">
-
-                    </Border>
-
-                    <Button Grid.Column="1" Margin="10">
-
-                    </Button>
+                    <control:DragAndDropPopup Height="100" Width="200"/>
                 </Grid>
             </Border>
-        </Popup>-->
-
-        <control:DragAndDropPopup
-            Placement="Bottom"
-            AllowsTransparency="True"
-            PopupAnimation="Slide"
-            IsOpen="{Binding Path=IsChecked, ElementName=menuItemFileTransfer}"
-            PlacementTarget="{Binding ElementName=menuItemFileTransfer}"/>
+        </Popup>
 
         <Menu Grid.Row="0">
             <Menu.ItemsPanel>

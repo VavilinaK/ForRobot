@@ -26,7 +26,9 @@ namespace ForRobot.Model.Detals
 
         private bool _diferentDistance = false;
         private bool _paralleleRibs = true;
-
+        private bool _diferentDissolutionLeft = false;
+        private bool _diferentDissolutionRight = false;
+        
         private decimal _bevelToStart;
         private decimal _bevelToEnd;
         private decimal _distanceForSearch;
@@ -57,48 +59,8 @@ namespace ForRobot.Model.Detals
         {
             get
             {
-                if (this.ScoseType == ScoseTypes.Rect)
-                {
-                    if (this.DiferentDistance)
-                    {
-                        if (this.ParalleleRibs)
-                        {
-                            this._jsonSettings.ContractResolver = new StraightPlitaDifferentDistanceBetweenParallelRibsAttributesResolver();
-                            return JsonConvert.SerializeObject(this, _jsonSettings).Replace("d_W2", "d_w2");
-                        }
-                        else
-                        {
-                            this._jsonSettings.ContractResolver = new StraightPlitaDifferentDistanceBetweenNotParallelRibsAttributesResolver();
-                            return JsonConvert.SerializeObject(this, _jsonSettings).Replace("d_W2", "d_w2").Replace("d_dis1", "d_dis");
-                        }
-                    }
-                    else
-                    {
-                        this._jsonSettings.ContractResolver = new StraightPlitaEqualDistanceBetweenRibsAttributesResolver();
-                    }
-                }
-                else
-                {
-                    if (this.DiferentDistance)
-                    {
-                        if (this.ParalleleRibs)
-                        {
-                            this._jsonSettings.ContractResolver = new BeveledPlitaDifferentDistanceBetweenParallelRibsAttributesResolver();
-                            return JsonConvert.SerializeObject(this, _jsonSettings).Replace("d_W2", "d_w2");
-                        }
-                        else
-                        {
-                            this._jsonSettings.ContractResolver = new BeveledPlitaDifferentDistanceBetweenNotParallelRibsAttributesResolver();
-                            return JsonConvert.SerializeObject(this, _jsonSettings).Replace("d_W2", "d_w2").Replace("d_dis1", "d_dis");
-                        }
-                    }
-                    else
-                    {
-                        this._jsonSettings.ContractResolver = new BeveledPlitaEqualDistanceBetweenRibsAttributesResolver();
-                    }
-                }
-
-                return JsonConvert.SerializeObject(this, _jsonSettings);
+                this._jsonSettings.ContractResolver = new PlitaWithRibsAttributesResolver(this.ScoseType, this.DiferentDistance, this.ParalleleRibs, this.DiferentDissolutionLeft, this.DiferentDissolutionRight);
+                return JsonConvert.SerializeObject(this, _jsonSettings).Replace("d_W2", "d_w2").Replace("d_dis1", "d_dis");
             }
         }
 
@@ -152,6 +114,38 @@ namespace ForRobot.Model.Detals
 
         [JsonIgnore]
         [SaveAttribute]
+        [JsonConverter(typeof(JsonCommentConverter), "Разный ли роспуск слева")]
+        /// <summary>
+        /// Разный ли роспуск слева
+        /// </summary>
+        public bool DiferentDissolutionLeft
+        {
+            get => this._diferentDissolutionLeft;
+            set
+            {
+                Set(ref this._diferentDissolutionLeft, value);
+                this.Change?.Invoke(this, null);
+            }
+        }
+
+        [JsonIgnore]
+        [SaveAttribute]
+        [JsonConverter(typeof(JsonCommentConverter), "Разный ли роспуск справа")]
+        /// <summary>
+        /// Разный ли роспуск справа
+        /// </summary>
+        public bool DiferentDissolutionRight
+        {
+            get => this._diferentDissolutionRight;
+            set
+            {
+                Set(ref this._diferentDissolutionRight, value);
+                this.Change?.Invoke(this, null);
+            }
+        }
+
+        [JsonIgnore]
+        [SaveAttribute]
         /// <summary>
         /// Тип детали
         /// </summary>
@@ -189,8 +183,7 @@ namespace ForRobot.Model.Detals
             }
         }
 
-        [JsonIgnore]
-        [JsonProperty("w"), BeveledPlitaEqualDistanceBetweenRibsAttribute, BeveledPlitaDifferentDistanceBetweenParallelRibsAttribute, BeveledPlitaDifferentDistanceBetweenNotParallelRibsAttribute, SaveAttribute]
+        [JsonProperty("w")]
         [JsonConverter(typeof(JsonCommentConverter), "Ширина настила")]
         /// <summary>
         /// Ширина настила
@@ -227,6 +220,7 @@ namespace ForRobot.Model.Detals
             }
         }
 
+        [JsonIgnore]
         [JsonProperty("d_w1")]
         [JsonConverter(typeof(JsonCommentConverter), "Расстояние по ширине до осевой линии первого ребра")]
         /// <summary>
@@ -238,13 +232,14 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.DistanceToFirst = value;
+                this.RibsCollection = this.FillRibsCollection();
                 RaisePropertyChanged(nameof(this.GenericImage));
                 this.Change?.Invoke(this, null);
             }
         }
 
         [JsonIgnore]
-        [JsonProperty("d_w2"), StraightPlitaEqualDistanceBetweenRibsAttribute, BeveledPlitaEqualDistanceBetweenRibsAttribute, SaveAttribute]
+        [JsonProperty("d_w2")]
         [JsonConverter(typeof(JsonCommentConverter), "Расстояние между осевыми линиями рёбер")]
         /// <summary>
         /// Расстояние между осевыми линиями рёбер
@@ -255,13 +250,13 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.DistanceBetween = value;
+                this.RibsCollection = this.FillRibsCollection();
                 RaisePropertyChanged(nameof(this.RebraImage), nameof(this.GenericImage));
                 this.Change?.Invoke(this, null);
             }
         }
 
-        [JsonIgnore]
-        [JsonProperty("d_l1"), StraightPlitaEqualDistanceBetweenRibsAttribute, BeveledPlitaEqualDistanceBetweenRibsAttribute, SaveAttribute]
+        [JsonProperty("d_l1")]
         [JsonConverter(typeof(JsonCommentConverter), "Расстояние торца ребра в начале")]
         /// <summary>
         /// Расстояние торца ребра в начале
@@ -277,8 +272,7 @@ namespace ForRobot.Model.Detals
             }
         }
 
-        [JsonIgnore]
-        [JsonProperty("d_l2"), StraightPlitaEqualDistanceBetweenRibsAttribute, BeveledPlitaEqualDistanceBetweenRibsAttribute, SaveAttribute]
+        [JsonProperty("d_l2")]
         [JsonConverter(typeof(JsonCommentConverter), "Расстояние торца ребра в конце")]
         /// <summary>
         /// Расстояние торца ребра в конце
@@ -455,8 +449,7 @@ namespace ForRobot.Model.Detals
             }
         }
 
-        [JsonIgnore]
-        [JsonProperty("d_b1"), BeveledPlitaEqualDistanceBetweenRibsAttribute, BeveledPlitaDifferentDistanceBetweenParallelRibsAttribute, BeveledPlitaDifferentDistanceBetweenNotParallelRibsAttribute, SaveAttribute]
+        [JsonProperty("d_b1")]
         [JsonConverter(typeof(JsonCommentConverter), "Скос слева")]
         /// <summary>
         /// Скос слева
@@ -478,8 +471,7 @@ namespace ForRobot.Model.Detals
             }
         }
 
-        [JsonIgnore]
-        [JsonProperty("d_b2"), BeveledPlitaEqualDistanceBetweenRibsAttribute, BeveledPlitaDifferentDistanceBetweenParallelRibsAttribute, BeveledPlitaDifferentDistanceBetweenNotParallelRibsAttribute, SaveAttribute]
+        [JsonProperty("d_b2")]
         [JsonConverter(typeof(JsonCommentConverter), "Скос справа")]
         /// <summary>
         /// Скос справа
@@ -561,9 +553,7 @@ namespace ForRobot.Model.Detals
             }
         }
 
-        [JsonIgnore]
-        [JsonProperty("d_W2"), StraightPliteDifferentDistanceBetweenParallelRibsAttribute, StraightPliteDifferentDistanceBetweenNotParallelRibsAttribute, 
-            BeveledPlitaDifferentDistanceBetweenParallelRibsAttribute, BeveledPlitaDifferentDistanceBetweenNotParallelRibsAttribute, SaveAttribute]
+        [JsonProperty("d_W2")]
         /// <summary>
         /// Коллекция рёбер
         /// </summary>
@@ -715,6 +705,8 @@ namespace ForRobot.Model.Detals
             ProgramNom = this.ProgramNom,
             DiferentDistance = this.DiferentDistance,
             ParalleleRibs = this.ParalleleRibs,
+            DiferentDissolutionLeft = this.DiferentDissolutionLeft,
+            DiferentDissolutionRight = this.DiferentDissolutionRight,
             SumReber = this.SumReber,
             RibsCollection = this.RibsCollection
         };
@@ -734,6 +726,8 @@ namespace ForRobot.Model.Detals
                 {
                     DistanceToStart = this.DistanceToStart,
                     DistanceToEnd = this.DistanceToEnd,
+                    DissolutionLeft = this.DissolutionStart,
+                    DissolutionRight = this.DissolutionEnd
                 };
 
                 if (i == 0)
