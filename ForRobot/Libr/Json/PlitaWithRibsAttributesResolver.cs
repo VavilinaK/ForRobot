@@ -38,93 +38,18 @@ namespace ForRobot.Libr.Json
                     props.Where(item => item.UnderlyingName == "BevelToLeft").First().Ignored = true;
                     props.Where(item => item.UnderlyingName == "BevelToRight").First().Ignored = true;
                 }
-                else
-                {
-                    props.Where(item => item.UnderlyingName == "Wight").First().Ignored = false;
-                    props.Where(item => item.UnderlyingName == "BevelToLeft").First().Ignored = false;
-                    props.Where(item => item.UnderlyingName == "BevelToRight").First().Ignored = false;
-                }
-
-                //if (this._diferentDistance)
-                //{
-                //    props.Where(item => item.UnderlyingName == "DistanceToFirst").First().Ignored = true;
-                //    props.Where(item => item.UnderlyingName == "DistanceBetween").First().Ignored = true;
-                //    props.Where(item => item.UnderlyingName == "DistanceToStart").First().Ignored = true;
-                //    props.Where(item => item.UnderlyingName == "DistanceToEnd").First().Ignored = true;
-                //    //props.Where(item => item.UnderlyingName == "RibsCollection").First().Ignored = false;
-
-                //    //props.Where(item => item.UnderlyingName == "RibsCollection").First().PropertyName = "d_w2";
-
-                //}
-                //else
-                //{
-                //    props.Where(item => item.UnderlyingName == "DistanceToFirst").First().Ignored = false;
-                //    props.Where(item => item.UnderlyingName == "DistanceBetween").First().Ignored = false;
-                //    props.Where(item => item.UnderlyingName == "DistanceToStart").First().Ignored = false;
-                //    props.Where(item => item.UnderlyingName == "DistanceToEnd").First().Ignored = false;
-                //    //props.Where(item => item.UnderlyingName == "RibsCollection").First().Ignored = true;
-                //}
-
-                //if (this._diferentDissolutionLeft)
-                //{
-                //    props.Where(item => item.UnderlyingName == "DissolutionStart").First().Ignored = true;
-                //    //props.Where(item => item.UnderlyingName == "RibsCollection").First().Ignored = false;
-                //}
-                //else
-                //{
-                //    props.Where(item => item.UnderlyingName == "DissolutionStart").First().Ignored = false;
-                //    //props.Where(item => item.UnderlyingName == "RibsCollection").First().Ignored = true;
-                //}
-
-                //if (this._diferentDissolutionRight)
-                //{
-                //    props.Where(item => item.UnderlyingName == "DissolutionEnd").First().Ignored = true;
-                //    //props.Where(item => item.UnderlyingName == "RibsCollection").First().Ignored = false;
-                //}
-                //else
-                //{
-                //    props.Where(item => item.UnderlyingName == "DissolutionEnd").First().Ignored = false;
-                //    //props.Where(item => item.UnderlyingName == "RibsCollection").First().Ignored = true;
-                //}
-
-                //if(this._diferentDistance || this._diferentDissolutionLeft || this._diferentDissolutionRight)
-                //    props.Where(item => item.UnderlyingName == "RibsCollection").First().Ignored = false;
-                //else
-                //    props.Where(item => item.UnderlyingName == "RibsCollection").First().Ignored = true;
             }
 
             if (props.Count > 0 && props[0].DeclaringType.FullName == "ForRobot.Model.Detals.Rib")
             {
                 if (this._paralleleRibs)
                 {
-                    props.Where(item => item.UnderlyingName == "Distance").First().Ignored = false;
                     props.Where(item => item.UnderlyingName == "DistanceLeft").First().Ignored = true;
-                    props.Where(item => item.UnderlyingName == "DistanceRight").First().Ignored = true;
                 }
                 else
                 {
                     props.Where(item => item.UnderlyingName == "Distance").First().Ignored = true;
-                    props.Where(item => item.UnderlyingName == "DistanceLeft").First().Ignored = false;
-                    props.Where(item => item.UnderlyingName == "DistanceRight").First().Ignored = false;
                 }
-
-                //    if (this._diferentDissolutionLeft)
-                //    {
-                //        props.Where(item => item.UnderlyingName == "DissolutionLeft").First().Ignored = false;
-                //    }
-                //    else
-                //    {
-                //        props.Where(item => item.UnderlyingName == "DissolutionLeft").First().Ignored = true;
-                //    }
-
-                //    if (this._diferentDissolutionRight)
-                //    {
-                //        props.Where(item => item.UnderlyingName == "DissolutionRight").First().Ignored = false;
-                //    }
-                //    else
-                //    {
-                //        props.Where(item => item.UnderlyingName == "DissolutionRight").First().Ignored = true;
-                //    }
             }
 
             return props;
