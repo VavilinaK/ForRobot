@@ -14,8 +14,8 @@ namespace ForRobot.Model.Detals
         private decimal _distance;
         private decimal _distanceLeft;
         private decimal _distanceRight;
-        private decimal _distanceToStart;
-        private decimal _distanceToEnd;
+        private decimal _identToLeft;
+        private decimal _identToRight;
         private decimal _dissolutionLeft;
         private decimal _dissolutionRight;
         
@@ -41,13 +41,13 @@ namespace ForRobot.Model.Detals
         /// <summary>
         /// Отступ слева
         /// </summary>
-        public decimal DistanceToStart { get => this._distanceToStart; set => Set(ref this._distanceToStart, value); }
+        public decimal IdentToLeft { get => this._identToLeft; set => Set(ref this._identToLeft, value); }
 
         [JsonProperty("d_l2")]
         /// <summary>
         /// Отступ справа
         /// </summary>
-        public decimal DistanceToEnd { get => this._distanceToEnd; set => Set(ref this._distanceToEnd, value); }
+        public decimal IdentToRight { get => this._identToRight; set => Set(ref this._identToRight, value); }
 
         [JsonProperty("l_r1")]
         /// <summary>

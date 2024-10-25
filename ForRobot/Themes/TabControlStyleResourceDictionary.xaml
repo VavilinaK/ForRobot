@@ -13,6 +13,12 @@
     <!--Общие параметры (настила с ребром)-->
     <DataTemplate x:Key="PlitaTemplateStyle" DataType="{x:Type ContentControl}">
         <DataTemplate.Resources>
+            <Style TargetType="{x:Type FrameworkElement}">
+                <Setter Property="TextElement.FontSize" Value="16"/>
+                <!--<Setter Property="" Value="16"/>-->
+
+            </Style>
+            
             <Style TargetType="{x:Type Label}">
                 <Setter Property="FontSize" Value="16"/>
                 <Setter Property="HorizontalContentAlignment" Value="Left"/>
@@ -319,7 +325,7 @@
                                                             <DataGridTemplateColumn Header="Отступ слева, мм." Width="Auto">
                                                                 <DataGridTemplateColumn.CellTemplate>
                                                                     <DataTemplate>
-                                                                        <TextBox Text="{Binding Path=DistanceToStart, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                                                                        <TextBox Text="{Binding Path=IdentToLeft, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
                                                                     </DataTemplate>
                                                                 </DataGridTemplateColumn.CellTemplate>
                                                             </DataGridTemplateColumn>
@@ -327,7 +333,7 @@
                                                             <DataGridTemplateColumn Header="Отступ справа, мм." Width="Auto">
                                                                 <DataGridTemplateColumn.CellTemplate>
                                                                     <DataTemplate>
-                                                                        <TextBox Text="{Binding Path=DistanceToEnd, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                                                                        <TextBox Text="{Binding Path=IdentToRight, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
                                                                     </DataTemplate>
                                                                 </DataGridTemplateColumn.CellTemplate>
                                                             </DataGridTemplateColumn>
@@ -352,7 +358,7 @@
                                                             <DataGridTemplateColumn Header="Отступ слева, мм." Width="Auto">
                                                                 <DataGridTemplateColumn.CellTemplate>
                                                                     <DataTemplate>
-                                                                        <TextBox Text="{Binding Path=DistanceToStart, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                                                                        <TextBox Text="{Binding Path=IdentToLeft, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
                                                                     </DataTemplate>
                                                                 </DataGridTemplateColumn.CellTemplate>
                                                             </DataGridTemplateColumn>
@@ -360,7 +366,7 @@
                                                             <DataGridTemplateColumn Header="Отступ справа, мм." Width="Auto">
                                                                 <DataGridTemplateColumn.CellTemplate>
                                                                     <DataTemplate>
-                                                                        <TextBox Text="{Binding Path=DistanceToEnd, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                                                                        <TextBox Text="{Binding Path=IdentToRight, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
                                                                     </DataTemplate>
                                                                 </DataGridTemplateColumn.CellTemplate>
                                                             </DataGridTemplateColumn>
@@ -396,8 +402,7 @@
             <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.Long, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, 
                 Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
 
-            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.Wight, RelativeSource={RelativeSource AncestorType={x:Type Page}, 
-                Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}">
+            <TextBox Grid.Row="2" Grid.Column="1">
 
                 <TextBox.Style>
                     <Style TargetType="TextBox">
@@ -405,11 +410,14 @@
                         <Setter Property="Padding" Value="5"/>
                         <Setter Property="Height" Value="37"/>
                         <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
+                        <Setter Property="Text" Value="{Binding Path=DataContext.DetalObject.Wight, RelativeSource={RelativeSource AncestorType={x:Type Page},
+                                                        Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
                         <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
                         <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
                         
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="d_rect">
+                                <Setter Property="Text" Value="0.00"/>
                                 <Setter Property="IsEnabled" Value="False"/>
                             </DataTrigger>
                         </Style.Triggers>
@@ -439,7 +447,7 @@
                 </TextBox.Style>
             </TextBox>
 
-            <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DistanceToStart, RelativeSource={RelativeSource AncestorType={x:Type Page},
+            <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.IdentToLeft, RelativeSource={RelativeSource AncestorType={x:Type Page},
                 Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}">
                 <TextBox.Style>
                     <Style TargetType="{x:Type TextBox}">
@@ -460,7 +468,7 @@
                 </TextBox.Style>
             </TextBox>
 
-            <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DistanceToEnd, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
+            <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.IdentToRight, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
                 Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}">
                 <TextBox.Style>
                     <Style TargetType="{x:Type TextBox}">
@@ -756,8 +764,7 @@
                 </Grid>
             </GroupBox>
 
-            <TextBox Grid.Row="9" Grid.Column="1" Height="37" Text="{Binding Path=DataContext.DetalObject.BevelToStart, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
-                Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}">
+            <TextBox Grid.Row="9" Grid.Column="1" Height="37">
 
                 <TextBox.Style>
                     <Style TargetType="TextBox">
@@ -765,11 +772,14 @@
                         <Setter Property="Padding" Value="5"/>
                         <Setter Property="Height" Value="37"/>
                         <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
+                        <Setter Property="Text" Value="{Binding Path=DataContext.DetalObject.BevelToLeft, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
+                                                        Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
                         <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
                         <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
                         
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="d_rect">
+                                <Setter Property="Text" Value="0.00"/>
                                 <Setter Property="IsEnabled" Value="False"/>
                             </DataTrigger>
                         </Style.Triggers>
@@ -777,20 +787,21 @@
                 </TextBox.Style>
             </TextBox>
 
-            <TextBox Grid.Row="10" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.BevelToEnd, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
-                Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}">
-
+            <TextBox Grid.Row="10" Grid.Column="1">
                 <TextBox.Style>
                     <Style TargetType="TextBox">
                         <Setter Property="FontSize" Value="16"/>
                         <Setter Property="Padding" Value="5"/>
                         <Setter Property="Height" Value="37"/>
                         <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
+                        <Setter Property="Text" Value="{Binding Path=DataContext.DetalObject.BevelToRight, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
+                                                        Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
                         <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
                         <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
                         
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="d_rect">
+                                <Setter Property="Text" Value="0.00"/>
                                 <Setter Property="IsEnabled" Value="False"/>
                             </DataTrigger>
                         </Style.Triggers>

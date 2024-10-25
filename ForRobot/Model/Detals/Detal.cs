@@ -31,7 +31,7 @@ namespace ForRobot.Model.Detals
         /// Тип детали
         /// </summary>
         public virtual string DetalType { get; }
-        
+
         /// <summary>
         /// Количество ребер
         /// </summary>
@@ -63,14 +63,14 @@ namespace ForRobot.Model.Detals
         public virtual decimal DistanceBetween { get; set; }
         
         /// <summary>
-        /// Расстояние торца ребра в начале
+        /// Расстояние торца ребра слева
         /// </summary>
-        public virtual decimal DistanceToStart { get; set; }
+        public virtual decimal IdentToLeft { get; set; }
         
         /// <summary>
-        /// Расстояние торца ребра в конце
+        /// Расстояние торца ребра справа
         /// </summary>
-        public virtual decimal DistanceToEnd { get; set; }
+        public virtual decimal IdentToRight { get; set; }
         
         /// <summary>
         /// Роспуск в начале
@@ -178,8 +178,8 @@ namespace ForRobot.Model.Detals
                     this.Hight = Config.Hight;
                     this.DistanceToFirst = Config.DistanceToFirst;
                     this.DistanceBetween = Config.DistanceBetween;
-                    this.DistanceToStart = Config.DistanceToStart;
-                    this.DistanceToEnd = Config.DistanceToEnd;
+                    this.IdentToLeft = Config.DistanceToStart;
+                    this.IdentToRight = Config.DistanceToEnd;
                     this.DissolutionStart = Config.DissolutionStart;
                     this.DissolutionEnd = Config.DissolutionEnd;
                     this.ThicknessPlita = Config.ThicknessPlita;
