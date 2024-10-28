@@ -60,7 +60,7 @@ namespace ForRobot.Model.Detals
             get
             {
                 this._jsonSettings.ContractResolver = new PlitaWithRibsAttributesResolver(this.ScoseType, this.DiferentDistance, this.ParalleleRibs, this.DiferentDissolutionLeft, this.DiferentDissolutionRight);
-                return JsonConvert.SerializeObject(this, _jsonSettings).Replace("d_W2", "d_w").Replace("d_dis1", "d_dis");
+                return JsonConvert.SerializeObject(this, _jsonSettings).Replace("d_W2", "d_w");
             }
         }
 
@@ -252,7 +252,10 @@ namespace ForRobot.Model.Detals
                 base.DistanceToFirst = value;
 
                 if (this.RibsCollection.Count > 0)
+                {
                     this.RibsCollection[0].Distance = base.DistanceToFirst;
+                    this.RibsCollection[0].DistanceRight = base.DistanceToFirst;
+                }
 
                 RaisePropertyChanged(nameof(this.GenericImage));
                 this.Change?.Invoke(this, null);
@@ -276,6 +279,7 @@ namespace ForRobot.Model.Detals
                     for(int i = 1; i < this.RibsCollection.Count; i++)
                     {
                         this.RibsCollection[i].Distance = base.DistanceBetween;
+                        this.RibsCollection[i].DistanceRight = base.DistanceBetween;
                     }
 
                 RaisePropertyChanged(nameof(this.RebraImage), nameof(this.GenericImage));
@@ -607,16 +611,7 @@ namespace ForRobot.Model.Detals
                 else if (this.RibsCollection.Count > 0)
                     for (int i = this.RibsCollection.Count; i < this.SumReber; i++)
                     {
-                        this.RibsCollection.Add(new Rib()
-                        {
-                            Distance = this.DistanceBetween,
-                            DistanceLeft = this.DistanceBetween,
-                            DistanceRight = this.DistanceBetween,
-                            IdentToLeft = this.IdentToLeft,
-                            IdentToRight = this.IdentToRight,
-                            DissolutionLeft = this.DissolutionStart,
-                            DissolutionRight = this.DissolutionEnd
-                        });
+                        this.RibsCollection.Add(this.RibsCollection.Last<Rib>().Clone() as Rib);
                     }
                 else
                     this.RibsCollection = this.FillRibsCollection();
@@ -702,16 +697,21 @@ namespace ForRobot.Model.Detals
                 if (i == 0)
                 {
                     rib.Distance = this.DistanceToFirst;
-                    rib.DistanceLeft = this.DistanceToFirst;
+                    //rib.DistanceLeft = this.DistanceToFirst;
                     rib.DistanceRight = this.DistanceToFirst;
                 }
                 else
                 {
                     rib.Distance = this.DistanceBetween;
-                    rib.DistanceLeft = this.DistanceBetween;
+                    //rib.DistanceLeft = this.DistanceBetween;
                     rib.DistanceRight = this.DistanceBetween;
                 }
-
+                rib.ChangeDistance += (s, e) => 
+                {
+                    if (this.ParalleleRibs)
+                        (s as Rib).DistanceRight = (s as Rib).Distance;
+                };
+                
                 ribs.Add(rib);
             }
 

@@ -185,7 +185,7 @@ namespace ForRobot.Views.Controls
 
         #endregion
 
-        #region Construct
+        #region Constructor
 
         public Breadcrumb()
         {

@@ -40,17 +40,17 @@ namespace ForRobot.Libr.Json
                 }
             }
 
-            if (props.Count > 0 && props[0].DeclaringType.FullName == "ForRobot.Model.Detals.Rib")
-            {
-                if (this._paralleleRibs)
-                {
-                    props.Where(item => item.UnderlyingName == "DistanceLeft").First().Ignored = true;
-                }
-                else
-                {
-                    props.Where(item => item.UnderlyingName == "Distance").First().Ignored = true;
-                }
-            }
+            //if (props.Count > 0 && props[0].DeclaringType.FullName == "ForRobot.Model.Detals.Rib")
+            //{
+            //    //if (this._paralleleRibs)
+            //    //{
+            //    //    props.Where(item => item.UnderlyingName == "DistanceLeft").First().Ignored = true;
+            //    //}
+            //    //else
+            //    //{
+            //    //    props.Where(item => item.UnderlyingName == "Distance").First().Ignored = true;
+            //    //}
+            //}
 
             return props;
         }

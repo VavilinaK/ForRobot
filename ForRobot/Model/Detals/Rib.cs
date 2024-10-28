@@ -9,7 +9,7 @@ namespace ForRobot.Model.Detals
     /// <summary>
     /// Модель ребра
     /// </summary>
-    public class Rib : BaseClass
+    public class Rib : BaseClass, ICloneable
     {
         private decimal _distance;
         private decimal _distanceLeft;
@@ -19,17 +19,25 @@ namespace ForRobot.Model.Detals
         private decimal _dissolutionLeft;
         private decimal _dissolutionRight;
         
-        [JsonProperty("d_dis")]
+        [JsonProperty("d_dis1")]
         /// <summary>
         /// Расстояние до следующего ребра
         /// </summary>
-        public decimal Distance { get => this._distance; set => Set(ref this._distance, value); }
+        public decimal Distance
+        {
+            get => this._distance;
+            set
+            {
+                Set(ref this._distance, value);
+                this.ChangeDistance?.Invoke(this, null);
+            }
+        }
 
-        [JsonProperty("d_dis1")]
-        /// <summary>
-        /// Расстояние до ребра по левому краю
-        /// </summary>
-        public decimal DistanceLeft { get => this._distanceLeft; set => Set(ref this._distanceLeft, value); }
+        //[JsonProperty("d_dis1")]
+        ///// <summary>
+        ///// Расстояние до ребра по левому краю
+        ///// </summary>
+        //public decimal DistanceLeft { get => this._distanceLeft; set => Set(ref this._distanceLeft, value); }
 
         [JsonProperty("d_dis2")]
         /// <summary>
@@ -61,6 +69,13 @@ namespace ForRobot.Model.Detals
         /// </summary>
         public decimal DissolutionRight { get => this._dissolutionRight; set => Set(ref this._dissolutionRight, value); }
 
+        /// <summary>
+        /// Событие изменения расстояниия между рёбрами, при их параллельности
+        /// </summary>
+        public event EventHandler ChangeDistance;
+
         public Rib() { }
+
+        public object Clone() => this.MemberwiseClone();
     }
 }

@@ -10,29 +10,33 @@
     <UserControl.Resources>
         <!--Template-->
         <ControlTemplate x:Key="buttonTemplate" TargetType="{x:Type Button}">
-            <Border Name="buttonPanel" BorderThickness="1">
+            <Border Name="buttonPanel" BorderThickness="1" Padding="5, 5, 10, 5" CornerRadius="8">
                 <ContentPresenter x:Name="ContentSite"
                                   VerticalAlignment="Center" HorizontalAlignment="Center"
-                                  ContentSource="Content" Margin="5"/>
+                                  ContentSource="Content" Margin="{Binding Padding}"/>
                 <Border.Style>
                     <Style TargetType="{x:Type Border}">
                         <Setter Property="BorderBrush" Value="{DynamicResource NotActiveBorderBrush}"/>
-                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Background" Value="White"/>
 
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Path=IsPressed, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}"  Value="True">
                                 <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
-                                <Setter Property="Background" Value="{DynamicResource ActiveBackround}"/>
+                                <Setter Property="Background" Value="{DynamicResource BrushAqua}"/>
                             </DataTrigger>
 
                             <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}" Value="True">
                                 <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
-                                <Setter Property="Background" Value="{DynamicResource ActiveBackround}"/>
+                                <Setter Property="Background" Value="{DynamicResource BrushDarkGray}"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
             </Border>
+        </ControlTemplate>
+
+        <ControlTemplate x:Key="listBoxItemTemplate" TargetType="{x:Type ListBoxItem}">
+            
         </ControlTemplate>
     </UserControl.Resources>
 
@@ -43,15 +47,36 @@
         </Grid.ColumnDefinitions>
 
         <Border Grid.Column="0" Background="Transparent"
-                    BorderBrush="#FFFFA21B" BorderThickness="5" CornerRadius="8">
+                BorderBrush="#FFFFA21B" BorderThickness="5" CornerRadius="8">
 
+            <ListBox Background="Transparent" BorderBrush="Transparent" BorderThickness="0"
+                     Padding="0" Margin="0"
+                     ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                     HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                     Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type local:DragAndDropPopup}, Mode=FindAncestor}}">
+                
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+
+
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="Template" Value="{StaticResource listBoxItemTemplate}"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
         </Border>
 
         <Button Grid.Column="1" Margin="10"
+                VerticalAlignment="Top"
                 Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"
                 Template="{StaticResource buttonTemplate}">
-            
-            <Path Stroke="Black" Stretch="None">
+
+            <Path Stroke="Black" Stretch="None" >
                 <Path.Data>
                     <GeometryGroup>
                         <PathGeometry Figures="M13.5 3H12H8C6.34315 3 5 4.34315 5 6V18C5 19.6569 6.34315 21 8 21H11M13.5 3L19 8.625M13.5 3V7.625C13.5 8.17728 13.9477 8.625 14.5 8.625H19M19 8.625V11.8125"/>

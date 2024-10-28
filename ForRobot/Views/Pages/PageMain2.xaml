@@ -61,15 +61,15 @@
         <Popup
             Placement="Bottom"
             AllowsTransparency="True"
-            PopupAnimation="Slide"
+            PopupAnimation="Fade"
             IsOpen="{Binding Path=IsChecked, ElementName=menuItemFileTransfer}"
             PlacementTarget="{Binding ElementName=menuItemFileTransfer}">
             
             <Border Background="#FF818181"
                     BorderBrush="#FFFFA21B" BorderThickness="5" CornerRadius="8">
 
-                <Grid Margin="15">
-                    <control:DragAndDropPopup Height="100" Width="200"/>
+                <Grid Margin="10">
+                    <control:DragAndDropPopup Height="100" Width="250"/>
                 </Grid>
             </Border>
         </Popup>
@@ -185,7 +185,8 @@
             <MenuItem x:Name="menuItemFileTransfer">
                 <MenuItem.Template>
                     <ControlTemplate TargetType="{x:Type MenuItem}">
-                        <ToggleButton ToolTip="Отправка файлов на робота"
+                        <ToggleButton IsChecked="{Binding Path=IsChecked, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type MenuItem}, Mode=FindAncestor}}"
+                                      ToolTip="Отправка файлов на робота"
                                       Height="50" Width="50" Padding="6" Margin="5,0"
                                       HorizontalAlignment="Left" VerticalAlignment="Center"
                                       Template="{StaticResource toggleButtonTemplate}">
