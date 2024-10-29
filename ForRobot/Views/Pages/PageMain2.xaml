@@ -129,7 +129,6 @@
                     <ControlTemplate TargetType="{x:Type MenuItem}">
                         <Button Grid.Column="1" Height="50" Padding="5" Margin="5, 0" ToolTip="Генерация программ"
                                 HorizontalAlignment="Left" VerticalAlignment="Center" Visibility="Visible" 
-
                                 Template="{StaticResource buttonTemplate}">
 
                             <Image Stretch="Fill">
@@ -167,14 +166,10 @@
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
-
-                            <!--<i:Interaction.Behaviors>
-                                <behavior:ClearFocusBehavior/>
-                            </i:Interaction.Behaviors>-->
-
+                            
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Click">
-                                    <i:InvokeCommandAction Command="{Binding Path=GenerateProgramCommand}" CommandParameter="{Binding}"/>
+                                    <i:InvokeCommandAction Command="{Binding Path=GenerateProgramCommand}" CommandParameter="{Binding Path=., RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>

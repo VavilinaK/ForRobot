@@ -88,7 +88,7 @@ namespace ForRobot.Model.Detals
             get => this._diferentDistance;
             set
             {
-                if (!value && this.RibsCollection.Count > 0)
+                if (!value && this.RibsCollection?.Count > 0)
                 {
                     for (int i = 0; i < this.RibsCollection.Count; i++)
                     {

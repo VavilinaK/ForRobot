@@ -219,7 +219,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Libr\Behavior\ClearFocusBehavior.cs" />
     <Compile Include="Libr\ConfigurationProperties\AppConfigurationSection.cs" />
     <Compile Include="Libr\Converters\ArrayMultiValueConverter.cs" />
     <Compile Include="Libr\Converters\VisibilityFolderOnRobot.cs" />
@@ -506,6 +505,9 @@
     <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.11.20\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.11.20\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.11.20\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.VisualBasic.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Libr\Behavior\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.11.20\build\Microsoft.VisualStudio.Threading.Analyzers.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.11.20\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" />

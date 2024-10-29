@@ -629,14 +629,11 @@ namespace ForRobot.ViewModels
                     {
                         try
                         {
-                            //Page page = App.Current.MainWindowView.MainFrame.Content as Page;
-                            //page.UpdateLayout();
-                            //page.Keyboard.ClearFocus();
+                            // Сброс фокуса перед генерацией.
+                            System.Windows.Input.Keyboard.ClearFocus();
+                            System.Windows.Input.FocusManager.SetFocusedElement(System.Windows.Input.FocusManager.GetFocusScope(obj as FrameworkElement), null);
 
-                            //System.Windows.Input.Keyboard.ClearFocus();
-                            //System.Windows.Input.Keyboard.Focus(App.Current.MainWindowView);
-
-                            string foldForGenerate = Directory.GetParent(this.RobotsCollection.First().Item2.PathProgramm).ToString();
+                            string foldForGenerate = Directory.GetParent(this.RobotsCollection.First().Item2.PathProgramm).ToString(); // Путь для генерации скриптом.
 
                             // Запись Json-файла
                             JObject jObject1 = JObject.Parse(this.DetalObject.Json);

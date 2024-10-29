@@ -34,12 +34,5 @@ namespace ForRobot.Views.Pages
         }
 
         #endregion
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            this.UpdateLayout();
-            Keyboard.ClearFocus();
-            System.Windows.Input.Keyboard.Focus(App.Current.MainWindowView);
-        }
     }
 }
