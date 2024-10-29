@@ -85,10 +85,12 @@ namespace ForRobot.Libr
                     { typeof(int), () => { if ((int)value == 0) nullKol++; } }
             };
 
-            int checkKol = obj.GetType().GetProperties().Where(wr => wr.Name != "Wight" && wr.Name != "BevelToStart" && wr.Name != "BevelToEnd"
-                                && @switch.ContainsKey(wr.PropertyType)).Count(); // Кол-во проверяемых свойств.
+            int checkKol = obj.GetType().GetProperties().Where(wr => wr.Name != "BevelToStart" && wr.Name != "BevelToEnd" && @switch.ContainsKey(wr.PropertyType)).Count(); // Кол-во проверяемых свойств.
 
-            foreach (var prop in obj.GetType().GetProperties().Where(wr => wr.Name != "Wight" && wr.Name != "BevelToStart" && wr.Name != "BevelToEnd"))
+            foreach (var prop in obj.GetType().GetProperties().Where(wr => wr.Name != "BevelToStart" && wr.Name != "BevelToEnd"))
+
+            //int checkKol = obj.GetType().GetProperties().Where(wr => @switch.ContainsKey(wr.PropertyType)).Count(); // Кол-во проверяемых свойств.
+            //foreach (var prop in obj.GetType().GetProperties())
             {
                 value = prop.GetValue(obj);
                 if (@switch.ContainsKey(prop.PropertyType)) @switch[prop.PropertyType]();

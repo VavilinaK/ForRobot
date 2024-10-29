@@ -1,13 +1,24 @@
 ﻿using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 
+using ForRobot.Model.Controls;
+
 namespace ForRobot.Views.Controls
 {
-    public enum WorkingRegims
+    public class FileForDragAndDropPopup : INotifyPropertyChanged
     {
-        Normal,
-        AddFile
+        public string Name { get; set; }
+
+        public string Path { get; set; }
+
+        public FileTypes Type { get; }
+
+        public bool IsProgres { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 
     /// <summary>
@@ -19,7 +30,7 @@ namespace ForRobot.Views.Controls
 
         #region Commands
 
-        private static RelayCommand _changeWorkingMode;
+        private static RelayCommand _changeWorkingModeCommand;
 
         #endregion
 
@@ -27,25 +38,42 @@ namespace ForRobot.Views.Controls
 
         #region Public variables
 
+        public ForRobot.Libr.FullyObservableCollection<FileForDragAndDropPopup> DowloadFiles { get; set; } = new Libr.FullyObservableCollection<FileForDragAndDropPopup>();
+
         #region Properties
 
         /// <summary>
-        /// Режим работы
+        /// Добавляется ли в данный момент файл
         /// </summary>
-        public bool WorkingRegime
+        public bool IsAddingFile
         {
-            get => (bool)GetValue(WorkingRegimeProperty);
-            set => SetValue(WorkingRegimeProperty, value);
+            get => (bool)GetValue(IsAddingFileProperty);
+            private set => SetValue(IsAddingFileProperty, value);
         }
 
-        public static readonly DependencyProperty WorkingRegimeProperty = DependencyProperty.Register(nameof(WorkingRegime),
+        public static readonly DependencyProperty IsAddingFileProperty = DependencyProperty.Register(nameof(IsAddingFile),
                                                                                            typeof(bool),
-                                                                                           typeof(Breadcrumb),
+                                                                                           typeof(DragAndDropPopup),
                                                                                            new PropertyMetadata(false));
 
         #endregion
 
         #region Commands
+
+        /// <summary>
+        /// Команда смены режима работы <see cref="DragAndDropPopup"/>
+        /// </summary>
+        private static RelayCommand ChangeWorkingModeCommand
+        {
+            get
+            {
+                return _changeWorkingModeCommand ??
+                    (_changeWorkingModeCommand = new RelayCommand(obj =>
+                    {
+
+                    }));
+            }
+        }
 
         #endregion
 

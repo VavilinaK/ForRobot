@@ -227,6 +227,7 @@
     <Compile Include="Libr\Settings\ModeClosingApp.cs" />
     <Compile Include="Libr\Settings\Settings.cs" />
     <Compile Include="Libr\SingleGlobalInstance.cs" />
+    <Compile Include="Model\Controls\FileFlags.cs" />
     <Compile Include="ViewModels\PropertiesWindowViewModel.cs" />
     <Compile Include="Views\Controls\Breadcrumb.xaml.cs">
       <DependentUpon>Breadcrumb.xaml</DependentUpon>
@@ -316,10 +317,7 @@
     <Compile Include="Model\Detals\DistanceBetweenRebraType.cs" />
     <Compile Include="Model\Detals\Plita.cs" />
     <Compile Include="Model\Detals\ScoseTypes.cs" />
-    <Compile Include="Model\FileData.cs" />
-    <Compile Include="Model\FileFlags.cs" />
     <Compile Include="Model\Controls\FileTypes.cs" />
-    <Compile Include="Model\StatusProcess.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>

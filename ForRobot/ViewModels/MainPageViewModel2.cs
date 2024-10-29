@@ -204,7 +204,9 @@ namespace ForRobot.ViewModels
                         break;
                 }
 
-                this.DetalObject.Change += ChangeProperiesDetal; // Обределение события изменения свойств
+                //this.DetalObject.Change += ChangeProperiesDetal; // Обределение события изменения свойств
+
+                this.DetalObject.Change += (s, o) => { SaveDetal(); };
                 RaisePropertyChanged(nameof(this.SelectedDetalType), nameof(this.ProgrammName));
             }
         }
@@ -630,6 +632,7 @@ namespace ForRobot.ViewModels
                             //Page page = App.Current.MainWindowView.MainFrame.Content as Page;
                             //page.UpdateLayout();
                             //page.Keyboard.ClearFocus();
+
                             //System.Windows.Input.Keyboard.ClearFocus();
                             //System.Windows.Input.Keyboard.Focus(App.Current.MainWindowView);
 

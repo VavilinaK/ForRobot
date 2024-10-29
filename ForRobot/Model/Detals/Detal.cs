@@ -106,17 +106,22 @@ namespace ForRobot.Model.Detals
         /// Перекрытие швов
         /// </summary>
         public virtual decimal SeamsOverlap { get; set; }
-        
+
         /// <summary>
         /// Технологический отступ начала шва
         /// </summary>
         public virtual decimal TechOffsetSeamStart { get; set; }
-        
+
         /// <summary>
         /// Технологический отступ конца шва
         /// </summary>
         public virtual decimal TechOffsetSeamEnd { get; set; }
-        
+
+        /// <summary>
+        /// Смещение детали от 0 точки по осям XYZ
+        /// </summary>
+        public virtual decimal[] XYZOffset { get; set; } = new decimal[3] { 0, 0, 0 };
+
         /// <summary>
         /// Скорость сварки
         /// </summary>

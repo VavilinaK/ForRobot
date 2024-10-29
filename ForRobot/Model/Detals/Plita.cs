@@ -136,7 +136,7 @@ namespace ForRobot.Model.Detals
             get => this._diferentDissolutionLeft;
             set
             {
-                if (!value && this.RibsCollection.Count > 0)
+                if (!value && this.RibsCollection?.Count > 0)
                     for (int i = 0; i < this.RibsCollection.Count; i++)
                     {
                         this.RibsCollection[i].DissolutionLeft = this.DissolutionStart;
@@ -157,7 +157,7 @@ namespace ForRobot.Model.Detals
             get => this._diferentDissolutionRight;
             set
             {
-                if (!value && this.RibsCollection.Count > 0)
+                if (!value && this.RibsCollection?.Count > 0)
                     for (int i = 0; i < this.RibsCollection.Count; i++)
                     {
                         this.RibsCollection[i].DissolutionRight = this.DissolutionEnd;
@@ -251,7 +251,7 @@ namespace ForRobot.Model.Detals
             {
                 base.DistanceToFirst = value;
 
-                if (this.RibsCollection.Count > 0)
+                if (this.RibsCollection?.Count > 0)
                 {
                     this.RibsCollection[0].Distance = base.DistanceToFirst;
                     this.RibsCollection[0].DistanceRight = base.DistanceToFirst;
@@ -275,7 +275,7 @@ namespace ForRobot.Model.Detals
             {
                 base.DistanceBetween = value;
 
-                if (this.RibsCollection.Count > 0)
+                if (this.RibsCollection?.Count > 0)
                     for(int i = 1; i < this.RibsCollection.Count; i++)
                     {
                         this.RibsCollection[i].Distance = base.DistanceBetween;
@@ -300,7 +300,7 @@ namespace ForRobot.Model.Detals
             {
                 base.IdentToLeft = value;
 
-                if (this.RibsCollection.Count > 0)
+                if (this.RibsCollection?.Count > 0)
                     for (int i = 0; i < this.RibsCollection.Count; i++)
                     {
                         this.RibsCollection[i].IdentToLeft = base.IdentToLeft;
@@ -324,7 +324,7 @@ namespace ForRobot.Model.Detals
             {
                 base.IdentToRight = value;
 
-                if (this.RibsCollection.Count > 0)
+                if (this.RibsCollection?.Count > 0)
                     for (int i = 0; i < this.RibsCollection.Count; i++)
                     {
                         this.RibsCollection[i].IdentToRight = base.IdentToRight;
@@ -348,7 +348,7 @@ namespace ForRobot.Model.Detals
             {
                 base.DissolutionStart = value;
 
-                if (this.RibsCollection.Count > 0)
+                if (this.RibsCollection?.Count > 0)
                     for (int i = 0; i < this.RibsCollection.Count; i++)
                     {
                         this.RibsCollection[i].DissolutionLeft = base.DissolutionStart;
@@ -372,7 +372,7 @@ namespace ForRobot.Model.Detals
             {
                 base.DissolutionEnd = value;
 
-                if (this.RibsCollection.Count > 0)
+                if (this.RibsCollection?.Count > 0)
                     for (int i = 0; i < this.RibsCollection.Count; i++)
                     {
                         this.RibsCollection[i].DissolutionRight = base.DissolutionEnd;
@@ -584,13 +584,70 @@ namespace ForRobot.Model.Detals
             }
         }
 
+        [JsonProperty("base_displace")]
+        /// <summary>
+        /// Смещение детали от 0 точки по осям XYZ
+        /// </summary>
+        public override decimal[] XYZOffset
+        {
+            get => base.XYZOffset;
+            set
+            {
+                base.XYZOffset = value;
+                this.Change?.Invoke(this, null);
+            }
+        }
+
+        [JsonIgnore]
+        /// <summary>
+        /// Смещение детали от 0 точки по X
+        /// </summary>
+        public decimal XOffset
+        {
+            get => this.XYZOffset[0];
+            set
+            {
+                this.XYZOffset[0] = value;
+                this.Change?.Invoke(this, null);
+            }
+        }
+
+        [JsonIgnore]
+        /// <summary>
+        /// Смещение детали от 0 точки по Y
+        /// </summary>
+        public decimal YOffset
+        {
+            get => this.XYZOffset[1];
+            set
+            {
+                this.XYZOffset[1] = value;
+                this.Change?.Invoke(this, null);
+            }
+        }
+
+        [JsonIgnore]
+        /// <summary>
+        /// Смещение детали от 0 точки по Z
+        /// </summary>
+        public decimal ZOffset
+        {
+            get => this.XYZOffset[2];
+            set
+            {
+                this.XYZOffset[2] = value;
+                this.Change?.Invoke(this, null);
+            }
+        }
+
         [JsonProperty("d_W2")]
         /// <summary>
         /// Коллекция рёбер
         /// </summary>
         public FullyObservableCollection<Rib> RibsCollection
         {
-            get => _ribsCollection ?? (this._ribsCollection = this.FillRibsCollection());
+            //get => _ribsCollection ?? (this._ribsCollection = this.FillRibsCollection());
+            get => _ribsCollection;
             set => Set(ref this._ribsCollection, value);
         }
 
@@ -606,13 +663,16 @@ namespace ForRobot.Model.Detals
             {
                 base.SumReber = value;
 
-                if (this.SumReber <= this.RibsCollection.Count)
-                    this.RibsCollection = new FullyObservableCollection<Rib>(this.RibsCollection.Take(this.SumReber).ToList<Rib>());
-                else if (this.RibsCollection.Count > 0)
-                    for (int i = this.RibsCollection.Count; i < this.SumReber; i++)
-                    {
-                        this.RibsCollection.Add(this.RibsCollection.Last<Rib>().Clone() as Rib);
-                    }
+                if (this.RibsCollection?.Count > 0)
+                {
+                    if (this.SumReber <= this.RibsCollection.Count)
+                        this.RibsCollection = new FullyObservableCollection<Rib>(this.RibsCollection.Take(this.SumReber).ToList<Rib>());
+                    else
+                        for (int i = this.RibsCollection.Count; i < this.SumReber; i++)
+                        {
+                            this.RibsCollection.Add(this.RibsCollection.Last<Rib>().Clone() as Rib);
+                        }
+                }
                 else
                     this.RibsCollection = this.FillRibsCollection();
 
@@ -697,13 +757,11 @@ namespace ForRobot.Model.Detals
                 if (i == 0)
                 {
                     rib.Distance = this.DistanceToFirst;
-                    //rib.DistanceLeft = this.DistanceToFirst;
                     rib.DistanceRight = this.DistanceToFirst;
                 }
                 else
                 {
                     rib.Distance = this.DistanceBetween;
-                    //rib.DistanceLeft = this.DistanceBetween;
                     rib.DistanceRight = this.DistanceBetween;
                 }
                 rib.ChangeDistance += (s, e) => 

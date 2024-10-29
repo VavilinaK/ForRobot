@@ -7,12 +7,11 @@ using ForRobot.Libr.Json;
 namespace ForRobot.Model.Detals
 {
     /// <summary>
-    /// Модель ребра
+    /// Модель ребра настила
     /// </summary>
     public class Rib : BaseClass, ICloneable
     {
         private decimal _distance;
-        private decimal _distanceLeft;
         private decimal _distanceRight;
         private decimal _identToLeft;
         private decimal _identToRight;
@@ -32,12 +31,6 @@ namespace ForRobot.Model.Detals
                 this.ChangeDistance?.Invoke(this, null);
             }
         }
-
-        //[JsonProperty("d_dis1")]
-        ///// <summary>
-        ///// Расстояние до ребра по левому краю
-        ///// </summary>
-        //public decimal DistanceLeft { get => this._distanceLeft; set => Set(ref this._distanceLeft, value); }
 
         [JsonProperty("d_dis2")]
         /// <summary>
@@ -76,6 +69,6 @@ namespace ForRobot.Model.Detals
 
         public Rib() { }
 
-        public object Clone() => this.MemberwiseClone();
+        public object Clone() => (Rib)this.MemberwiseClone();
     }
 }
