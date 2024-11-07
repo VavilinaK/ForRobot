@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows.Media.Imaging;
 using System.Configuration;
 
 using Newtonsoft.Json;
 
-using ForRobot.Libr;
+using ForRobot.Libr.Json;
 
 namespace ForRobot.Model.Detals
 {
@@ -15,14 +16,17 @@ namespace ForRobot.Model.Detals
         /// <summary>
         /// Экземпляр детали из app.config
         /// </summary>
-        private ForRobot.Libr.ConfigurationProperties.PlitaConfigurationSection Config { get; set; }
+        private ForRobot.Libr.ConfigurationProperties.PlitaConfigurationSection PlitaConfig { get; set; }
+
+        private string _selectedWeldingSchema;
+        //private ObservableCollection<(string, string)> _weldingSchema = new ObservableCollection<(string, string)>();
 
         #endregion
 
         #region Public variables
 
         #region Virtual
-        
+
         public virtual string Json { get; }
         
         public virtual string JsonForSave { get; }
@@ -133,6 +137,41 @@ namespace ForRobot.Model.Detals
         public virtual int ProgramNom { get; set; }
 
         [JsonIgnore]
+        [SaveAttribute]
+        /// <summary>
+        /// Выбранная схема сварки рёбер
+        /// </summary>
+        public string SelectedWeldingSchema
+        {
+            get => this._selectedWeldingSchema;
+            set
+            {
+                this._selectedWeldingSchema = value;
+
+                switch (this._selectedWeldingSchema)
+                {
+                    case string a when a == WeldingSchemas.GetDescription(WeldingSchemas.SchemasTypes.LeftEvenOdd_RightEvenOdd):
+
+                        break;
+
+                    default:
+                        this.WeldingSchema = ForRobot.Model.Detals.WeldingSchemas.SelectSchemaRib(this.SumReber);
+                        break;
+                }
+            }
+        }
+
+        private ObservableCollection<WeldingSchemas.SchemaRib> _weldingSchema;
+        [JsonIgnore]
+        [SaveAttribute]
+        public ObservableCollection<WeldingSchemas.SchemaRib> WeldingSchema
+        {
+            //get => this._weldingSchema;
+            get => this._weldingSchema ?? (this._weldingSchema = ForRobot.Model.Detals.WeldingSchemas.SelectSchemaRib(this.SumReber));
+            set => Set(ref this._weldingSchema, value);
+        }
+
+        [JsonIgnore]
         /// <summary>
         /// Общее изображение детали
         /// </summary>
@@ -177,26 +216,26 @@ namespace ForRobot.Model.Detals
             switch (type)
             {
                 case ForRobot.Model.Detals.DetalType.Plita:
-                    this.Config = ConfigurationManager.GetSection("plita") as ForRobot.Libr.ConfigurationProperties.PlitaConfigurationSection;
-                    this.Long = Config.Long;
-                    this.Wight = Config.Wight;
-                    this.Hight = Config.Hight;
-                    this.DistanceToFirst = Config.DistanceToFirst;
-                    this.DistanceBetween = Config.DistanceBetween;
-                    this.IdentToLeft = Config.DistanceToStart;
-                    this.IdentToRight = Config.DistanceToEnd;
-                    this.DissolutionStart = Config.DissolutionStart;
-                    this.DissolutionEnd = Config.DissolutionEnd;
-                    this.ThicknessPlita = Config.ThicknessPlita;
-                    this.ThicknessRebro = Config.ThicknessRebro;
-                    this.SearchOffsetStart = Config.SearchOffsetStart;
-                    this.SearchOffsetEnd = Config.SearchOffsetEnd;
-                    this.SeamsOverlap = Config.SeamsOverlap;
-                    this.TechOffsetSeamStart = Config.TechOffsetSeamStart;
-                    this.TechOffsetSeamEnd = Config.TechOffsetSeamEnd;
-                    this.WildingSpead = Config.WildingSpead;
-                    this.ProgramNom = Config.ProgramNom;
-                    this.SumReber = Config.SumReber;
+                    this.PlitaConfig = ConfigurationManager.GetSection("plita") as ForRobot.Libr.ConfigurationProperties.PlitaConfigurationSection;
+                    this.Long = PlitaConfig.Long;
+                    this.Wight = PlitaConfig.Wight;
+                    this.Hight = PlitaConfig.Hight;
+                    this.DistanceToFirst = PlitaConfig.DistanceToFirst;
+                    this.DistanceBetween = PlitaConfig.DistanceBetween;
+                    this.IdentToLeft = PlitaConfig.DistanceToStart;
+                    this.IdentToRight = PlitaConfig.DistanceToEnd;
+                    this.DissolutionStart = PlitaConfig.DissolutionStart;
+                    this.DissolutionEnd = PlitaConfig.DissolutionEnd;
+                    this.ThicknessPlita = PlitaConfig.ThicknessPlita;
+                    this.ThicknessRebro = PlitaConfig.ThicknessRebro;
+                    this.SearchOffsetStart = PlitaConfig.SearchOffsetStart;
+                    this.SearchOffsetEnd = PlitaConfig.SearchOffsetEnd;
+                    this.SeamsOverlap = PlitaConfig.SeamsOverlap;
+                    this.TechOffsetSeamStart = PlitaConfig.TechOffsetSeamStart;
+                    this.TechOffsetSeamEnd = PlitaConfig.TechOffsetSeamEnd;
+                    this.WildingSpead = PlitaConfig.WildingSpead;
+                    this.ProgramNom = PlitaConfig.ProgramNom;
+                    this.SumReber = PlitaConfig.SumReber;
                     break;
             }
         }

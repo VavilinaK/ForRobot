@@ -17,6 +17,11 @@ namespace ForRobot.Model.Controls
         /// <summary>
         /// Файл с расширением .dat
         /// </summary>
-        DataList
+        DataList,
+
+        /// <summary>
+        /// Неизвестный
+        /// </summary>
+        Unknow
     }
 }

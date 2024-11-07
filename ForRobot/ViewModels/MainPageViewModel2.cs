@@ -39,6 +39,9 @@ namespace ForRobot.ViewModels
 
         private string _selectedDetalType;
 
+        //private string _selectedWeldingSchema;
+
+
         private string _logger;
         
         private TabItem _selectedItem;
@@ -203,13 +206,28 @@ namespace ForRobot.ViewModels
                         DetalObject = GetSavePlitaTreygolnik();
                         break;
                 }
-
-                //this.DetalObject.Change += ChangeProperiesDetal; // Обределение события изменения свойств
-
-                this.DetalObject.Change += (s, o) => { SaveDetal(); };
+                this.DetalObject.Change += (s, o) => { SaveDetal(); }; // Обределение события изменения свойств
                 RaisePropertyChanged(nameof(this.SelectedDetalType), nameof(this.ProgrammName));
             }
         }
+
+        ///// <summary>
+        ///// Выбранная схема сварки рёбер
+        ///// </summary>
+        //public string SelectedWeldingSchema
+        //{
+        //    get => this._selectedWeldingSchema;
+        //    set
+        //    {
+        //        this._selectedWeldingSchema = value;
+        //        switch (this._selectedWeldingSchema)
+        //        {
+        //            case string a when a == WeldingSchemas.GetDescription(WeldingSchemas.ShemasTypes.LeftEvenOdd_RightEvenOdd):
+
+        //                break;
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Нынешняя страница
@@ -247,7 +265,7 @@ namespace ForRobot.ViewModels
         /// </summary>
         public Tuple<string, Robot> SelectedRobot { get => this._selectedRobot; set => Set(ref this._selectedRobot, value); }
 
-        #region Управление
+        #region Control
 
         /// <summary>
         /// Имена роботов для управления
@@ -271,7 +289,7 @@ namespace ForRobot.ViewModels
                 RaisePropertyChanged(nameof(this.SelectedNameRobot), nameof(this.RobotForControl));
             }
         }
-        
+
         #endregion
 
         #region Collections
@@ -291,9 +309,29 @@ namespace ForRobot.ViewModels
                 return new ObservableCollection<string>(detalTypesList);
             }
         }
-        
+
         /// <summary>
-        /// Коллекция роботов для просмотра
+        /// Коллекция возможных схем сварки
+        /// </summary>
+        public ObservableCollection<string> WeldingSchemaCollection
+        {
+            get
+            {
+                var Descriptions = typeof(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes).GetFields().Select(field => field.GetCustomAttributes(typeof(System.ComponentModel.DescriptionAttribute), false).SingleOrDefault() as System.ComponentModel.DescriptionAttribute);
+                List<string> DescriptionList = Descriptions.Where(item => item != null).Select(item => item.Description).ToList<string>();
+                return new ObservableCollection<string>(DescriptionList);
+            }
+        }
+
+        //private ObservableCollection<Tuple<string, string>> _weldingSchema = new ObservableCollection<Tuple<string, string>>();
+        //public ObservableCollection<Tuple<string, string>> WeldingSchema
+        //{
+        //    get => this._weldingSchema;
+        //    set => this._weldingSchema = value;
+        //}
+
+        /// <summary>
+        /// Коллекция роботов (вкладка "Свойства")
         /// </summary>
         public ObservableCollection<Tuple<string, Robot>> RobotsCollection { get => this._robotsCollection; set => Set(ref this._robotsCollection, value); }
 
@@ -405,22 +443,30 @@ namespace ForRobot.ViewModels
                 return _standartParametrsCommand ??
                     (_standartParametrsCommand = new RelayCommand(obj =>
                     {
-                        if (DetalObject is Plita)
+                        switch (this.SelectedDetalType)
                         {
-                            this.DetalObject = new Plita(DetalType.Plita)
-                            {
-                                ScoseType = ((Plita)this.DetalObject).ScoseType,
-                                DiferentDistance = ((Plita)this.DetalObject).DiferentDistance,
-                                ParalleleRibs = ((Plita)this.DetalObject).ParalleleRibs,
-                                DiferentDissolutionLeft = ((Plita)this.DetalObject).DiferentDissolutionLeft,
-                                DiferentDissolutionRight = ((Plita)this.DetalObject).DiferentDissolutionRight
-                            };
-                            ((Plita)this.DetalObject).RibsCollection.ItemPropertyChanged += (o, e) => this.SaveDetal();
+                            case string a when a == DetalTypes.Plita:
+                                this.DetalObject = new Plita(DetalType.Plita)
+                                {
+                                    ScoseType = ((Plita)this.DetalObject).ScoseType,
+                                    DiferentDistance = ((Plita)this.DetalObject).DiferentDistance,
+                                    ParalleleRibs = ((Plita)this.DetalObject).ParalleleRibs,
+                                    DiferentDissolutionLeft = ((Plita)this.DetalObject).DiferentDissolutionLeft,
+                                    DiferentDissolutionRight = ((Plita)this.DetalObject).DiferentDissolutionRight
+                                };
+                                ((Plita)this.DetalObject).RibsCollection.ItemPropertyChanged += (o, e) => this.SaveDetal();
+                                break;
+
+                            case string b when b == DetalTypes.Stringer:
+                                this.DetalObject = new PlitaStringer(DetalType.Stringer);
+                                break;
+
+                            case string c when c == DetalTypes.Treygolnik:
+                                this.DetalObject = new PlitaTreygolnik(DetalType.Treygolnik);
+                                break;
                         }
-                        else if (DetalObject is PlitaStringer) { this.DetalObject = new PlitaStringer(DetalType.Stringer); }
-                        else if (DetalObject is PlitaTreygolnik) { this.DetalObject = new PlitaTreygolnik(DetalType.Treygolnik); }
-                        this.DetalObject.Change += ChangeProperiesDetal;
-                        SaveDetal();
+                        this.DetalObject.Change += (s, o) => { this.SaveDetal(); }; // Обределение события изменения свойств
+                        this.SaveDetal();
                     }));
             }
         }
@@ -636,10 +682,29 @@ namespace ForRobot.ViewModels
                             string foldForGenerate = Directory.GetParent(this.RobotsCollection.First().Item2.PathProgramm).ToString(); // Путь для генерации скриптом.
 
                             // Запись Json-файла
-                            JObject jObject1 = JObject.Parse(this.DetalObject.Json);
-                            File.WriteAllText(Path.Combine(foldForGenerate, $"{this.ProgrammName}.json"), jObject1.ToString());
+                            JObject jObject = JObject.Parse(this.DetalObject.Json);
+
+                            int[] sumRobots;
+                            if (this.SelectedNameRobot == "Все")
+                            {
+                                sumRobots = new int[this.RobotsCollection.Count];
+                                for (int i=0; i<this.RobotsCollection.Count; i++)
+                                {
+                                    sumRobots[i] = i + 1;
+                                }
+                            }
+                            else
+                            {
+                                sumRobots = new int[1] { this.RobotsCollection.IndexOf(this.RobotsCollection.Where(p => p.Item1 == this.SelectedNameRobot).ToArray()[0]) + 1 };
+                            }
+                            jObject.Add("robots", JToken.FromObject(sumRobots));
+
+                            //var sch = WeldingSchemas.GetSchemaType(this.DetalObject.SelectedWeldingSchema);
+                            //jObject.Add("robots", JToken.FromObject(WeldingSchemas.GetSchema(sch, this.DetalObject.WeldingSchema)));
+
+                            File.WriteAllText(Path.Combine(foldForGenerate, $"{this.ProgrammName}.json"), jObject.ToString());
                             if (File.Exists(Path.Combine(foldForGenerate, $"{this.ProgrammName}.json")))
-                                App.Current.Logger.Trace($"{DateTime.Now.ToString("HH:mm:ss")} Сгенерирован файл {Path.Combine(foldForGenerate, $"{this.ProgrammName}.json")}, содержащий:\n" + jObject1.ToString() + "\n");
+                                App.Current.Logger.Trace($"{DateTime.Now.ToString("HH:mm:ss")} Сгенерирован файл {Path.Combine(foldForGenerate, $"{this.ProgrammName}.json")}, содержащий:\n" + jObject.ToString() + "\n");
 
                             // Генерация программы.
                             Generation generationProcess = new Generation(this.ProgrammName, foldForGenerate);
@@ -690,7 +755,7 @@ namespace ForRobot.ViewModels
                                     else
                                         continue;
                                 }
-                            else
+                            else if(this.RobotForControl.IsConnection)
                             {
                                 if (string.IsNullOrWhiteSpace(this.RobotForControl.PathProgramm))
                                 {
@@ -926,13 +991,6 @@ namespace ForRobot.ViewModels
                 }
             }
         }
-
-        /// <summary>
-        /// Изменение свойств детали
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ChangeProperiesDetal(object sender, EventArgs e) => this.SaveDetal();
 
         /// <summary>
         /// Сохранение изменений Detal

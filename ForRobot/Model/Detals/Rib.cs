@@ -17,7 +17,7 @@ namespace ForRobot.Model.Detals
         private decimal _identToRight;
         private decimal _dissolutionLeft;
         private decimal _dissolutionRight;
-        
+
         [JsonProperty("d_dis1")]
         /// <summary>
         /// Расстояние до следующего ребра

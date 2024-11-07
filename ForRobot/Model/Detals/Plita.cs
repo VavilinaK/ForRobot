@@ -676,6 +676,29 @@ namespace ForRobot.Model.Detals
                 else
                     this.RibsCollection = this.FillRibsCollection();
 
+                //if (this.RibsCollection?.Count > 0 && this.WeldingSchema?.Count > 0)
+                //{
+                //    if (this.SumReber <= this.RibsCollection.Count)
+                //    {
+                //        this.RibsCollection = new FullyObservableCollection<Rib>(this.RibsCollection.Take(this.SumReber).ToList<Rib>());
+                //        this.WeldingSchema = new System.Collections.ObjectModel.ObservableCollection<WeldingSchemas.SchemaRib>(this.WeldingSchema.Take(this.SumReber).ToList<WeldingSchemas.SchemaRib>());
+                //    }
+                //    else
+                //        for (int i = this.RibsCollection.Count; i < this.SumReber; i++)
+                //        {
+                //            this.RibsCollection.Add(this.RibsCollection.Last<Rib>().Clone() as Rib);
+                //            this.WeldingSchema.Add(new WeldingSchemas.SchemaRib());
+                //        }
+                //}
+                //else
+                //{
+                //    if(this.RibsCollection?.Count > 0)
+                //        this.RibsCollection = this.FillRibsCollection();
+
+                //    if(this.WeldingSchema?.Count > 0)
+                //        this.WeldingSchema = WeldingSchemas.SelectSchemaRib(this.SumReber);
+                //}
+
                 RaisePropertyChanged(nameof(this.RebraImage), nameof(this.GenericImage));
                 this.Change?.Invoke(this, null);
             }

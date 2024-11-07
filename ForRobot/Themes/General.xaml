@@ -16,6 +16,7 @@
     <conv:ThicknessConverter x:Key="ThicknessConvert"/>
     <conv:SelectProgramConverter x:Key="SelectProgramConvert"/>
     <conv:VisibilityFolderOnRobot x:Key="VisibilityFolderOnRobot"/>
+    <conv:NumbersForWeldingSchemaConverter x:Key="NumbersForWeldingSchemaConvert"/>
 
     <!--Colors-->
     <Color x:Key="Aqua">#00FFFF</Color>    

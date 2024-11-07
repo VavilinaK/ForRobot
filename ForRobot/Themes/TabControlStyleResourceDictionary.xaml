@@ -163,10 +163,6 @@
                     </Style>
                 </Label.Style>
             </Label>
-            
-            <!--<Label Grid.Row="7" Grid.Column="0" Content="Роспуск слева, мм."/>-->
-            <!--<Label Grid.Row="8" Grid.Column="0" Content="Роспуск справа, мм."/>-->
-            
             <Label Grid.Row="9" Grid.Column="0" Content="Скос слева, мм." FontSize="16"/>
             <Label Grid.Row="10" Grid.Column="0" Content="Скос справа, мм." FontSize="16"/>
             <Label Grid.Row="11" Grid.Column="0" Content="Количество ребер, шт." FontSize="16"/>
@@ -266,10 +262,11 @@
                             </Style>
 
                             <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                                 <Setter Property="ContentTemplate">
                                     <Setter.Value>
                                         <DataTemplate>
-                                            <TextBlock TextWrapping="Wrap" Text="{Binding}" TextAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                                            <TextBlock TextWrapping="Wrap" Text="{Binding}" TextAlignment="Center"/>
                                         </DataTemplate>
                                     </Setter.Value>
                                 </Setter>
@@ -488,10 +485,6 @@
                     </Style>
                 </TextBox.Style>
             </TextBox>
-            
-
-            <!--<TextBox Grid.Row="7" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DissolutionStart, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
-                Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>-->
 
             <GroupBox Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Header="Роспуск слева, мм." FontSize="16" Margin="4">
                 <GroupBox.Resources>
@@ -508,7 +501,7 @@
                         </Style.Triggers>
                     </Style>
                 </GroupBox.Resources>
-                
+
                 <Grid Margin="5">
                     <Grid.RowDefinitions>
                         <RowDefinition/>
@@ -557,16 +550,6 @@
                                     <Setter.Value>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Path=., RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={StaticResource RowNumberConvert}}"/>
-                                        </DataTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-
-                            <Style TargetType="DataGridColumnHeader">
-                                <Setter Property="ContentTemplate">
-                                    <Setter.Value>
-                                        <DataTemplate>
-                                            <TextBlock TextWrapping="Wrap" Height="0" TextAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
                                         </DataTemplate>
                                     </Setter.Value>
                                 </Setter>
@@ -626,9 +609,6 @@
                     </ContentControl>
                 </Grid>
             </GroupBox>
-            
-            <!--<TextBox Grid.Row="8" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DissolutionEnd, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
-                Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>-->
 
             <GroupBox Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Header="Роспуск справа, мм." FontSize="16" Margin="4">
                 <GroupBox.Resources>
@@ -699,16 +679,6 @@
                                 </Setter>
                             </Style>
 
-                            <Style TargetType="DataGridColumnHeader">
-                                <Setter Property="ContentTemplate">
-                                    <Setter.Value>
-                                        <DataTemplate>
-                                            <TextBlock TextWrapping="Wrap" Text="{Binding}" Height="0" TextAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-                                        </DataTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-
                             <Style TargetType="DataGridRow">
                                 <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
                                 <Setter Property="Height" Value="35"/>
@@ -744,7 +714,7 @@
                                                 <ControlTemplate TargetType="{x:Type ContentControl}">
                                                     <DataGrid>
                                                         <DataGrid.Columns>
-                                                            <DataGridTemplateColumn Header="Расстояние до следующего ребра, мм." Width="*">
+                                                            <DataGridTemplateColumn Width="*">
                                                                 <DataGridTemplateColumn.CellTemplate>
                                                                     <DataTemplate>
                                                                         <TextBox Text="{Binding Path=DissolutionRight, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
@@ -923,13 +893,63 @@
                 <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
                 <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
             </Style>
+
+            <Style TargetType="{x:Type DataGrid}">
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="AutoGenerateColumns" Value="False"/>
+                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="CanUserAddRows" Value="False"/>
+                <Setter Property="CanUserDeleteRows" Value="False"/>
+                <Setter Property="CanUserResizeRows" Value="False"/>
+                <Setter Property="CanUserReorderColumns" Value="False"/>
+                <Setter Property="CanUserSortColumns" Value="False"/>
+                <Setter Property="CanUserResizeColumns" Value="False"/>
+                <Setter Property="EnableRowVirtualization" Value="False"/>
+                <Setter Property="SelectionMode" Value="Single"/>
+                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+
+                <Setter Property="RowHeaderTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Path=., RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={StaticResource RowNumberConvert}}"/>
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="DataGridColumnHeader">
+                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                
+                <Setter Property="ContentTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center"/>
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style TargetType="DataGridRow">
+                <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
+                <!--<Setter Property="Height" Value="35"/>-->
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+            </Style>
+
+            <Style TargetType="{x:Type DataGridCell}">
+                <Setter Property="MaxHeight" Value="130"/>
+                <!--<Setter Property="Height" Value="*"/>-->
+
+                <!--<Setter Property="Height" Value="Auto"/>-->
+                <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
+                <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+            </Style>
         </DataTemplate.Resources>
 
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -942,6 +962,135 @@
 
             <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.WildingSpead, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay,TargetNullValue=0, FallbackValue=0, ConverterCulture='en-us', StringFormat=F0, UpdateSourceTrigger=LostFocus}"/>
             <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.ProgramNom, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay,TargetNullValue=1, FallbackValue=1, ConverterCulture='en-us', StringFormat=F0, UpdateSourceTrigger=LostFocus}"/>
+
+            <!--<GroupBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Header="Схема сварки" FontSize="16" Margin="4">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <ComboBox Grid.Row="0" Margin="0, 10"
+                              ItemsSource="{Binding Path=DataContext.WeldingSchemaCollection, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
+                              SelectedItem="{Binding Path=DataContext.DetalObject.SelectedWeldingSchema, Mode=OneWayToSource, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
+                              SelectedIndex="0">
+
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Path=.}" Padding="0,6"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+
+                        <ComboBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ComboBoxItem}">
+                                <Setter Property="TextBlock.Padding" Value="0,6"/>
+                                <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+                                <Setter Property="TextBlock.VerticalAlignment" Value="Center"/>
+                            </Style>
+                        </ComboBox.ItemContainerStyle>
+                    </ComboBox>
+
+                    <DataGrid Grid.Row="1" 
+                              Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type Grid}, Mode=FindAncestor}}"
+                              ItemsSource="{Binding Path=DataContext.DetalObject.WeldingSchema, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=OneWay}">
+
+                        <DataGrid.Resources>
+                            <Style TargetType="{x:Type ComboBox}">
+                                <Setter Property="MaxDropDownHeight" Value="150"/>
+                                <Setter Property="ItemsSource" Value="{Binding Path=., RelativeSource={RelativeSource AncestorType=DataGrid, AncestorLevel=2, Mode=FindAncestor}, Converter={StaticResource NumbersForWeldingSchemaConvert}}"/>
+                                <Setter Property="SelectedIndex" Value="0"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                
+                                <Setter Property="ItemTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate>
+                                            <Label VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
+                                                <TextBlock Text="{Binding}" TextAlignment="Center"/>
+                                            </Label>
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                
+                                <Setter Property="ItemContainerStyle">
+                                    <Setter.Value>
+                                        <Style TargetType="{x:Type ComboBoxItem}">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="{x:Type ComboBoxItem}">
+                                                        <Grid ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                            </Grid.ColumnDefinitions>
+
+                                                            <Border Name="ItemPanel" BorderBrush="Black" BorderThickness="0, 0.1" Background="{Binding Background}">
+                                                                <ContentPresenter x:Name="ContentSite"
+                                                                                  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                                                                                  ContentSource="Content" Margin="0, 3"/>
+                                                            </Border>
+                                                            
+                                                        </Grid>
+
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="ItemPanel" Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                                                                <Setter TargetName="ItemPanel" Property="Background" Value="{DynamicResource {x:Static SystemColors.MenuHighlightBrushKey}}"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </DataGrid.Resources>
+
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <DataGrid ItemsSource="{Binding Path=Sides, Mode=OneWay}" HeadersVisibility="None"  ScrollViewer.CanContentScroll="False" BorderThickness="0">
+                                            <DataGrid.Columns>
+                                                <DataGridTemplateColumn Header="Стороны" Width="Auto">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <Label FontSize="16" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
+                                                                <TextBlock TextAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="Transparent">
+                                                                    <TextBlock.Style>
+                                                                        <Style TargetType="{x:Type TextBlock}">
+                                                                            <Style.Triggers>
+                                                                                <DataTrigger Binding="{Binding Path=Side, Mode=OneWay}" Value="Left">
+                                                                                    <Setter Property="Text" Value="Слева"/>
+                                                                                </DataTrigger>
+
+                                                                                <DataTrigger Binding="{Binding Path=Side, Mode=OneWay}" Value="{x:Static detals:SideOfRib.Right}">
+                                                                                    <Setter Property="Text" Value="Справа"/>
+                                                                                </DataTrigger>
+                                                                            </Style.Triggers>
+                                                                        </Style>
+                                                                    </TextBlock.Style>
+                                                                </TextBlock>
+                                                            </Label>                                                            
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+
+                                                <DataGridTemplateColumn Header="Очередь" Width="*">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <ComboBox SelectedItem="{Binding Path=Number, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"/>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </GroupBox>-->
         </Grid>
     </DataTemplate>
     

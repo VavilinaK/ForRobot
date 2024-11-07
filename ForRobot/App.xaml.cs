@@ -6,7 +6,6 @@ using System.Threading;
 using System.Reflection;
 using System.Diagnostics;
 using System.Windows;
-using System.Data.SqlClient;
 using System.Configuration;
 
 using Newtonsoft.Json;
@@ -43,9 +42,9 @@ namespace ForRobot
         private string FilePathOnPC { get => Directory.GetCurrentDirectory(); }
 
         /// <summary>
-        /// Наименования скриптов на питоне
+        /// Экземпляр app из app.config
         /// </summary>
-        private readonly string[] _namesOfScripts = new string[] { "test_weld_gen" };
+        private ForRobot.Libr.ConfigurationProperties.AppConfigurationSection AppConfig { get; set; } = (ConfigurationManager.GetSection("app") as ForRobot.Libr.ConfigurationProperties.AppConfigurationSection);
 
         #region Widows
 
@@ -144,15 +143,23 @@ namespace ForRobot
                         }
                         else
                         {
-                            Version oldVersion = Version.Parse(File.ReadLines(Path.Combine(this.FilePathOnPC, "Scripts\\test_weld_gen.py")).Where(str => str.Contains("__version__")).First().Split(new char[] { '=' }).Last().TrimStart().Trim(new char[] { '\'' }));
-                            Version newVersion = Version.Parse(File.ReadLines(Path.Combine(App.Current.UpdatePath, "Scripts\\test_weld_gen.py")).Where(str => str.Contains("__version__")).First().Split(new char[] { '=' }).Last().TrimStart().Trim(new char[] { '\'' }));
-
-                            if (Settings.AutoUpdate && (File.Exists(Path.Combine(this.FilePathOnPC, "Scripts\\test_weld_gen.py")) && File.Exists(Path.Combine(App.Current.UpdatePath, "Scripts\\test_weld_gen.py")) &&
-                                newVersion > oldVersion &&
-                                (!Settings.InformUser || MessageBox.Show($"Обнаружено обновление скрипта до версии {newVersion}\nОбновить скрипт?", "Обновление скрипта-генерации", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK)))
+                            foreach(var prop in typeof(ForRobot.Libr.ConfigurationProperties.AppConfigurationSection).GetProperties())
                             {
-                                this.Logger.Info($"Обновление скрипта test_weld_gen.py до версии {newVersion}");
-                                this.UpDateScript();
+                                var v = typeof(ForRobot.Libr.ConfigurationProperties.AppConfigurationSection).GetProperty(prop.Name);
+                                string scriptName = v.GetValue(AppConfig) as string;
+
+                                if (Settings.AutoUpdate && (File.Exists(Path.Combine(this.FilePathOnPC, $"Scripts\\{scriptName}")) && File.Exists(Path.Combine(App.Current.UpdatePath, $"Scripts\\{scriptName}"))))
+                                {
+                                    Version oldVersion = Version.Parse(File.ReadLines(Path.Combine(this.FilePathOnPC, $"Scripts\\{scriptName}")).Where(str => str.Contains("__version__")).First().Split(new char[] { '=' }).Last().TrimStart().Trim(new char[] { '\'' }));
+                                    Version newVersion = Version.Parse(File.ReadLines(Path.Combine(App.Current.UpdatePath, $"Scripts\\{scriptName}")).Where(str => str.Contains("__version__")).First().Split(new char[] { '=' }).Last().TrimStart().Trim(new char[] { '\'' }));
+
+                                    if(newVersion > oldVersion && (!Settings.InformUser || 
+                                        MessageBox.Show($"Обнаружено обновление скрипта {scriptName} до версии {newVersion}\nОбновить скрипт?", "Обновление скрипта-генерации", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK))
+                                    {
+                                        this.Logger.Info($"Обновление скрипта {scriptName} до версии {newVersion}");
+                                        this.UpDateScript();
+                                    }
+                                }
                             }
                         }
 

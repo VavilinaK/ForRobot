@@ -282,6 +282,7 @@
                                                  Foreground="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}"
                                                  Minimum="0" Maximum="100" IsIndeterminate="True" 
                                                  Value="{Binding ElementName=BreadcrumbControl, Path=Progress}">
+                                        
                                         <ProgressBar.Style>
                                             <Style TargetType="{x:Type ProgressBar}">
                                                 <Setter Property="Visibility" Value="Hidden"/>
