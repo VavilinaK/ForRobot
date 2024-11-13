@@ -196,6 +196,12 @@ namespace ForRobot.ViewModels
                     case string a when a == DetalTypes.Plita:
                         this.DetalObject = GetSavePlita();
                         ((Plita)this.DetalObject).RibsCollection.ItemPropertyChanged += (o, e) => this.SaveDetal();
+                        //foreach (var item in ((Plita)this.DetalObject).WeldingSchema) item.Change += (o, e) => 
+                        //                                                                          {
+                        //                                                                              if (((Plita)this.DetalObject).SelectedWeldingSchema != ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit))
+                        //                                                                                  ((Plita)this.DetalObject).SelectedWeldingSchema = ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit);
+                        //                                                                              this.SaveDetal();
+                        //                                                                          };
                         break;
 
                     case string b when b == DetalTypes.Stringer:
@@ -207,6 +213,7 @@ namespace ForRobot.ViewModels
                         break;
                 }
                 this.DetalObject.Change += (s, o) => { SaveDetal(); }; // Обределение события изменения свойств
+                //foreach (var item in this.DetalObject.WeldingSchema) item.Change += (s, o) => { SaveDetal(); };
                 RaisePropertyChanged(nameof(this.SelectedDetalType), nameof(this.ProgrammName));
             }
         }
@@ -699,8 +706,8 @@ namespace ForRobot.ViewModels
                             }
                             jObject.Add("robots", JToken.FromObject(sumRobots));
 
-                            //var sch = WeldingSchemas.GetSchemaType(this.DetalObject.SelectedWeldingSchema);
-                            //jObject.Add("robots", JToken.FromObject(WeldingSchemas.GetSchema(sch, this.DetalObject.WeldingSchema)));
+                            var sch = WeldingSchemas.GetSchema(this.DetalObject.WeldingSchema);
+                            jObject.Add("welding_sequence", JToken.FromObject(sch));
 
                             File.WriteAllText(Path.Combine(foldForGenerate, $"{this.ProgrammName}.json"), jObject.ToString());
                             if (File.Exists(Path.Combine(foldForGenerate, $"{this.ProgrammName}.json")))

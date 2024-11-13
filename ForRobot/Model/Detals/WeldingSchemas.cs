@@ -2,7 +2,10 @@
 using System.Linq;
 using System.ComponentModel;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+
+using ForRobot.Libr;
 
 namespace ForRobot.Model.Detals
 {
@@ -36,66 +39,122 @@ namespace ForRobot.Model.Detals
             Edit = 1
         }
 
-        public class RibSide
+        public class SchemaRib : INotifyPropertyChanged
         {
-            public SideOfRib Side { get; set; }
+            #region Private variables
 
-            public string Number { get; set; }
-        }
+            private string _leftSide;
 
-        public class SchemaRib
-        {
-            //public int RibNumber { private get; set; }
+            private string _rightSide;
 
-            public ObservableCollection<RibSide> Sides { get; set; } = new ObservableCollection<RibSide>();
+            #endregion
 
-            public SchemaRib()
+            #region Private variables
+
+            public string LeftSide
             {
-                //this.Line.Add((SideOfRib.Left, String.Empty));
-                //this.Line.Add((SideOfRib.Right, String.Empty));
-
-                this.Sides.Add(new RibSide() { Side = SideOfRib.Left, Number = String.Empty });
-                this.Sides.Add(new RibSide() { Side = SideOfRib.Right, Number = String.Empty });
+                get => this._leftSide ?? (this._leftSide = "-");
+                set
+                {
+                    this._leftSide = value;
+                    this.Change?.Invoke(this, null);
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.LeftSide)));
+                }
             }
 
-            //public SchemaRib(int iRibNumber) : this ()
-            //{
-            //    this.RibNumber = iRibNumber;
-            //}
-        }               
+            public string RightSide
+            {
+                get => this._rightSide ?? (this._rightSide = "-");
+                set
+                {
+                    this._rightSide = value;
+                    this.Change?.Invoke(this, null);
+                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.RightSide)));
+                }
+            }
+
+            #endregion
+
+            #region Constructor
+
+            public SchemaRib() { }
+
+            #endregion
+
+            #region Events
+
+            public event EventHandler Change;
+
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            #endregion
+
+            #region Public functions
+
+            #endregion
+        }
 
         /// <summary>
         /// Сборка схемы варки рёбер
         /// </summary>
         /// <param name="typeSchema">Тип схемы</param>
-        public static ObservableCollection<SchemaRib> BuildingSchema(SchemasTypes typeSchema)
+        public static FullyObservableCollection<SchemaRib> BuildingSchema(SchemasTypes typeSchema, int iSumRib)
         {
             switch (typeSchema)
             {
                 case SchemasTypes.LeftEvenOdd_RightEvenOdd:
-                    return null;
+                    return BuildLeftEvenOddRightEvenOdd(iSumRib);
 
                 default:
-                    return null;
+                    return SelectSchemaRib(iSumRib);
             }
         }
 
-        public static string[,] GetSchema(SchemasTypes schemaType, ObservableCollection<SchemaRib> schema)
+        /// <summary>
+        /// Вывод схемы для передачи
+        /// </summary>
+        /// <param name="schemaType"></param>
+        /// <param name="schema">Схема сварки</param>
+        /// <returns></returns>
+        //public static string[,] GetSchema(ObservableCollection<SchemaRib> schema)
+        public static object[,] GetSchema(ObservableCollection<SchemaRib> schema)
         {
-            switch (schemaType)
+            //string[,] finishSchema = new string[(schema.Count * 2), 2];
+            //for (int i = 1; i <= (schema.Count * 2); i++)
+            //{
+            //    SchemaRib rib = schema.Where(item => item.LeftSide == i.ToString() || item.RightSide == i.ToString()).First();
+            //    finishSchema[i - 1, 0] = (schema.IndexOf(rib) + 1).ToString();
+            //    if (rib.LeftSide == i.ToString())
+            //        finishSchema[i - 1, 1] = "left_side";
+            //    else
+            //        finishSchema[i - 1, 1] = "right_side";
+            //}
+
+
+            //Array arr1 = Array.CreateInstance(typeof(Tuple<int, string>), (schema.Count * 2));
+            object[,] finishSchema = new object[schema.Count * 2, 2];
+            for (int i = 1; i <= (schema.Count * 2); i++)
             {
-                case SchemasTypes.LeftEvenOdd_RightEvenOdd:
-                    return null;
+                SchemaRib rib = schema.Where(item => item.LeftSide == i.ToString() || item.RightSide == i.ToString()).First();
+                //int num = schema.IndexOf(rib) + 1;
+                //string side = (rib.LeftSide == i.ToString()) ? "left_side" : "right_side";
 
-                //return GetLeftEvenOddRightEvenOddSchema();
+                //tuple[i - 1] = (num, side);
 
-                default:
-                    return null;
+                finishSchema[i - 1, 0] = schema.IndexOf(rib) + 1;
+                finishSchema[i - 1, 1] = (rib.LeftSide == i.ToString()) ? "left_side" : "right_side";
+                //arr1.SetValue(((rib.LeftSide == i.ToString()) ? "left_side" : "right_side"), i - 1, 1);
             }
+            return finishSchema;
         }
 
+        /// <summary>
+        /// Возвращение элемента <see cref="SchemasTypes"/>
+        /// </summary>
+        /// <param name="description">Атрибут описания элемента перечисления <see cref="SchemasTypes"/></param>
+        /// <returns></returns>
         public static SchemasTypes GetSchemaType(string description)
-        {
+        {            
             var enums = typeof(WeldingSchemas.SchemasTypes).GetFields();
             var descriptions = enums.Select(field => new { Name = field.Name,  Description = (field.GetCustomAttributes(typeof(System.ComponentModel.DescriptionAttribute), false).SingleOrDefault() as System.ComponentModel.DescriptionAttribute)?.Description });
 
@@ -120,9 +179,9 @@ namespace ForRobot.Model.Detals
         /// </summary>
         /// <param name="iCountOfRibs">Кол-во рёбер</param>
         /// <returns></returns>
-        public static ObservableCollection<SchemaRib> SelectSchemaRib(int iCountOfRibs)
+        public static FullyObservableCollection<SchemaRib> SelectSchemaRib(int iCountOfRibs)
         {
-            ObservableCollection<SchemaRib> schemaRibs = new System.Collections.ObjectModel.ObservableCollection<WeldingSchemas.SchemaRib>();
+            FullyObservableCollection<SchemaRib> schemaRibs = new FullyObservableCollection<WeldingSchemas.SchemaRib>();
             for (int i = 0; i < iCountOfRibs; i++)
             {
                 schemaRibs.Add(new WeldingSchemas.SchemaRib());
@@ -130,14 +189,42 @@ namespace ForRobot.Model.Detals
             return schemaRibs;
         }
 
-        //private static ObservableCollection<SchemaRib> BuildLeftEvenOddRightEvenOdd()
-        //{
+        /// <summary>
+        /// Заполнение схемы: сначала слева четные - нечетные, справа четные - нечетные
+        /// </summary>
+        /// <param name="iSumRib">Кол-во рёбер</param>
+        /// <returns></returns>
+        private static FullyObservableCollection<SchemaRib> BuildLeftEvenOddRightEvenOdd(int iSumRib)
+        {
+            List<SchemaRib> ribs = SelectSchemaRib(iSumRib).ToList<SchemaRib>() ;
+            int i = 1;
+            while (i <= (iSumRib * 2))
+            {
+                foreach (var rib in ribs.Where(item => (ribs.IndexOf(item) + 1) % 2 == 0))
+                {
+                    rib.LeftSide = i.ToString();
+                    i++;
+                }
 
-        //}
+                foreach (var rib in ribs.Where(item => (ribs.IndexOf(item) + 1) % 2 != 0))
+                {
+                    rib.LeftSide = i.ToString();
+                    i++;
+                }
 
-        //private static string[,] GetLeftEvenOddRightEvenOddSchema()
-        //{
+                foreach (var rib in ribs.Where(item => (ribs.IndexOf(item) + 1) % 2 == 0))
+                {
+                    rib.RightSide = i.ToString();
+                    i++;
+                }
 
-        //}
+                foreach (var rib in ribs.Where(item => (ribs.IndexOf(item) + 1) % 2 != 0))
+                {
+                    rib.RightSide = i.ToString();
+                    i++;
+                }
+            }
+            return new FullyObservableCollection<SchemaRib>(ribs);
+        }
     }
 }

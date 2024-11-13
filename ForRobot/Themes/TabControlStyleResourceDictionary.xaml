@@ -400,7 +400,6 @@
                 Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
 
             <TextBox Grid.Row="2" Grid.Column="1">
-
                 <TextBox.Style>
                     <Style TargetType="TextBox">
                         <Setter Property="FontSize" Value="16"/>
@@ -423,8 +422,7 @@
             </TextBox>
 
             <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DistanceToFirst, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
-                Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}">
-                
+                Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}">                
                 <TextBox.Style>
                     <Style TargetType="{x:Type TextBox}">
                         <Setter Property="FontSize" Value="16"/>
@@ -735,7 +733,6 @@
             </GroupBox>
 
             <TextBox Grid.Row="9" Grid.Column="1" Height="37">
-
                 <TextBox.Style>
                     <Style TargetType="TextBox">
                         <Setter Property="FontSize" Value="16"/>
@@ -919,8 +916,7 @@
             </Style>
 
             <Style TargetType="DataGridColumnHeader">
-                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                
+                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>                
                 <Setter Property="ContentTemplate">
                     <Setter.Value>
                         <DataTemplate>
@@ -932,15 +928,11 @@
 
             <Style TargetType="DataGridRow">
                 <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
-                <!--<Setter Property="Height" Value="35"/>-->
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
             </Style>
 
             <Style TargetType="{x:Type DataGridCell}">
-                <Setter Property="MaxHeight" Value="130"/>
-                <!--<Setter Property="Height" Value="*"/>-->
-
-                <!--<Setter Property="Height" Value="Auto"/>-->
+                <Setter Property="Height" Value="40"/>
                 <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
                 <Setter Property="TextBlock.TextAlignment" Value="Center"/>
             </Style>
@@ -963,7 +955,7 @@
             <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.WildingSpead, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay,TargetNullValue=0, FallbackValue=0, ConverterCulture='en-us', StringFormat=F0, UpdateSourceTrigger=LostFocus}"/>
             <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.ProgramNom, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay,TargetNullValue=1, FallbackValue=1, ConverterCulture='en-us', StringFormat=F0, UpdateSourceTrigger=LostFocus}"/>
 
-            <!--<GroupBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Header="Схема сварки" FontSize="16" Margin="4">
+            <GroupBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Header="Схема сварки" FontSize="16" Margin="4">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -972,7 +964,7 @@
 
                     <ComboBox Grid.Row="0" Margin="0, 10"
                               ItemsSource="{Binding Path=DataContext.WeldingSchemaCollection, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
-                              SelectedItem="{Binding Path=DataContext.DetalObject.SelectedWeldingSchema, Mode=OneWayToSource, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
+                              SelectedItem="{Binding Path=DataContext.DetalObject.SelectedWeldingSchema, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
                               SelectedIndex="0">
 
                         <ComboBox.ItemTemplate>
@@ -997,15 +989,15 @@
                         <DataGrid.Resources>
                             <Style TargetType="{x:Type ComboBox}">
                                 <Setter Property="MaxDropDownHeight" Value="150"/>
-                                <Setter Property="ItemsSource" Value="{Binding Path=., RelativeSource={RelativeSource AncestorType=DataGrid, AncestorLevel=2, Mode=FindAncestor}, Converter={StaticResource NumbersForWeldingSchemaConvert}}"/>
-                                <Setter Property="SelectedIndex" Value="0"/>
+                                <Setter Property="ItemsSource" Value="{Binding Path=., RelativeSource={RelativeSource AncestorType=DataGrid, Mode=FindAncestor}, Converter={StaticResource NumbersForWeldingSchemaConvert}}"/>
+                                <!--<Setter Property="SelectedIndex" Value="0"/>-->
                                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
                                 
                                 <Setter Property="ItemTemplate">
                                     <Setter.Value>
                                         <DataTemplate>
                                             <Label VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
-                                                <TextBlock Text="{Binding}" TextAlignment="Center"/>
+                                                <TextBlock Text="{Binding Path=.}" TextAlignment="Center"/>
                                             </Label>
                                         </DataTemplate>
                                     </Setter.Value>
@@ -1026,8 +1018,7 @@
                                                                 <ContentPresenter x:Name="ContentSite"
                                                                                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                                                                                   ContentSource="Content" Margin="0, 3"/>
-                                                            </Border>
-                                                            
+                                                            </Border>                                                            
                                                         </Grid>
 
                                                         <ControlTemplate.Triggers>
@@ -1042,16 +1033,38 @@
                                         </Style>
                                     </Setter.Value>
                                 </Setter>
+
+                                <!--<Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=SelectedItem, RelativeSource={RelativeSource Self}}" Value="{x:Null}">
+                                        <Setter Property="SelectedIndex" Value="0"/>
+                                    </DataTrigger>
+                                </Style.Triggers>-->
                             </Style>
                         </DataGrid.Resources>
 
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn Width="*">
+                            <DataGridTemplateColumn Header="Слева" Width="*">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <DataGrid ItemsSource="{Binding Path=Sides, Mode=OneWay}" HeadersVisibility="None"  ScrollViewer.CanContentScroll="False" BorderThickness="0">
+                                        <ComboBox SelectedItem="{Binding Path=LeftSide, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn Header="Справа" Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ComboBox SelectedItem="{Binding Path=RightSide, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            
+                            <!--<DataGridTemplateColumn Width="*">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <DataGrid ItemsSource="{Binding Path=Sides, Mode=OneWay}" ScrollViewer.CanContentScroll="False" BorderThickness="0">
                                             <DataGrid.Columns>
-                                                <DataGridTemplateColumn Header="Стороны" Width="Auto">
+                                                --><!--<DataGridTemplateColumn Header="Стороны" Width="Auto">
                                                     <DataGridTemplateColumn.CellTemplate>
                                                         <DataTemplate>
                                                             <Label FontSize="16" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
@@ -1073,12 +1086,20 @@
                                                             </Label>                                                            
                                                         </DataTemplate>
                                                     </DataGridTemplateColumn.CellTemplate>
-                                                </DataGridTemplateColumn>
+                                                </DataGridTemplateColumn>--><!--
 
-                                                <DataGridTemplateColumn Header="Очередь" Width="*">
+                                                <DataGridTemplateColumn Header="Слева" Width="*">
                                                     <DataGridTemplateColumn.CellTemplate>
                                                         <DataTemplate>
-                                                            <ComboBox SelectedItem="{Binding Path=Number, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"/>
+                                                            <ComboBox SelectedItem="{Binding Path=LeftSide, Mode=TwoWay}"/>
+                                                        </DataTemplate>
+                                                    </DataGridTemplateColumn.CellTemplate>
+                                                </DataGridTemplateColumn>
+
+                                                <DataGridTemplateColumn Header="Справа" Width="*">
+                                                    <DataGridTemplateColumn.CellTemplate>
+                                                        <DataTemplate>
+                                                            <ComboBox SelectedItem="{Binding Path=RightSide, Mode=TwoWay}"/>
                                                         </DataTemplate>
                                                     </DataGridTemplateColumn.CellTemplate>
                                                 </DataGridTemplateColumn>
@@ -1086,11 +1107,11 @@
                                         </DataGrid>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
+                            </DataGridTemplateColumn>-->
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
-            </GroupBox>-->
+            </GroupBox>
         </Grid>
     </DataTemplate>
     

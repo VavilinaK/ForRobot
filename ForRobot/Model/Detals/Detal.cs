@@ -5,6 +5,7 @@ using System.Configuration;
 
 using Newtonsoft.Json;
 
+using ForRobot.Libr;
 using ForRobot.Libr.Json;
 
 namespace ForRobot.Model.Detals
@@ -17,9 +18,6 @@ namespace ForRobot.Model.Detals
         /// Экземпляр детали из app.config
         /// </summary>
         private ForRobot.Libr.ConfigurationProperties.PlitaConfigurationSection PlitaConfig { get; set; }
-
-        private string _selectedWeldingSchema;
-        //private ObservableCollection<(string, string)> _weldingSchema = new ObservableCollection<(string, string)>();
 
         #endregion
 
@@ -35,11 +33,6 @@ namespace ForRobot.Model.Detals
         /// Тип детали
         /// </summary>
         public virtual string DetalType { get; }
-
-        /// <summary>
-        /// Количество ребер
-        /// </summary>
-        public virtual int SumReber { get; set; }
         
         /// <summary>
         /// Длина настила
@@ -136,40 +129,20 @@ namespace ForRobot.Model.Detals
         /// </summary>
         public virtual int ProgramNom { get; set; }
 
-        [JsonIgnore]
-        [SaveAttribute]
         /// <summary>
         /// Выбранная схема сварки рёбер
         /// </summary>
-        public string SelectedWeldingSchema
-        {
-            get => this._selectedWeldingSchema;
-            set
-            {
-                this._selectedWeldingSchema = value;
+        public virtual string SelectedWeldingSchema { get; set; } = WeldingSchemas.GetDescription(WeldingSchemas.SchemasTypes.LeftEvenOdd_RightEvenOdd);
 
-                switch (this._selectedWeldingSchema)
-                {
-                    case string a when a == WeldingSchemas.GetDescription(WeldingSchemas.SchemasTypes.LeftEvenOdd_RightEvenOdd):
+        /// <summary>
+        /// Схема сварки рёбер
+        /// </summary>
+        public virtual FullyObservableCollection<WeldingSchemas.SchemaRib> WeldingSchema { get; set; }
 
-                        break;
-
-                    default:
-                        this.WeldingSchema = ForRobot.Model.Detals.WeldingSchemas.SelectSchemaRib(this.SumReber);
-                        break;
-                }
-            }
-        }
-
-        private ObservableCollection<WeldingSchemas.SchemaRib> _weldingSchema;
-        [JsonIgnore]
-        [SaveAttribute]
-        public ObservableCollection<WeldingSchemas.SchemaRib> WeldingSchema
-        {
-            //get => this._weldingSchema;
-            get => this._weldingSchema ?? (this._weldingSchema = ForRobot.Model.Detals.WeldingSchemas.SelectSchemaRib(this.SumReber));
-            set => Set(ref this._weldingSchema, value);
-        }
+        /// <summary>
+        /// Количество ребер
+        /// </summary>
+        public virtual int SumReber { get; set; }
 
         [JsonIgnore]
         /// <summary>
@@ -238,6 +211,9 @@ namespace ForRobot.Model.Detals
                     this.SumReber = PlitaConfig.SumReber;
                     break;
             }
+
+            if (this.WeldingSchema == null)
+                this.WeldingSchema = ForRobot.Model.Detals.WeldingSchemas.BuildingSchema(WeldingSchemas.GetSchemaType(this.SelectedWeldingSchema), this.SumReber);
         }
 
         #endregion
@@ -247,24 +223,6 @@ namespace ForRobot.Model.Detals
         #endregion
 
         #region Public functions
-
-        //public virtual async Task OnChange(Func<object, EventArgs, Task> func)
-        //{
-        //    Func<object, EventArgs, Task> handler = func;
-
-        //    if (handler == null)
-        //        return;
-
-        //    Delegate[] invocationList = handler.GetInvocationList();
-        //    Task[] handlerTasks = new Task[invocationList.Length];
-
-        //    for (int i = 0; i < invocationList.Length; i++)
-        //    {
-        //        handlerTasks[i] = ((Func<object, EventArgs, Task>)invocationList[i])(this, EventArgs.Empty);
-        //    }
-
-        //    await Task.WhenAll(handlerTasks);
-        //}
 
         #endregion
     }

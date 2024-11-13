@@ -5,10 +5,10 @@
              xmlns:d1p1="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:ForRobot"
              d1p1:Ignorable="d"             
-             Startup="OnStartUp"
-             DispatcherUnhandledException="OnDispatcherUnhandledException"
-             Exit="OnExit"
-             ShutdownMode="OnMainWindowClose">
+             Startup="onStartUp"
+             DispatcherUnhandledException="onDispatcherUnhandledException"
+             Exit="onExit"
+             ShutdownMode="onMainWindowClose">
     
   <Application.Resources>
       <ResourceDictionary>                    

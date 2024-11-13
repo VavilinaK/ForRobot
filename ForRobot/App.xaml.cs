@@ -107,7 +107,7 @@ namespace ForRobot
         /// <param name="sender"></param>
         /// <param name="e"></param>
         [STAThread]
-        private void OnStartUp(object sender, StartupEventArgs e)
+        private void onStartUp(object sender, StartupEventArgs e)
         {
             try
             {
@@ -194,13 +194,13 @@ namespace ForRobot
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnDispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        private void onDispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
             MessageBox.Show(e.Exception.Message + "\t||\t" + e.Exception.Source, "", MessageBoxButton.OK);
             Logger.Fatal(e.Exception.Message + "\t||\t" + e.Exception.Source);
         }
 
-        private void OnExit(object sender, ExitEventArgs e)
+        private void onExit(object sender, ExitEventArgs e)
         {
             if (((Application.Current.Windows.Count == 0) && (Application.Current.ShutdownMode == ShutdownMode.OnLastWindowClose))
                 || (Application.Current.ShutdownMode == ShutdownMode.OnMainWindowClose))
