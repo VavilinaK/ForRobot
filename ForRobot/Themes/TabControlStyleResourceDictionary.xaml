@@ -990,7 +990,6 @@
                             <Style TargetType="{x:Type ComboBox}">
                                 <Setter Property="MaxDropDownHeight" Value="150"/>
                                 <Setter Property="ItemsSource" Value="{Binding Path=., RelativeSource={RelativeSource AncestorType=DataGrid, Mode=FindAncestor}, Converter={StaticResource NumbersForWeldingSchemaConvert}}"/>
-                                <!--<Setter Property="SelectedIndex" Value="0"/>-->
                                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
                                 
                                 <Setter Property="ItemTemplate">
@@ -1002,7 +1001,7 @@
                                         </DataTemplate>
                                     </Setter.Value>
                                 </Setter>
-                                
+
                                 <Setter Property="ItemContainerStyle">
                                     <Setter.Value>
                                         <Style TargetType="{x:Type ComboBoxItem}">
@@ -1018,7 +1017,7 @@
                                                                 <ContentPresenter x:Name="ContentSite"
                                                                                   VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                                                                                   ContentSource="Content" Margin="0, 3"/>
-                                                            </Border>                                                            
+                                                            </Border>
                                                         </Grid>
 
                                                         <ControlTemplate.Triggers>
@@ -1033,12 +1032,6 @@
                                         </Style>
                                     </Setter.Value>
                                 </Setter>
-
-                                <!--<Style.Triggers>
-                                    <DataTrigger Binding="{Binding Path=SelectedItem, RelativeSource={RelativeSource Self}}" Value="{x:Null}">
-                                        <Setter Property="SelectedIndex" Value="0"/>
-                                    </DataTrigger>
-                                </Style.Triggers>-->
                             </Style>
                         </DataGrid.Resources>
 
@@ -1058,56 +1051,6 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            
-                            <!--<DataGridTemplateColumn Width="*">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <DataGrid ItemsSource="{Binding Path=Sides, Mode=OneWay}" ScrollViewer.CanContentScroll="False" BorderThickness="0">
-                                            <DataGrid.Columns>
-                                                --><!--<DataGridTemplateColumn Header="Стороны" Width="Auto">
-                                                    <DataGridTemplateColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <Label FontSize="16" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
-                                                                <TextBlock TextAlignment="Center" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="Transparent">
-                                                                    <TextBlock.Style>
-                                                                        <Style TargetType="{x:Type TextBlock}">
-                                                                            <Style.Triggers>
-                                                                                <DataTrigger Binding="{Binding Path=Side, Mode=OneWay}" Value="Left">
-                                                                                    <Setter Property="Text" Value="Слева"/>
-                                                                                </DataTrigger>
-
-                                                                                <DataTrigger Binding="{Binding Path=Side, Mode=OneWay}" Value="{x:Static detals:SideOfRib.Right}">
-                                                                                    <Setter Property="Text" Value="Справа"/>
-                                                                                </DataTrigger>
-                                                                            </Style.Triggers>
-                                                                        </Style>
-                                                                    </TextBlock.Style>
-                                                                </TextBlock>
-                                                            </Label>                                                            
-                                                        </DataTemplate>
-                                                    </DataGridTemplateColumn.CellTemplate>
-                                                </DataGridTemplateColumn>--><!--
-
-                                                <DataGridTemplateColumn Header="Слева" Width="*">
-                                                    <DataGridTemplateColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <ComboBox SelectedItem="{Binding Path=LeftSide, Mode=TwoWay}"/>
-                                                        </DataTemplate>
-                                                    </DataGridTemplateColumn.CellTemplate>
-                                                </DataGridTemplateColumn>
-
-                                                <DataGridTemplateColumn Header="Справа" Width="*">
-                                                    <DataGridTemplateColumn.CellTemplate>
-                                                        <DataTemplate>
-                                                            <ComboBox SelectedItem="{Binding Path=RightSide, Mode=TwoWay}"/>
-                                                        </DataTemplate>
-                                                    </DataGridTemplateColumn.CellTemplate>
-                                                </DataGridTemplateColumn>
-                                            </DataGrid.Columns>
-                                        </DataGrid>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>-->
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>

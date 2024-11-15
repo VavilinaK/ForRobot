@@ -236,6 +236,12 @@
     <Compile Include="Views\Controls\DragAndDropPopup.xaml.cs">
       <DependentUpon>DragAndDropPopup.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Pages\Page3D_2.xaml.cs">
+      <DependentUpon>Page3D_2.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Pages\PageMain3.xaml.cs">
+      <DependentUpon>PageMain3.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Windows\PropertiesWindow.xaml.cs">
       <DependentUpon>PropertiesWindow.xaml</DependentUpon>
     </Compile>
@@ -271,11 +277,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Pages\Page3D_2.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Pages\PageMain.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Pages\PageMain2.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Pages\PageMain3.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

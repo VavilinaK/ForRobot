@@ -291,13 +291,14 @@ namespace ForRobot.Libr.Client
         /// <summary>
         /// Копирование файла в дерективу робота
         /// </summary>
-        public async Task<bool> Copy(string oldPath, string newPath)
+        /// <param name="sFilePath">Директория файла</param>
+        /// <param name="sNewPath">Новый путь для файла</param>
+        /// <returns></returns>
+        public async Task<bool> Copy(string sFilePath, string sNewPath)
         {
-            this.LogMessage($"Копирование файла программы в директорию робота {newPath} . . .");
-
-            object[] args = { oldPath, newPath, 64 };
+            this.LogMessage($"Копирование файла программы в директорию робота {sNewPath} . . .");
+            object[] args = { sFilePath, sNewPath, 64 };
             string result = await this.JsonRpc.InvokeAsync<string>("File_Copy", args);
-
             if (result == OkResponse)
                 return true;
             return false;
@@ -306,20 +307,23 @@ namespace ForRobot.Libr.Client
         /// <summary>
         /// Копирование содержание файла в дерективу робота
         /// </summary>
-        public async Task<bool> CopyMem2File(string filePath, string controllerPath)
+        /// <param name="sFilePath">Директория файла</param>
+        /// <param name="sControllerPath">Путь для файла на роботе</param>
+        /// <returns></returns>
+        public async Task<bool> CopyMem2File(string sFilePath, string sControllerPath)
         {
-            this.LogMessage($"Копирование содержание файла {filePath} в {controllerPath} . . .");
+            this.LogMessage($"Копирование содержание файла {sFilePath} в {sControllerPath} . . .");
 
-            if (!File.Exists(Path.Combine(filePath)))
-                this.LogErrorMessage($"Не существует файла {filePath}");
+            if (!File.Exists(Path.Combine(sFilePath)))
+                this.LogErrorMessage($"Не существует файла {sFilePath}");
 
             string content;
-            using (StreamReader reader = new StreamReader(filePath))
+            using (StreamReader reader = new StreamReader(sFilePath))
             {
                 content = await reader.ReadToEndAsync();
             }
 
-            object[] args = { content, controllerPath, 64 };
+            object[] args = { content, sControllerPath, 64 };
             string result = await this.JsonRpc.InvokeAsync<string>("File_CopyMem2File", args);
 
             if (result == OkResponse)
@@ -330,14 +334,13 @@ namespace ForRobot.Libr.Client
         /// <summary>
         /// Выбор файла программы
         /// </summary>
-        /// <param name="path"></param>
-        /// <param name="file"></param>
+        /// <param name="sFilePath">Директория файла программы</param>
         /// <returns></returns>
-        public async Task<bool> Select(string path)
+        public async Task<bool> Select(string sFilePath)
         {
-            this.LogMessage($"Выбор программы {path} . . .");
+            this.LogMessage($"Выбор программы {sFilePath} . . .");
 
-            string result = await this.JsonRpc.InvokeAsync<string>("Select_Select", path);
+            string result = await this.JsonRpc.InvokeAsync<string>("Select_Select", sFilePath);
 
             return result == OkResponse;
         }
@@ -356,20 +359,21 @@ namespace ForRobot.Libr.Client
         }
 
         /// <summary>
-        /// Удаление файла программы по директории
+        /// Удаление файла
         /// </summary>
+        /// <param name="sFilePath">Директория файла</param>
         /// <returns></returns>
-        public async Task<bool> Delet(string path)
+        public async Task<bool> Delet(string sFilePath)
         {
-            this.LogMessage($"Удаление файла {path} . . .");
+            this.LogMessage($"Удаление файла {sFilePath} . . .");
 
-            string result = await this.JsonRpc.InvokeAsync<string>("File_Delete", path);
+            string result = await this.JsonRpc.InvokeAsync<string>("File_Delete", sFilePath);
 
             return result == OkResponse;
         }
 
         /// <summary>
-        /// Запуск программы
+        /// Запуск уже выбранной программы
         /// </summary>
         /// <returns></returns>
         public async Task<bool> Start()
@@ -384,12 +388,13 @@ namespace ForRobot.Libr.Client
         /// <summary>
         /// Выбор и запуск программы
         /// </summary>
+        /// <param name="sFilePath">Директория файла</param>
         /// <returns></returns>
-        public async Task<bool> Run(string path)
+        public async Task<bool> Run(string sFilePath)
         {
-            this.LogMessage($"Запуск программы {path} . . .");
+            this.LogMessage($"Запуск программы {sFilePath} . . .");
 
-            string result = await this.JsonRpc.InvokeAsync<string>("Select_Run", path);
+            string result = await this.JsonRpc.InvokeAsync<string>("Select_Run", sFilePath);
 
             return result == OkResponse;
         }
@@ -410,16 +415,16 @@ namespace ForRobot.Libr.Client
         }
 
         /// <summary>
-        /// Список файлов
+        /// Вывод списка файлов в папке
         /// </summary>
-        /// <param name="path">Директория зпроса</param>
+        /// <param name="sFolderPath">Директория папки для запроса</param>
         /// <returns></returns>
-        public async Task<Dictionary<String, String>> File_NameList(string path = DefaulRoot)
+        public async Task<Dictionary<String, String>> File_NameList(string sFolderPath = DefaulRoot)
         {
             Dictionary<String, String> result = new Dictionary<string, string>();
             try
             {
-                object[] args = { path, 511, 127 };
+                object[] args = { sFolderPath, 511, 127 };
                 result = await this.JsonRpc.InvokeAsync<Dictionary<String, String>>("File_NameList", args);
             }
             catch (Exception e)

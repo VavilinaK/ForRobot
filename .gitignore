@@ -259,3 +259,5 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+/py_gen/CQ-editor-Windows/CQ-editor.cmd
+/py_gen/CQ-editor-Windows/CQ-editor

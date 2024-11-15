@@ -655,7 +655,6 @@ namespace ForRobot.Model.Detals
         /// </summary>
         public FullyObservableCollection<Rib> RibsCollection
         {
-            //get => _ribsCollection ?? (this._ribsCollection = this.FillRibsCollection());
             get => _ribsCollection;
             set => Set(ref this._ribsCollection, value);
         }
@@ -665,7 +664,6 @@ namespace ForRobot.Model.Detals
         public override FullyObservableCollection<WeldingSchemas.SchemaRib> WeldingSchema
         {
             get => base.WeldingSchema;
-            //get => this._weldingSchema ?? (this._weldingSchema = ForRobot.Model.Detals.WeldingSchemas.BuildingSchema(WeldingSchemas.GetSchemaType(_selectedWeldingSchema), this.SumReber));
             set
             {
                 base.WeldingSchema = value;
@@ -685,43 +683,6 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.SumReber = value;
-
-                //if (this.RibsCollection?.Count > 0)
-                //{
-                //    if (this.SumReber <= this.RibsCollection.Count)
-                //        this.RibsCollection = new FullyObservableCollection<Rib>(this.RibsCollection.Take(this.SumReber).ToList<Rib>());
-                //    else
-                //        for (int i = this.RibsCollection.Count; i < this.SumReber; i++)
-                //        {
-                //            this.RibsCollection.Add(this.RibsCollection.Last<Rib>().Clone() as Rib);
-                //        }
-                //}
-                //else
-                //    this.RibsCollection = this.FillRibsCollection();
-
-                //if (this.RibsCollection?.Count > 0 && this.WeldingSchema?.Count > 0)
-                //if (this.RibsCollection?.Count > 0)
-                //{
-                //    if (this.SumReber <= this.RibsCollection.Count)
-                //    {
-                //        this.RibsCollection = new FullyObservableCollection<Rib>(this.RibsCollection.Take(this.SumReber).ToList<Rib>());
-                //        //this.WeldingSchema = new System.Collections.ObjectModel.ObservableCollection<WeldingSchemas.SchemaRib>(this.WeldingSchema.Take(this.SumReber).ToList<WeldingSchemas.SchemaRib>());
-                //    }
-                //    else
-                //        for (int i = this.RibsCollection.Count; i < this.SumReber; i++)
-                //        {
-                //            this.RibsCollection.Add(this.RibsCollection.Last<Rib>().Clone() as Rib);
-                //            //this.WeldingSchema.Add(new WeldingSchemas.SchemaRib());
-                //        }
-                //}
-                //else
-                //{
-                //    //if (this.RibsCollection?.Count > 0)
-                //        this.RibsCollection = this.FillRibsCollection();
-
-                //    //if (this.WeldingSchema?.Count > 0)
-                //    //    this.WeldingSchema = WeldingSchemas.SelectSchemaRib(this.SumReber);
-                //}
 
                 if (this.RibsCollection == null || this.WeldingSchema == null)
                 {
@@ -781,8 +742,6 @@ namespace ForRobot.Model.Detals
         /// Событие изменения свойства класса
         /// </summary>
         public override event EventHandler Change;
-
-        //public override event Func<object, EventArgs, Task> Change;
 
         #endregion
 

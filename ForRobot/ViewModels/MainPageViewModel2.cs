@@ -41,7 +41,6 @@ namespace ForRobot.ViewModels
 
         //private string _selectedWeldingSchema;
 
-
         private string _logger;
         
         private TabItem _selectedItem;
@@ -56,7 +55,8 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Страница с 3D изображениями
         /// </summary>
-        private Page3D _page3D { get; set; } = new Page3D();
+        //private Page3D _page3D { get; set; } = new Page3D();
+        private Page3D_2 _page3D { get; set; } = new Page3D_2();
 
         private Tuple<string, Robot> _selectedRobot;
 
@@ -147,13 +147,13 @@ namespace ForRobot.ViewModels
             get
             {
                 if (this.PageNow is Page2D) { return "Page2D"; }
-                else if (this.PageNow is Page3D) { return "Page3D"; }
+                else if (this.PageNow is Page3D_2) { return "Page3D"; }
                 else { return ""; }
             }
             set
             {
                 if (value == "Page2D") { this.PageNow = this._page2D; }
-                else if (value == "Page3D") { this.PageNow = this._page3D; }
+                else if (value == "Page3D") { this.PageNow = new Page3D_2(); }
                 RaisePropertyChanged("PageNowString");
             }
         }
@@ -217,24 +217,6 @@ namespace ForRobot.ViewModels
                 RaisePropertyChanged(nameof(this.SelectedDetalType), nameof(this.ProgrammName));
             }
         }
-
-        ///// <summary>
-        ///// Выбранная схема сварки рёбер
-        ///// </summary>
-        //public string SelectedWeldingSchema
-        //{
-        //    get => this._selectedWeldingSchema;
-        //    set
-        //    {
-        //        this._selectedWeldingSchema = value;
-        //        switch (this._selectedWeldingSchema)
-        //        {
-        //            case string a when a == WeldingSchemas.GetDescription(WeldingSchemas.ShemasTypes.LeftEvenOdd_RightEvenOdd):
-
-        //                break;
-        //        }
-        //    }
-        //}
 
         /// <summary>
         /// Нынешняя страница

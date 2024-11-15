@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.ComponentModel;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -9,16 +8,6 @@ using ForRobot.Libr;
 
 namespace ForRobot.Model.Detals
 {
-    /// <summary>
-    /// Сторона ребра
-    /// </summary>
-    public enum SideOfRib
-    {
-        Left,
-
-        Right
-    }
-
     public static class WeldingSchemas
     {
         /// <summary>
@@ -116,34 +105,14 @@ namespace ForRobot.Model.Detals
         /// <param name="schemaType"></param>
         /// <param name="schema">Схема сварки</param>
         /// <returns></returns>
-        //public static string[,] GetSchema(ObservableCollection<SchemaRib> schema)
         public static object[,] GetSchema(ObservableCollection<SchemaRib> schema)
         {
-            //string[,] finishSchema = new string[(schema.Count * 2), 2];
-            //for (int i = 1; i <= (schema.Count * 2); i++)
-            //{
-            //    SchemaRib rib = schema.Where(item => item.LeftSide == i.ToString() || item.RightSide == i.ToString()).First();
-            //    finishSchema[i - 1, 0] = (schema.IndexOf(rib) + 1).ToString();
-            //    if (rib.LeftSide == i.ToString())
-            //        finishSchema[i - 1, 1] = "left_side";
-            //    else
-            //        finishSchema[i - 1, 1] = "right_side";
-            //}
-
-
-            //Array arr1 = Array.CreateInstance(typeof(Tuple<int, string>), (schema.Count * 2));
             object[,] finishSchema = new object[schema.Count * 2, 2];
             for (int i = 1; i <= (schema.Count * 2); i++)
             {
                 SchemaRib rib = schema.Where(item => item.LeftSide == i.ToString() || item.RightSide == i.ToString()).First();
-                //int num = schema.IndexOf(rib) + 1;
-                //string side = (rib.LeftSide == i.ToString()) ? "left_side" : "right_side";
-
-                //tuple[i - 1] = (num, side);
-
                 finishSchema[i - 1, 0] = schema.IndexOf(rib) + 1;
                 finishSchema[i - 1, 1] = (rib.LeftSide == i.ToString()) ? "left_side" : "right_side";
-                //arr1.SetValue(((rib.LeftSide == i.ToString()) ? "left_side" : "right_side"), i - 1, 1);
             }
             return finishSchema;
         }

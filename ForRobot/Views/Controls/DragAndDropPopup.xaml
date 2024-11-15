@@ -8,6 +8,12 @@
              mc:Ignorable="d">
 
     <UserControl.Resources>
+        <!--Colors-->
+        <Color x:Key="Orange">#FFFFA21B</Color>
+
+        <!--SolidColorBrush-->
+        <SolidColorBrush x:Key="BrushOrange" Color="{DynamicResource Orange}"/>
+
         <!--Images-->
         <DrawingImage x:Key="UnknowFileImage">
             <DrawingImage.Drawing>
@@ -37,6 +43,7 @@
         </DrawingImage>
 
         <!--Template-->
+        
         <!--<ControlTemplate x:Key="buttonTemplate" TargetType="{x:Type Button}">
             <Border Name="buttonPanel" BorderThickness="0" CornerRadius="5">
                 <ContentPresenter x:Name="buttonContent"
@@ -69,18 +76,6 @@
                     <Style TargetType="{x:Type Border}">
                         <Setter Property="BorderBrush" Value="{DynamicResource NotActiveBorderBrush}"/>
                         <Setter Property="Background" Value="White"/>
-
-                        <!--<Style.Triggers>
-                            <DataTrigger Binding="{Binding Path=IsPressed, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}"  Value="True">
-                                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
-                                <Setter Property="Background" Value="{DynamicResource BrushAqua}"/>
-                            </DataTrigger>
-
-                            <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}" Value="True">
-                                <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
-                                <Setter Property="Background" Value="{DynamicResource BrushDarkGray}"/>
-                            </DataTrigger>
-                        </Style.Triggers>-->
                     </Style>
                 </Border.Style>
             </Border>
@@ -89,7 +84,6 @@
                 <Trigger Property="IsPressed" Value="True">
                     <Setter TargetName="buttonPanel" Property="Background" Value="LightSkyBlue"/>
                     <Setter TargetName="buttonPanel" Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
-                    <!--<Setter TargetName="ContentSite" Property="TextElement.FontWeight" Value="DemiBold"/>-->
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
@@ -104,7 +98,7 @@
 
                     <ProgressBar Grid.RowSpan="2"
                                  Panel.ZIndex="1" Background="Transparent" BorderThickness="0"
-                                 Foreground="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}"
+                                 Foreground="{DynamicResource  {x:Static SystemColors.HotTrackBrushKey}}"
                                  Minimum="0" Maximum="100" IsIndeterminate="True">
 
                         <ProgressBar.Style>
@@ -152,10 +146,36 @@
                     BorderThickness="0" Background="White"
                     VerticalAlignment="Top" HorizontalAlignment="Stretch">
                 
-                <ContentPresenter x:Name="buttonContent"
+                <Grid>
+                    <ContentPresenter x:Name="buttonContent"
                               VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                               ContentSource="Content"
                               Margin="{Binding Padding, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}"/>
+
+                    <Border Background="White" Opacity="0.9" CornerRadius="{Binding CornerRadius, RelativeSource={RelativeSource AncestorType={x:Type Border}, Mode=FindAncestor}}">
+                        <Border.Style>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="Visibility" Value="Hidden"/>
+
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Path=IsCopy}" Value="True"/>
+                                            <Condition Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}" Value="True"/>
+                                        </MultiDataTrigger.Conditions>
+                                        
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        
+                        <Label Foreground="#FF4D4D4D" FontSize="14" FontWeight="Bold"
+                                   VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
+                            <TextBlock TextWrapping="WrapWithOverflow" TextAlignment="Center">Нажмите дважды для удаления</TextBlock>
+                        </Label>
+                    </Border>
+                </Grid>
 
                 <!--<Border.Style>
                     <Style TargetType="{x:Type Border}">
@@ -173,10 +193,10 @@
             </Border>
 
             <ControlTemplate.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
+                <!--<Trigger Property="IsMouseOver" Value="True">
                     <Setter TargetName="buttonPanel" Property="Background" Value="{DynamicResource BrushLightGray}"/>
 
-                    <!--<Setter TargetName="buttonContent" Property="ContentSource">
+                    --><!--<Setter TargetName="buttonContent" Property="ContentSource">
                         <Setter.Value>
                             <StackPanel/>
                         </Setter.Value>
@@ -188,8 +208,21 @@
                                 <Border Background="Aquamarine"/>
                             </ControlTemplate>
                         </Setter.Value>
+                    </Setter>--><!--
+                </Trigger>-->
+
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Path=IsCopy}" Value="True"/>
+                        <Condition Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True"/>
+                    </MultiDataTrigger.Conditions>
+
+                    <!--<Setter TargetName="buttonPanel" Property="Template">
+                        <Setter.Value>
+                            
+                        </Setter.Value>
                     </Setter>-->
-                </Trigger>
+                </MultiDataTrigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
     </UserControl.Resources>
@@ -201,7 +234,7 @@
         </Grid.ColumnDefinitions>
 
         <Border Grid.Column="0" AllowDrop="True"
-                Background="Transparent" BorderBrush="#FFFFA21B" BorderThickness="5" CornerRadius="8"
+                Background="Transparent" BorderBrush="{StaticResource BrushOrange}" BorderThickness="5" CornerRadius="8"
                 Drop="Border_Drop"
                 DragEnter="Border_DragEnter"
                 DragLeave="Border_DragLeave">

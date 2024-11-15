@@ -37,7 +37,7 @@ namespace ForRobot.Views.Controls
             }
         }
 
-        public bool IsCopy { get; set; } = false;
+        public bool IsCopy { get; set; } = true;
 
         public event PropertyChangedEventHandler PropertyChanged;
 

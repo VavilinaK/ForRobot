@@ -132,7 +132,6 @@ namespace JsonRPCTest
             //}
         }
 
-
         [TestMethod]
         /// <summary>
         /// Тест перезапуска программы
@@ -153,6 +152,28 @@ namespace JsonRPCTest
             //{
             //    message = ex.Message;
             //}
+        }
+
+        [TestMethod]
+        /// <summary>
+        /// Тест запроса временной папки
+        /// </summary>
+        /// <returns></returns>
+        public void TestTemp()
+        {
+            string message;
+            try
+            {
+                JsonRpcConnection connection = new JsonRpcConnection("169.254.59.82", 3333);
+                connection.Open();
+                Dictionary<String, String> answer = Task.Run<Dictionary<String, String>>(async () => await connection.File_NameList("KRC:\\")).Result;
+
+                //bool answer = Task.Run(async () => await connection.Run("KRC:\\R1\\Program\\test_io")).Result;
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
+            }
         }
     }
 

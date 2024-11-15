@@ -639,7 +639,7 @@
                                 </RadioButton.Template>
                             </RadioButton>
 
-                            <RadioButton Content="Two" Width="0" Margin="3,0" Style="{StaticResource toggleButtonCordinateStyle}" Visibility="Hidden"
+                            <RadioButton Content="Two" Width="45" Margin="3,0" Style="{StaticResource toggleButtonCordinateStyle}"
                                      IsChecked="{Binding Path=PageNowString, Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter=Page3D, Mode=TwoWay}">
 
                                 <RadioButton.Template>
