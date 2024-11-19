@@ -26,16 +26,19 @@ namespace ForRobot.Model.Controls
         {
             get
             {
-                switch (this.Name)
+                switch (System.IO.Path.GetExtension(this.Name))
                 {
-                    case string a when a.Contains(".dat"):
+                    case ".dat":
                         return FileTypes.DataList;
 
-                    case string b when b.Contains(".src"):
+                    case ".src":
                         return FileTypes.Program;
 
-                    default:
+                    case "":
                         return FileTypes.Folder;
+
+                    default:
+                        return FileTypes.Unknow;
                 }
             }
         }

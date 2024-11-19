@@ -11,8 +11,6 @@ namespace ForRobot.Model.Controls
 
         string Path { get; set; }
 
-        //BitmapImage Icon { get; }
-
         bool IsExpanded { get; set; }
 
         bool IncludeFileChildren { get; }

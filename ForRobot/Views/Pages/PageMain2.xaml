@@ -1273,6 +1273,8 @@
                            HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                            HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
                            Content="{Binding Path=PageNow, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    
+                    
                 </DockPanel>
 
                 <TabControl Grid.Row="1" TabStripPlacement="Bottom"
