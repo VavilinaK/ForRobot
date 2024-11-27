@@ -68,7 +68,8 @@
                     BorderBrush="#FFFFA21B" BorderThickness="5" CornerRadius="8">
 
                 <Grid Margin="10">
-                    <control:DragAndDropPopup/>
+                    <control:DragAndDropPopup DropFileCommand="{Binding Path=DataContext.DropFilesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
+                                              DeleteFileCommand="{Binding Path=DataContext.DeleteDropFileCommand, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>
                 </Grid>
             </Border>
         </Popup>

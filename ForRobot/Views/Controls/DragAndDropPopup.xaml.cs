@@ -7,16 +7,23 @@ using System.Windows;
 using System.Windows.Controls;
 
 using ForRobot.Model.Controls;
+using System.Windows.Input;
 
 namespace ForRobot.Views.Controls
 {
     public class DragAndDropFile : INotifyPropertyChanged
     {
+        private bool _isCopy = false;
+        private bool _isDelete = false;
+        
         /// <summary>
-        /// Имя с разрешением
+        ///  Имя файла (без разрешения)
+        /// </summary>
+        public string Name { get => System.IO.Path.GetFileNameWithoutExtension(this.FullName); }
+        /// <summary>
+        /// Имя файла (с разрешением)
         /// </summary>
         public string FullName { get; private set; }
-
         public string OldPath { get; private set; }
 
         public FileTypes Type
@@ -37,7 +44,24 @@ namespace ForRobot.Views.Controls
             }
         }
 
-        public bool IsCopy { get; set; } = true;
+        public bool IsCopy
+        {
+            get => this._isCopy;
+            set
+            {
+                this._isCopy = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.IsCopy)));
+            }
+        }
+        public bool IsDelete
+        {
+            get => this._isDelete;
+            set
+            {
+                this._isDelete = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.IsDelete)));
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -73,7 +97,7 @@ namespace ForRobot.Views.Controls
 
         #region Commands
 
-        private static RelayCommand _changeWorkingModeCommand;
+        //private static RelayCommand _changeWorkingModeCommand;
 
         private static RelayCommand _selectFilesCommand;
 
@@ -104,18 +128,19 @@ namespace ForRobot.Views.Controls
 
         #region Properties
 
-        /// <summary>
-        /// Конечный путь для копирования файлов
-        /// </summary>
-        public string FinishPath
-        {
-            get => (string)GetValue(FinishPathProperty);
-            set => SetValue(FinishPathProperty, value);
-        }
+        ///// <summary>
+        ///// Конечный путь для копирования файлов
+        ///// </summary>
+        //public string FinishPath
+        //{
+        //    get => (string)GetValue(FinishPathProperty);
+        //    set => SetValue(FinishPathProperty, value);
+        //}
 
-        public static readonly DependencyProperty FinishPathProperty = DependencyProperty.Register(nameof(FinishPath),
-                                                                                           typeof(string),
-                                                                                           typeof(DragAndDropPopup));
+        //public static readonly DependencyProperty FinishPathProperty = DependencyProperty.Register(nameof(FinishPath),
+        //                                                                                   typeof(string),
+        //                                                                                   typeof(DragAndDropPopup));
+
         /// <summary>
         /// Добавляется ли в данный момент файл
         /// </summary>
@@ -130,6 +155,34 @@ namespace ForRobot.Views.Controls
                                                                                                            typeof(DragAndDropPopup),
                                                                                                            new UIPropertyMetadata(false, new PropertyChangedCallback(OnIsAddingFileChange)));
 
+        /// <summary>
+        /// Команда сброса файла
+        /// </summary>
+        public RelayCommand DropFileCommand
+        {
+            get { return (RelayCommand)GetValue(DropFileCommandProperty); }
+            set { SetValue(DropFileCommandProperty, value); }
+        }
+
+        public static readonly DependencyProperty DropFileCommandProperty = DependencyProperty.Register(nameof(DropFileCommand),
+                                                                                                        typeof(RelayCommand),
+                                                                                                        typeof(DragAndDropPopup),
+                                                                                                        new PropertyMetadata());
+
+        /// <summary>
+        /// Команда удаления файла
+        /// </summary>
+        public RelayCommand DeleteFileCommand
+        {
+            get { return (RelayCommand)GetValue(DeleteFileCommandCommandProperty); }
+            set { SetValue(DeleteFileCommandCommandProperty, value); }
+        }
+
+        public static readonly DependencyProperty DeleteFileCommandCommandProperty = DependencyProperty.Register(nameof(DeleteFileCommand),
+                                                                                                                 typeof(RelayCommand),
+                                                                                                                 typeof(DragAndDropPopup),
+                                                                                                                 new PropertyMetadata());
+
         #endregion
 
         #region Events
@@ -139,20 +192,20 @@ namespace ForRobot.Views.Controls
 
         #region Commands
 
-        /// <summary>
-        /// Команда смены режима работы <see cref="DragAndDropPopup"/>
-        /// </summary>
-        private static RelayCommand ChangeWorkingModeCommand
-        {
-            get
-            {
-                return _changeWorkingModeCommand ??
-                    (_changeWorkingModeCommand = new RelayCommand(obj =>
-                    {
+        ///// <summary>
+        ///// Команда смены режима работы <see cref="DragAndDropPopup"/>
+        ///// </summary>
+        //private static RelayCommand ChangeWorkingModeCommand
+        //{
+        //    get
+        //    {
+        //        return _changeWorkingModeCommand ??
+        //            (_changeWorkingModeCommand = new RelayCommand(obj =>
+        //            {
 
-                    }));
-            }
-        }
+        //            }));
+        //    }
+        //}
 
         /// <summary>
         /// Выбор файлов для отправки на роботы
@@ -167,7 +220,7 @@ namespace ForRobot.Views.Controls
                         System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog()
                         {
                             Filter = "Source Code or Data files (*.src, *.dat)|*.src;*.dat|Data files (*.dat)|*.dat|Source Code File (*.src)|*src",
-                            Title = $"Копирование файлов в {this.FinishPath}",
+                            Title = $"Копирование файлов на контроллер",
                             Multiselect = true
                         };
 
@@ -176,7 +229,11 @@ namespace ForRobot.Views.Controls
 
                         foreach(var path in openFileDialog.FileNames)
                         {
-                            this.CopyFiles.Add(new DragAndDropFile(path));
+                            var file = new DragAndDropFile(path);
+                            this.CopyFiles.Add(file);
+
+                            if (this.DropFileCommand.CanExecute(file))
+                                this.DropFileCommand.Execute(file);
                         }
                     }));
             }
@@ -191,6 +248,7 @@ namespace ForRobot.Views.Controls
         public DragAndDropPopup()
         {
             InitializeComponent();
+            //this.DeleteFileCommand = new RelayCommand(obj => { });
         }
 
         #endregion
@@ -199,19 +257,28 @@ namespace ForRobot.Views.Controls
 
         private async void Border_Drop(object sender, DragEventArgs e)
         {
-            await Dispatcher.InvokeAsync(() =>
-            {
-                this.IsAddingFile = false;
-                if (!e.Data.GetDataPresent(DataFormats.FileDrop))
-                    return;
+            this.IsAddingFile = false;
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop))
+                return;
 
-                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-                for (int i = 0; i < files.Length; i++)
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            for (int i = 0; i < files.Length; i++)
+            {
+                await Dispatcher.InvokeAsync(() =>
                 {
-                    if (this.AccopterebulExtension.Any(item => item == Path.GetExtension(files[i])))
-                        this.CopyFiles.Add(new DragAndDropFile(files[i]));
-                }
-            });
+                    if (!this.AccopterebulExtension.Any(item => item == Path.GetExtension(files[i])))
+                        return;
+
+                    var file = new DragAndDropFile(files[i]);
+                    this.CopyFiles.Add(file);
+
+                    if (this.DropFileCommand.CanExecute(file))
+                        DropFileCommand?.Execute(file);
+
+                    if (!file.IsCopy)
+                        this.CopyFiles.Remove(file);
+                });
+            }
         }
 
         private async void Border_DragEnter(object sender, DragEventArgs e) => await Dispatcher.InvokeAsync(() => { this.IsAddingFile = true; });
@@ -233,7 +300,7 @@ namespace ForRobot.Views.Controls
 
         #endregion
 
-        #region Public functions
+        #region Private functions
 
         #endregion
 

@@ -87,16 +87,16 @@ namespace ForRobot.Views.Controls
 
         #endregion
 
-        private static RelayCommand _onSelectFolder;
+        //private static RelayCommand _onSelectFolder;
 
-        private static RelayCommand OnSelectFolder
-        {
-            get
-            {
-                return _onSelectFolder ??
-                    (_onSelectFolder = new RelayCommand(obj =>
-                    {  }));
-            }
-        }
+        //private static RelayCommand OnSelectFolder
+        //{
+        //    get
+        //    {
+        //        return _onSelectFolder ??
+        //            (_onSelectFolder = new RelayCommand(obj =>
+        //            {  }));
+        //    }
+        //}
     }
 }

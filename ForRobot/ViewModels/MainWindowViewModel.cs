@@ -19,6 +19,8 @@ namespace ForRobot.ViewModels
 
         public Page NowPage { get; set; } = new Views.Pages.PageMain2();
 
+        //public Page NowPage { get; set; } = new Views.Pages.PageMain3();
+            
         #endregion
 
         #region Constructor

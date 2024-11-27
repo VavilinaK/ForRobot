@@ -50,6 +50,8 @@ namespace ForRobot
 
         private Views.Windows.MainWindow _mainWindow;
 
+        private Views.Windows.MainWindow2 _mainWindow2;
+
         #endregion
 
         #endregion
@@ -89,6 +91,11 @@ namespace ForRobot
         /// Главное окно
         /// </summary>
         public Views.Windows.MainWindow MainWindowView { get => _mainWindow ?? (_mainWindow = new Views.Windows.MainWindow()); }
+
+        /// <summary>
+        /// Главное окно
+        /// </summary>
+        public Views.Windows.MainWindow2 MainWindowView2 { get => _mainWindow2 ?? (_mainWindow2 = new Views.Windows.MainWindow2()); }
 
         /// <summary>
         /// Окно настроек
@@ -168,6 +175,10 @@ namespace ForRobot
                             this.Logger.Info("Запуск приложения\n");
                             Application.Current.MainWindow = MainWindowView;
                             MainWindowView.Show();
+
+                            //Application.Current.MainWindow = MainWindowView2;
+                            //MainWindowView2.Show();
+
                             GC.KeepAlive(mutex);
                         }
                     }

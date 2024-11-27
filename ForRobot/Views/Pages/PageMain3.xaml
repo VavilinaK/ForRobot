@@ -4,8 +4,10 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ForRobot.Views.Pages"
+      xmlns:vm="clr-namespace:ForRobot.ViewModels"
       mc:Ignorable="d"       
-      d:DesignHeight="800" d:DesignWidth="1500">
+      d:DesignHeight="800" d:DesignWidth="1500"
+      Background="#cfcfcf">
 
     <Page.Title>
         <MultiBinding Converter="{StaticResource StringConvert}" ConverterParameter="Интерфейс - v.{0}">
@@ -13,20 +15,68 @@
         </MultiBinding>
     </Page.Title>
 
+    <Page.DataContext>
+        <vm:MainPageViewModel3/>
+    </Page.DataContext>
+
+    <Page.Resources>
+        <Style TargetType="{x:Type MenuItem}">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="10, 0"/>
+        </Style>
+    </Page.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="25"/>
+            <!--<RowDefinition Height="25"/>-->
         </Grid.RowDefinitions>
 
         <Menu Grid.Row="0">
             <MenuItem Header="_Файл">
-                <MenuItem Header="_Создать" />
-                <MenuItem Header="_Открыть" />
+                <MenuItem Header="_Создать"/>
+                <MenuItem Header="_Открыть"/>
+                <MenuItem Header="_Сохранить"/>
+                <MenuItem Header="_Сохранить как"/>
                 <Separator />
                 <MenuItem Header="_Выход" />
             </MenuItem>
+
+            <MenuItem Header="_Правка">
+                <MenuItem Header="_Отменить"/>
+                <MenuItem Header="_Вернуть"/>
+                <MenuItem Header="_Обновить"/>
+                <MenuItem Header="_Выделить всё"/>
+                <MenuItem Header="_Выделить область"/>
+                <MenuItem Header="_Дублировать выбранное"/>
+                <MenuItem Header="_Удалить"/>
+
+            </MenuItem>
+
+            <MenuItem Header="_Генерация">
+                <MenuItem Header="Начать генерацию"/>
+                <Separator />
+                <MenuItem Header="_Настройки" />
+            </MenuItem>
+
+            <MenuItem Header="_Импорт/Экспорт">
+                <MenuItem Header="_Импорт параметров"/>
+                <MenuItem Header="_Экспорт параметров"/>
+            </MenuItem>
+
+            <MenuItem Header="_Окно">
+                <MenuItem Header="_Расположение"/>
+            </MenuItem>
+
+            <MenuItem Header="_Справка"/>
         </Menu>
+
+        <WrapPanel Grid.Row="1">
+            <StackPanel Orientation="Horizontal">
+                
+            </StackPanel>
+        </WrapPanel>
     </Grid>
 </Page>

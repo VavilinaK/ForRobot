@@ -42,7 +42,6 @@ namespace ForRobot.Model
         private List<ForRobot.Model.Controls.File> FilesCollection = new List<Controls.File>();
 
         private decimal[] _currentArray = new decimal[] { }; // = new decimal[] { 0, 4, 6, 5, 3, -3, -1, 2 }; // Примерные данные
-
         private decimal[] _wireFeedArray = new decimal[] { }; // new decimal[] { 0, 4, 6, 3, 6, -3, -1, 2 }; // Примерные данные
 
         #region Readonly
@@ -77,13 +76,17 @@ namespace ForRobot.Model
         #region Public variables
 
         [JsonIgnore]
+        public const string PathOfTempFolder = @"C:\Windows\Temp";
+        [JsonIgnore]
+        public const string DefaultHost = "0.0.0.0";
+        [JsonIgnore]
+        public const int DefaultPort = 3333;
+
+        [JsonIgnore]
         /// <summary>
         /// JSON-строка для сохранения
         /// </summary>
         public string Json { get => JsonSerializer.Serialize<Robot>(this, options); }
-
-        //[JsonIgnore]
-        //public int ConnectionTimeOut { get; set; }
 
         /// <summary>
         /// Путь к папке с программой
@@ -271,9 +274,9 @@ namespace ForRobot.Model
 
         #endregion
 
-        #region Constructs
+        #region Constructor
 
-        public Robot(string hostname = "0.0.0.0", int port = 0000)
+        public Robot(string hostname = DefaultHost, int port = DefaultPort)
         {
             this.Host = hostname;
             this.Port = port;
@@ -281,33 +284,62 @@ namespace ForRobot.Model
 
         #endregion
 
-        #region Internal functions
+        #region Private function
 
-        internal void LogMessage(string message)
+        private void LogMessage(string message)
         {
             if (string.IsNullOrEmpty(message) || this.Log == null)
-            {
                 return;
-            }
 
             this.Log(this, new LogEventArgs($"{DateTime.Now.ToString("HH:mm:ss")} {this.Host}:{this.Port} " + message + "\n"));
         }
 
-        internal void LogErrorMessage(string message) => this.LogErrorMessage(message, null);
+        private void LogErrorMessage(string message) => this.LogErrorMessage(message, null);
 
-        internal void LogErrorMessage(string message, Exception exception)
+        private void LogErrorMessage(string message, Exception exception)
         {
             if (string.IsNullOrEmpty(message) || this.LogError == null)
-            {
                 return;
-            }
 
             this.LogError(this, new LogErrorEventArgs($"{DateTime.Now.ToString("HH:mm:ss")} {this.Host}:{this.Port} " + message + "\n", exception));
         }
 
-        #endregion
+        /// <summary>
+        /// Начало подключения
+        /// </summary>
+        private void BeginConnect()
+        {
+            try
+            {
+                this.Connection = new JsonRpcConnection(this.Host, this.Port);
+                this.Connection.Log += this.Log;
+                this.Connection.LogError += this.LogError;
+                this.Connection.Connected += (sender, e) => RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
+                this.Connection.Aborted += (sender, e) =>
+                {
+                    this.LogMessage("Соединение разорвано");
+                    RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
+                };
+                this.Connection.Disconnected += (sender, e) => RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
 
-        #region Private function
+                this.LogMessage($"Открытие соединения с сервером . . .");
+                if (this.Connection.Open())
+                    this.LogMessage($"Открыто соединение");
+
+                if (this.IsConnection)
+                {
+                    this._cancelTokenSource = new CancellationTokenSource();
+                    Task.Run(async () => await this.ProgramNameTimeChack(this._cancelTokenSource.Token));
+                    Task.Run(async () => await this.ProStateTimeChack(this._cancelTokenSource.Token));
+                    Task.Run(async () => await this.WeldTimeChack(this._cancelTokenSource.Token));
+                    Task.Run(async () => await this.GetFiles());
+                }
+            }
+            catch (Exception ex)
+            {
+                this.LogErrorMessage(ex.Message, ex);
+            }
+        }
 
         /// <summary>
         /// Сборка дерева файлов
@@ -368,18 +400,11 @@ namespace ForRobot.Model
         /// <returns></returns>
         private async Task ProStateTimeChack(CancellationToken token)
         {
-            try
+            while (this.IsConnection)
             {
-                while (this.IsConnection)
-                {
-                    var task = this.Connection.Process_State();
-                    await Task.WhenAll(new Task[] { Task.Delay(1000, token), task });
-                    this.Pro_State = task.Result;
-                }
-            }
-            catch (Exception ex)
-            {
-                this.LogErrorMessage(ex.Message, ex);
+                var task = this.Connection.Process_State();
+                await Task.WhenAll(new Task[] { Task.Delay(1000, token), task });
+                this.Pro_State = task.Result;
             }
         }
 
@@ -390,18 +415,11 @@ namespace ForRobot.Model
         /// <returns></returns>
         private async Task WeldTimeChack(CancellationToken token)
         {
-            try
+            while (this.IsConnection)
             {
-                while (this.IsConnection)
-                {
-                    var task = this.Connection.In();
-                    await Task.WhenAll(new Task[] { Task.Delay(3000, token), task });
-                    this.ConvertToTelegraf(task.Result.ToArray());
-                }
-            }
-            catch (Exception ex)
-            {
-                this.LogErrorMessage(ex.Message, ex);
+                var task = this.Connection.In();
+                await Task.WhenAll(new Task[] { Task.Delay(3000, token), task });
+                this.ConvertToTelegraf(task.Result.ToArray());
             }
         }
 
@@ -412,18 +430,11 @@ namespace ForRobot.Model
         /// <returns></returns>
         private async Task ProgramNameTimeChack(CancellationToken token)
         {
-            try
+            while (this.IsConnection)
             {
-                while (this.IsConnection)
-                {
-                    var task = this.Connection.Pro_Name();
-                    await Task.WhenAll(new Task[] { Task.Delay(1000, token), task });
-                    this.RobotProgramName = task.Result.Replace("\"", "");
-                }
-            }
-            catch (Exception ex)
-            {
-                this.LogErrorMessage(ex.Message, ex);
+                var task = this.Connection.Pro_Name();
+                await Task.WhenAll(new Task[] { Task.Delay(1000, token), task });
+                this.RobotProgramName = task.Result.Replace("\"", "");
             }
         }
 
@@ -444,50 +455,7 @@ namespace ForRobot.Model
                 RaisePropertyChanged(nameof(this.Files), nameof(this.IsLoadFiles));
             });
         }
-
-        /// <summary>
-        /// Удаление файла по пути
-        /// </summary>
-        /// <param name="pathToFile">Путь файла</param>
-        /// <returns></returns>
-        public async Task DeleteFile(string sPathToFile)
-        {
-            try
-            {
-                switch (this.Pro_State)
-                {
-                    case "#P_RESET":
-                    case "#P_END":
-                        if (!Task.Run<bool>(async () => await this.Connection.SelectCancel()).Result)
-                        {
-                            this.LogErrorMessage("Не удаётся отменить выбор программы");
-                            return;
-                        }
-                        else
-                            this.LogMessage("Текущий выбор отменён");
-
-                        System.Threading.Thread.Sleep(1000);
-                        break;
-
-                    case "#P_ACTIVE":
-                    case "#P_STOP":
-                        this.LogMessage("Отмена удаления: уже запущен процесс!");
-                        return;
-                }
-
-                if (!Task.Run<bool>(async () => await this.Connection.Delet(sPathToFile)).Result)
-                    throw new Exception($"Ошибка удаления файла {sPathToFile}");
-                else
-                    this.LogMessage($"Файл программы {sPathToFile} удалён");
-
-                await this.GetFiles();
-            }
-            catch (Exception ex)
-            {
-                this.LogErrorMessage(ex.Message, ex);
-            }
-        }
-
+        
         #endregion
 
         /// <summary>
@@ -507,38 +475,38 @@ namespace ForRobot.Model
             return string.Empty;
         }
 
-        private void OpenConnection()
-        {
-            try
-            {
-                this.Connection = new JsonRpcConnection(this.Host, this.Port);
-                this.Connection.Log += this.Log;
-                this.Connection.LogError += this.LogError;
-                this.Connection.Connected += (sender, e) => RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
-                this.Connection.Aborted += (sender, e) =>
-                {
-                    this.LogMessage("Соединение разорвано");
-                    RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
-                };
-                this.Connection.Disconnected += (sender, e) => RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
+        //private void OpenConnection()
+        //{
+        //    try
+        //    {
+        //        this.Connection = new JsonRpcConnection(this.Host, this.Port);
+        //        this.Connection.Log += this.Log;
+        //        this.Connection.LogError += this.LogError;
+        //        this.Connection.Connected += (sender, e) => RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
+        //        this.Connection.Aborted += (sender, e) =>
+        //        {
+        //            this.LogMessage("Соединение разорвано");
+        //            RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
+        //        };
+        //        this.Connection.Disconnected += (sender, e) => RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
 
-                this.LogMessage($"Открытие соединения с сервером . . .");
-                if(this.Connection.Open())
-                    this.LogMessage($"Открыто соединение");
+        //        this.LogMessage($"Открытие соединения с сервером . . .");
+        //        if(this.Connection.Open())
+        //            this.LogMessage($"Открыто соединение");
 
-                if (this.IsConnection)
-                {
-                    this._cancelTokenSource = new CancellationTokenSource();
-                    Task.Run(async () => await this.ProgramNameTimeChack(this._cancelTokenSource.Token));
-                    Task.Run(async () => await this.ProStateTimeChack(this._cancelTokenSource.Token));
-                    Task.Run(async () => await this.WeldTimeChack(this._cancelTokenSource.Token));
-                }
-            }
-            catch (Exception ex)
-            {
-                this.LogErrorMessage(ex.Message, ex);
-            }
-        }
+        //        if (this.IsConnection)
+        //        {
+        //            this._cancelTokenSource = new CancellationTokenSource();
+        //            Task.Run(async () => await this.ProgramNameTimeChack(this._cancelTokenSource.Token));
+        //            Task.Run(async () => await this.ProStateTimeChack(this._cancelTokenSource.Token));
+        //            Task.Run(async () => await this.WeldTimeChack(this._cancelTokenSource.Token));
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        this.LogErrorMessage(ex.Message, ex);
+        //    }
+        //}
 
         private void ConvertToTelegraf(char[] data)
         {
@@ -572,14 +540,8 @@ namespace ForRobot.Model
             thread.Join(this._timeout_milliseconds);  // Закроется даже при неудачном подключении.
         }
 
-        protected void BeginConnect()
-        {
-            this.OpenConnection();
-            Task.Run(async () => await this.GetFiles());
-        }
-
         /// <summary>
-        /// Запуск выбранной программы программы
+        /// Запуск выбранной программы
         /// </summary>
         /// <returns></returns>
         public void Run()
@@ -660,9 +622,9 @@ namespace ForRobot.Model
                     }
 
                     if (!Task.Run<bool>(async () => await this.Connection.SelectCancel()).Result)
-                        new Exception("Ошибка аннулирования программы");
+                        throw new Exception("Не удаётся отменить выбор программы");
                     else
-                        this.LogMessage("Программа аннулирована");
+                        this.LogMessage("Текущий выбор программы отменён");
                 }
             }
             catch (Exception ex)
@@ -674,7 +636,44 @@ namespace ForRobot.Model
         /// <summary>
         /// Копирование программы в директорию робота
         /// </summary>
-        /// <param name="sNameProgram">Имя главной программы (без расширения)</param>
+        /// <param name="sPathOnPC">Путь к файлу на ПК</param>
+        /// <param name="sPathOnController">Новый путь на контроллере</param>
+        /// <returns></returns>
+        public bool Copy(string sPathOnPC, string sPathOnController)
+        {
+            try
+            {
+                switch (this.Pro_State)
+                {
+                    case "#P_RESET":
+                    case "#P_END":
+                        this.Cancel();
+                        System.Threading.Thread.Sleep(1000); // Костыль).
+                        break;
+
+                    case "#P_ACTIVE":
+                    case "#P_STOP":
+                        this.LogMessage("Отмена копирования: уже запущен процесс!");
+                        return false;
+                }
+
+                if (Task.Run<bool>(async () => await this.Connection.Copy(sPathOnPC, sPathOnController)).Result)
+                    this.LogMessage($"Файл {sPathOnPC} скопирован в {sPathOnController}");
+                else
+                    throw new Exception($"Ошибка копирования файла {sPathOnPC} в {sPathOnController}");
+            }
+            catch (Exception ex)
+            {
+                this.LogErrorMessage(ex.Message, ex);
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Копирование программы в директорию робота 
+        /// </summary>
+        /// <param name="sNameProgram">Имя главной программы (с расширением)</param>
         /// <returns></returns>
         public bool Copy(string sNameProgram)
         {
@@ -691,14 +690,7 @@ namespace ForRobot.Model
                 {
                     case "#P_RESET":
                     case "#P_END":
-                        if (!Task.Run<bool>(async () => await this.Connection.SelectCancel()).Result)
-                        {
-                            this.LogErrorMessage("Не удаётся отменить выбор программы");
-                            return false;
-                        }
-                        else
-                            this.LogMessage("Текущий выбор отменён");
-
+                        this.Cancel();
                         System.Threading.Thread.Sleep(1000); // Костыль).
                         break;
 
@@ -709,29 +701,18 @@ namespace ForRobot.Model
                 }
 
                 var fileCollection2 = Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameList(this.PathProgramm)).Result;
+
                 foreach (var file in fileCollection2.Keys.Where(i => i.EndsWith(".dat")).ToList<string>())
                 {
-                    if (!Task.Run<bool>(async () => await this.Connection.Copy(Path.Combine(this.PathProgramm, file), Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
-                        throw new Exception($"Ошибка копирования файла {file} в {this.PathControllerFolder}");
-                    else
-                        this.LogMessage($"Файл {file} скопирован ");
+                    this.Copy(Path.Combine(this.PathProgramm, file), Path.Combine(this.PathControllerFolder, file));
                 }
 
-                foreach (var file in fileCollection2.Keys.Where(i => i.EndsWith(".src")).ToList<string>())
+                foreach (var file in fileCollection2.Keys.Where(i => i.EndsWith(".src") && i != sNameProgram).ToList<string>())
                 {
-                    if (!Equals(string.Join("", sNameProgram, ".src"), new FileInfo(file).Name))
-                    {
-                        if (!Task.Run<bool>(async () => await this.Connection.Copy(Path.Combine(this.PathProgramm, file), Path.Combine(this.PathControllerFolder, new FileInfo(file).Name))).Result)
-                            throw new Exception($"Ошибка копирования файла {file} в {this.PathControllerFolder}");
-                        else
-                            this.LogMessage($"Файл {file} скопирован ");
-                    }
+                    this.Copy(Path.Combine(this.PathProgramm, file), Path.Combine(this.PathControllerFolder, file));
                 }
 
-                if (!Task.Run<bool>(async () => await this.Connection.Copy(Path.Combine(this.PathProgramm, $"{sNameProgram}.src"), Path.Combine(this.PathControllerFolder, $"{sNameProgram}.src"))).Result)
-                    throw new Exception($"Ошибка копирования файла {Path.Combine(this.PathProgramm, $"{sNameProgram}.src")} в {this.PathControllerFolder}");
-                else
-                    this.LogMessage($"Файл {Path.Combine(this.PathProgramm, $"{sNameProgram}.src")} скопирован ");
+                this.Copy(Path.Combine(this.PathProgramm, sNameProgram), Path.Combine(this.PathControllerFolder, sNameProgram));
 
                 Task.Run(async () => await this.GetFiles()).Wait();
             }
@@ -744,36 +725,48 @@ namespace ForRobot.Model
         }
 
         /// <summary>
-        /// Копирование на компьютер
+        /// Копирование файла на компьютер
         /// </summary>
-        /// <param name="sNameProgram">Имя главной программы (без расширения)</param>
+        /// <param name="sFilePath">Путь файла</param>
+        /// <param name="sPCPath">Путь на компьютере</param>
+        /// <returns></returns>
+        public bool CopyToPC(string sFilePath, string sPCPath)
+        {
+            try
+            {
+                if (Task.Run<bool>(async () => await Connection.CopyMem2File(sFilePath, sPCPath)).Result)
+                    this.LogMessage($"Содержимое файла {sFilePath} скопировано");
+                else
+                    throw new Exception($"Ошибка копирования содержимого файла {sFilePath} в {sPCPath}");
+            }
+            catch (Exception ex)
+            {
+                this.LogErrorMessage(ex.Message, ex);
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Копирование на компьютер из <see cref="PathProgramm"/>
+        /// </summary>
+        /// <param name="sNameProgram">Имя главной программы (с расширением)</param>
         public bool CopyToPC(string sNameProgram)
         {
             try
             {
                 foreach (var file in Directory.GetFiles(this.PathProgramm, "*.dat"))
                 {
-                    if (!Task.Run<bool>(async () => await this.Connection.CopyMem2File(Path.Combine(this.PathProgramm, new FileInfo(file).Name), Path.Combine(this.PathProgramm, new FileInfo(file).Name))).Result)
-                        throw new Exception($"Ошибка копирования содержимого файла {file} в {Path.Combine(this.PathProgramm, new FileInfo(file).Name)}");
-                    else
-                        this.LogMessage($"Содержимое файла {file} скопировано");
+                    this.CopyToPC(file, file);
                 }
 
-                foreach (var file in Directory.GetFiles(this.PathProgramm, "*.src"))
+                foreach (var file in Directory.GetFiles(this.PathProgramm, "*.src").Where<string>(item => new FileInfo(item).Name != sNameProgram))
                 {
-                    if (!Equals(sNameProgram, new FileInfo(file).Name))
-                    {
-                        if (!Task.Run<bool>(async () => await this.Connection.CopyMem2File(Path.Combine(this.PathProgramm, new FileInfo(file).Name), Path.Combine(this.PathProgramm, new FileInfo(file).Name))).Result)
-                            throw new Exception($"Ошибка копирования содержимого файла {file} в { Path.Combine(this.PathProgramm, new FileInfo(file).Name)}");
-                        else
-                            this.LogMessage($"Содержимое файла {file} скопировано");
-                    }
+                    this.CopyToPC(file, file);
                 }
 
-                if (!Task.Run<bool>(async () => await this.Connection.CopyMem2File(Path.Combine(this.PathProgramm, sNameProgram), Path.Combine(this.PathProgramm, sNameProgram))).Result)
-                    throw new Exception($"Ошибка копирования содержимого файла {sNameProgram}.src в { Path.Combine(this.PathProgramm, sNameProgram)}");
-                else
-                    this.LogMessage($"Содержимое файла {Path.Combine(this.PathProgramm, sNameProgram)} скопировано");
+                string mainProgramPath = Path.Combine(this.PathProgramm, sNameProgram);
+                this.CopyToPC(mainProgramPath, mainProgramPath);
             }
             catch (Exception ex)
             {
@@ -791,12 +784,12 @@ namespace ForRobot.Model
         {
             try
             {
-                if (string.IsNullOrEmpty(this.SearchPath(sProgramName)))
-                {
-                    this.LogErrorMessage($"Не найдена директория файла {sProgramName}!");
-                    return;
-                }
-                this.SelectProgramByPath(this.SearchPath(sProgramName));
+                string path = this.SearchPath(sProgramName);
+
+                if (string.IsNullOrEmpty(path))
+                    throw new Exception($"Не найдена директория файла {sProgramName}!");
+
+                this.SelectProgramByPath(path);
             }
             catch (Exception ex)
             {
@@ -816,14 +809,7 @@ namespace ForRobot.Model
                 {
                     case "#P_RESET":
                     case "#P_END":
-                        if (!Task.Run<bool>(async () => await this.Connection.SelectCancel()).Result)
-                        {
-                            this.LogErrorMessage("Не удаётся отменить выбор программы");
-                            return;
-                        }
-                        else
-                            this.LogMessage("Текущий выбор отменён");
-
+                        this.Cancel();
                         System.Threading.Thread.Sleep(1000);
                         break;
 
@@ -845,19 +831,56 @@ namespace ForRobot.Model
                 this.LogErrorMessage(ex.Message, ex);
             }
         }
+        
+        /// <summary>
+        /// Удаление файла с контроллера по пути
+        /// </summary>
+        /// <param name="sPathToFile">Путь к файлу</param>
+        /// <returns></returns>
+        public bool DeleteFile(string sPathToFile)
+        {
+            try
+            {
+                switch (this.Pro_State)
+                {
+                    case "#P_RESET":
+                    case "#P_END":
+                        this.Cancel();
+                        System.Threading.Thread.Sleep(1000);
+                        break;
+
+                    case "#P_ACTIVE":
+                    case "#P_STOP":
+                        this.LogMessage("Отмена удаления: уже запущен процесс!");
+                        return false;
+                }
+
+                if (!Task.Run<bool>(async () => await this.Connection.Delet(sPathToFile)).Result)
+                    throw new Exception($"Ошибка удаления файла {sPathToFile}");
+                else
+                    this.LogMessage($"Файл программы {sPathToFile} удалён");
+                Task.Run(async () => await this.GetFiles()).Wait();
+            }
+            catch (Exception ex)
+            {
+                this.LogErrorMessage(ex.Message, ex);
+                return false;
+            }
+            return true;
+        }
 
         /// <summary>
         /// Удаление файлов программы на ПК
         /// </summary>
-        public bool DeleteProgramOnPC()
+        /// <param name="sPathOnFile">Путь к папке, из которой удаляются файлы</param>
+        /// <returns></returns>
+        public bool DeleteFileOnPC(string sPathOnFolder)
         {
             try
             {
-                Dictionary<String, String> files = Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameList(this.PathProgramm)).Result;
-
+                Dictionary<String, String> files = Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameList(sPathOnFolder)).Result;
                 if (files.Count <= 0)
-                    throw new Exception($"Не удалось найти папку {this.PathProgramm} или она пустая");
-
+                    throw new Exception($"Не удалось найти папку {sPathOnFolder} или она пустая");
                 foreach (var file in files.Keys)
                 {
                     if (!Task.Run<bool>(async () => await this.Connection.Delet(Path.Combine(this.PathProgramm, file))).Result)
@@ -866,14 +889,31 @@ namespace ForRobot.Model
                         this.LogMessage($"Файл {file} удалён");
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                this.LogErrorMessage(e.Message, e);
+                this.LogErrorMessage(ex.Message, ex);
                 return false;
             }
             return true;
         }
 
+        /// <summary>
+        /// Удаление файлов на ПК из папки выбранной для генерации
+        /// </summary>
+        public bool DeleteFileOnPC()
+        {
+            try
+            {
+                this.DeleteFileOnPC(this.PathProgramm);
+            }
+            catch (Exception ex)
+            {
+                this.LogErrorMessage(ex.Message, ex);
+                return false;
+            }
+            return true;
+        }
+        
         #endregion
 
         #region Implementations of IDisposable

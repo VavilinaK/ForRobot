@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ForRobot.Views.Controls"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:model="clr-namespace:ForRobot.Model.Controls"
              mc:Ignorable="d">
 
@@ -38,6 +39,15 @@
                 <DrawingGroup>
                     <GeometryDrawing Brush="Black"
                                      Geometry="M 26.204116796875 8.261261718750001 18.552580078124997 0.609725c-0.20516367187499998 -0.20493710937499998 -0.48335976562499994 -0.31995156249999995 -0.7733484375 -0.319725H4.662305078125c-1.20741953125 -0.000056640625 -2.186146875 0.9787386718750001 -2.186146875 2.186158203125v24.047683593749998c0 1.20741953125 0.9787273437499999 2.1862148437499997 2.186146875 2.186158203125h19.67538984375c1.20741953125 0.000056640625 2.186146875 -0.9787386718750001 2.186146875 -2.186158203125V9.034621484375c0.0002265625 -0.29 -0.11478789062500001 -0.568184765625 -0.319725 -0.773359765625Zm-7.33181171875 12.7972015625H10.127694921875c-0.841453125 -0.0000453125 -1.3673726562500002 -0.9109625000000001 -0.946612109375 -1.63965546875 0.195262890625 -0.338178515625 0.556108984375 -0.546502734375 0.946612109375 -0.546502734375h8.74461015625c0.841453125 0 1.3673613281249999 0.9108945312500001 0.946634765625 1.639621484375 -0.1952515625 0.338178515625 -0.556131640625 0.5465140625 -0.946634765625 0.54653671875Zm0 -4.372305078125H10.127694921875c-0.841453125 -0.0000453125 -1.3673726562500002 -0.9109625000000001 -0.946612109375 -1.6396667968749998C9.376345703125 14.70832421875 9.737191796875 14.5 10.127694921875 14.5h8.74461015625c0.841453125 0 1.3673613281249999 0.9108945312500001 0.946634765625 1.63961015625 -0.1952515625 0.33818984375 -0.556131640625 0.5465253906249999 -0.946634765625 0.546548046875Zm-1.0930734375 -7.65153671875V3.022694921875l6.0119265625 6.0119265625Z"/>
+                </DrawingGroup>
+            </DrawingImage.Drawing>
+        </DrawingImage>
+
+        <DrawingImage x:Key="DeletedFileImage">
+            <DrawingImage.Drawing>
+                <DrawingGroup>
+                    <GeometryDrawing Brush="Black"
+                                     Geometry="M352 192V95.936a32 32 0 0 1 32-32h256a32 32 0 0 1 32 32V192h256a32 32 0 1 1 0 64H96a32 32 0 0 1 0-64h256zm64 0h192v-64H416v64zM192 960a32 32 0 0 1-32-32V256h704v672a32 32 0 0 1-32 32H192zm224-192a32 32 0 0 0 32-32V416a32 32 0 0 0-64 0v320a32 32 0 0 0 32 32zm192 0a32 32 0 0 0 32-32V416a32 32 0 0 0-64 0v320a32 32 0 0 0 32 32z"/>
                 </DrawingGroup>
             </DrawingImage.Drawing>
         </DrawingImage>
@@ -98,7 +108,8 @@
 
                     <ProgressBar Grid.RowSpan="2"
                                  Panel.ZIndex="1" Background="Transparent" BorderThickness="0"
-                                 Foreground="{DynamicResource  {x:Static SystemColors.HotTrackBrushKey}}"
+                                 Foreground="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}"
+                                 Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type Grid}, Mode=FindAncestor}}"
                                  Minimum="0" Maximum="100" IsIndeterminate="True">
 
                         <ProgressBar.Style>
@@ -108,6 +119,10 @@
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Path=IsCopy}" Value="False">
                                         <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+
+                                    <DataTrigger Binding="{Binding Path=IsCopy}" Value="True">
+                                        <Setter Property="Visibility" Value="Hidden"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -127,6 +142,10 @@
                                     <DataTrigger Binding="{Binding Path=Type}" Value="{x:Static model:FileTypes.DataList}">
                                         <Setter Property="Source" Value="{DynamicResource DataFileImage}"/>
                                     </DataTrigger>
+
+                                    <DataTrigger Binding="{Binding Path=IsDelete}" Value="True">
+                                        <Setter Property="Source" Value="{DynamicResource DeletedFileImage}"/>
+                                    </DataTrigger>
                                 </Style.Triggers>
                             </Style>
                         </Image.Style>
@@ -138,6 +157,13 @@
                                                Text="{Binding Path=FullName}"/>
                     </Label>
                 </Grid>
+
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseDoubleClick">
+                        <i:InvokeCommandAction Command="{Binding Path=DeleteFileCommand, RelativeSource={RelativeSource AncestorType={x:Type local:DragAndDropPopup}, Mode=FindAncestor}}" 
+                                               CommandParameter="{Binding}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
             </Button>
         </ControlTemplate>
 
@@ -161,6 +187,7 @@
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
                                             <Condition Binding="{Binding Path=IsCopy}" Value="True"/>
+                                            <Condition Binding="{Binding Path=IsDelete}" Value="False"/>
                                             <Condition Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type Button}, Mode=FindAncestor}}" Value="True"/>
                                         </MultiDataTrigger.Conditions>
                                         
@@ -238,6 +265,12 @@
                 Drop="Border_Drop"
                 DragEnter="Border_DragEnter"
                 DragLeave="Border_DragLeave">
+
+            <!--<i:Interaction.Triggers>
+                <i:EventTrigger EventName="Border_Drop">
+                    <i:InvokeCommandAction Command="{Binding Path=DropFileCommand, RelativeSource={RelativeSource AncestorType={x:Type local:DragAndDropPopup}, Mode=FindAncestor}}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>-->
 
             <Grid>
                 <ListBox Background="Transparent" BorderBrush="Transparent" BorderThickness="0"

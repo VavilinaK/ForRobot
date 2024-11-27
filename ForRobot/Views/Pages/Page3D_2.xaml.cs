@@ -132,10 +132,10 @@ namespace ForRobot.Views.Pages
             {
                 this._process.OutputDataReceived += (s, e) =>
                 {
-                    if (e.Data?.Length > 0)
-                    {
-                        MessageBox.Show("Из дочернего интерфейса", e.Data);
-                    }
+                    //if (e.Data?.Length > 0)
+                    //{
+                    //    MessageBox.Show("Из дочернего интерфейса", e.Data);
+                    //}
 
                     if (e.Data?.Length > 0 && e.Data == "<done>") // Из оболочки для модели
                     {

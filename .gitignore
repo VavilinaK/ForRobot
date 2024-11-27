@@ -261,3 +261,9 @@ __pycache__/
 *.pyc
 /py_gen/CQ-editor-Windows/CQ-editor.cmd
 /py_gen/CQ-editor-Windows/CQ-editor
+/Вспомогательная документация/Учебники
+/Вспомогательная документация/Doc.odt
+/Вспомогательная документация/.~lock.Doc.odt#
+/Вспомогательная документация/Команды на сервер.txt
+/Вспомогательная документация/Rebuild an iOS-style TreeView custom control using WPF- CodeProject_files
+/Вспомогательная документация

@@ -1038,5 +1038,189 @@
             </DataTrigger>-->
         </Style.Triggers>
     </Style>
+
+
+    <Style x:Key="WindowStyle" TargetType="{x:Type Window}">
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="WindowChrome.WindowChrome">
+            <Setter.Value>
+                <WindowChrome NonClientFrameEdges="Right" ResizeBorderThickness="{x:Static SystemParameters.WindowResizeBorderThickness}" />
+            </Setter.Value>
+        </Setter>
+        
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Window}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        
+                        <Grid Background="Transparent">
+                            <AdornerDecorator>
+                                <Border Background="Transparent" Margin="{x:Static SystemParameters.WindowNonClientFrameThickness}">
+                                    <ContentPresenter Content="{TemplateBinding Content}"/>
+                                </Border>
+                            </AdornerDecorator>
+
+                            <!--<ResizeGrip x:Name="WindowResizeGrip"
+                          HorizontalAlignment="Right"
+                          VerticalAlignment="Bottom"
+                          Visibility="Collapsed"
+                          IsTabStop="false" />
+                            <Grid Height="{Binding Source={x:Static SystemParameters.WindowNonClientFrameThickness}, Path=Top}"
+                    Background="#FF3F3F3F"
+                    VerticalAlignment="Top">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                --><!-- Custom window chrome --><!--
+                                <StackPanel Grid.Column="0" Orientation="Horizontal"
+                            Margin="{x:Static SystemParameters.WindowResizeBorderThickness}">
+                                    <Image Source="{TemplateBinding Icon}" />
+                                    <TextBlock Text="{TemplateBinding Title}"
+                             TextTrimming="CharacterEllipsis"
+                             VerticalAlignment="Center"
+                             Margin="16,0" />
+                                    --><!--<Menu shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                                        <MenuItem Header="CustomChromeMenu">
+                                            <MenuItem Header="Action" />
+                                        </MenuItem>
+                                    </Menu>--><!--
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Right">
+                                    --><!--<Button Width="45"
+                          Height="{Binding Source={x:Static SystemParameters.WindowNonClientFrameThickness}, Path=Top}"
+                          ToolTip="Minimize window"
+                          ToolTipService.ShowDuration="5000"
+                          shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                                        <TextBlock Foreground="{Binding RelativeSource={RelativeSource AncestorType=Control}, Path=Foreground}"
+               FontFamily="Segoe MDL2 Assets"
+               FontSize="11"
+               Text="&#xE921;" />
+                                    </Button>
+                                    <Button ToolTip="Maximize window"
+                          Width="45"
+                          Height="{Binding Source={x:Static SystemParameters.WindowNonClientFrameThickness}, Path=Top}"
+                          ToolTipService.ShowDuration="5000"
+                          shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                                        <TextBlock Foreground="{Binding RelativeSource={RelativeSource AncestorType=Control}, Path=Foreground}"
+               FontFamily="Segoe MDL2 Assets"
+               FontSize="11"
+               Text="&#xE922;" />
+                                    </Button>
+                                    <Button ToolTip="Close application"
+                          ToolTipService.ShowDuration="5000"
+                          Width="50"
+                          Height="{Binding Source={x:Static SystemParameters.WindowNonClientFrameThickness}, Path=Top}"
+                          shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                                        <TextBlock Foreground="{Binding RelativeSource={RelativeSource AncestorType=Control}, Path=Foreground}"
+               FontFamily="Segoe MDL2 Assets"
+               FontSize="11"
+               Text="&#xE8BB;" />
+                                    </Button>--><!--
+                                </StackPanel>
+                            </Grid>-->
+
+                            <Grid VerticalAlignment="Top">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <Image Grid.Column="0" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Icon}"
+                                   VerticalAlignment="Center" HorizontalAlignment="Left"
+                                   Margin="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(WindowChrome.WindowChrome).ResizeBorderThickness}"
+                                   Height="{Binding Source={x:Static SystemParameters.IconHeight}, Path=.}"
+                                   Width="{Binding Source={x:Static SystemParameters.IconWidth}, Path=.}"
+                                   WindowChrome.IsHitTestVisibleInChrome="True"/>
+
+                                <Menu Grid.Column="1"
+                                      Background="Transparent"
+                                      Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type Grid}, Mode=FindAncestor}}"
+                                      VerticalContentAlignment="Center">
+
+                                    <Menu.Resources>
+                                        <Style x:Key="FirstMenuItemStyle" TargetType="{x:Type MenuItem}">
+                                            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+                                            <Setter Property="Height" Value="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type Menu}, Mode=FindAncestor}}"/>
+
+                                            <!--<Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="{x:Type MenuItem}">
+                                                        <Border x:Name="Border">
+                                                            <Grid>
+                                                                <ContentPresenter ContentSource="Header" Margin="5" RecognizesAccessKey="True" VerticalAlignment="Center"/>
+                                                                --><!--<Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsSubmenuOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Fade">
+                                                                    <Border x:Name="SubmenuBorder" SnapsToDevicePixels="True" BorderThickness="2" Background="#3c3c3c">
+                                                                        <Border.BorderBrush>
+                                                                            <SolidColorBrush Color="#868686" />
+                                                                        </Border.BorderBrush>
+                                                                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle" />
+                                                                    </Border>
+                                                                </Popup>--><!--
+                                                            </Grid>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>-->
+                                        </Style>
+                                    </Menu.Resources>
+
+                                    <MenuItem Header="_Файл" Style="{StaticResource FirstMenuItemStyle}">
+                                        <MenuItem Header="_Создать"/>
+                                        <MenuItem Header="_Открыть"/>
+                                        <MenuItem Header="_Сохранить"/>
+                                        <MenuItem Header="_Сохранить как"/>
+                                        <Separator />
+                                        <MenuItem Header="_Настройки" />
+                                        <Separator />
+                                        <MenuItem Header="_Выход" />
+                                    </MenuItem>
+
+                                    <MenuItem Header="_Правка" Style="{StaticResource FirstMenuItemStyle}">
+                                        <MenuItem Header="_Отменить"/>
+                                        <MenuItem Header="_Вернуть"/>
+                                        <MenuItem Header="_Обновить"/>
+                                        <MenuItem Header="_Выделить всё"/>
+                                        <MenuItem Header="_Выделить область"/>
+                                        <MenuItem Header="_Дублировать выбранное"/>
+                                        <MenuItem Header="_Удалить"/>
+
+                                    </MenuItem>
+
+                                    <MenuItem Header="_Генерация" Style="{StaticResource FirstMenuItemStyle}">
+                                        <MenuItem Header="Начать генерацию"/>
+                                    </MenuItem>
+
+                                    <MenuItem Header="_Импорт/Экспорт" Style="{StaticResource FirstMenuItemStyle}">
+                                        <MenuItem Header="_Импорт параметров"/>
+                                        <MenuItem Header="_Экспорт параметров"/>
+                                    </MenuItem>
+
+                                    <MenuItem Header="_Окно" Style="{StaticResource FirstMenuItemStyle}">
+                                        <MenuItem Header="_Расположение"/>
+                                    </MenuItem>
+
+                                    <MenuItem Header="_Справка" Style="{StaticResource FirstMenuItemStyle}"/>
+                                </Menu>
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    
+                    <!--<ControlTemplate.Triggers>
+                        <Trigger Property="ResizeMode" Value="CanResizeWithGrip">
+                            <Setter TargetName="WindowResizeGrip" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>-->
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
    
 </ResourceDictionary>  

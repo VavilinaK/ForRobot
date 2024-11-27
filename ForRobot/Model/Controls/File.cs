@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace ForRobot.Model.Controls
 {
@@ -14,13 +14,8 @@ namespace ForRobot.Model.Controls
         public string Name { get; set; }
         public string Path { get; set; }
 
-        public bool IsExpanded
-        {
-            get => this._isExpanded;
-            set => Set(ref this._isExpanded, value);
-        }
-
         public bool IncludeFileChildren { get => this.Children.Count() != 0; }
+        public bool IsExpanded { get => this._isExpanded; set => Set(ref this._isExpanded, value); }
 
         public FileTypes Type
         {
@@ -42,7 +37,6 @@ namespace ForRobot.Model.Controls
                 }
             }
         }
-
         public FileFlags Flag { get; set; } = FileFlags.None;
 
         public ObservableCollection<IFile> Children

@@ -116,8 +116,12 @@ namespace ForRobot.ViewModels
 
         private RelayCommand _propertiesCommand;
 
+        private RelayCommand _deleteDropFileCommand;
+
 
         private IAsyncCommand _generateProgramCommand;
+
+        private RelayCommand _dropFilesCommand;
 
         private IAsyncCommand _runProgramCommand;
 
@@ -311,13 +315,6 @@ namespace ForRobot.ViewModels
                 return new ObservableCollection<string>(DescriptionList);
             }
         }
-
-        //private ObservableCollection<Tuple<string, string>> _weldingSchema = new ObservableCollection<Tuple<string, string>>();
-        //public ObservableCollection<Tuple<string, string>> WeldingSchema
-        //{
-        //    get => this._weldingSchema;
-        //    set => this._weldingSchema = value;
-        //}
 
         /// <summary>
         /// Коллекция роботов (вкладка "Свойства")
@@ -630,7 +627,7 @@ namespace ForRobot.ViewModels
         }
 
         /// <summary>
-        /// Открытие окна настроик
+        /// Открытие окна настроек
         /// </summary>
         public RelayCommand PropertiesCommand
         {
@@ -647,6 +644,51 @@ namespace ForRobot.ViewModels
                             App.Current.PropertiesWindow.Show();
                         }
                     }));
+            }
+        }
+
+        /// <summary>
+        /// Удаление переданного на робота/ов файла
+        /// </summary>
+        public RelayCommand DeleteDropFileCommand
+        {
+            get
+            {
+                //return _deleteDropFileCommand ??
+                //    (_deleteDropFileCommand = new AsyncRelayCommand(async obj =>
+                //    {
+                //        var file = obj as ForRobot.Views.Controls.DragAndDropFile;
+                //        if (this.SelectedNameRobot == "Все")
+                //            foreach (var robot in this.RobotsCollection.Select(item => item.Item2))
+                //            {
+                //                await robot.GetFiles();
+                //                await Task.Run(() => robot.DeleteFile(robot.Files.Where(item => item.Search(file.FullName) != null).First().Search(file.FullName).Path));
+                //            }
+                //        else
+                //        {
+                //            await this.RobotForControl.GetFiles();
+                //            await Task.Run(() => this.RobotForControl.DeleteFile(this.RobotForControl.Files.Where(item => item.Search(file.FullName) != null).First().Search(file.FullName).Path));
+                //        }
+                //    }, _exceptionCallback));
+
+                return _deleteDropFileCommand ?? (_deleteDropFileCommand = new RelayCommand(obj =>
+                {
+                    var file = obj as ForRobot.Views.Controls.DragAndDropFile;
+                    if (this.SelectedNameRobot == "Все")
+                    {
+                        foreach (var robot in this.RobotsCollection.Select(item => item.Item2))
+                        {
+                            Task.Run(async () => await robot.GetFiles()).Wait();
+                            robot.DeleteFile(Path.Combine(ForRobot.Libr.Client.JsonRpcConnection.DefaulRoot, robot.Files.Where(item => item.Search(file.FullName) != null).First().Search(file.FullName).Path));
+                        }
+                        file.IsDelete = true;
+                    }
+                    else if (this.RobotForControl.IsConnection)
+                    {
+                        Task.Run(async () => await this.RobotForControl.GetFiles()).Wait();
+                        this.RobotForControl.DeleteFile(Path.Combine(ForRobot.Libr.Client.JsonRpcConnection.DefaulRoot, this.RobotForControl.Files.Where(item => item.Search(file.FullName) != null).First().Search(file.FullName).Path));
+                    }
+                }));
             }
         }
 
@@ -713,7 +755,7 @@ namespace ForRobot.ViewModels
                                         return;
                                     }
 
-                                    await Task.Run<bool>(() => robot.Item2.DeleteProgramOnPC());
+                                    await Task.Run<bool>(() => robot.Item2.DeleteFileOnPC());
 
                                     if (!await Task.Run<bool>(() => robot.Item2.CopyToPC(string.Join("", this.ProgrammName, ".src"))))
                                         continue;
@@ -731,7 +773,7 @@ namespace ForRobot.ViewModels
 
                                             foreach(var child in folder.Children.Where(f => f.Type == Model.Controls.FileTypes.DataList || f.Type == Model.Controls.FileTypes.Program))
                                             {
-                                                await robot.Item2.DeleteFile(Path.Combine(ForRobot.Libr.Client.JsonRpcConnection.DefaulRoot, child.Path));
+                                                 await Task.Run(() => robot.Item2.DeleteFile(Path.Combine(ForRobot.Libr.Client.JsonRpcConnection.DefaulRoot, child.Path)));
                                             }
                                         }
                                     }
@@ -752,7 +794,7 @@ namespace ForRobot.ViewModels
                                     return;
                                 }
 
-                                await Task.Run<bool>(() => this.RobotForControl.DeleteProgramOnPC());
+                                await Task.Run<bool>(() => this.RobotForControl.DeleteFileOnPC());
 
                                 if (!await Task.Run<bool>(() => this.RobotForControl.CopyToPC(string.Join("", this.ProgrammName, ".src"))))
                                     return;
@@ -770,7 +812,7 @@ namespace ForRobot.ViewModels
 
                                         foreach (var child in folder.Children.Where(f => f.Type == Model.Controls.FileTypes.DataList || f.Type == Model.Controls.FileTypes.Program))
                                         {
-                                            await this.RobotForControl.DeleteFile(Path.Combine(ForRobot.Libr.Client.JsonRpcConnection.DefaulRoot, child.Path));
+                                            await Task.Run(() => this.RobotForControl.DeleteFile(Path.Combine(ForRobot.Libr.Client.JsonRpcConnection.DefaulRoot, child.Path)));
                                         }
                                     }
                                 }
@@ -790,6 +832,96 @@ namespace ForRobot.ViewModels
                             App.Current.Logger.Error(e.Message, e);
                         }
                     }, _exceptionCallback));
+            }
+        }
+
+        /// <summary>
+        /// Команда отправки файлов на робота/ов
+        /// </summary>
+        public RelayCommand DropFilesCommand
+        {
+            get
+            {
+                return _dropFilesCommand ??
+                  (_dropFilesCommand = new RelayCommand(obj =>
+                  {
+                      var file = obj as ForRobot.Views.Controls.DragAndDropFile;
+                      string fileName = Path.GetFileName(file.OldPath);
+                      string tempFile = Path.Combine(Robot.PathOfTempFolder, fileName);
+
+                      if (this.SelectedNameRobot == "Все")
+                          foreach (var robot in this.RobotsCollection.Select(item => item.Item2))
+                          {
+                              //string fileName = Path.GetFileName(file.OldPath);
+                              //string tempFile = Path.Combine(Robot.PathOfTempFolder, fileName);
+
+                              if (!robot.CopyToPC(file.OldPath, tempFile))
+                                  return;
+
+                              if (!robot.Copy(tempFile, Path.Combine(robot.PathControllerFolder, fileName)))
+                                  return;
+
+                              file.IsCopy = true;
+                              Task.Run(async () => await robot.GetFiles()).Wait();
+                          }
+                  }));
+
+                //return _dropFilesCommand ??
+                //    (_dropFilesCommand = new AsyncRelayCommand(async obj =>
+                //    {
+                //        var file = obj as ForRobot.Views.Controls.DragAndDropFile;
+                //        string fileName = Path.GetFileName(file.OldPath);
+                //        string tempFile = Path.Combine(Robot.PathOfTempFolder, fileName);
+
+                //        if (this.SelectedNameRobot == "Все")
+                //            foreach (var robot in this.RobotsCollection.Select(item => item.Item2))
+                //            {
+                //                //await Task.Run(() =>
+                //                //{
+                //                //    string fileName = Path.GetFileName(file.OldPath);
+                //                //    string tempFile = Path.Combine(Robot.PathOfTempFolder, fileName);
+
+                //                //    if (!robot.CopyToPC(file.OldPath, tempFile))
+                //                //        return;
+
+                //                //    if (!robot.Copy(tempFile, Path.Combine(robot.PathControllerFolder, fileName)))
+                //                //        return;
+
+                //                //    file.IsCopy = true;
+                //                //});
+
+                //                if (!robot.CopyToPC(file.OldPath, tempFile))
+                //                    return;
+
+                //                if (!robot.Copy(tempFile, Path.Combine(robot.PathControllerFolder, fileName)))
+                //                    return;
+
+                //                file.IsCopy = true;
+                //                await robot.GetFiles();
+                //            }
+                //        else if (this.RobotForControl.IsConnection)
+                //        {
+                //            if (!this.RobotForControl.CopyToPC(file.OldPath, tempFile))
+                //                return;
+
+                //            if (!this.RobotForControl.Copy(tempFile, Path.Combine(this.RobotForControl.PathControllerFolder, fileName)))
+                //                return;
+
+                //            file.IsCopy = true;
+                //            await this.RobotForControl.GetFiles();
+                //        }
+                //        //else 
+                //        //if (this.RobotForControl.Pro_State == "#P_RESET" && System.Windows.MessageBox.Show($"Запустить программу {this.RobotForControl.RobotProgramName}?",
+                //        //                                                                                   $"{this.SelectedNameRobot}", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK,
+                //        //                                                                                   System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK ||
+                //        //    this.RobotForControl.Pro_State == "#P_END" && System.Windows.MessageBox.Show($"Перезапустить программу {this.RobotForControl.RobotProgramName}?",
+                //        //                                                                                 $"{this.SelectedNameRobot}", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK,
+                //        //                                                                                 System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK ||
+                //        //    this.RobotForControl.Pro_State == "#P_STOP")
+                //        //{
+                //        //    await Task.Run(() => this.RobotForControl.Run());
+                //        //}
+                //    }, _exceptionCallback));
             }
         }
 
@@ -912,7 +1044,7 @@ namespace ForRobot.ViewModels
         }
 
         /// <summary>
-        /// Удаление узла
+        /// Удаление узла в деревен навигации
         /// </summary>
         public IAsyncCommand DeleteFileCommand
         {
@@ -922,7 +1054,8 @@ namespace ForRobot.ViewModels
                     (_deleteFileCommand = new AsyncRelayCommand(async obj =>
                     {
                         string sFilePath = obj as string;
-                        await this.SelectedRobot.Item2.DeleteFile(Path.Combine(ForRobot.Libr.Client.JsonRpcConnection.DefaulRoot, sFilePath));
+                        await Task.Run(() => this.SelectedRobot.Item2.DeleteFile(Path.Combine(ForRobot.Libr.Client.JsonRpcConnection.DefaulRoot, sFilePath)));
+                        await this.SelectedRobot.Item2.GetFiles();
                     }, _exceptionCallback));
             }
         }
@@ -1031,6 +1164,24 @@ namespace ForRobot.ViewModels
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void SelectAppLogger(object sender, LogEventArgs e) => this.Logger = ((ForRobot.App)sender).LoggerString;
+
+        ///// <summary>
+        ///// Отправка на файлов на ПК робота
+        ///// </summary>
+        ///// <param name="robot"></param>
+        //private bool FileToPC(Robot robot)
+        //{
+        //    try
+        //    {
+
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        this.LogErrorMessage(ex.Message, ex);
+        //        return false;
+        //    }
+        //    return true;
+        //}
 
         #region Deserialize Properties
 
