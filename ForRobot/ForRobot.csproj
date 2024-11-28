@@ -234,9 +234,6 @@
     <Compile Include="Views\Controls\Breadcrumb.xaml.cs">
       <DependentUpon>Breadcrumb.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Controls\DragAndDropPopup.xaml.cs">
-      <DependentUpon>DragAndDropPopup.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Pages\Page3D_2.xaml.cs">
       <DependentUpon>Page3D_2.xaml</DependentUpon>
     </Compile>
@@ -262,10 +259,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\Breadcrumb.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Controls\DragAndDropPopup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -7,14 +7,24 @@ namespace ForRobot.Model.Controls
 {
     public class File : BaseClass, IFile
     {
+        #region Private variables
+
+        private bool _isCheck = false;
+        private bool _isCopy = false;
         private bool _isExpanded = true;
 
-        protected ObservableCollection<IFile> _children = new ObservableCollection<IFile>();
-        
+        private ObservableCollection<IFile> _children = new ObservableCollection<IFile>();
+
+        #endregion
+
+        #region Public variables
+
         public string Name { get; set; }
         public string Path { get; set; }
 
         public bool IncludeFileChildren { get => this.Children.Count() != 0; }
+        public bool IsCheck { get => this._isCheck; set => Set(ref this._isCheck, value); }
+        public bool IsCopy { get => this._isCopy; set => Set(ref this._isCopy, value); }
         public bool IsExpanded { get => this._isExpanded; set => Set(ref this._isExpanded, value); }
 
         public FileTypes Type
@@ -45,21 +55,20 @@ namespace ForRobot.Model.Controls
             set => Set(ref this._children, value);
         }
 
+        #endregion
+
+        #region Constructors
+
         public File() { }
 
         public File(string path)
         {
             this.Path = path;
-            this.Name = this.Path.Split(new char[] { '\\' }).Last() != string.Empty ? this.Path.Split(new char[] { '\\' }).Last()
-                : this.Path.Split(new char[] { '\\' })[this.Path.Split(new char[] { '\\' }).Count() - 2];
+            this.Name = System.IO.Path.GetFileName(path);
         }
 
-        public File(string path, string inf)
+        public File(string path, string inf) : this(path)
         {
-            this.Path = path;
-            this.Name = this.Path.Split(new char[] { '\\' }).Last() != string.Empty ? this.Path.Split(new char[] { '\\' }).Last() 
-                : this.Path.Split(new char[] { '\\' })[this.Path.Split(new char[] { '\\' }).Count() - 2];
-
             switch (inf.Split(new char[] { ';' }).First())
             {
                 case "RVO":
@@ -92,6 +101,10 @@ namespace ForRobot.Model.Controls
             }
         }
 
+        #endregion
+
+        #region Prublic function
+
         public File Search(string nameToSearchFor)
         {
             Queue<File> Q = new Queue<File>();
@@ -115,5 +128,7 @@ namespace ForRobot.Model.Controls
             }
             return null;
         }
+
+        #endregion
     }
 }

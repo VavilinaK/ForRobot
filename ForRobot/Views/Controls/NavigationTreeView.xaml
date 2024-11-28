@@ -27,10 +27,16 @@
                             <Grid Margin="0, 5" VerticalAlignment="Stretch">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <Path Grid.Column="0" Margin="5, 0">
+                                <Viewbox Grid.Column="0" Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type Grid}, Mode=FindAncestor}}"
+                                             HorizontalAlignment="Left" VerticalAlignment="Center">
+                                    <CheckBox IsChecked="{Binding Path=IsCheck, Mode=TwoWay}" Margin="0, 5"/>
+                                </Viewbox>
+
+                                <Path Grid.Column="1" Margin="5, 0">
                                     <Path.Style>
                                         <Style TargetType="{x:Type Path}">
                                             <Style.Triggers>
@@ -58,8 +64,21 @@
                                     </Path.Style>
                                 </Path>
 
-                                <TextBlock Grid.Column="1" Margin="5, 0" Text="{Binding Name, Mode=OneTime}"
-                                           TextAlignment="Left" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="2" Margin="5, 0" Text="{Binding Name, Mode=OneTime}"
+                                               TextAlignment="Left" VerticalAlignment="Center">
+                                    <TextBlock.Style>
+                                        <Style TargetType="{x:Type TextBlock}">
+                                            <Setter Property="Foreground" Value="Black"/>
+
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=IsCopy}" Value="True">
+                                                    <Setter Property="Foreground" Value="#FF0C2595"/>
+                                                    <Setter Property="FontWeight" Value="Bold"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
                             </Grid>
 
                             <Button.Style>

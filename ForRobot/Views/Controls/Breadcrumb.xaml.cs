@@ -128,6 +128,18 @@ namespace ForRobot.Views.Controls
             set { SetValue(UpDateCommandProperty, value); }
         }
 
+        public IAsyncCommand SelectFilesCommand
+        {
+            get { return (IAsyncCommand)GetValue(SelectFilesCommandProperty); }
+            set { SetValue(SelectFilesCommandProperty, value); }
+        }
+
+        public IAsyncCommand DeleteFilesCommand
+        {
+            get { return (IAsyncCommand)GetValue(DeleteFilesCommandProperty); }
+            set { SetValue(DeleteFilesCommandProperty, value); }
+        }
+
         #endregion
 
         #region Static readonly
@@ -179,6 +191,16 @@ namespace ForRobot.Views.Controls
                                                                                                       typeof(Breadcrumb),
                                                                                                       new PropertyMetadata());
 
+        public static readonly DependencyProperty SelectFilesCommandProperty = DependencyProperty.Register(nameof(SelectFilesCommand),
+                                                                                                           typeof(IAsyncCommand),
+                                                                                                           typeof(Breadcrumb),
+                                                                                                           new PropertyMetadata());
+
+        public static readonly DependencyProperty DeleteFilesCommandProperty = DependencyProperty.Register(nameof(DeleteFilesCommand),
+                                                                                                           typeof(IAsyncCommand),
+                                                                                                           typeof(Breadcrumb),
+                                                                                                           new PropertyMetadata());
+
         #endregion
 
         #endregion
@@ -190,6 +212,8 @@ namespace ForRobot.Views.Controls
         public Breadcrumb()
         {
             InitializeComponent();
+            //this.DeleteButton.
+            //this.DeleteButton.Click
         }
 
         #endregion

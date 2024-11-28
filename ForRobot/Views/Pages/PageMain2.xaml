@@ -57,23 +57,6 @@
             <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
 
-        <Popup Height="Auto"
-            Placement="Bottom"
-            AllowsTransparency="True"
-            PopupAnimation="Fade"
-            IsOpen="{Binding Path=IsChecked, ElementName=menuItemFileTransfer}"
-            PlacementTarget="{Binding ElementName=menuItemFileTransfer}">
-            
-            <Border Background="#FF818181"
-                    BorderBrush="#FFFFA21B" BorderThickness="5" CornerRadius="8">
-
-                <Grid Margin="10">
-                    <control:DragAndDropPopup DropFileCommand="{Binding Path=DataContext.DropFilesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
-                                              DeleteFileCommand="{Binding Path=DataContext.DeleteDropFileCommand, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>
-                </Grid>
-            </Border>
-        </Popup>
-
         <Menu Grid.Row="0">
             <Menu.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -166,44 +149,13 @@
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
-                            
+
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Click">
                                     <i:InvokeCommandAction Command="{Binding Path=GenerateProgramCommand}" CommandParameter="{Binding Path=., RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>
-                    </ControlTemplate>
-                </MenuItem.Template>
-            </MenuItem>
-
-            <MenuItem x:Name="menuItemFileTransfer">
-                <MenuItem.Template>
-                    <ControlTemplate TargetType="{x:Type MenuItem}">
-                        <ToggleButton IsChecked="{Binding Path=IsChecked, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type MenuItem}, Mode=FindAncestor}}"
-                                      ToolTip="Отправка файлов на робота"
-                                      Height="50" Width="50" Padding="6" Margin="5,0"
-                                      HorizontalAlignment="Left" VerticalAlignment="Center"
-                                      Template="{StaticResource toggleButtonTemplate}">
-
-                            <Path Stretch="Fill"
-                                  Data="M0 0v1h8v-1h-8zm4 2l-3 3h2v3h2v-3h2l-3-3z">
-                                <Path.Style>
-                                    <Style TargetType="{x:Type Path}">
-                                        <Setter Property="Fill" Value="Black"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}, Mode=FindAncestor}}" Value="True">
-                                                <Setter Property="Fill" Value="#FFFFA21B"/>
-                                            </DataTrigger>
-
-                                            <DataTrigger Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}, Mode=FindAncestor}}" Value="True">
-                                                <Setter Property="Fill" Value="#FFFFA21B"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Path.Style>
-                            </Path>
-                        </ToggleButton>
                     </ControlTemplate>
                 </MenuItem.Template>
             </MenuItem>
@@ -929,7 +881,8 @@
                                                             Directory="{Binding Path=SelectedRobot.Item2.PathControllerFolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                             ItemsSource="{Binding Path=SelectedRobot.Item2.Files, Mode=OneWay}"
                                                             UpDateCommand="{Binding Path=DataContext.UpDateFilesCommand, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
-                                                            IsProgress="{Binding Path=SelectedRobot.Item2.IsLoadFiles, Mode=OneWay}"/>
+                                                            IsProgress="{Binding Path=SelectedRobot.Item2.IsLoadFiles, Mode=OneWay}"
+                                                            SelectFilesCommand="{Binding Path=DataContext.DropFilesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"/>
 
                                         <control:NavigationTreeView Grid.Row="6"
                                                                     DataFileIsHidden="{Binding Path=Settings.AccessDataFile, Source={x:Static Application.Current}, Mode=TwoWay}"
