@@ -540,7 +540,7 @@ namespace ForRobot.ViewModels
                 return _upDateFilesCommand ??
                     (_upDateFilesCommand = new RelayCommand(obj =>
                     {
-                        Task.Run(async () => await this.SelectedRobot.Item2.GetFiles());                        
+                        Task.Run(async () => await this.SelectedRobot.Item2.GetFilesAsync());                        
                     }));
             }
         }
@@ -763,7 +763,7 @@ namespace ForRobot.ViewModels
                                     if (System.Windows.MessageBox.Show($"Удалить все файлы из {robot.Item2.PathControllerFolder}?", $"{robot.Item1}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
                                         MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK)
                                     {
-                                        await robot.Item2.GetFiles();
+                                        await robot.Item2.GetFilesAsync();
                                         foreach (var item in robot.Item2.Files)
                                         {
                                             var folder = item.Search(robot.Item2.PathControllerFolder.Split(new char[] { '\\' }).Last());
@@ -802,7 +802,7 @@ namespace ForRobot.ViewModels
                                 if (System.Windows.MessageBox.Show($"Удалить все файлы из {this.RobotForControl.PathControllerFolder}?", $"{this.SelectedNameRobot}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
                                     MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK)
                                 {
-                                    await this.RobotForControl.GetFiles();
+                                    await this.RobotForControl.GetFilesAsync();
                                     foreach (var item in this.RobotForControl.Files)
                                     {
                                         var folder = item.Search(this.RobotForControl.PathControllerFolder.Split(new char[] { '\\' }).Last());
@@ -869,7 +869,7 @@ namespace ForRobot.ViewModels
                               continue;
                       }
 
-                      await robot.GetFiles();
+                      await robot.GetFilesAsync();
 
                       foreach(var file in robot.Files)
                       {
@@ -1091,9 +1091,37 @@ namespace ForRobot.ViewModels
                 return _deleteFileCommand ??
                     (_deleteFileCommand = new AsyncRelayCommand(async obj =>
                     {
-                        string sFilePath = obj as string;
-                        await Task.Run(() => this.SelectedRobot.Item2.DeleteFile(Path.Combine(ForRobot.Libr.Client.JsonRpcConnection.DefaulRoot, sFilePath)));
-                        await this.SelectedRobot.Item2.GetFiles();
+                        List<string> checkedFiles;
+                        if(obj == null)
+                        {
+                            checkedFiles = new List<string>();
+                            foreach (var file in this.SelectedRobot.Item2.Files)
+                            {
+                                Stack<ForRobot.Model.Controls.IFile> stack = new Stack<Model.Controls.IFile>();
+                                stack.Push(file);
+                                ForRobot.Model.Controls.IFile current;
+                                do
+                                {
+                                    current = stack.Pop();
+                                    ObservableCollection<ForRobot.Model.Controls.IFile> files = current.Children;
+
+                                    if (current.IsCheck)
+                                        checkedFiles.Add(current.Path);
+
+                                    foreach(var f in files)
+                                        stack.Push(f);
+                                }
+                                while (stack.Count > 0);
+                            }
+                        }
+                        else
+                            checkedFiles = new List<string>() { obj as string };
+
+                        foreach (string path in checkedFiles)
+                        {
+                            await Task.Run(() => this.SelectedRobot.Item2.DeleteFile(Path.Combine(ForRobot.Libr.Client.JsonRpcConnection.DefaulRoot, path)));
+                        }
+                        await this.SelectedRobot.Item2.GetFilesAsync();
                     }, _exceptionCallback));
             }
         }

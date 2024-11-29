@@ -329,10 +329,10 @@ namespace ForRobot.Model
                 if (this.IsConnection)
                 {
                     this._cancelTokenSource = new CancellationTokenSource();
-                    Task.Run(async () => await this.ProgramNameTimeChack(this._cancelTokenSource.Token));
-                    Task.Run(async () => await this.ProStateTimeChack(this._cancelTokenSource.Token));
-                    Task.Run(async () => await this.WeldTimeChack(this._cancelTokenSource.Token));
-                    Task.Run(async () => await this.GetFiles());
+                    Task.Run(async () => await this.ProgramNameTimeChackAsync(this._cancelTokenSource.Token));
+                    Task.Run(async () => await this.ProStateTimeChackAsync(this._cancelTokenSource.Token));
+                    Task.Run(async () => await this.WeldTimeChackAsync(this._cancelTokenSource.Token));
+                    Task.Run(async () => await this.GetFilesAsync());
                 }
             }
             catch (Exception ex)
@@ -357,7 +357,7 @@ namespace ForRobot.Model
                     List<ForRobot.Model.Controls.File> fileDatas = new List<ForRobot.Model.Controls.File>();
                     try
                     {
-                        var files = Task.Run<Dictionary<string, string>>(async () => await this.Connection.File_NameList()).Result;                   
+                        var files = Task.Run<Dictionary<string, string>>(async () => await this.Connection.File_NameListAsync()).Result;                   
                         
                         foreach (var file in files)
                         {
@@ -398,11 +398,11 @@ namespace ForRobot.Model
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
-        private async Task ProStateTimeChack(CancellationToken token)
+        private async Task ProStateTimeChackAsync(CancellationToken token)
         {
             while (this.IsConnection)
             {
-                var task = this.Connection.Process_State();
+                var task = this.Connection.Process_StateAsync();
                 await Task.WhenAll(new Task[] { Task.Delay(1000, token), task });
                 this.Pro_State = task.Result;
             }
@@ -413,11 +413,11 @@ namespace ForRobot.Model
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
-        private async Task WeldTimeChack(CancellationToken token)
+        private async Task WeldTimeChackAsync(CancellationToken token)
         {
             while (this.IsConnection)
             {
-                var task = this.Connection.In();
+                var task = this.Connection.InAsync();
                 await Task.WhenAll(new Task[] { Task.Delay(3000, token), task });
                 this.ConvertToTelegraf(task.Result.ToArray());
             }
@@ -428,11 +428,11 @@ namespace ForRobot.Model
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
-        private async Task ProgramNameTimeChack(CancellationToken token)
+        private async Task ProgramNameTimeChackAsync(CancellationToken token)
         {
             while (this.IsConnection)
             {
-                var task = this.Connection.Pro_Name();
+                var task = this.Connection.Pro_NameAsync();
                 await Task.WhenAll(new Task[] { Task.Delay(1000, token), task });
                 this.RobotProgramName = task.Result.Replace("\"", "");
             }
@@ -444,7 +444,7 @@ namespace ForRobot.Model
         /// <param name="data"></param>
         /// <param name="node"></param>
         /// <param name="index"></param>
-        public async Task GetFiles(List<ForRobot.Model.Controls.File> data = null, ForRobot.Model.Controls.File node = null, int index = 0)
+        public async Task GetFilesAsync(List<ForRobot.Model.Controls.File> data = null, ForRobot.Model.Controls.File node = null, int index = 0)
         {
             await Task.Run(() =>
             {
@@ -552,7 +552,7 @@ namespace ForRobot.Model
                 {
                     this.SelectProgramByName(this.RobotProgramName + ".src");
 
-                    if (!Task.Run<bool>(async () => await this.Connection.Start()).Result)
+                    if (!Task.Run<bool>(async () => await this.Connection.StartAsync()).Result)
                         throw new Exception($"Ошибка перезапуска программы {RobotProgramName}");
                     else
                         this.LogMessage($"Программа {this.RobotProgramName} перезапущена");
@@ -560,7 +560,7 @@ namespace ForRobot.Model
 
                 if (this.Pro_State == "#P_RESET" || this.Pro_State == "#P_STOP")
                 {
-                    if (!Task.Run<bool>(async () => await this.Connection.Start()).Result)
+                    if (!Task.Run<bool>(async () => await this.Connection.StartAsync()).Result)
                         throw new Exception($"Ошибка запуска программы {RobotProgramName}");
                     else
                         this.LogMessage($"Программа {this.RobotProgramName} запущена");
@@ -592,7 +592,7 @@ namespace ForRobot.Model
             {
                 if (this.Pro_State == "#P_ACTIVE")
                 {
-                    if (!Task.Run<bool>(async () => await this.Connection.Pause()).Result)
+                    if (!Task.Run<bool>(async () => await this.Connection.PauseAsync()).Result)
                         throw new Exception($"Ошибка остановки программы {RobotProgramName}");
                     else
                         this.LogMessage($"Программа {RobotProgramName} остановлена");
@@ -621,7 +621,7 @@ namespace ForRobot.Model
                         System.Threading.Thread.Sleep(1000);
                     }
 
-                    if (!Task.Run<bool>(async () => await this.Connection.SelectCancel()).Result)
+                    if (!Task.Run<bool>(async () => await this.Connection.SelectCancelAsync()).Result)
                         throw new Exception("Не удаётся отменить выбор программы");
                     else
                         this.LogMessage("Текущий выбор программы отменён");
@@ -657,7 +657,7 @@ namespace ForRobot.Model
                         return false;
                 }
 
-                if (Task.Run<bool>(async () => await this.Connection.Copy(sPathOnPC, sPathOnController)).Result)
+                if (Task.Run<bool>(async () => await this.Connection.CopyAsync(sPathOnPC, sPathOnController)).Result)
                     this.LogMessage($"Файл {sPathOnPC} скопирован в {sPathOnController}");
                 else
                     throw new Exception($"Ошибка копирования файла {sPathOnPC} в {sPathOnController}");
@@ -700,7 +700,7 @@ namespace ForRobot.Model
                         return false;
                 }
 
-                var fileCollection2 = Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameList(this.PathProgramm)).Result;
+                var fileCollection2 = Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameListAsync(this.PathProgramm)).Result;
 
                 foreach (var file in fileCollection2.Keys.Where(i => i.EndsWith(".dat")).ToList<string>())
                 {
@@ -714,7 +714,7 @@ namespace ForRobot.Model
 
                 this.Copy(Path.Combine(this.PathProgramm, sNameProgram), Path.Combine(this.PathControllerFolder, sNameProgram));
 
-                Task.Run(async () => await this.GetFiles()).Wait();
+                Task.Run(async () => await this.GetFilesAsync()).Wait();
             }
             catch (Exception ex)
             {
@@ -734,7 +734,7 @@ namespace ForRobot.Model
         {
             try
             {
-                if (Task.Run<bool>(async () => await Connection.CopyMem2File(sFilePath, sPCPath)).Result)
+                if (Task.Run<bool>(async () => await Connection.CopyMem2FileAsync(sFilePath, sPCPath)).Result)
                     this.LogMessage($"Содержимое файла {sFilePath} скопировано");
                 else
                     throw new Exception($"Ошибка копирования содержимого файла {sFilePath} в {sPCPath}");
@@ -821,7 +821,7 @@ namespace ForRobot.Model
 
                 string sFilePath = Path.Combine(JsonRpcConnection.DefaulRoot, sProgramPath);
 
-                if (Task.Run<bool>(async () => await this.Connection.Select(sFilePath)).Result)
+                if (Task.Run<bool>(async () => await this.Connection.SelectAsync(sFilePath)).Result)
                     this.LogMessage($"Файл программы {sFilePath} выбран");
                 else
                     throw new Exception("Ошибка выбора файла " + sFilePath);
@@ -855,11 +855,11 @@ namespace ForRobot.Model
                         return false;
                 }
 
-                if (!Task.Run<bool>(async () => await this.Connection.Delet(sPathToFile)).Result)
+                if (!Task.Run<bool>(async () => await this.Connection.DeletAsync(sPathToFile)).Result)
                     throw new Exception($"Ошибка удаления файла {sPathToFile}");
                 else
                     this.LogMessage($"Файл программы {sPathToFile} удалён");
-                Task.Run(async () => await this.GetFiles()).Wait();
+                Task.Run(async () => await this.GetFilesAsync()).Wait();
             }
             catch (Exception ex)
             {
@@ -878,12 +878,12 @@ namespace ForRobot.Model
         {
             try
             {
-                Dictionary<String, String> files = Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameList(sPathOnFolder)).Result;
+                Dictionary<String, String> files = Task.Run<Dictionary<String, String>>(async () => await this.Connection.File_NameListAsync(sPathOnFolder)).Result;
                 if (files.Count <= 0)
                     throw new Exception($"Не удалось найти папку {sPathOnFolder} или она пустая");
                 foreach (var file in files.Keys)
                 {
-                    if (!Task.Run<bool>(async () => await this.Connection.Delet(Path.Combine(this.PathProgramm, file))).Result)
+                    if (!Task.Run<bool>(async () => await this.Connection.DeletAsync(Path.Combine(this.PathProgramm, file))).Result)
                         throw new Exception($"Ошибка удаления файла {file}");
                     else
                         this.LogMessage($"Файл {file} удалён");

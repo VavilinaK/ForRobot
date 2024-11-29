@@ -20,7 +20,7 @@ namespace ForRobot.Libr.Client
         private const int DefaultPort = 0000;
         private const string DefaultHost = "0.0.0.0";
         private const string OkResponse = "Ok";
-        internal const string DefaulRoot = "KRC:\\";
+        public const string DefaulRoot = "KRC:\\";
 
         #endregion
 
@@ -274,19 +274,19 @@ namespace ForRobot.Libr.Client
         /// Запрос статуса процесса
         /// </summary>
         /// <returns></returns>
-        public async Task<string> Process_State() => await this.JsonRpc.InvokeAsync<string>("Var_ShowVar", "$PRO_STATE");
+        public async Task<string> Process_StateAsync() => await this.JsonRpc.InvokeAsync<string>("Var_ShowVar", "$PRO_STATE");
 
         /// <summary>
         /// Название программы
         /// </summary>
         /// <returns></returns>
-        public async Task<string> Pro_Name() => await this.JsonRpc.InvokeAsync<string>("Var_ShowVar", "$PRO_NAME[]");
+        public async Task<string> Pro_NameAsync() => await this.JsonRpc.InvokeAsync<string>("Var_ShowVar", "$PRO_NAME[]");
 
         /// <summary>
         /// Запрос состояния входов
         /// </summary>
         /// <returns></returns>
-        public async Task<string> In() => await this.JsonRpc.InvokeAsync<string>("Var_ShowVar", "$IN[]");
+        public async Task<string> InAsync() => await this.JsonRpc.InvokeAsync<string>("Var_ShowVar", "$IN[]");
 
         /// <summary>
         /// Копирование файла в дерективу робота
@@ -294,7 +294,7 @@ namespace ForRobot.Libr.Client
         /// <param name="sFilePath">Директория файла</param>
         /// <param name="sNewPath">Новый путь для файла</param>
         /// <returns></returns>
-        public async Task<bool> Copy(string sFilePath, string sNewPath)
+        public async Task<bool> CopyAsync(string sFilePath, string sNewPath)
         {
             this.LogMessage($"Копирование файла программы в директорию робота {sNewPath} . . .");
             object[] args = { sFilePath, sNewPath, 64 };
@@ -310,7 +310,7 @@ namespace ForRobot.Libr.Client
         /// <param name="sFilePath">Директория файла</param>
         /// <param name="sControllerPath">Путь для файла на роботе</param>
         /// <returns></returns>
-        public async Task<bool> CopyMem2File(string sFilePath, string sControllerPath)
+        public async Task<bool> CopyMem2FileAsync(string sFilePath, string sControllerPath)
         {
             this.LogMessage($"Копирование содержание файла {sFilePath} в {sControllerPath} . . .");
 
@@ -336,7 +336,7 @@ namespace ForRobot.Libr.Client
         /// </summary>
         /// <param name="sFilePath">Директория файла программы</param>
         /// <returns></returns>
-        public async Task<bool> Select(string sFilePath)
+        public async Task<bool> SelectAsync(string sFilePath)
         {
             this.LogMessage($"Выбор программы {sFilePath} . . .");
 
@@ -349,7 +349,7 @@ namespace ForRobot.Libr.Client
         /// Отмена выбора программы
         /// </summary>
         /// <returns></returns>
-        public async Task<bool> SelectCancel()
+        public async Task<bool> SelectCancelAsync()
         {
             this.LogMessage($"Отмена выбора текущего файла . . .");
 
@@ -363,7 +363,7 @@ namespace ForRobot.Libr.Client
         /// </summary>
         /// <param name="sFilePath">Директория файла</param>
         /// <returns></returns>
-        public async Task<bool> Delet(string sFilePath)
+        public async Task<bool> DeletAsync(string sFilePath)
         {
             this.LogMessage($"Удаление файла {sFilePath} . . .");
 
@@ -376,7 +376,7 @@ namespace ForRobot.Libr.Client
         /// Запуск уже выбранной программы
         /// </summary>
         /// <returns></returns>
-        public async Task<bool> Start()
+        public async Task<bool> StartAsync()
         {
             this.LogMessage($"Запуск текущей программы . . .");
 
@@ -390,7 +390,7 @@ namespace ForRobot.Libr.Client
         /// </summary>
         /// <param name="sFilePath">Директория файла</param>
         /// <returns></returns>
-        public async Task<bool> Run(string sFilePath)
+        public async Task<bool> RunAsync(string sFilePath)
         {
             this.LogMessage($"Запуск программы {sFilePath} . . .");
 
@@ -403,7 +403,7 @@ namespace ForRobot.Libr.Client
         /// Остановка программы
         /// </summary>
         /// <returns></returns>
-        public async Task<bool> Pause()
+        public async Task<bool> PauseAsync()
         {
             this.LogMessage($"Остановка текущей программы . . .");
 
@@ -419,7 +419,7 @@ namespace ForRobot.Libr.Client
         /// </summary>
         /// <param name="sFolderPath">Директория папки для запроса</param>
         /// <returns></returns>
-        public async Task<Dictionary<String, String>> File_NameList(string sFolderPath = DefaulRoot)
+        public async Task<Dictionary<String, String>> File_NameListAsync(string sFolderPath = DefaulRoot)
         {
             Dictionary<String, String> result = new Dictionary<string, string>();
             try

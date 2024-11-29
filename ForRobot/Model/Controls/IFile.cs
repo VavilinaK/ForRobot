@@ -11,6 +11,10 @@ namespace ForRobot.Model.Controls
 
         string Path { get; set; }
 
+        bool IsCheck { get; set; }
+
+        bool IsCopy { get; set; }
+
         bool IsExpanded { get; set; }
 
         bool IncludeFileChildren { get; }
