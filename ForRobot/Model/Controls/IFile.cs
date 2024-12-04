@@ -23,6 +23,8 @@ namespace ForRobot.Model.Controls
 
         FileFlags Flag { get; set; }
 
+        IFile this[int index] { get; set; }
+
         ObservableCollection<IFile> Children { get; }
     }
 }

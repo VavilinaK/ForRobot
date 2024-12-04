@@ -475,39 +475,6 @@ namespace ForRobot.Model
             return string.Empty;
         }
 
-        //private void OpenConnection()
-        //{
-        //    try
-        //    {
-        //        this.Connection = new JsonRpcConnection(this.Host, this.Port);
-        //        this.Connection.Log += this.Log;
-        //        this.Connection.LogError += this.LogError;
-        //        this.Connection.Connected += (sender, e) => RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
-        //        this.Connection.Aborted += (sender, e) =>
-        //        {
-        //            this.LogMessage("Соединение разорвано");
-        //            RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
-        //        };
-        //        this.Connection.Disconnected += (sender, e) => RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
-
-        //        this.LogMessage($"Открытие соединения с сервером . . .");
-        //        if(this.Connection.Open())
-        //            this.LogMessage($"Открыто соединение");
-
-        //        if (this.IsConnection)
-        //        {
-        //            this._cancelTokenSource = new CancellationTokenSource();
-        //            Task.Run(async () => await this.ProgramNameTimeChack(this._cancelTokenSource.Token));
-        //            Task.Run(async () => await this.ProStateTimeChack(this._cancelTokenSource.Token));
-        //            Task.Run(async () => await this.WeldTimeChack(this._cancelTokenSource.Token));
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        this.LogErrorMessage(ex.Message, ex);
-        //    }
-        //}
-
         private void ConvertToTelegraf(char[] data)
         {
             this.Voltage = Convert.ToInt32(String.Join<byte>("", data.Skip(2064).Take(16).Reverse().Select(c => Convert.ToByte(c.ToString()))), 2) / 100;

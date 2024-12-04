@@ -128,11 +128,7 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Нынешняя страница
         /// </summary>
-        public Page PageNow
-        {
-            get => this._nowPage ?? (this._nowPage = this.Page2D);
-            set => Set(ref this._nowPage, value);
-        }
+        public Page PageNow { get => this._nowPage ?? (this._nowPage = this.Page2D); set => Set(ref this._nowPage, value); }
 
         public string Logger { get => this._logger; set => Set(ref this._logger, value); }
 

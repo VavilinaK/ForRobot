@@ -234,7 +234,7 @@ namespace ForRobot.Libr.Client
                 if (!this._isActive)
                 {
                     this.Close();
-                    return false;
+                    return opened;
                 }
 
                 this._onConnected();

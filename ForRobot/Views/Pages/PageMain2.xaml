@@ -6,6 +6,7 @@
       xmlns:local="clr-namespace:ForRobot.Views.Pages"
       xmlns:vm="clr-namespace:ForRobot.ViewModels"
       xmlns:lib="clr-namespace:ForRobot.Libr"
+      xmlns:client="clr-namespace:ForRobot.Libr.Client"
       xmlns:model="clr-namespace:ForRobot.Model"
       xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
@@ -110,6 +111,34 @@
             <MenuItem>
                 <MenuItem.Template>
                     <ControlTemplate TargetType="{x:Type MenuItem}">
+                        <Grid Margin="5,0,10,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Viewbox Grid.Column="0" Height="35" HorizontalAlignment="Center" VerticalAlignment="Center" >
+                                <CheckBox IsChecked="{Binding Path=SendingGeneratedFiles, Mode=TwoWay}" ToolTip="Отправка на робота после генерации"/>
+                            </Viewbox>
+
+                            <!--<Path Grid.Column="1"
+                                  Fill="Black"
+                                  Data="M41,15.9h7.8c0.4,0,0.7-0.5,0.4-0.9l-8.3-8.3c-0.4-0.3-0.9,0-0.9,0.4v7.8C40,15.5,40.4,15.9,41,15.9z
+                                  M49,19.9H38c-1.1,0-2-0.9-2-2v-11c0-0.6-0.4-1-1-1H21.5c-0.8,0-1.5,0.7-1.5,1.5v4c0,0.4,0.2,0.8,0.4,1.1l5.6,5.6
+                                  c0.8,0.8,1.4,1.9,1.6,3.1c0.2,1.6-0.3,3.1-1.4,4.3L24.6,27c-0.5,0.5-1,0.8-1.6,1.1c0.7,0.3,1.5,0.5,2.3,0.6
+                                  c2.6,0.2,4.7,2.4,4.7,5.1V36c0,1.4-0.7,2.8-1.7,3.7c-1,1-2.5,1.4-3.9,1.3c-1.1-0.1-2.1-0.3-3.2-0.5c-0.6-0.2-1.2,0.3-1.2,1v3.1
+                                  c0,0.8,0.7,1.5,1.5,1.5h27c0.8,0,1.5-0.7,1.5-1.5V21C50,20.4,49.6,20,49,19.9z M26,35.8v-2.2c0-0.6-0.5-1-1.1-1.1
+                                  c-5.4-0.5-9.9-5.1-9.9-10.8v-1.2c0-0.6,0.8-1,1.2-0.5l4,4c0.4,0.4,1.1,0.4,1.5,0l1.5-1.5c0.4-0.4,0.4-1.1,0-1.5l-9.7-9.7
+                                  c-0.4-0.4-1.1-0.4-1.5,0l-9.7,9.7c-0.4,0.4-0.4,1.1,0,1.5l1.5,1.5c0.4,0.4,1.1,0.5,1.5,0.1l4.2-4c0.5-0.5,1.4-0.1,1.4,0.5v1.9
+                                  c0,7.2,6.3,13.8,13.9,14.4C25.5,36.9,26,36.4,26,35.8z"/>-->
+                        </Grid>
+                    </ControlTemplate>
+                </MenuItem.Template>
+            </MenuItem>
+
+            <MenuItem>
+                <MenuItem.Template>
+                    <ControlTemplate TargetType="{x:Type MenuItem}">
                         <Button Grid.Column="1" Height="50" Padding="5" Margin="5, 0" ToolTip="Генерация программ"
                                 HorizontalAlignment="Left" VerticalAlignment="Center" Visibility="Visible" 
                                 Template="{StaticResource buttonTemplate}">
@@ -152,7 +181,7 @@
 
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Click">
-                                    <i:InvokeCommandAction Command="{Binding Path=GenerateProgramCommand}" CommandParameter="{Binding Path=., RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>
+                                    <i:InvokeCommandAction Command="{Binding Path=GenerateProgramCommandAsync}" CommandParameter="{Binding Path=., RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>
@@ -246,7 +275,7 @@
                                                     <Style TargetType="{x:Type Button}">
                                                         <Setter Property="Margin" Value="5, 0"/>
                                                         <Setter Property="ToolTip" Value="Запуск программы"/>
-                                                        <Setter Property="Command" Value="{Binding Path=RunProgramCommand}"/>
+                                                        <Setter Property="Command" Value="{Binding Path=RunProgramCommandAsync}"/>
                                                         <Setter Property="Content">
                                                             <Setter.Value>
                                                                 <Grid>
@@ -372,7 +401,7 @@
                                                         <Setter Property="Width" Value="0"/>
                                                         <Setter Property="Margin" Value="0"/>
                                                         <Setter Property="ToolTip" Value="Остановка программы"/>
-                                                        <Setter Property="Command" Value="{Binding Path=PauseProgramCommand}"/>
+                                                        <Setter Property="Command" Value="{Binding Path=PauseProgramCommandAsync}"/>
 
                                                         <Setter Property="Content">
                                                             <Setter.Value>
@@ -415,7 +444,7 @@
 
                                             <Button Grid.Column="2" Height="45" ToolTip="Аннулировать программу"
                                                     Template="{StaticResource buttonTemplate}"
-                                                    Command="{Binding CancelProgramCommand}">
+                                                    Command="{Binding CancelProgramCommandAsync}">
 
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
@@ -441,7 +470,7 @@
                                             <Button Grid.Column="3" Height="45"
                                                     ToolTip="Выбор сгенерированной программы" 
                                                     Template="{StaticResource buttonTemplate}"
-                                                    Command="{Binding Path=SelectGeneratProgramCommand}">
+                                                    Command="{Binding Path=SelectGeneratProgramCommandAsync}">
 
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
@@ -877,19 +906,19 @@
                                         </Grid>
 
                                         <control:Breadcrumb Grid.Row="4" Height="40" Padding="0"
-                                                            Root="{Binding Path=SelectedRobot.Item2.Connection.DefaulRoot}"
+                                                            Root="{Binding Path=DefaulRoot, Source={x:Type client:JsonRpcConnection}}"
                                                             Directory="{Binding Path=SelectedRobot.Item2.PathControllerFolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                             ItemsSource="{Binding Path=SelectedRobot.Item2.Files, Mode=OneWay}"
                                                             UpDateCommand="{Binding Path=DataContext.UpDateFilesCommand, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
                                                             IsProgress="{Binding Path=SelectedRobot.Item2.IsLoadFiles, Mode=OneWay}"
-                                                            SelectFilesCommand="{Binding Path=DataContext.DropFilesCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
-                                                            DeleteFilesCommand="{Binding Path=DataContext.DeleteFileCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"/>
+                                                            SelectFilesCommand="{Binding Path=DataContext.DropFilesCommandAsync, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
+                                                            DeleteFilesCommand="{Binding Path=DataContext.DeleteFileCommandAsync, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"/>
 
                                         <control:NavigationTreeView Grid.Row="6"
                                                                     DataFileIsHidden="{Binding Path=Settings.AccessDataFile, Source={x:Static Application.Current}, Mode=TwoWay}"
-                                                                    SelectItemCommand="{Binding Path=DataContext.SelectFileCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
+                                                                    SelectItemCommand="{Binding Path=DataContext.SelectFileCommandAsync, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
                                                                     SelectFolderCommand="{Binding Path=DataContext.SelectFolderCommand, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
-                                                                    DeleteNodeCommand="{Binding Path=DataContext.DeleteFileCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}">
+                                                                    DeleteNodeCommand="{Binding Path=DataContext.DeleteFileCommandAsync, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}">
 
                                             <control:NavigationTreeView.FileCollection>
                                                 <MultiBinding Converter="{StaticResource VisibilityFolderOnRobot}">

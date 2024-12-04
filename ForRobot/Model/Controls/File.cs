@@ -23,7 +23,17 @@ namespace ForRobot.Model.Controls
         public string Path { get; set; }
 
         public bool IncludeFileChildren { get => this.Children.Count() != 0; }
-        public bool IsCheck { get => this._isCheck; set => Set(ref this._isCheck, value); }
+        public bool IsCheck
+        {
+            get => this._isCheck;
+            set
+            {
+                Set(ref this._isCheck, value);
+
+                foreach (var file in this.Children)
+                    file.IsCheck = true;
+            }
+        }
         public bool IsCopy { get => this._isCopy; set => Set(ref this._isCopy, value); }
         public bool IsExpanded { get => this._isExpanded; set => Set(ref this._isExpanded, value); }
 
@@ -47,7 +57,10 @@ namespace ForRobot.Model.Controls
                 }
             }
         }
+
         public FileFlags Flag { get; set; } = FileFlags.None;
+
+        public IFile this[int index] { get => this.Children[index]; set => this.Children[index] = value; }
 
         public ObservableCollection<IFile> Children
         {
