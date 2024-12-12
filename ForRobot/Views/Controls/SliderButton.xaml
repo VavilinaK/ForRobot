@@ -1,0 +1,98 @@
+﻿<ToggleButton x:Class="ForRobot.Views.Controls.SliderButton"
+              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+              xmlns:local="clr-namespace:ForRobot.Views.Controls"
+              mc:Ignorable="d"
+              Template="{DynamicResource toggleSwitchTemplate}">
+
+    <ToggleButton.Resources>
+        <ControlTemplate x:Key="toggleSwitchTemplate" TargetType="{x:Type ToggleButton}">
+            <Grid x:Name="toggleSwitch">
+                <Border x:Name="Border" CornerRadius="12"
+                        Background="#FFFFFFFF"
+                        Width="80" Height="25">
+
+                    <Border.Effect>
+                        <DropShadowEffect ShadowDepth="0.5" Direction="0" Opacity="0.3" />
+                    </Border.Effect>
+
+                    <Ellipse x:Name="Ellipse" Fill="#FFFFFFFF" Stretch="Uniform"
+                             Margin="2 2 2 1"
+                             Stroke="Gray" StrokeThickness="0.2"
+                             HorizontalAlignment="Left" Width="22" >
+                        <Ellipse.Effect>
+                            <DropShadowEffect BlurRadius="10" ShadowDepth="1" Opacity="0.3" Direction="260" />
+                        </Ellipse.Effect>
+                    </Ellipse>
+                </Border>
+
+                <TextBlock x:Name="txtOff" Text="{Binding OffLabel, RelativeSource={RelativeSource AncestorType={x:Type local:SliderButton}}}" Margin="0 0 20 0" VerticalAlignment="Center" FontWeight="DemiBold" HorizontalAlignment="Right" Foreground="White" FontSize="14"/>
+                <TextBlock x:Name="txtOn" Text="{Binding OnLabel, RelativeSource={RelativeSource AncestorType={x:Type local:SliderButton}}}" Margin="20 0 0 0" VerticalAlignment="Center" FontWeight="DemiBold"  Foreground="White" HorizontalAlignment="Left" FontSize="14"/>
+            </Grid>
+
+            <ControlTemplate.Triggers>
+                <Trigger Property="ToggleButton.IsChecked" Value="True" >
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation Storyboard.TargetName="Border"
+                                                Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                To="#34A543"
+                                                Duration="0:0:0.1"/>
+
+                                <ThicknessAnimation Storyboard.TargetName="Ellipse"
+                                                    Storyboard.TargetProperty="Margin"
+                                                    To="56 2 2 1"
+                                                    Duration="0:0:0.1"/>
+                                <DoubleAnimation
+                                    Storyboard.TargetName="txtOff" 
+                                    Storyboard.TargetProperty="(TextBlock.Opacity)"
+                                    From="1.0" To="0.0" Duration="0:0:0:0.1"/>
+
+                                <DoubleAnimation
+                                    Storyboard.TargetName="txtOn"
+                                    Storyboard.TargetProperty="(TextBlock.Opacity)"
+                                    From="0.0" To="1.0" Duration="0:0:0:0.1"  />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+
+                    <!--  some out fading  -->
+                    <Trigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation Storyboard.TargetName="Border"
+                                                Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                To="#C2283B"
+                                                Duration="0:0:0.1"/>
+
+                                <ThicknessAnimation Storyboard.TargetName="Ellipse"
+                                                    Storyboard.TargetProperty="Margin"
+                                                    To="2 2 2 1"
+                                                    Duration="0:0:0.1"/>
+                                
+                                <DoubleAnimation Storyboard.TargetName="txtOff"
+                                                 Storyboard.TargetProperty="(TextBlock.Opacity)"
+                                                 From="0" To="1.0" Duration="0:0:0:0.1"/>
+                                
+                                <DoubleAnimation Storyboard.TargetName="txtOn"
+                                                 Storyboard.TargetProperty="(TextBlock.Opacity)"
+                                                 From="1.0" To="0.0" Duration="0:0:0:0.1" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.ExitActions>
+
+                    <Setter Property="Foreground" Value="{DynamicResource IdealForegroundColorBrush}"/>
+                </Trigger>
+
+                <Trigger Property="IsMouseOver" Value="False"/>
+
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Foreground" Value="{DynamicResource GrayBrush7}" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+    </ToggleButton.Resources>
+</ToggleButton>

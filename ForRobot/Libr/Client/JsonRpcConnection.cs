@@ -67,7 +67,7 @@ namespace ForRobot.Libr.Client
         /// </summary>
         public event EventHandler Aborted;
         /// <summary>
-        /// Событие закрытие соединения
+        /// Событие закрытия соединения
         /// </summary>
         public event EventHandler Disconnected;
          
