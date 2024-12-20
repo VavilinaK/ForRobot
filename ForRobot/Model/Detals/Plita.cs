@@ -191,9 +191,7 @@ namespace ForRobot.Model.Detals
 
         [JsonIgnore]
         [SaveAttribute]
-        /// <summary>
-        /// Тип детали
-        /// </summary>
+        /// <inheritdoc cref="Detal.DetalType"/>
         public override string DetalType { get => DetalTypes.Plita; }
 
         [JsonProperty("d_type")]

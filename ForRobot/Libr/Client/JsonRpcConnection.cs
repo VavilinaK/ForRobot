@@ -11,6 +11,9 @@ using StreamJsonRpc;
 
 namespace ForRobot.Libr.Client
 {
+    /// <summary>
+    /// Класс <c>JsonRpcConnection</c>
+    /// </summary>
     public class JsonRpcConnection : IDisposable
     {
         #region Constants

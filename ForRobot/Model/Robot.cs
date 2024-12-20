@@ -329,9 +329,14 @@ namespace ForRobot.Model
                 if (this.IsConnection)
                 {
                     this._cancelTokenSource = new CancellationTokenSource();
-                    Task.Run(async () => await this.ProgramNameTimeChackAsync(this._cancelTokenSource.Token));
-                    Task.Run(async () => await this.ProStateTimeChackAsync(this._cancelTokenSource.Token));
-                    Task.Run(async () => await this.WeldTimeChackAsync(this._cancelTokenSource.Token));
+
+                    var task1 = PeriodicTask(() => { if (this.IsConnection) this.Pro_State = this.Connection.Process_StateAsync().Result; }, new TimeSpan(0, 0, 0, 0, 1000), this._cancelTokenSource.Token); // Переодический запрос состояния процесса на роботе.
+
+                    var task2 = PeriodicTask(() => { if (this.IsConnection) this.ConvertToTelegraf(this.Connection.InAsync().Result.ToArray()); }, new TimeSpan(0, 0, 0, 0, 3000), this._cancelTokenSource.Token); // Переодический запрос тока на роботе.
+
+                    var task3 = PeriodicTask(() => {  if (this.IsConnection) this.RobotProgramName = this.Connection.Pro_NameAsync().Result.Replace("\"", ""); }, new TimeSpan(0, 0, 0, 0, 1000), this._cancelTokenSource.Token); // Переодический запрос имени выбранной на роботе программы
+
+                    Task.Run(async () => await Task.WhenAll(task1, task2, task3));
                     Task.Run(async () => await this.GetFilesAsync());
                 }
             }
@@ -394,49 +399,30 @@ namespace ForRobot.Model
         #region Asunc
 
         /// <summary>
-        /// Переодический запрос состояния процесса на роботе
+        /// Переодическое выполнение задачи
         /// </summary>
-        /// <param name="token"></param>
+        /// <param name="action">Выполняемое действие</param>
+        /// <param name="period">Промежуток между выполнением, мс</param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        private async Task ProStateTimeChackAsync(CancellationToken token)
+        private async Task PeriodicTask(Action action, TimeSpan period, CancellationToken cancellationToken)
         {
-            while (this.IsConnection)
+            while (!cancellationToken.IsCancellationRequested)
             {
-                var task = this.Connection.Process_StateAsync();
-                await Task.WhenAll(new Task[] { Task.Delay(1000, token), task });
-                this.Pro_State = task.Result;
+                await Task.Delay(period, cancellationToken);
+
+                if (!cancellationToken.IsCancellationRequested)
+                    action();
             }
         }
 
         /// <summary>
-        /// Переодический запрос тока на роботе
+        /// Переодическое выполнение задачи
         /// </summary>
-        /// <param name="token"></param>
+        /// <param name="action">Выполняемое действие</param>
+        /// <param name="period">Промежуток между выполнением, мс</param>
         /// <returns></returns>
-        private async Task WeldTimeChackAsync(CancellationToken token)
-        {
-            while (this.IsConnection)
-            {
-                var task = this.Connection.InAsync();
-                await Task.WhenAll(new Task[] { Task.Delay(3000, token), task });
-                this.ConvertToTelegraf(task.Result.ToArray());
-            }
-        }
-
-        /// <summary>
-        /// Переодический запрос имени выбранной на роботе программы
-        /// </summary>
-        /// <param name="token"></param>
-        /// <returns></returns>
-        private async Task ProgramNameTimeChackAsync(CancellationToken token)
-        {
-            while (this.IsConnection)
-            {
-                var task = this.Connection.Pro_NameAsync();
-                await Task.WhenAll(new Task[] { Task.Delay(1000, token), task });
-                this.RobotProgramName = task.Result.Replace("\"", "");
-            }
-        }
+        public async Task PeriodicTask(Action action, TimeSpan period) => await this.PeriodicTask(action, period, CancellationToken.None);
 
         /// <summary>
         /// Выборка файлов робота и сборка дерева
