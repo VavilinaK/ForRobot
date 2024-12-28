@@ -111,7 +111,7 @@
             <MenuItem>
                 <MenuItem.Template>
                     <ControlTemplate TargetType="{x:Type MenuItem}">
-                        <control:SliderButton IsChecked="{Binding Path=SendingGeneratedFiles, TargetNullValue=True, Mode=TwoWay}"
+                        <control:SliderButton IsChecked="{Binding Path=SendingGeneratedFiles, FallbackValue=True, Mode=TwoWay}"
                                               ToolTip="Отправка на робота после генерации"/>
                     </ControlTemplate>
                 </MenuItem.Template>

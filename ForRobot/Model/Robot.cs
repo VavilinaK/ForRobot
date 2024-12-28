@@ -320,7 +320,7 @@ namespace ForRobot.Model
                     this.LogMessage("Соединение разорвано");
                     RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
                 };
-                this.Connection.Disconnected += (sender, e) => RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
+                this.Connection.Disconnected += (sender, e) => this.CloseConnection();
 
                 this.LogMessage($"Открытие соединения с сервером . . .");
                 if (this.Connection.Open())
@@ -491,6 +491,24 @@ namespace ForRobot.Model
             };
             thread.Start();
             thread.Join(this._timeout_milliseconds);  // Закроется даже при неудачном подключении.
+        }
+
+        /// <summary>
+        /// Закрытие соединения.
+        /// </summary>
+        public void CloseConnection()
+        {
+            this._cancelTokenSource?.Cancel();
+            if (this.IsConnection)
+            {
+                this.LogMessage($"Закрытие соединения . . .");
+                if (this.Connection.Close())
+                {
+                    this.LogMessage($"Соединение закрыто");
+                    this.Connection.Dispose();
+                }
+            }
+            RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
         }
 
         /// <summary>
@@ -884,14 +902,7 @@ namespace ForRobot.Model
 
                 if (disposing)
                 {
-                    this._cancelTokenSource?.Cancel();
-                    if (this.IsConnection)
-                    {
-                        this.LogMessage($"Закрытие соединения . . .");
-                        if (this.Connection.Close())
-                            this.LogMessage($"Соединение закрыто");
-                        this.Connection.Dispose();
-                    }
+                    this.CloseConnection();
                 }
                 this._disposed = true;
                 GC.SuppressFinalize(this);

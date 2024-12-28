@@ -680,7 +680,7 @@ namespace ForRobot.ViewModels
                             if (this.SelectedNameRobot == "Все")
                             {
                                 sumRobots = new int[this.RobotsCollection.Count];
-                                for (int i=0; i<this.RobotsCollection.Count; i++)
+                                for (int i=0; i<this.RobotsCollection.Where(item => item.Item2.IsConnection).Count(); i++)
                                 {
                                     sumRobots[i] = i + 1;
                                 }

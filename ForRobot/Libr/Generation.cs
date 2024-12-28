@@ -221,6 +221,10 @@ namespace ForRobot.Libr
                         Arguments = Path.GetFullPath($"Scripts/{this.GenaratorName(detal)}") + " " + string.Join(" ", args)
                     }
                 };
+                process.ErrorDataReceived += (s, e) => 
+                {
+                    this.LogErrorMessage(e.Data);
+                };
                 process.Start();
                 string outStr = process.StandardError.ReadToEnd();
                 process.WaitForExit();

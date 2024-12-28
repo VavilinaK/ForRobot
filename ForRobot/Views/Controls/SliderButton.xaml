@@ -6,7 +6,6 @@
               xmlns:local="clr-namespace:ForRobot.Views.Controls"
               mc:Ignorable="d"
               Template="{DynamicResource toggleSwitchTemplate}">
-
     <ToggleButton.Resources>
         <ControlTemplate x:Key="toggleSwitchTemplate" TargetType="{x:Type ToggleButton}">
             <Grid x:Name="toggleSwitch">

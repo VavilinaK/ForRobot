@@ -4,7 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ForRobot.Views.Pages"
-      xmlns:vm="clr-namespace:ForRobot.ViewModels"
+      xmlns:vm="clr-namespace:ForRobot.ViewModels"      
       mc:Ignorable="d"       
       d:DesignHeight="800" d:DesignWidth="1500"
       Background="#cfcfcf">
@@ -24,6 +24,8 @@
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Padding" Value="10, 0"/>
         </Style>
+
+        <!--<system:String x:Key="Partition">QuickStart</system:String>-->
     </Page.Resources>
 
     <Grid>
@@ -31,10 +33,14 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <!--<RowDefinition Height="25"/>-->
+            <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="Auto" MaxWidth="450"/>
+        </Grid.ColumnDefinitions>
 
-        <Menu Grid.Row="0">
+        <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
             <MenuItem Header="_Файл">
                 <MenuItem Header="_Создать"/>
                 <MenuItem Header="_Открыть"/>
@@ -71,12 +77,191 @@
             </MenuItem>
 
             <MenuItem Header="_Справка"/>
-        </Menu>
-
-        <WrapPanel Grid.Row="1">
+        </Menu>      
+        
+        <WrapPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
             <StackPanel Orientation="Horizontal">
                 
             </StackPanel>
         </WrapPanel>
+
+        <Grid Grid.Row="2" Grid.Column="0" Margin="15,0,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="150"/>
+            </Grid.RowDefinitions>
+
+            <TabControl Grid.Row="1" TabStripPlacement="Bottom"
+                        Background="#a3a3a3" BorderBrush="#4a4a4a" BorderThickness="1.25">
+                
+            </TabControl>
+        </Grid>
+
+        <Grid Grid.Row="2" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0" Background="#a3a3a3" BorderBrush="#4a4a4a" BorderThickness="1.25, 1.25, 1.25, 0">
+                    <ScrollViewer CanContentScroll="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                        
+                    </ScrollViewer> 
+                </Border>
+
+                <TabControl Grid.Row="1" TabStripPlacement="Bottom" Background="#a3a3a3" BorderBrush="#4a4a4a" BorderThickness="1.25">
+                    <TabControl.Resources>
+                        <Style TargetType="{x:Type TabItem}">
+                            <Setter Property="FontSize" Value="15"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                            <!--<Setter Property="MinWidth" Value="90"/>-->
+
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type TabItem}">
+                                        <Border Name="Panel">
+                                            <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                                          ContentSource="Header" Margin="15, 5"/>
+                                        </Border>
+
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter TargetName="Panel" Property="Background" Value="#4a4a4a"/>
+                                                <Setter TargetName="Panel" Property="BorderBrush" Value="#3094ff"/>
+                                                <Setter TargetName="Panel" Property="BorderThickness"  Value="1.5"/>
+                                                <Setter TargetName="ContentSite" Property="TextElement.Foreground" Value="#3094ff"/>
+                                            </Trigger>
+
+                                            <Trigger Property="IsSelected" Value="False">
+                                                <Setter TargetName="Panel" Property="Background" Value="#b0b0b0"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </TabControl.Resources>
+
+                    <TabItem Header="Свойства">
+
+                    </TabItem>
+
+                    <TabItem Header="Параметры">
+
+                    </TabItem>
+                </TabControl>
+            </Grid>
+
+            <StackPanel Grid.Column="1" Orientation="Vertical">
+                <ToggleButton Width="150" Content="Роботы"
+                          VerticalAlignment="Top" HorizontalAlignment="Right">
+                    <ToggleButton.LayoutTransform>
+                        <RotateTransform Angle="90"/>
+                    </ToggleButton.LayoutTransform>
+                </ToggleButton>
+
+                <ToggleButton Width="150" Content="Управление"
+                          VerticalAlignment="Top" HorizontalAlignment="Right">
+                    <ToggleButton.LayoutTransform>
+                        <RotateTransform Angle="90"/>
+                    </ToggleButton.LayoutTransform>
+                </ToggleButton>
+            </StackPanel>
+
+            <!--<ToggleButton Grid.Column="1" Content="Роботы" Padding="10, 0" Height="30">
+                --><!--<ToggleButton.RenderTransform>
+                    <RotateTransform Angle="90"/>
+                </ToggleButton.RenderTransform>--><!--
+            </ToggleButton>-->
+            
+            <!--<TabControl Grid.Column="1" TabStripPlacement="Right" Background="Transparent">
+                <TabControl.Resources>
+                    <Style TargetType="{x:Type TabItem}">
+                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="FontSize" Value="15"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Height" Value="90"/>
+
+                        <Setter Property="HeaderTemplate">
+                            <Setter.Value>
+                                <DataTemplate>
+                                    <ContentPresenter Content="{TemplateBinding Content}">
+                                        <ContentPresenter.LayoutTransform>
+                                            <RotateTransform Angle="90" />
+                                        </ContentPresenter.LayoutTransform>
+                                    </ContentPresenter>
+                                </DataTemplate>
+                            </Setter.Value>
+                        </Setter>
+
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="TabItem">
+                                    <Grid Name="Panel">
+                                        <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center" HorizontalAlignment="Center" ContentSource="Header" Margin="10, 5"/>
+                                    </Grid>
+
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="Panel" Property="Background" Value="LightSkyBlue"/>
+                                            <Setter TargetName="ContentSite" Property="TextElement.FontWeight" Value="DemiBold"/>
+                                        </Trigger>
+
+                                        <Trigger Property="IsSelected" Value="False">
+                                            <Setter TargetName="Panel" Property="Background" Value="Transparent"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </TabControl.Resources>
+
+                <TabItem Header="Роботы">
+                    
+                </TabItem>
+            </TabControl>-->
+        </Grid>
+
+        <DockPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Background="#FF1680C9">
+            
+        </DockPanel>
+
+        <!--<dockablz:Layout Grid.Row="1" Partition="{StaticResource Partition}">
+            <dragablz:TabablzControl Margin="8">
+                <dragablz:TabablzControl.InterTabController>
+                    <dragablz:InterTabController Partition="{StaticResource Partition}" />
+                </dragablz:TabablzControl.InterTabController>
+
+                <TabItem Header="Tab No. 1" IsSelected="True">
+                    <TextBlock>Hello World</TextBlock>
+                </TabItem>
+                <TabItem Header="Tab No. 2">
+                    <TextBlock>We Have Tearable Tabs!</TextBlock>
+                </TabItem>
+
+                <TabItem>
+                    --><!-- with context menu --><!--
+                    <TabItem.Header>
+                        <Grid>
+                            <Grid.ContextMenu>
+                                <ContextMenu>
+                                    --><!--we'll be in a popup, so give dragablz a hint as to what tab header content needs closing --><!--
+                                    <MenuItem Command="{x:Static dragablz:TabablzControl.CloseItemCommand}"/>
+                                </ContextMenu>
+                            </Grid.ContextMenu>
+                            <TextBlock>Tab No. 3</TextBlock>
+                        </Grid>
+                    </TabItem.Header>
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">I feel like an ice cold drink</TextBlock>
+                </TabItem>
+            </dragablz:TabablzControl>
+        </dockablz:Layout>-->
     </Grid>
 </Page>
