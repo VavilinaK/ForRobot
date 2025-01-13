@@ -120,6 +120,11 @@ namespace ForRobot.Model.Detals
         public virtual decimal[] XYZOffset { get; set; } = new decimal[3] { 0, 0, 0 };
 
         /// <summary>
+        /// Обратный прогиб
+        /// </summary>
+        public virtual decimal ReverseDeflection { get; set; }
+
+        /// <summary>
         /// Скорость сварки
         /// </summary>
         public virtual int WildingSpead { get; set; }
@@ -206,6 +211,7 @@ namespace ForRobot.Model.Detals
                     this.SeamsOverlap = PlitaConfig.SeamsOverlap;
                     this.TechOffsetSeamStart = PlitaConfig.TechOffsetSeamStart;
                     this.TechOffsetSeamEnd = PlitaConfig.TechOffsetSeamEnd;
+                    this.ReverseDeflection = PlitaConfig.ReverseDeflection;
                     this.WildingSpead = PlitaConfig.WildingSpead;
                     this.ProgramNom = PlitaConfig.ProgramNom;
                     this.SumReber = PlitaConfig.SumReber;

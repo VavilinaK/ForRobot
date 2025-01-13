@@ -416,6 +416,13 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Resource Include="Themes\Images\back_view.svg" />
+    <Resource Include="Themes\Images\bottom_view.svg" />
+    <Resource Include="Themes\Images\front_view.svg" />
+    <Resource Include="Themes\Images\isometric_view.svg" />
+    <Resource Include="Themes\Images\left_side_view.svg" />
+    <Resource Include="Themes\Images\right_side_view.svg" />
+    <Resource Include="Themes\Images\top_view.svg" />
     <EmbeddedResource Include="Scripts\coord_templates.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -534,7 +541,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Libr\Behavior\" />
-    <Folder Include="Model\3DViewer\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.11.20\build\Microsoft.VisualStudio.Threading.Analyzers.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.11.20\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" />

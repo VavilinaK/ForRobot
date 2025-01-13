@@ -830,7 +830,8 @@ namespace ForRobot.Model
                     throw new Exception($"Ошибка удаления файла {sPathToFile}");
                 else
                     this.LogMessage($"Файл программы {sPathToFile} удалён");
-                Task.Run(async () => await this.GetFilesAsync()).Wait();
+                //Task.Run(async () => await this.GetFilesAsync()).Wait();
+                Task.Run(async () => await this.GetFilesAsync());
             }
             catch (Exception ex)
             {

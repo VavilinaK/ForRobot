@@ -24,8 +24,46 @@
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Padding" Value="10, 0"/>
         </Style>
-
+        
         <!--<system:String x:Key="Partition">QuickStart</system:String>-->
+
+        <Style TargetType="{x:Type TabControl}">
+            <Setter Property="Background" Value="{StaticResource {x:Static SystemColors.InfoBrushKey}}"/>
+            <Setter Property="BorderBrush" Value="#4a4a4a"/>
+            <Setter Property="BorderThickness" Value="3"/>
+        </Style>
+
+        <Style TargetType="{x:Type TabItem}">
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <!--<Setter Property="MinWidth" Value="90"/>-->
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TabItem}">
+                        <Border Name="Panel">
+                            <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                              ContentSource="Header" Margin="15, 5"/>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <!--<Setter TargetName="Panel" Property="Background" Value="#4a4a4a"/>-->
+                                <Setter TargetName="Panel" Property="Background" Value="#4a4a4a"/>
+                                <Setter TargetName="Panel" Property="BorderBrush" Value="{StaticResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                <!--<Setter TargetName="Panel" Property="BorderThickness"  Value="1.5"/>-->
+                                <Setter TargetName="Panel" Property="Margin"  Value="0,-2,0,0"/>
+                                <Setter TargetName="ContentSite" Property="TextElement.Foreground" Value="#3094ff"/>
+                            </Trigger>
+
+                            <Trigger Property="IsSelected" Value="False">
+                                <Setter TargetName="Panel" Property="Background" Value="#b0b0b0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Page.Resources>
 
     <Grid>
@@ -33,7 +71,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="25"/>
+            <!--<RowDefinition Height="25"/>-->
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -46,7 +84,10 @@
                 <MenuItem Header="_Открыть"/>
                 <MenuItem Header="_Сохранить"/>
                 <MenuItem Header="_Сохранить как"/>
-                <Separator />
+                <Separator/>
+                <MenuItem Header="_Импорт параметров"/>
+                <MenuItem Header="_Экспорт параметров"/>
+                <Separator/>
                 <MenuItem Header="_Выход" />
             </MenuItem>
 
@@ -58,7 +99,6 @@
                 <MenuItem Header="_Выделить область"/>
                 <MenuItem Header="_Дублировать выбранное"/>
                 <MenuItem Header="_Удалить"/>
-
             </MenuItem>
 
             <MenuItem Header="_Генерация">
@@ -67,33 +107,156 @@
                 <MenuItem Header="_Настройки" />
             </MenuItem>
 
-            <MenuItem Header="_Импорт/Экспорт">
+            <!--<MenuItem Header="_Импорт/Экспорт">
                 <MenuItem Header="_Импорт параметров"/>
                 <MenuItem Header="_Экспорт параметров"/>
-            </MenuItem>
+            </MenuItem>-->
 
             <MenuItem Header="_Окно">
                 <MenuItem Header="_Расположение"/>
             </MenuItem>
 
             <MenuItem Header="_Справка"/>
-        </Menu>      
-        
-        <WrapPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
-            <StackPanel Orientation="Horizontal">
-                
-            </StackPanel>
-        </WrapPanel>
+        </Menu>
 
-        <Grid Grid.Row="2" Grid.Column="0" Margin="15,0,0,0">
+        <!--<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" id="3-Dimension-Streamline-Cyber" height="24" width="24">
+            <desc>3 Dimension Streamline Icon: https://streamlinehq.com</desc>
+            <path fill="#ffffff" d="M12 8.425L5.8644 11.4887V20.4161L12 23.3602L18.1356 20.4171V11.4887L12 8.425Z" stroke-width="1"></path>
+            <path fill="#bbd8ff" d="M12 14.5565V23.2487L18.1356 20.1809V11.4887L12 14.5565Z" stroke-width="1"></path>
+            <path stroke="#092f63" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M18.1356 20.4171V11.4887L12 14.5565L5.8644 11.4887V20.4171" stroke-width="1"></path>
+            <path stroke="#092f63" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M12 0.7513V23.2487" stroke-width="1"></path>
+            <path stroke="#092f63" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M8.9322 3.8191L12 0.7513L15.0678 3.8191" stroke-width="1"></path>
+            <path stroke="#092f63" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M3.6801 16.5925L0.7513 18.0569L1.5367 21.2352" stroke-width="1"></path>
+            <path stroke="#092f63" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M12 23.2487L0.7513 18.0569" stroke-width="1"></path>
+            <path stroke="#092f63" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M20.3199 16.5925L23.2487 18.0569L22.4633 21.2352" stroke-width="1"></path>
+            <path stroke="#092f63" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M12 23.2487L23.2487 18.0569" stroke-width="1"></path>
+            <path stroke="#092f63" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M18.1356 11.4887L14.0452 9.4435" stroke-width="1"></path>
+            <path stroke="#092f63" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M9.9548 9.4435L5.8644 11.4887" stroke-width="1"></path>
+        </svg>-->
+
+        <Menu Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+            <Menu.Resources>
+                <ControlTemplate x:Key="MenuItemTemplate" TargetType="{x:Type MenuItem}">
+                    <Button Content="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}}"
+                            ToolTip="{Binding Header, RelativeSource={RelativeSource TemplatedParent}}"
+                            Width="Auto" Margin="3,2" Padding="5"/>
+                </ControlTemplate>
+
+                <ControlTemplate x:Key="SeparatorTemplate" TargetType="{x:Type MenuItem}">
+                    <Separator HorizontalAlignment="Right" Margin="10,2">
+                        <Separator.LayoutTransform>
+                            <RotateTransform Angle="90" />
+                        </Separator.LayoutTransform>
+                    </Separator>
+                </ControlTemplate>
+            </Menu.Resources>
+
+            <Menu.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel HorizontalAlignment="Left" Margin="10,0"/>
+                </ItemsPanelTemplate>
+            </Menu.ItemsPanel>
+
+            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Создать">
+                <MenuItem.Icon>
+                    <Path Stretch="Uniform"  Fill="#FF03A436"
+                          Stroke="#FF00491E" StrokeThickness="0"
+                          Data="M13.81 22H6C4.89 22 4 21.11 4 20V4C4 2.9 4.89 2 6 2H14L20 8V13.09C19.67 13.04 19.34 13 19 13S18.33 13.04 18 13.09V9H13V4H6V20H13.09C13.21 20.72 13.46 21.39 13.81 22M23 18H20V15H18V18H15V20H18V23H20V20H23V18Z"/>
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Открыть">
+                <MenuItem.Icon>
+                    <Path Stretch="Uniform"  Fill="#FFFFBA01"
+                        Data="M20,6A2,2 0 0,1 22,8V18A2,2 0 0,1 20,20H4C2.89,20 2,19.1 2,18V6C2,4.89 2.89,4 4,4H10L12,6H20M19.25,13H16V9H14V13H10.75L15,17.25"/>
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Сохранить">
+                <MenuItem.Icon>
+                    <Path Stretch="Uniform" Fill="#FF3E3E3E"
+                          Data="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"/>
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Сохранить как">
+                <MenuItem.Icon>
+                    <Path Stretch="Uniform" Fill="#FF3E3E3E"
+                          Data="M17,7V3H7V7H17M14,17A3,3 0 0,0 17,14A3,3 0 0,0 14,11A3,3 0 0,0 11,14A3,3 0 0,0 14,17M19,1L23,5V17A2,2 0 0,1 21,19H7C5.89,19 5,18.1 5,17V3A2,2 0 0,1 7,1H19M1,7H3V21H17V23H3A2,2 0 0,1 1,21V7Z"/>
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <MenuItem Template="{StaticResource SeparatorTemplate}"/>
+
+            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Отменить">
+                <MenuItem.Icon>
+                    <Path Stretch="Uniform" Fill="#FF00C5FF"
+                          Data="M20 13.5C20 17.09 17.09 20 13.5 20H6V18H13.5C16 18 18 16 18 13.5S16 9 13.5 9H7.83L10.91 12.09L9.5 13.5L4 8L9.5 2.5L10.92 3.91L7.83 7H13.5C17.09 7 20 9.91 20 13.5Z"/>
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Вернуть">
+                <MenuItem.Icon>
+                    <Path Stretch="Uniform" Fill="#FF00C5FF"
+                          Data="M10.5 18H18V20H10.5C6.91 20 4 17.09 4 13.5S6.91 7 10.5 7H16.17L13.08 3.91L14.5 2.5L20 8L14.5 13.5L13.09 12.09L16.17 9H10.5C8 9 6 11 6 13.5S8 18 10.5 18Z"/>
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <MenuItem Template="{StaticResource SeparatorTemplate}"/>
+
+            <MenuItem Header="Генерировать">
+                <MenuItem.Template>
+                    <ControlTemplate TargetType="{x:Type MenuItem}">
+                        <DockPanel TextBlock.FontSize="15px" Height="30">
+                            <Path Stroke="Transparent" Fill="Black" Stretch="Uniform"
+                                  Data="M248,152a8,8,0,0,1-8,8H224v16a8,8,0,0,1-16,0V160H192a8,8,0,0,1,0-16h16V128a8,8,0,0,1,16,0v16h16A8,8,0,0,1,248,152ZM64,68H76V80a8,8,0,0,0,16,0V68h12a8,8,0,0,0,0-16H92V40a8,8,0,0,0-16,0V52H64a8,8,0,0,0,0,16ZM184,192h-8v-8a8,8,0,0,0-16,0v8h-8a8,8,0,0,0,0,16h8v8a8,8,0,0,0,16,0v-8h8a8,8,0,0,0,0-16Zm-2.3-74.3L75.3,224a15.9,15.9,0,0,1-22.6,0L32,203.3a15.9,15.9,0,0,1,0-22.6L180.7,32a16.1,16.1,0,0,1,22.6,0L224,52.7a15.9,15.9,0,0,1,0,22.6l-42.3,42.4ZM155.3,80,176,100.7,212.7,64h0L192,43.3Z"/>
+
+                            <Label Content="{Binding Header, RelativeSource={RelativeSource TemplatedParent}}"/>
+                        </DockPanel>
+                    </ControlTemplate>
+                </MenuItem.Template>
+            </MenuItem>
+
+            <MenuItem Template="{StaticResource SeparatorTemplate}"/>
+
+            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Уменьшить">
+                <MenuItem.Icon>
+                    <Path Stretch="Uniform" Fill="#FF002EFF"
+                          Data="M15.5,14H14.71L14.43,13.73C15.41,12.59 16,11.11 16,9.5A6.5,6.5 0 0,0 9.5,3A6.5,6.5 0 0,0 3,9.5A6.5,6.5 0 0,0 9.5,16C11.11,16 12.59,15.41 13.73,14.43L14,14.71V15.5L19,20.5L20.5,19L15.5,14M9.5,14C7,14 5,12 5,9.5C5,7 7,5 9.5,5C12,5 14,7 14,9.5C14,12 12,14 9.5,14M7,9H12V10H7V9Z"/>
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Увеличить">
+                <MenuItem.Icon>
+                    <Path Stretch="Uniform" Fill="#FF002EFF"
+                          Data="M15.5,14L20.5,19L19,20.5L14,15.5V14.71L13.73,14.43C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.43,13.73L14.71,14H15.5M9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14M12,10H10V12H9V10H7V9H9V7H10V9H12V10Z"/>
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <MenuItem Template="{StaticResource SeparatorTemplate}"/>
+
+            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Увеличить">
+                <!--<MenuItem.Icon>
+                    <Image Source="/InterfaceOfRobots;component/Themes/Images/top_view.svg"/>
+                </MenuItem.Icon>-->
+            </MenuItem>
+
+        </Menu>
+        
+        <Grid Grid.Row="2" Grid.Column="0" Margin="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="150"/>
             </Grid.RowDefinitions>
 
-            <TabControl Grid.Row="1" TabStripPlacement="Bottom"
-                        Background="#a3a3a3" BorderBrush="#4a4a4a" BorderThickness="1.25">
-                
+            <TabControl Grid.Row="1" TabStripPlacement="Bottom">
+                <TabItem Header="Статус">
+
+                </TabItem>
+
+                <TabItem Header="Сообщения">
+
+                </TabItem>
             </TabControl>
         </Grid>
 
@@ -115,12 +278,54 @@
                     </ScrollViewer> 
                 </Border>
 
-                <TabControl Grid.Row="1" TabStripPlacement="Bottom" Background="#a3a3a3" BorderBrush="#4a4a4a" BorderThickness="1.25">
+                <!--<TabControl Grid.Row="0" Grid.ColumnSpan="2" TabStripPlacement="Right">
                     <TabControl.Resources>
                         <Style TargetType="{x:Type TabItem}">
                             <Setter Property="FontSize" Value="15"/>
                             <Setter Property="Foreground" Value="Black"/>
-                            <!--<Setter Property="MinWidth" Value="90"/>-->
+                            <Setter Property="Width" Value="150"/>
+
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type TabItem}">
+                                        <Border Name="Panel">
+                                            <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                              ContentSource="Header" Margin="15, 5"/>
+                                        </Border>
+
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter TargetName="Panel" Property="Background" Value="#4a4a4a"/>
+                                                <Setter TargetName="Panel" Property="BorderBrush" Value="{StaticResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                                                <Setter TargetName="Panel" Property="Margin"  Value="0,-2,0,0"/>
+                                                <Setter TargetName="ContentSite" Property="TextElement.Foreground" Value="#3094ff"/>
+                                            </Trigger>
+
+                                            <Trigger Property="IsSelected" Value="False">
+                                                <Setter TargetName="Panel" Property="Background" Value="#b0b0b0"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </TabControl.Resources>
+                    
+                    <TabItem Header="Роботы">
+
+                    </TabItem>
+
+                    <TabItem Header="Параметры">
+
+                    </TabItem>
+                </TabControl>-->
+
+                <TabControl Grid.Row="1" Grid.Column="0"  TabStripPlacement="Bottom">
+                    <!--<TabControl.Resources>
+                        <Style TargetType="{x:Type TabItem}">
+                            <Setter Property="FontSize" Value="15"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                            --><!--<Setter Property="MinWidth" Value="90"/>--><!--
 
                             <Setter Property="Template">
                                 <Setter.Value>
@@ -146,7 +351,7 @@
                                 </Setter.Value>
                             </Setter>
                         </Style>
-                    </TabControl.Resources>
+                    </TabControl.Resources>-->
 
                     <TabItem Header="Свойства">
 
@@ -229,39 +434,8 @@
             </TabControl>-->
         </Grid>
 
-        <DockPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Background="#FF1680C9">
-            
-        </DockPanel>
+        <!--<DockPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Background="#FF1680C9">
 
-        <!--<dockablz:Layout Grid.Row="1" Partition="{StaticResource Partition}">
-            <dragablz:TabablzControl Margin="8">
-                <dragablz:TabablzControl.InterTabController>
-                    <dragablz:InterTabController Partition="{StaticResource Partition}" />
-                </dragablz:TabablzControl.InterTabController>
-
-                <TabItem Header="Tab No. 1" IsSelected="True">
-                    <TextBlock>Hello World</TextBlock>
-                </TabItem>
-                <TabItem Header="Tab No. 2">
-                    <TextBlock>We Have Tearable Tabs!</TextBlock>
-                </TabItem>
-
-                <TabItem>
-                    --><!-- with context menu --><!--
-                    <TabItem.Header>
-                        <Grid>
-                            <Grid.ContextMenu>
-                                <ContextMenu>
-                                    --><!--we'll be in a popup, so give dragablz a hint as to what tab header content needs closing --><!--
-                                    <MenuItem Command="{x:Static dragablz:TabablzControl.CloseItemCommand}"/>
-                                </ContextMenu>
-                            </Grid.ContextMenu>
-                            <TextBlock>Tab No. 3</TextBlock>
-                        </Grid>
-                    </TabItem.Header>
-                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">I feel like an ice cold drink</TextBlock>
-                </TabItem>
-            </dragablz:TabablzControl>
-        </dockablz:Layout>-->
+        </DockPanel>-->
     </Grid>
 </Page>

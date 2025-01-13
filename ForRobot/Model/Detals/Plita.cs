@@ -647,6 +647,21 @@ namespace ForRobot.Model.Detals
             }
         }
 
+        [JsonProperty("reverse_deflection")]
+        [JsonConverter(typeof(JsonCommentConverter), "Обратный прогиб")]
+        /// <summary>
+        /// Обратный прогиб
+        /// </summary>
+        public override decimal ReverseDeflection
+        {
+            get => base.ReverseDeflection;
+            set
+            {
+                base.ReverseDeflection = value;
+                this.Change?.Invoke(this, null);
+            }
+        }
+
         [JsonProperty("d_W2")]
         /// <summary>
         /// Коллекция рёбер

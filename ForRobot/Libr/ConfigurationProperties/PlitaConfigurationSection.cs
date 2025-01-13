@@ -155,6 +155,13 @@ namespace ForRobot.Libr.ConfigurationProperties
             set { this["DistanceForSearch"] = value; }
         }
 
+        [ConfigurationProperty("ReverseDeflection")]
+        public decimal ReverseDeflection
+        {
+            get { return (decimal)this["ReverseDeflection"]; }
+            set { this["ReverseDeflection"] = value; }
+        }
+
         [ConfigurationProperty("WildingSpead")]
         public int WildingSpead
         {

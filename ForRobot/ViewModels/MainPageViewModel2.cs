@@ -117,8 +117,6 @@ namespace ForRobot.ViewModels
 
         private RelayCommand _propertiesCommand;
 
-        //private RelayCommand _deleteDropFileCommand;
-
 
         private IAsyncCommand _generateProgramCommand;
 
@@ -678,18 +676,16 @@ namespace ForRobot.ViewModels
 
                             int[] sumRobots;
                             if (this.SelectedNameRobot == "Все")
-                            {
+                            { 
                                 sumRobots = new int[this.RobotsCollection.Count];
-                                for (int i=0; i<this.RobotsCollection.Where(item => item.Item2.IsConnection).Count(); i++)
+                                for (int i=0; i<this.RobotsCollection.Count(); i++)
                                 {
                                     sumRobots[i] = i + 1;
                                 }
                             }
                             else
-                            {
                                 sumRobots = new int[1] { this.RobotsCollection.IndexOf(this.RobotsCollection.Where(p => p.Item1 == this.SelectedNameRobot).ToArray()[0]) + 1 };
-                            }
-                            jObject.Add("robots", JToken.FromObject(sumRobots));
+                            jObject.Add("robots", JToken.FromObject(sumRobots)); // Запись в json-строку выбранных для генерации роботов (не зависит от подключения).
 
                             var sch = WeldingSchemas.GetSchema(this.DetalObject.WeldingSchema);
                             jObject.Add("welding_sequence", JToken.FromObject(sch));
@@ -703,88 +699,109 @@ namespace ForRobot.ViewModels
                             generationProcess.Log += new EventHandler<LogEventArgs>(WreteLog);
                             generationProcess.LogError += new EventHandler<LogErrorEventArgs>(WreteLogError);
                             generationProcess.Start(this.DetalObject);
+                            
+                            // Проверка успеха генерации
+                            if (this.SelectedNameRobot == "Все")
+                            {
+                                for (int i = 0; i < this.RobotsCollection.Count(); i++)
+                                    generationProcess.ProccesEnd(this.RobotsCollection[i].Item2.PathProgramm);
+                            }
+                            else
+                            {
+                                if (!generationProcess.ProccesEnd(this.RobotForControl.PathProgramm))
+                                    return;
+                            }
 
-                            if (!generationProcess.ProccesEnd() || !this.SendingGeneratedFiles) // Проверка успеха генерации и проверка, нужно ли отправлять файлы на робота/ов.
+                            if (!this.SendingGeneratedFiles)
                                 return;
 
-                            if (this.SelectedNameRobot == "Все")
-                                foreach (var robot in this.RobotsCollection.Where(item => item.Item2.IsConnection))
-                                {
-                                    if (string.IsNullOrWhiteSpace(robot.Item2.PathProgramm))
-                                    {
-                                        System.Windows.MessageBox.Show("Не выбрана папка программы", $"{robot.Item1}", MessageBoxButton.OK, MessageBoxImage.Stop);
-                                        return;
-                                    }
-
-                                    await Task.Run<bool>(() => robot.Item2.DeleteFileOnPC());
-
-                                    if (!await Task.Run<bool>(() => robot.Item2.CopyToPC(string.Join("", this.ProgrammName, ".src"))))
-                                        continue;
-
-                                    if (System.Windows.MessageBox.Show($"Удалить все файлы из {robot.Item2.PathControllerFolder}?", $"{robot.Item1}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
-                                        MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK)
-                                    {
-                                        await robot.Item2.GetFilesAsync();
-                                        foreach (var item in robot.Item2.Files)
-                                        {
-                                            var folder = item.Search(robot.Item2.PathControllerFolder.Split(new char[] { '\\' }).Last());
-
-                                            if (folder == null)
-                                                continue;
-
-                                            foreach(var child in folder.Children.Where(f => f.Type == Model.Controls.FileTypes.DataList || f.Type == Model.Controls.FileTypes.Program))
-                                            {
-                                                 await Task.Run(() => robot.Item2.DeleteFile(Path.Combine(ForRobot.Libr.Client.JsonRpcConnection.DefaulRoot, child.Path)));
-                                            }
-                                        }
-                                    }
-                                    else
-                                        continue;
-
-                                    if (System.Windows.MessageBox.Show($"Копировать файлы программы в {robot.Item2.PathControllerFolder}?", $"{robot.Item1}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
-                                            MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK && await Task.Run<bool>(() => robot.Item2.Copy(this.ProgrammName)))
-                                        await Task.Run(() => robot.Item2.SelectProgramByName(string.Join("", this.ProgrammName, ".src")));
-                                    else
-                                        continue;
-                                }
-                            else if(this.RobotForControl.IsConnection)
+                            Exception ex;
+                            if (this.RobotsCollection.Count > 0 && string.IsNullOrWhiteSpace(this.RobotsCollection[0].Item2.PathProgramm))
                             {
-                                if (string.IsNullOrWhiteSpace(this.RobotForControl.PathProgramm))
+                                ex = new Exception($"{DateTime.Now.ToString("HH:mm:ss")} Отказ в передачи файлов: не выбрана папка программы.\n");
+                                WreteLogError(this, new LogErrorEventArgs(ex.Message, ex));
+                                System.Windows.MessageBox.Show(String.Format("{0}", ex.Message), "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                                return;
+                            }
+
+                            if (this.SelectedNameRobot == "Все")
+                                for (int i = 0; i < this.RobotsCollection.Count(); i++)
                                 {
-                                    System.Windows.MessageBox.Show("Не выбрана папка программы", $"{this.SelectedNameRobot}", MessageBoxButton.OK, MessageBoxImage.Stop);
-                                    return;
-                                }
+                                    if (System.Windows.MessageBox.Show($"Передать файлы программы?\n" +
+                                        $"Из папки {this.RobotsCollection[i].Item2.PathControllerFolder} будут удалены все файлы.", $"{this.RobotsCollection[i].Item1}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
+                                        MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) != MessageBoxResult.OK)
+                                        continue;
 
-                                await Task.Run<bool>(() => this.RobotForControl.DeleteFileOnPC());
-
-                                if (!await Task.Run<bool>(() => this.RobotForControl.CopyToPC(string.Join("", this.ProgrammName, ".src"))))
-                                    return;
-
-                                if (System.Windows.MessageBox.Show($"Удалить все файлы из {this.RobotForControl.PathControllerFolder}?", $"{this.SelectedNameRobot}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
-                                    MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK)
-                                {
-                                    await this.RobotForControl.GetFilesAsync();
-                                    foreach (var item in this.RobotForControl.Files)
+                                    if (!this.RobotsCollection[i].Item2.IsConnection)
                                     {
-                                        var folder = item.Search(this.RobotForControl.PathControllerFolder.Split(new char[] { '\\' }).Last());
+                                        ex = new StreamJsonRpc.ConnectionLostException($"{DateTime.Now.ToString("HH:mm:ss")} {this.RobotsCollection[i].Item2.Host}:{this.RobotsCollection[i].Item2.Port} Отказ в передачи файлов: отсутствует соединение с {i + 1} роботом.\n");
+                                        WreteLogError(this, new LogErrorEventArgs(ex.Message, ex));
+                                        System.Windows.MessageBox.Show(String.Format("{0}", ex.Message), "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                                        continue;
+                                    }
+
+                                    await Task.Run<bool>(() => this.RobotsCollection[i].Item2.DeleteFileOnPC());
+
+                                    if (!await Task.Run<bool>(() => this.RobotsCollection[i].Item2.CopyToPC(string.Join("", this.ProgrammName, ".src"))))
+                                        continue;
+
+                                    await this.RobotsCollection[i].Item2.GetFilesAsync();
+
+                                    for(int y = 0; y < this.RobotsCollection[i].Item2.Files.Count; y++)
+                                    {
+                                        var item = this.RobotsCollection[i].Item2.Files[y];
+                                        var folder = item.Search(this.RobotsCollection[i].Item2.PathControllerFolder.Split(new char[] { '\\' }).Last());
 
                                         if (folder == null)
                                             continue;
 
                                         foreach (var child in folder.Children.Where(f => f.Type == Model.Controls.FileTypes.DataList || f.Type == Model.Controls.FileTypes.Program))
                                         {
-                                            await Task.Run(() => this.RobotForControl.DeleteFile(Path.Combine(ForRobot.Libr.Client.JsonRpcConnection.DefaulRoot, child.Path)));
+                                            await Task.Run(() => this.RobotsCollection[i].Item2.DeleteFile(Path.Combine(ForRobot.Libr.Client.JsonRpcConnection.DefaulRoot, child.Path)));
                                         }
                                     }
+
+                                    if (!await Task.Run<bool>(() => this.RobotsCollection[i].Item2.Copy(this.ProgrammName)))
+                                        continue;
+
+                                    await Task.Run(() => this.RobotsCollection[i].Item2.SelectProgramByName(string.Join("", this.ProgrammName, ".src")));
                                 }
-                                else
+                            else if(this.RobotForControl.IsConnection)
+                            {
+                                if (System.Windows.MessageBox.Show($"Передать файлы программы?\n" +
+                                    $"Из папки {this.RobotForControl.PathControllerFolder} будут удалены все файлы.", this.SelectedNameRobot, MessageBoxButton.OKCancel, MessageBoxImage.Question,
+                                    MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) != MessageBoxResult.OK)
                                     return;
 
-                                if (System.Windows.MessageBox.Show($"Копировать файлы программы в {this.RobotForControl.PathControllerFolder}?", $"{this.SelectedNameRobot}", MessageBoxButton.OKCancel, MessageBoxImage.Question,
-                                    MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK && await Task.Run<bool>(() => this.RobotForControl.Copy(this.ProgrammName)))
-                                    await Task.Run(() => this.RobotForControl.SelectProgramByName(string.Join("", this.ProgrammName, ".src")));
-                                else
+                                await Task.Run<bool>(() => this.RobotForControl.DeleteFileOnPC());
+
+                                if (!await Task.Run<bool>(() => this.RobotForControl.CopyToPC(string.Join("", this.ProgrammName, ".src"))))
                                     return;
+
+                                for (int i = 0; i < this.RobotForControl.Files.Count; i++)
+                                {
+                                    var item = this.RobotForControl.Files[i];
+                                    var folder = item.Search(this.RobotForControl.PathControllerFolder.Split(new char[] { '\\' }).Last());
+
+                                    if (folder == null)
+                                        continue;
+
+                                    foreach (var child in folder.Children.Where(f => f.Type == Model.Controls.FileTypes.DataList || f.Type == Model.Controls.FileTypes.Program))
+                                    {
+                                        await Task.Run(() => this.RobotForControl.DeleteFile(Path.Combine(ForRobot.Libr.Client.JsonRpcConnection.DefaulRoot, child.Path)));
+                                    }
+                                }
+
+                                if (!await Task.Run<bool>(() => this.RobotForControl.Copy(this.ProgrammName)))
+                                    return;
+
+                                await Task.Run(() => this.RobotForControl.SelectProgramByName(string.Join("", this.ProgrammName, ".src")));
+                            }
+                            else
+                            {
+                                ex = new StreamJsonRpc.ConnectionLostException($"{DateTime.Now.ToString("HH:mm:ss")} {this.RobotForControl.Host}:{this.RobotForControl.Port} Отказ в передачи файлов: отсутствует соединение с выбранным роботом.\n");
+                                WreteLogError(this, new LogErrorEventArgs(ex.Message, ex));
+                                System.Windows.MessageBox.Show(String.Format("{0}", ex.Message), "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                             }
                         }
                         catch(Exception e)
