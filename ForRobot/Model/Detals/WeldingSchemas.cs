@@ -99,6 +99,11 @@ namespace ForRobot.Model.Detals
             }
         }
 
+        //public static FullyObservableCollection<SchemaRib> EmptyRib(ObservableCollection<SchemaRib> schema)
+        //{
+        //    return new FullyObservableCollection<SchemaRib>(schema.ToList<SchemaRib>());
+        //}
+
         /// <summary>
         /// Вывод схемы для передачи
         /// </summary>

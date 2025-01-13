@@ -710,7 +710,14 @@ namespace ForRobot.Model.Detals
                     if (this.SumReber <= this.RibsCollection.Count)
                     {
                         this.RibsCollection = new FullyObservableCollection<Rib>(this.RibsCollection.Take(this.SumReber).ToList<Rib>());
-                        this.WeldingSchema = new FullyObservableCollection<WeldingSchemas.SchemaRib>(this.WeldingSchema.Take(this.SumReber).ToList<WeldingSchemas.SchemaRib>());
+                        //this.WeldingSchema = new FullyObservableCollection<WeldingSchemas.SchemaRib>(this.WeldingSchema.Take(this.SumReber).ToList<WeldingSchemas.SchemaRib>());
+                        if (this.SelectedWeldingSchema != ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit))
+                            this.WeldingSchema = this.FillWeldingSchema();
+                        else
+                        {
+                            this.WeldingSchema = new FullyObservableCollection<WeldingSchemas.SchemaRib>(this.WeldingSchema.Take(this.SumReber).ToList<WeldingSchemas.SchemaRib>());
+                            //this.WeldingSchema = ForRobot.Model.Detals.WeldingSchemas.EmptyRib(this.WeldingSchema);
+                        }
                     }
                     else
                     {

@@ -157,35 +157,7 @@ namespace ForRobot.Libr
             else
                 this.LogErrorMessage($"Файл {Path.Combine(sPath, string.Join("", this.FileName, ".src"))} не найден");
             return result;
-        }
-
-        ///// <summary>
-        ///// Проверка завершения процесса генерации
-        ///// </summary>
-        ///// <returns></returns>
-        //public bool ProccesEnd()
-        //{
-        //    bool res = false;
-        //    try
-        //    {
-        //        // Ограничение проверки генерации папками R1 и R2 (надо бы как-то сделать ненезависимым).
-        //        foreach(var subdir in Directory.GetDirectories(this.PathOut).Where(path => path.Split(new char[] { '\\' }).Last() == "R1" || path.Split(new char[] { '\\' }).Last() == "R2"))
-        //        {
-        //            if (File.Exists(Path.Combine(subdir, string.Join("", this.FileName, ".src"))))
-        //            {
-        //                this.LogMessage($"Файл {string.Join("", this.FileName, ".src")} сгенерирован в {subdir}");
-        //                res = true;
-        //            }
-        //            else
-        //                this.LogErrorMessage($"Файл {Path.Combine(subdir, string.Join("", this.FileName, ".src"))} не найден");
-        //        }
-        //    }
-        //    catch(Exception ex)
-        //    {
-        //        this.LogErrorMessage(ex.Message, ex);
-        //    }
-        //    return res;
-        //}
+        }        
 
         public void Start(Detal detal)
         {
