@@ -79,6 +79,12 @@
     <Reference Include="Dragablz, Version=0.0.3.234, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dragablz.0.0.3.234\lib\net45\Dragablz.dll</HintPath>
     </Reference>
+    <Reference Include="FFImageLoading, Version=2.4.11.982, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Xamarin.FFImageLoading.2.4.11.982\lib\netstandard1.0\FFImageLoading.dll</HintPath>
+    </Reference>
+    <Reference Include="FFImageLoading.Platform, Version=2.4.11.982, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Xamarin.FFImageLoading.2.4.11.982\lib\netstandard1.0\FFImageLoading.Platform.dll</HintPath>
+    </Reference>
     <Reference Include="GalaSoft.MvvmLight, Version=5.4.1.0, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
     </Reference>
@@ -142,6 +148,9 @@
     </Reference>
     <Reference Include="Renci.SshNet, Version=2024.1.0.0, Culture=neutral, PublicKeyToken=1cee9f8bde3db106, processorArchitecture=MSIL">
       <HintPath>..\packages\SSH.NET.2024.1.0\lib\net462\Renci.SshNet.dll</HintPath>
+    </Reference>
+    <Reference Include="SkiaSharp, Version=1.68.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\packages\SkiaSharp.1.68.0\lib\net45\SkiaSharp.dll</HintPath>
     </Reference>
     <Reference Include="StreamJsonRpc, Version=2.18.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\StreamJsonRpc.2.18.48\lib\netstandard2.0\StreamJsonRpc.dll</HintPath>
@@ -237,6 +246,9 @@
     <Compile Include="Views\Controls\Breadcrumb.xaml.cs">
       <DependentUpon>Breadcrumb.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Controls\FileTabControl.xaml.cs">
+      <DependentUpon>FileTabControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Controls\SliderButton.xaml.cs">
       <DependentUpon>SliderButton.xaml</DependentUpon>
     </Compile>
@@ -265,6 +277,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\Breadcrumb.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\FileTabControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -416,13 +432,14 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Resource Include="Themes\Images\back_view.svg" />
-    <Resource Include="Themes\Images\bottom_view.svg" />
+    <Resource Include="Themes\Images\back_view.png" />
+    <Resource Include="Themes\Images\bottom_view.png" />
+    <Resource Include="Themes\Images\front_view.png" />
+    <Resource Include="Themes\Images\isometric_view.png" />
+    <Resource Include="Themes\Images\left_side_view.png" />
+    <Resource Include="Themes\Images\right_side_view.png" />
+    <Resource Include="Themes\Images\top_view.png" />
     <Resource Include="Themes\Images\front_view.svg" />
-    <Resource Include="Themes\Images\isometric_view.svg" />
-    <Resource Include="Themes\Images\left_side_view.svg" />
-    <Resource Include="Themes\Images\right_side_view.svg" />
-    <Resource Include="Themes\Images\top_view.svg" />
     <EmbeddedResource Include="Scripts\coord_templates.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -549,5 +566,7 @@
       <ErrorText>Данный проект ссылается на пакеты NuGet, отсутствующие на этом компьютере. Используйте восстановление пакетов NuGet, чтобы скачать их.  Дополнительную информацию см. по адресу: http://go.microsoft.com/fwlink/?LinkID=322105. Отсутствует следующий файл: {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.11.20\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.11.20\build\Microsoft.VisualStudio.Threading.Analyzers.targets'))" />
+    <Error Condition="!Exists('..\packages\SkiaSharp.1.68.0\build\net45\SkiaSharp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SkiaSharp.1.68.0\build\net45\SkiaSharp.targets'))" />
   </Target>
+  <Import Project="..\packages\SkiaSharp.1.68.0\build\net45\SkiaSharp.targets" Condition="Exists('..\packages\SkiaSharp.1.68.0\build\net45\SkiaSharp.targets')" />
 </Project>

@@ -897,8 +897,9 @@
 
                                         <control:NavigationTreeView Grid.Row="6"
                                                                     DataFileIsHidden="{Binding Path=Settings.AccessDataFile, Source={x:Static Application.Current}, Mode=TwoWay}"
+                                                                    SelectedFile="{Binding Path=DataContext.SelectedRobot.Item2.RobotProgramName, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
                                                                     SelectItemCommand="{Binding Path=DataContext.SelectFileCommandAsync, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
-                                                                    SelectFolderCommand="{Binding Path=DataContext.SelectFolderCommand, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
+                                                                    SelectFolderCommand="{Binding Path=DataContext.SelectFolderCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
                                                                     DeleteNodeCommand="{Binding Path=DataContext.DeleteFileCommandAsync, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}">
 
                                             <control:NavigationTreeView.FileCollection>

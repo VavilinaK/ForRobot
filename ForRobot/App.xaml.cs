@@ -118,80 +118,58 @@ namespace ForRobot
         {
             try
             {
-                using (mutex = new System.Threading.Mutex(true, ResourceAssembly.GetName().Name, out bool newMutex))
+                //foreach (var i in e.Args) // Исп. для открытия файла модели "с помощью"
+                //{
+                //    MessageBox.Show(i);
+                //}
+
+                // Проверка версии файла в папке с обновлением и запрос к пользователю.
+                if (Settings.AutoUpdate && 
+                    File.Exists(Path.Combine(App.Current.UpdatePath, $"{ResourceAssembly.GetName().Name}.exe")) &&
+                    new Version(FileVersionInfo.GetVersionInfo(Path.Combine(App.Current.UpdatePath, $"{ResourceAssembly.GetName().Name}.exe")).ProductVersion) > Assembly.GetExecutingAssembly().GetName().Version &&
+                    (!Settings.InformUser || MessageBox.Show($"Обнаружено обновление до версии {FileVersionInfo.GetVersionInfo(Path.Combine(App.Current.UpdatePath, $"{ResourceAssembly.GetName().Name}.exe")).ProductVersion}\nОбновить приложение?", "Обновление интерфейса", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK))
                 {
-                    if (!newMutex)
-                    {
-                        NativeMethods.PostMessage((IntPtr)NativeMethods.HWND_BROADCAST,
-                            NativeMethods.WM_SHOWME,
-                            IntPtr.Zero,
-                            IntPtr.Zero);
-                        Environment.Exit(0);
-                    }
+                    this.Logger.Info($"Обновление приложения до версии {FileVersionInfo.GetVersionInfo(Path.Combine(App.Current.UpdatePath, $"{ResourceAssembly.GetName().Name}.exe")).ProductVersion}");
+                    App.Current.UpDateApp(e);
+                }
 
-                    if (!(Process.GetProcessesByName(ResourceAssembly.GetName().Name).Length > 1)) // Проверка на существование более 1 процесса.
+                // Обновление настроек приложения к пользовательским.
+                if (ForRobot.Properties.Settings.Default.IsSettingsUpgradeRequired)
+                {
+                    ForRobot.Properties.Settings.Default.Upgrade();
+                    ForRobot.Properties.Settings.Default.Reload();
+                    ForRobot.Properties.Settings.Default.IsSettingsUpgradeRequired = false;
+                    ForRobot.Properties.Settings.Default.Save();
+                }
+                else
+                {
+                    // Проверка скрипта для обновления, если приложение не обновлялось.
+                    foreach (var prop in typeof(ForRobot.Libr.ConfigurationProperties.AppConfigurationSection).GetProperties())
                     {
-                        // Проверка версии файла в папке с обновлением и запрос к пользователю.
-                        if (Settings.AutoUpdate && File.Exists(Path.Combine(App.Current.UpdatePath, $"{ResourceAssembly.GetName().Name}.exe")) &&
-                            new Version(FileVersionInfo.GetVersionInfo(Path.Combine(App.Current.UpdatePath, $"{ResourceAssembly.GetName().Name}.exe")).ProductVersion) > Assembly.GetExecutingAssembly().GetName().Version &&
-                            (!Settings.InformUser || MessageBox.Show($"Обнаружено обновление до версии {FileVersionInfo.GetVersionInfo(Path.Combine(App.Current.UpdatePath, $"{ResourceAssembly.GetName().Name}.exe")).ProductVersion}\nОбновить приложение?", "Обновление интерфейса", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK))
-                        {
-                            this.Logger.Info($"Обновление приложения до версии {FileVersionInfo.GetVersionInfo(Path.Combine(App.Current.UpdatePath, $"{ResourceAssembly.GetName().Name}.exe")).ProductVersion}");
-                            App.Current.UpDateApp(e);
-                        }
+                        var v = typeof(ForRobot.Libr.ConfigurationProperties.AppConfigurationSection).GetProperty(prop.Name);
+                        string scriptName = v.GetValue(AppConfig) as string;
 
-                        // Обновление настроек приложения к пользовательским.
-                        if (ForRobot.Properties.Settings.Default.IsSettingsUpgradeRequired)
+                        if (Settings.AutoUpdate && 
+                            (File.Exists(Path.Combine(this.FilePathOnPC, $"Scripts\\{scriptName}")) && File.Exists(Path.Combine(App.Current.UpdatePath, $"Scripts\\{scriptName}"))))
                         {
-                            ForRobot.Properties.Settings.Default.Upgrade();
-                            ForRobot.Properties.Settings.Default.Reload();
-                            ForRobot.Properties.Settings.Default.IsSettingsUpgradeRequired = false;
-                            ForRobot.Properties.Settings.Default.Save();
-                        }
-                        else
-                        {
-                            foreach(var prop in typeof(ForRobot.Libr.ConfigurationProperties.AppConfigurationSection).GetProperties())
+                            Version oldVersion = Version.Parse(File.ReadLines(Path.Combine(this.FilePathOnPC, $"Scripts\\{scriptName}")).Where(str => str.Contains("__version__")).First().Split(new char[] { '=' }).Last().TrimStart().Trim(new char[] { '\'' }));
+                            Version newVersion = Version.Parse(File.ReadLines(Path.Combine(App.Current.UpdatePath, $"Scripts\\{scriptName}")).Where(str => str.Contains("__version__")).First().Split(new char[] { '=' }).Last().TrimStart().Trim(new char[] { '\'' }));
+
+                            if (newVersion > oldVersion && (!Settings.InformUser ||
+                                MessageBox.Show($"Обнаружено обновление скрипта {scriptName} до версии {newVersion}\nОбновить скрипт?", "Обновление скрипта-генерации", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK))
                             {
-                                var v = typeof(ForRobot.Libr.ConfigurationProperties.AppConfigurationSection).GetProperty(prop.Name);
-                                string scriptName = v.GetValue(AppConfig) as string;
-
-                                if (Settings.AutoUpdate && (File.Exists(Path.Combine(this.FilePathOnPC, $"Scripts\\{scriptName}")) && File.Exists(Path.Combine(App.Current.UpdatePath, $"Scripts\\{scriptName}"))))
-                                {
-                                    Version oldVersion = Version.Parse(File.ReadLines(Path.Combine(this.FilePathOnPC, $"Scripts\\{scriptName}")).Where(str => str.Contains("__version__")).First().Split(new char[] { '=' }).Last().TrimStart().Trim(new char[] { '\'' }));
-                                    Version newVersion = Version.Parse(File.ReadLines(Path.Combine(App.Current.UpdatePath, $"Scripts\\{scriptName}")).Where(str => str.Contains("__version__")).First().Split(new char[] { '=' }).Last().TrimStart().Trim(new char[] { '\'' }));
-
-                                    if(newVersion > oldVersion && (!Settings.InformUser || 
-                                        MessageBox.Show($"Обнаружено обновление скрипта {scriptName} до версии {newVersion}\nОбновить скрипт?", "Обновление скрипта-генерации", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK))
-                                    {
-                                        this.Logger.Info($"Обновление скрипта {scriptName} до версии {newVersion}");
-                                        this.UpDateScript();
-                                    }
-                                }
+                                this.Logger.Info($"Обновление скрипта {scriptName} до версии {newVersion}");
+                                this.UpDateScript();
                             }
                         }
-
-                        using (ClassLibraryTaskManager.SingleGlobalInstance singleMutex = new ClassLibraryTaskManager.SingleGlobalInstance(1000))
-                        {
-                            this.Logger.Info("Запуск приложения\n");
-                            Application.Current.MainWindow = MainWindowView;
-                            MainWindowView.Show();
-
-                            //Application.Current.MainWindow = MainWindowView2;
-                            //MainWindowView2.Show();
-
-                            GC.KeepAlive(mutex);
-                        }
-                    }
-                    else
-                    {
-                        this.Logger.Info("Приложение уже открыто!\n");
-                        NativeMethods.PostMessage((IntPtr)NativeMethods.HWND_BROADCAST,
-                            NativeMethods.WM_SHOWME,
-                            IntPtr.Zero,
-                            IntPtr.Zero);
-                        Environment.Exit(0);
                     }
                 }
+
+                this.Logger.Info("Запуск приложения\n");
+                Application.Current.MainWindow = MainWindowView;
+                MainWindowView.Show();
+
+                GC.KeepAlive(mutex);
             }
             catch (Exception ex)
             {
@@ -199,6 +177,104 @@ namespace ForRobot
                 Environment.Exit(1);
             }
         }
+
+        ///// <summary>
+        ///// Запуск программы
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e"></param>
+        //[STAThread]
+        //private void onStartUp(object sender, StartupEventArgs e)
+        //{
+        //    try
+        //    {
+        //        using (mutex = new System.Threading.Mutex(true, ResourceAssembly.GetName().Name, out bool newMutex))
+        //        {
+        //            if (!newMutex)
+        //            {
+        //                NativeMethods.PostMessage((IntPtr)NativeMethods.HWND_BROADCAST,
+        //                    NativeMethods.WM_SHOWME,
+        //                    IntPtr.Zero,
+        //                    IntPtr.Zero);
+        //                Environment.Exit(0);
+        //            }
+
+        //            foreach (var i in e.Args)
+        //            {
+        //                MessageBox.Show(i);
+        //                return;
+        //            }
+
+        //            if (!(Process.GetProcessesByName(ResourceAssembly.GetName().Name).Length > 1)) // Проверка на существование более 1 процесса.
+        //            {
+        //                // Проверка версии файла в папке с обновлением и запрос к пользователю.
+        //                if (Settings.AutoUpdate && File.Exists(Path.Combine(App.Current.UpdatePath, $"{ResourceAssembly.GetName().Name}.exe")) &&
+        //                    new Version(FileVersionInfo.GetVersionInfo(Path.Combine(App.Current.UpdatePath, $"{ResourceAssembly.GetName().Name}.exe")).ProductVersion) > Assembly.GetExecutingAssembly().GetName().Version &&
+        //                    (!Settings.InformUser || MessageBox.Show($"Обнаружено обновление до версии {FileVersionInfo.GetVersionInfo(Path.Combine(App.Current.UpdatePath, $"{ResourceAssembly.GetName().Name}.exe")).ProductVersion}\nОбновить приложение?", "Обновление интерфейса", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK))
+        //                {
+        //                    this.Logger.Info($"Обновление приложения до версии {FileVersionInfo.GetVersionInfo(Path.Combine(App.Current.UpdatePath, $"{ResourceAssembly.GetName().Name}.exe")).ProductVersion}");
+        //                    App.Current.UpDateApp(e);
+        //                }
+
+        //                // Обновление настроек приложения к пользовательским.
+        //                if (ForRobot.Properties.Settings.Default.IsSettingsUpgradeRequired)
+        //                {
+        //                    ForRobot.Properties.Settings.Default.Upgrade();
+        //                    ForRobot.Properties.Settings.Default.Reload();
+        //                    ForRobot.Properties.Settings.Default.IsSettingsUpgradeRequired = false;
+        //                    ForRobot.Properties.Settings.Default.Save();
+        //                }
+        //                else
+        //                {
+        //                    foreach(var prop in typeof(ForRobot.Libr.ConfigurationProperties.AppConfigurationSection).GetProperties())
+        //                    {
+        //                        var v = typeof(ForRobot.Libr.ConfigurationProperties.AppConfigurationSection).GetProperty(prop.Name);
+        //                        string scriptName = v.GetValue(AppConfig) as string;
+
+        //                        if (Settings.AutoUpdate && (File.Exists(Path.Combine(this.FilePathOnPC, $"Scripts\\{scriptName}")) && File.Exists(Path.Combine(App.Current.UpdatePath, $"Scripts\\{scriptName}"))))
+        //                        {
+        //                            Version oldVersion = Version.Parse(File.ReadLines(Path.Combine(this.FilePathOnPC, $"Scripts\\{scriptName}")).Where(str => str.Contains("__version__")).First().Split(new char[] { '=' }).Last().TrimStart().Trim(new char[] { '\'' }));
+        //                            Version newVersion = Version.Parse(File.ReadLines(Path.Combine(App.Current.UpdatePath, $"Scripts\\{scriptName}")).Where(str => str.Contains("__version__")).First().Split(new char[] { '=' }).Last().TrimStart().Trim(new char[] { '\'' }));
+
+        //                            if(newVersion > oldVersion && (!Settings.InformUser || 
+        //                                MessageBox.Show($"Обнаружено обновление скрипта {scriptName} до версии {newVersion}\nОбновить скрипт?", "Обновление скрипта-генерации", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK))
+        //                            {
+        //                                this.Logger.Info($"Обновление скрипта {scriptName} до версии {newVersion}");
+        //                                this.UpDateScript();
+        //                            }
+        //                        }
+        //                    }
+        //                }
+
+        //                using (ClassLibraryTaskManager.SingleGlobalInstance singleMutex = new ClassLibraryTaskManager.SingleGlobalInstance(1000))
+        //                {
+        //                    this.Logger.Info("Запуск приложения\n");
+        //                    Application.Current.MainWindow = MainWindowView;
+        //                    MainWindowView.Show();
+
+        //                    //Application.Current.MainWindow = MainWindowView2;
+        //                    //MainWindowView2.Show();
+
+        //                    GC.KeepAlive(mutex);
+        //                }
+        //            }
+        //            else
+        //            {
+        //                this.Logger.Info("Приложение уже открыто!\n");
+        //                NativeMethods.PostMessage((IntPtr)NativeMethods.HWND_BROADCAST,
+        //                    NativeMethods.WM_SHOWME,
+        //                    IntPtr.Zero,
+        //                    IntPtr.Zero);
+        //                Environment.Exit(0);
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        this.Logger.Error(ex.Message);
+        //        Environment.Exit(1);
+        //    }
+        //}
 
         /// <summary>
         /// Детектит исключения в течении работы

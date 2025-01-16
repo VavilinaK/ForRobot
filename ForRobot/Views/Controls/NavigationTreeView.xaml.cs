@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,10 +11,16 @@ namespace ForRobot.Views.Controls
     /// <summary>
     /// Логика взаимодействия для NavigationTreeView.xaml
     /// </summary>
-    public partial class NavigationTreeView : UserControl
+    public partial class NavigationTreeView : UserControl, INotifyPropertyChanged
     {
 
         #region Properties
+
+        public string SelectedFile
+        {
+            get => (string)GetValue(SelectedFileProperty);
+            set => SetValue(SelectedFileProperty, value);
+        }
 
         public bool DataFileIsHidden
         {
@@ -26,6 +33,7 @@ namespace ForRobot.Views.Controls
             get => (ObservableCollection<File>)GetValue(FileCollectionProperty);
             set => SetValue(FileCollectionProperty, value);
         }
+        
 
         #region Command
 
@@ -50,6 +58,9 @@ namespace ForRobot.Views.Controls
         #endregion
 
         #region Static readonly
+
+        public static readonly DependencyProperty SelectedFileProperty = DependencyProperty.Register(nameof(SelectedFile), typeof(string), typeof(NavigationTreeView), 
+                                                                                                     new PropertyMetadata(string.Empty, new PropertyChangedCallback(OnSelectedFileChanged)));
 
         public static readonly DependencyProperty DataFileIsHiddenProperty = DependencyProperty.Register(nameof(DataFileIsHidden), typeof(bool), typeof(NavigationTreeView));
 
@@ -87,16 +98,21 @@ namespace ForRobot.Views.Controls
 
         #endregion
 
-        //private static RelayCommand _onSelectFolder;
+        #region Private functions
 
-        //private static RelayCommand OnSelectFolder
-        //{
-        //    get
-        //    {
-        //        return _onSelectFolder ??
-        //            (_onSelectFolder = new RelayCommand(obj =>
-        //            {  }));
-        //    }
-        //}
+        private static void OnSelectedFileChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            NavigationTreeView treeView = (NavigationTreeView)d;
+            treeView.SelectedFile = (string)e.NewValue;
+            treeView.PropertyChanged?.Invoke(treeView, new PropertyChangedEventArgs(nameof(treeView.SelectedFile)));
+        }
+
+        #endregion
+
+        #region Implementations of IDisposable
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion
     }
 }

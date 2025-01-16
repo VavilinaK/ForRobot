@@ -13,7 +13,7 @@ namespace ForRobot.Libr.Converters
             IComparable v1 = values[0] as IComparable; // Имя файла.
             IComparable v2 = values[1] as IComparable; // Имя выбранной программы
 
-            if (v1 == null || v2 == null)
+            if (v1 == null || v2 == null || System.IO.Path.GetExtension((string)v1) != ".src")
                 return false;
 
             return (((string)v1).Split(new char[] { '.' })[0]).ToLower() == ((string)v2).ToLower();

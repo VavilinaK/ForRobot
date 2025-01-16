@@ -3,6 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:control="clr-namespace:ForRobot.Views.Controls"
       xmlns:local="clr-namespace:ForRobot.Views.Pages"
       xmlns:vm="clr-namespace:ForRobot.ViewModels"      
       mc:Ignorable="d"       
@@ -20,6 +21,12 @@
     </Page.DataContext>
 
     <Page.Resources>
+
+        <ControlTemplate x:Key="RadioButtonInToggleTemplate" TargetType="{x:Type RadioButton}">
+            <ToggleButton IsChecked="{Binding IsChecked, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                              Content="{Binding Content, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"/>
+        </ControlTemplate>
+
         <Style TargetType="{x:Type MenuItem}">
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="Padding" Value="10, 0"/>
@@ -71,12 +78,12 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <!--<RowDefinition Height="25"/>-->
+            <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
+        <!--<Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition Width="Auto" MaxWidth="450"/>
-        </Grid.ColumnDefinitions>
+        </Grid.ColumnDefinitions>-->
 
         <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
             <MenuItem Header="_Файл">
@@ -119,19 +126,9 @@
             <MenuItem Header="_Справка"/>
         </Menu>
 
-        <!--<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" id="3-Dimension-Streamline-Cyber" height="24" width="24">
-            <desc>3 Dimension Streamline Icon: https://streamlinehq.com</desc>
-            <path fill="#ffffff" d="M12 8.425L5.8644 11.4887V20.4161L12 23.3602L18.1356 20.4171V11.4887L12 8.425Z" stroke-width="1"></path>
-            <path fill="#bbd8ff" d="M12 14.5565V23.2487L18.1356 20.1809V11.4887L12 14.5565Z" stroke-width="1"></path>
-            <path stroke="#092f63" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M18.1356 20.4171V11.4887L12 14.5565L5.8644 11.4887V20.4171" stroke-width="1"></path>
-            <path stroke="#092f63" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M12 0.7513V23.2487" stroke-width="1"></path>
-            <path stroke="#092f63" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M8.9322 3.8191L12 0.7513L15.0678 3.8191" stroke-width="1"></path>
-            <path stroke="#092f63" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M3.6801 16.5925L0.7513 18.0569L1.5367 21.2352" stroke-width="1"></path>
-            <path stroke="#092f63" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M12 23.2487L0.7513 18.0569" stroke-width="1"></path>
-            <path stroke="#092f63" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M20.3199 16.5925L23.2487 18.0569L22.4633 21.2352" stroke-width="1"></path>
-            <path stroke="#092f63" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M12 23.2487L23.2487 18.0569" stroke-width="1"></path>
-            <path stroke="#092f63" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M18.1356 11.4887L14.0452 9.4435" stroke-width="1"></path>
-            <path stroke="#092f63" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M9.9548 9.4435L5.8644 11.4887" stroke-width="1"></path>
+        <!--<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <title>axis-arrow</title>
+            <path d="M12,2L16,6H13V13.85L19.53,17.61L21,15.03L22.5,20.5L17,21.96L18.53,19.35L12,15.58L5.47,19.35L7,21.96L1.5,20.5L3,15.03L4.47,17.61L11,13.85V6H8L12,2Z" />
         </svg>-->
 
         <Menu Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
@@ -204,7 +201,18 @@
 
             <MenuItem Template="{StaticResource SeparatorTemplate}"/>
 
-            <MenuItem Header="Генерировать">
+            <MenuItem>
+                <MenuItem.Template>
+                    <ControlTemplate TargetType="{x:Type MenuItem}">
+                        <ComboBox FontSize="14" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                                   Width="Auto" MinWidth="200" Margin="10,4">
+                            
+                        </ComboBox>
+                    </ControlTemplate>
+                </MenuItem.Template>
+            </MenuItem>
+            
+            <MenuItem Header="Генерировать" Margin="10,0">
                 <MenuItem.Template>
                     <ControlTemplate TargetType="{x:Type MenuItem}">
                         <DockPanel TextBlock.FontSize="15px" Height="30">
@@ -216,6 +224,26 @@
                     </ControlTemplate>
                 </MenuItem.Template>
             </MenuItem>
+
+            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Параметры по-умолчанию">
+                <MenuItem.Icon>
+                    <Path Stretch="Uniform" Fill="Black" StrokeThickness="1"
+                              RenderTransformOrigin="0.5,0.5"
+                              Data="m13.79925 7.767890625 -3.74296875 -3.7432499999999997a0.9381562499999999 0.9381562499999999 0 0 0 -1.326140625 0l-2.5117499999999997 2.5117499999999997L4.21875 0.9375H3.28125L0.9375 7.5h0.9375l0.46828125 -1.40625h2.8125l0.376640625 1.1286093750000001 -3.382828125 3.382828125a0.9375 0.9375 0 0 0 0 1.3257187499999998L4.280437500000001 14.0625h4.4956875l5.023124999999999 -5.02359375a0.898734375 0.898734375 0 0 0 0 -1.271015625ZM2.655609375 5.15625l1.0926562499999999 -3.28125 1.094765625 3.28125Zm5.73234375 7.96875H4.66875L2.8125 11.267859375l2.958890625 -2.958515625 3.716109375 3.715875Zm1.7625 -1.7625 -3.7160156250000003 -3.715875L9.393421875 4.6875l3.7156875 3.715875Z">
+
+                        <Path.LayoutTransform >
+                            <ScaleTransform ScaleX="2" ScaleY="2"/>
+                        </Path.LayoutTransform>
+                    </Path>
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <!--<svg id="Text-Clear-Format-Streamline-Carbon" xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 -0.5 16 16" height="16" width="16">
+                <desc>Text Clear Format Streamline Icon: https://streamlinehq.com</desc>
+                <defs></defs>
+                <path d="m13.79925 7.767890625 -3.74296875 -3.7432499999999997a0.9381562499999999 0.9381562499999999 0 0 0 -1.326140625 0l-2.5117499999999997 2.5117499999999997L4.21875 0.9375H3.28125L0.9375 7.5h0.9375l0.46828125 -1.40625h2.8125l0.376640625 1.1286093750000001 -3.382828125 3.382828125a0.9375 0.9375 0 0 0 0 1.3257187499999998L4.280437500000001 14.0625h4.4956875l5.023124999999999 -5.02359375a0.898734375 0.898734375 0 0 0 0 -1.271015625ZM2.655609375 5.15625l1.0926562499999999 -3.28125 1.094765625 3.28125Zm5.73234375 7.96875H4.66875L2.8125 11.267859375l2.958890625 -2.958515625 3.716109375 3.715875Zm1.7625 -1.7625 -3.7160156250000003 -3.715875L9.393421875 4.6875l3.7156875 3.715875Z" fill="#000000" stroke-width="1"></path>
+                <path id="_Transparent_Rectangle_" d="M0 0h15v15H0Z" fill="none" stroke-width="1"></path>
+            </svg>-->
 
             <MenuItem Template="{StaticResource SeparatorTemplate}"/>
 
@@ -236,68 +264,104 @@
             <MenuItem Template="{StaticResource SeparatorTemplate}"/>
 
             <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Увеличить">
-                <!--<MenuItem.Icon>
-                    <Image Source="/InterfaceOfRobots;component/Themes/Images/top_view.svg"/>
-                </MenuItem.Icon>-->
+                <MenuItem.Icon>                   
+                    <Path Stretch="Uniform" Fill="Black"
+                        Data="M12,2L16,6H13V13.85L19.53,17.61L21,15.03L22.5,20.5L17,21.96L18.53,19.35L12,15.58L5.47,19.35L7,21.96L1.5,20.5L3,15.03L4.47,17.61L11,13.85V6H8L12,2Z"/>
+                </MenuItem.Icon>
             </MenuItem>
 
+            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Увеличить">
+                <MenuItem.Icon>
+                    <Image Source="/InterfaceOfRobots;component/Themes/Images/isometric_view.png" Height="24" Width="24" Stretch="Uniform"/>
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Увеличить">
+                <MenuItem.Icon>
+                    <Image Source="/InterfaceOfRobots;component/Themes/Images/top_view.png" Height="24" Width="24" Stretch="Uniform"/>
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Увеличить">
+                <MenuItem.Icon>
+                    <Image Source="/InterfaceOfRobots;component/Themes/Images/bottom_view.png" Height="24" Width="24" Stretch="Uniform"/>
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Увеличить">
+                <MenuItem.Icon>
+                    <Image Source="/InterfaceOfRobots;component/Themes/Images/front_view.png" Height="24" Width="24" Stretch="Uniform"/>
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Увеличить">
+                <MenuItem.Icon>
+                    <Image Source="/InterfaceOfRobots;component/Themes/Images/back_view.png" Height="24" Width="24" Stretch="Uniform"/>
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Увеличить">
+                <MenuItem.Icon>
+                    <Image Source="/InterfaceOfRobots;component/Themes/Images/left_side_view.png" Height="24" Width="24" Stretch="Uniform"/>
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Увеличить">
+                <MenuItem.Icon>
+                    <Image Source="/InterfaceOfRobots;component/Themes/Images/right_side_view.png" Height="24" Width="24" Stretch="Uniform"/>
+                </MenuItem.Icon>
+            </MenuItem>
         </Menu>
-        
-        <Grid Grid.Row="2" Grid.Column="0" Margin="0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="150"/>
-            </Grid.RowDefinitions>
 
-            <TabControl Grid.Row="1" TabStripPlacement="Bottom">
-                <TabItem Header="Статус">
-
-                </TabItem>
-
-                <TabItem Header="Сообщения">
-
-                </TabItem>
-            </TabControl>
-        </Grid>
-
-        <Grid Grid.Row="2" Grid.Column="1">
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="Auto" MaxWidth="450"/>
             </Grid.ColumnDefinitions>
 
-            <Grid Grid.Column="0">
+            <Grid Grid.Column="0" Margin="15,10,15,0">
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="150"/>
                 </Grid.RowDefinitions>
 
-                <Border Grid.Row="0" Background="#a3a3a3" BorderBrush="#4a4a4a" BorderThickness="1.25, 1.25, 1.25, 0">
-                    <ScrollViewer CanContentScroll="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-                        
-                    </ScrollViewer> 
-                </Border>
+                <!--<TabControl Grid.Row="0" TabStripPlacement="Bottom" Background="Transparent">
+                    <TabItem Header="Файл 1">
 
-                <!--<TabControl Grid.Row="0" Grid.ColumnSpan="2" TabStripPlacement="Right">
+                    </TabItem>
+                </TabControl>-->
+
+                <TabControl Grid.Row="0" TabStripPlacement="Bottom">
                     <TabControl.Resources>
                         <Style TargetType="{x:Type TabItem}">
-                            <Setter Property="FontSize" Value="15"/>
+                            <Setter Property="FontSize" Value="12"/>
                             <Setter Property="Foreground" Value="Black"/>
-                            <Setter Property="Width" Value="150"/>
 
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type TabItem}">
                                         <Border Name="Panel">
-                                            <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center" HorizontalAlignment="Center"
-                                              ContentSource="Header" Margin="15, 5"/>
+                                            <Grid Margin="10, 4">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <ContentPresenter x:Name="ContentSite" Grid.Column="0"
+                                                                  VerticalAlignment="Center" HorizontalAlignment="Center"
+                                                                  ContentSource="Header" Margin="0"/>
+
+                                                <Button Grid.Column="1" Padding="3" Margin="5,0">
+                                                    <Path Stretch="Uniform" Fill="Black"
+                                                          Data="M12.567039999999999 4.300341333333334c0.23957333333333333 -0.23951999999999998 0.23957333333333333 -0.6278613333333334 0 -0.8673813333333332 -0.23946666666666666 -0.23951999999999998 -0.62784 -0.23951999999999998 -0.8673066666666667 0L8.000053333333334 7.132608 4.300416 3.43296c-0.23953066666666667 -0.23951999999999998 -0.627872 -0.23951999999999998 -0.867392 0 -0.23951999999999998 0.23951999999999998 -0.23951999999999998 0.6278613333333334 0 0.8673813333333332l3.699648 3.699648 -3.699648 3.6996373333333334c-0.23951999999999998 0.23957333333333333 -0.23951999999999998 0.62784 0 0.8674133333333334 0.23951999999999998 0.23946666666666666 0.6278613333333334 0.23946666666666666 0.867392 0l3.6996373333333334 -3.6996693333333335 3.69968 3.6996693333333335c0.23946666666666666 0.23946666666666666 0.62784 0.23946666666666666 0.8673066666666667 0 0.23957333333333333 -0.23957333333333333 0.23957333333333333 -0.62784 0 -0.8674133333333334L8.867434666666666 7.999989333333334l3.699605333333333 -3.699648Z"/>
+                                                </Button>
+                                            </Grid>
                                         </Border>
 
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsSelected" Value="True">
                                                 <Setter TargetName="Panel" Property="Background" Value="#4a4a4a"/>
                                                 <Setter TargetName="Panel" Property="BorderBrush" Value="{StaticResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                                                <Setter TargetName="Panel" Property="Margin"  Value="0,-2,0,0"/>
                                                 <Setter TargetName="ContentSite" Property="TextElement.Foreground" Value="#3094ff"/>
                                             </Trigger>
 
@@ -311,21 +375,136 @@
                         </Style>
                     </TabControl.Resources>
                     
-                    <TabItem Header="Роботы">
+                    <TabItem Header="Файл 1">
 
                     </TabItem>
 
-                    <TabItem Header="Параметры">
+                    <TabItem Header="Файл 2">
 
                     </TabItem>
-                </TabControl>-->
+                </TabControl>
 
-                <TabControl Grid.Row="1" Grid.Column="0"  TabStripPlacement="Bottom">
-                    <!--<TabControl.Resources>
+                <TabControl Grid.Row="1" TabStripPlacement="Bottom">
+                    <TabItem Header="Статус">
+                        <!--<ListBox SelectionMode="Single" FontSize="18" Padding="0, 10"
+                                 Background="White"
+                                 ScrollViewer.CanContentScroll="True"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                 ItemsSource="{Binding Path=RobotsCollection, Mode=OneWay}">
+                            
+                        </ListBox>-->
+                    </TabItem>
+
+                    <TabItem Header="Сообщения">
+
+                    </TabItem>
+                </TabControl>
+            </Grid>
+
+            <Grid Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" Background="{StaticResource {x:Static SystemColors.InfoBrushKey}}" BorderBrush="#4a4a4a" BorderThickness="3, 3, 3, 0">
+                        <ScrollViewer CanContentScroll="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                            <ContentControl>
+                                <ContentControl.Style>
+                                    <Style TargetType="{x:Type ContentControl}">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ContentControl">
+                                                    <TreeView FontSize="15" Padding="5,5,10,5" HorizontalContentAlignment="Center">
+                                                        <TreeViewItem Header="Базы данных">
+                                                            <TreeViewItem Header="MS SQL Server" />
+                                                            <TreeViewItem Header="MySQL" />
+                                                            <TreeViewItem Header="MongoDB" />
+                                                            <TreeViewItem Header="Postgres" />
+                                                        </TreeViewItem>
+                                                        <TreeViewItem Header="Языки программирования">
+                                                            <TreeViewItem Header="C-языки">
+                                                                <TreeViewItem Header="C#" />
+                                                                <TreeViewItem Header="C/C++" />
+                                                                <TreeViewItem Header="Java" />
+                                                            </TreeViewItem>
+                                                            <TreeViewItem Header="Basic">
+                                                                <TreeViewItem Header="Visual Basic" />
+                                                                <TreeViewItem Header="VB.Net" />
+                                                                <TreeViewItem Header="PureBasic" />
+                                                            </TreeViewItem>
+                                                        </TreeViewItem>
+                                                    </TreeView>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=IsChecked, ElementName=RobotRadioButton}" Value="True">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="ContentControl">
+                                                            <Border Background="Aqua"/>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </DataTrigger>
+
+                                            <DataTrigger Binding="{Binding Path=IsChecked, ElementName=ControlRadioButton}" Value="True">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="ContentControl">
+                                                            <Border Background="Pink"/>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ContentControl.Style>
+                            </ContentControl>
+                        </ScrollViewer>
+                        <!--<TreeView FontSize="15" Padding="5,5,10,5"
+                                  HorizontalContentAlignment="Center"
+                                  ScrollViewer.CanContentScroll="True"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                            <TreeViewItem Header="Базы данных">
+                                <TreeViewItem Header="MS SQL Server" />
+                                <TreeViewItem Header="MySQL" />
+                                <TreeViewItem Header="MongoDB" />
+                                <TreeViewItem Header="Postgres" />
+                            </TreeViewItem>
+                            <TreeViewItem Header="Языки программирования">
+                                <TreeViewItem Header="C-языки">
+                                    <TreeViewItem Header="C#" />
+                                    <TreeViewItem Header="C/C++" />
+                                    <TreeViewItem Header="Java" />
+                                </TreeViewItem>
+                                <TreeViewItem Header="Basic">
+                                    <TreeViewItem Header="Visual Basic" />
+                                    <TreeViewItem Header="VB.Net" />
+                                    <TreeViewItem Header="PureBasic" />
+                                </TreeViewItem>
+                            </TreeViewItem>
+                        </TreeView>-->
+                    </Border>
+
+                    <TabControl Grid.Row="1" Grid.Column="0"  TabStripPlacement="Bottom">
+                        <!--<TabControl.Resources>
                         <Style TargetType="{x:Type TabItem}">
                             <Setter Property="FontSize" Value="15"/>
                             <Setter Property="Foreground" Value="Black"/>
-                            --><!--<Setter Property="MinWidth" Value="90"/>--><!--
+                            -->
+                        <!--<Setter Property="MinWidth" Value="90"/>-->
+                        <!--
 
                             <Setter Property="Template">
                                 <Setter.Value>
@@ -353,89 +532,96 @@
                         </Style>
                     </TabControl.Resources>-->
 
-                    <TabItem Header="Свойства">
+                        <TabItem Header="Свойства">
 
-                    </TabItem>
+                        </TabItem>
 
-                    <TabItem Header="Параметры">
+                        <TabItem Header="Параметры">
 
-                    </TabItem>
-                </TabControl>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+
+                <!--<StackPanel Grid.Column="1" Orientation="Vertical">
+                    <ToggleButton Width="150" Content="Роботы" FontSize="14"
+                          VerticalAlignment="Top" HorizontalAlignment="Right">
+                        <ToggleButton.LayoutTransform>
+                            <RotateTransform Angle="90"/>
+                        </ToggleButton.LayoutTransform>
+                    </ToggleButton>
+
+                    <ToggleButton Width="150" Content="Управление" FontSize="14"
+                          VerticalAlignment="Top" HorizontalAlignment="Right">
+                        <ToggleButton.LayoutTransform>
+                            <RotateTransform Angle="90"/>
+                        </ToggleButton.LayoutTransform>
+                    </ToggleButton>
+                </StackPanel>-->
+
+                <!--<ListBox Grid.Column="1" FontSize="14" Background="Transparent">
+                    <ListBox.Resources>
+                        <Style TargetType="{x:Type ListBox}">
+                            <Setter Property="ListBox.ItemTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <ToggleButton Content="{Binding}" Width="150"
+                                                      IsChecked="{Binding IsSelected, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}}"/>
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+
+                            <Setter Property="ListBox.ItemsPanel">
+                                <Setter.Value>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel IsItemsHost="True" Orientation="Vertical"/>
+                                    </ItemsPanelTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            --><!--<Setter Property="IsSelected" Value="{Binding Path=., TargetNullValue=False, FallbackValue=False}"/>--><!--
+                            <Setter Property="LayoutTransform">
+                                <Setter.Value>
+                                    <RotateTransform CenterX="0" CenterY="0" Angle="90"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.Resources>
+
+                    <ListBoxItem x:Name="RobotToggleButton" Content="Роботы"/>
+                    <ListBoxItem x:Name="ControlToggleButton" Content="Управление"/>
+                </ListBox>-->
+
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.Resources>
+                        <Style TargetType="{x:Type ToggleButton}">
+                            <Setter Property="FontSize" Value="14"/>
+                            <Setter Property="Padding" Value="15,2"/>
+                            <Setter Property="LayoutTransform">
+                                <Setter.Value>
+                                    <RotateTransform CenterX="0" CenterY="0" Angle="90"/>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Grid.Resources>
+
+                    <RadioButton Grid.Row="0" x:Name="RobotRadioButton" Content="Роботы"
+                                 Template="{StaticResource RadioButtonInToggleTemplate}"/>
+                    <RadioButton Grid.Row="1" x:Name="ControlRadioButton" Content="Управление"
+                                 Template="{StaticResource RadioButtonInToggleTemplate}"/>
+                </Grid>
+
             </Grid>
-
-            <StackPanel Grid.Column="1" Orientation="Vertical">
-                <ToggleButton Width="150" Content="Роботы"
-                          VerticalAlignment="Top" HorizontalAlignment="Right">
-                    <ToggleButton.LayoutTransform>
-                        <RotateTransform Angle="90"/>
-                    </ToggleButton.LayoutTransform>
-                </ToggleButton>
-
-                <ToggleButton Width="150" Content="Управление"
-                          VerticalAlignment="Top" HorizontalAlignment="Right">
-                    <ToggleButton.LayoutTransform>
-                        <RotateTransform Angle="90"/>
-                    </ToggleButton.LayoutTransform>
-                </ToggleButton>
-            </StackPanel>
-
-            <!--<ToggleButton Grid.Column="1" Content="Роботы" Padding="10, 0" Height="30">
-                --><!--<ToggleButton.RenderTransform>
-                    <RotateTransform Angle="90"/>
-                </ToggleButton.RenderTransform>--><!--
-            </ToggleButton>-->
-            
-            <!--<TabControl Grid.Column="1" TabStripPlacement="Right" Background="Transparent">
-                <TabControl.Resources>
-                    <Style TargetType="{x:Type TabItem}">
-                        <Setter Property="Padding" Value="0"/>
-                        <Setter Property="FontSize" Value="15"/>
-                        <Setter Property="Background" Value="Transparent"/>
-                        <Setter Property="Height" Value="90"/>
-
-                        <Setter Property="HeaderTemplate">
-                            <Setter.Value>
-                                <DataTemplate>
-                                    <ContentPresenter Content="{TemplateBinding Content}">
-                                        <ContentPresenter.LayoutTransform>
-                                            <RotateTransform Angle="90" />
-                                        </ContentPresenter.LayoutTransform>
-                                    </ContentPresenter>
-                                </DataTemplate>
-                            </Setter.Value>
-                        </Setter>
-
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="TabItem">
-                                    <Grid Name="Panel">
-                                        <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center" HorizontalAlignment="Center" ContentSource="Header" Margin="10, 5"/>
-                                    </Grid>
-
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsSelected" Value="True">
-                                            <Setter TargetName="Panel" Property="Background" Value="LightSkyBlue"/>
-                                            <Setter TargetName="ContentSite" Property="TextElement.FontWeight" Value="DemiBold"/>
-                                        </Trigger>
-
-                                        <Trigger Property="IsSelected" Value="False">
-                                            <Setter TargetName="Panel" Property="Background" Value="Transparent"/>
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </TabControl.Resources>
-
-                <TabItem Header="Роботы">
-                    
-                </TabItem>
-            </TabControl>-->
         </Grid>
 
-        <!--<DockPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Background="#FF1680C9">
-
-        </DockPanel>-->
+        <DockPanel Grid.Row="3" Background="#FF1680C9">
+            
+        </DockPanel>
     </Grid>
 </Page>
