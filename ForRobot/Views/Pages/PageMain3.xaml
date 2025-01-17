@@ -21,18 +21,16 @@
     </Page.DataContext>
 
     <Page.Resources>
-
-        <ControlTemplate x:Key="RadioButtonInToggleTemplate" TargetType="{x:Type RadioButton}">
-            <ToggleButton IsChecked="{Binding IsChecked, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
-                                              Content="{Binding Content, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"/>
-        </ControlTemplate>
-
-        <Style TargetType="{x:Type MenuItem}">
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Padding" Value="10, 0"/>
+        <Style x:Key="TextBase" TargetType="{x:Type FrameworkElement}">
+            <Setter Property="TextElement.FontFamily" Value="DefaultFont"/>
         </Style>
-        
-        <!--<system:String x:Key="Partition">QuickStart</system:String>-->
+
+        <Style x:Key="MenuItemTemplate" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource TextBase}">
+            <Setter Property="FontSize" Value="{StaticResource FontSizeNP1}"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="10, 2"/>
+        </Style>
 
         <Style TargetType="{x:Type TabControl}">
             <Setter Property="Background" Value="{StaticResource {x:Static SystemColors.InfoBrushKey}}"/>
@@ -71,6 +69,193 @@
                 </Setter.Value>
             </Setter>
         </Style>
+       
+        <ControlTemplate x:Key="RadioButtonInToggleTemplate" TargetType="{x:Type RadioButton}">
+            <ToggleButton IsChecked="{Binding IsChecked, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                              Content="{Binding Content, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"/>
+        </ControlTemplate>
+
+        <ControlTemplate x:Key="MenuItemTemplate1" TargetType="{x:Type MenuItem}">
+            <Button Content="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}}"
+                    ToolTip="{Binding Header, RelativeSource={RelativeSource TemplatedParent}}"
+                    Command="{Binding Command, RelativeSource={RelativeSource TemplatedParent}}"
+                    CommandParameter="{Binding CommandParameter, RelativeSource={RelativeSource TemplatedParent}}"
+                    CommandTarget="{Binding CommandTarget, RelativeSource={RelativeSource TemplatedParent}}"
+                    Width="Auto" Margin="3,2" Padding="5"/>
+        </ControlTemplate>
+
+        <ControlTemplate x:Key="MenuItemTemplate2" TargetType="{x:Type MenuItem}">
+            <Border Name="Panel" BorderThickness="0">
+                <StackPanel Orientation="Horizontal">
+                    <ContentPresenter x:Name="Icon" ContentSource="Icon" Height="30" Margin="5,0"/>
+                    <ContentPresenter ContentSource="Header" RecognizesAccessKey="True"
+                                      TextElement.FontSize="{StaticResource FontSizeNP3}"
+                                      TextElement.Foreground="{StaticResource ThemeFgP2Brush}"
+                                      VerticalAlignment="Center" Margin="5,0"
+                                      Style="{StaticResource TextBase}"/>
+                </StackPanel>
+            </Border>
+
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="Panel" Property="Background" Value="{StaticResource ThemeIsMouseOverMenuItemBgBrush}"/>
+                </Trigger>
+
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter TargetName="Panel" Property="Background" Value="{StaticResource ThemeIsPressedMenuItemBgColor}"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <ControlTemplate x:Key="MenuToggleButtonTemplate" TargetType="{x:Type ToggleButton}">
+            <Border Name="Panel" BorderBrush="{StaticResource ThemeNotActiveToggleButBordBrush}" BorderThickness="0,7,0,0" Margin="5,0">
+                <ContentPresenter x:Name="Content" ContentSource="Content" Margin="15,5"/>
+            </Border>
+
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="Panel" Property="Background" Value="{StaticResource ThemeIsMouseOverMenuItemBgBrush}"/>
+                    <Setter TargetName="Panel" Property="BorderBrush" Value="{StaticResource ThemeIsMouseOverToggleButBordBrush}"/>
+                </Trigger>
+
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter TargetName="Panel" Property="Background" Value="{StaticResource ThemeIsPressedToggleButBgBrush}"/>
+                    <Setter TargetName="Panel" Property="BorderBrush" Value="{StaticResource ThemeIsPressedToggleButBordBrush}"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <DataTemplate x:Key="RobotControlTemplate" DataType="{x:Type ContentControl}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <Grid Margin="8" Background="Aqua">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.Resources>
+                        <Style TargetType="{x:Type Button}">
+                            <Setter Property="Height" Value="35"/>
+                        </Style>
+
+                        <Style TargetType="{x:Type Grid}">
+                            <Setter Property="Margin" Value="0,0,0,10"/>
+                        </Style>
+
+                        <Style TargetType="{x:Type Path}">
+                            <Setter Property="Stretch" Value="Uniform"/>
+                        </Style>
+
+                        <Style x:Key="RobotRbTextBase" TargetType="{x:Type FrameworkElement}" BasedOn="{StaticResource TextBase}">
+                            <Setter Property="TextElement.FontSize" Value="{StaticResource FontSizeNP2}"/>
+                            <Setter Property="TextElement.Foreground" Value="{StaticResource ThemeFgP2Brush}"/>
+                        </Style>
+
+                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource RobotRbTextBase}">
+                            <Setter Property="MinHeight" Value="35"/>
+                            <Setter Property="Padding" Value="4"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        </Style>
+                    </Grid.Resources>
+
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="0" ToolTip="Удалить робота"
+                                Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"
+                                Command="{Binding Path=DeleteRobotCommand}">
+                            
+                            <Path Fill="{StaticResource IconDeleteBrush}"
+                                  Data="{StaticResource DeletePathGeomerty}"/>
+                        </Button>
+
+                        <ComboBox Grid.Column="1" Margin="5,0" FontSize="{StaticResource FontSizeNP6}">
+                            
+                        </ComboBox>
+
+                        <Button Grid.Column="2" ToolTip="Повторное соединение"
+                                Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"
+                                Command="{Binding Path=UpDateConnectionCommand}">
+
+                            <Path Fill="{StaticResource IconUpDateBrush}"
+                                  Data="{StaticResource UpDatePathGeomerty}"/>
+                        </Button>
+
+                        <Button Grid.Column="4" ToolTip="Добавить робота"
+                                Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"
+                                Command="{Binding Path=AddRobotCommand}">
+
+                            <Path Stroke="{StaticResource IconAddBrush}" StrokeThickness="2">
+                                <Path.Data>
+                                    <GeometryGroup>
+                                        <StaticResource ResourceKey="AddRobotPathGeomerty1"/>
+                                        <StaticResource ResourceKey="AddRobotPathGeomerty2"/>
+                                    </GeometryGroup>
+                                </Path.Data>
+                            </Path>
+                        </Button>
+                    </Grid>
+
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.75*"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox Grid.Column="0" Text="{Binding Path=SelectedRobot.Item2.Host, Mode=TwoWay, FallbackValue='0.0.0.0', TargetNullValue='0.0.0.0', UpdateSourceTrigger=LostFocus}"/>
+                        <TextBox Grid.Column="2" Text="{Binding Path=SelectedRobot.Item2.Port, Mode=TwoWay, FallbackValue=0000, TargetNullValue=0000, UpdateSourceTrigger=LostFocus}"/>
+                    </Grid>
+
+                    <Grid Grid.Row="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox Grid.Column="0" Text="{Binding Path=SelectedRobot.Item2.PathProgramm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+                        <Button Grid.Column="2"
+                                ToolTip="Изменить папку генерации"
+                                Command="{Binding ChangePatnOnPCCommand}">
+
+                            <Path Fill="{StaticResource IconEditBrush}"
+                                  Data="{StaticResource EditPathGeomerty}">
+                                <Path.LayoutTransform>
+                                    <RotateTransform Angle="90"/>
+                                </Path.LayoutTransform>
+                            </Path>
+                        </Button>
+                    </Grid>
+
+                    <Grid Grid.Row="4">
+                        <control:Breadcrumb Height="35"/>
+                    </Grid>
+
+                    <Grid Grid.Row="5" Background="Pink" Margin="0">
+                        <control:NavigationTreeView>
+
+                        </control:NavigationTreeView>
+                    </Grid>
+                </Grid>
+            </ScrollViewer>
+        </DataTemplate>
+
+        <DataTemplate x:Key="UprControlTemplate" DataType="{x:Type ContentControl}">
+            <Border Background="Pink"/>
+        </DataTemplate>
     </Page.Resources>
 
     <Grid>
@@ -80,65 +265,47 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
-        <!--<Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="Auto" MaxWidth="450"/>
-        </Grid.ColumnDefinitions>-->
 
         <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
-            <MenuItem Header="_Файл">
-                <MenuItem Header="_Создать"/>
-                <MenuItem Header="_Открыть"/>
-                <MenuItem Header="_Сохранить"/>
-                <MenuItem Header="_Сохранить как"/>
+            <MenuItem Header="_Файл" Style="{StaticResource MenuItemTemplate}">
+                <MenuItem Header="_Создать" Style="{StaticResource MenuItemTemplate}"/>
+                <MenuItem Header="_Открыть" Style="{StaticResource MenuItemTemplate}"/>
+                <MenuItem Header="_Сохранить" Style="{StaticResource MenuItemTemplate}"/>
+                <MenuItem Header="_Сохранить как" Style="{StaticResource MenuItemTemplate}"/>
                 <Separator/>
-                <MenuItem Header="_Импорт параметров"/>
-                <MenuItem Header="_Экспорт параметров"/>
+                <MenuItem Header="_Импорт параметров" Style="{StaticResource MenuItemTemplate}"/>
+                <MenuItem Header="_Экспорт параметров" Style="{StaticResource MenuItemTemplate}"/>
                 <Separator/>
-                <MenuItem Header="_Выход" />
+                <MenuItem Header="_Выход" Style="{StaticResource MenuItemTemplate}"/>
             </MenuItem>
 
-            <MenuItem Header="_Правка">
-                <MenuItem Header="_Отменить"/>
-                <MenuItem Header="_Вернуть"/>
-                <MenuItem Header="_Обновить"/>
-                <MenuItem Header="_Выделить всё"/>
-                <MenuItem Header="_Выделить область"/>
-                <MenuItem Header="_Дублировать выбранное"/>
-                <MenuItem Header="_Удалить"/>
+            <MenuItem Header="_Правка" Style="{StaticResource MenuItemTemplate}">
+                <MenuItem Header="_Отменить"  Style="{StaticResource MenuItemTemplate}"/>
+                <MenuItem Header="_Вернуть"  Style="{StaticResource MenuItemTemplate}"/>
+                <MenuItem Header="_Обновить"  Style="{StaticResource MenuItemTemplate}"/>
+                <MenuItem Header="_Выделить всё" Style="{StaticResource MenuItemTemplate}"/>
+                <MenuItem Header="_Выделить область" Style="{StaticResource MenuItemTemplate}"/>
+                <MenuItem Header="_Дублировать выбранное" Style="{StaticResource MenuItemTemplate}"/>
+                <MenuItem Header="_Удалить" Style="{StaticResource MenuItemTemplate}"/>
             </MenuItem>
 
-            <MenuItem Header="_Генерация">
-                <MenuItem Header="Начать генерацию"/>
+            <MenuItem Header="_Генерация" Style="{StaticResource MenuItemTemplate}">
+                <MenuItem Header="_Начать генерацию" Style="{StaticResource MenuItemTemplate}"/>
                 <Separator />
-                <MenuItem Header="_Настройки" />
+                <MenuItem Header="_Настройки" Style="{StaticResource MenuItemTemplate}"/>
             </MenuItem>
 
-            <!--<MenuItem Header="_Импорт/Экспорт">
-                <MenuItem Header="_Импорт параметров"/>
-                <MenuItem Header="_Экспорт параметров"/>
+            <!--<MenuItem Header="_Окно" Style="{StaticResource MenuItemTemplate}">
+                <MenuItem Header="_Расположение" Style="{StaticResource MenuItemTemplate}"/>
             </MenuItem>-->
 
-            <MenuItem Header="_Окно">
-                <MenuItem Header="_Расположение"/>
-            </MenuItem>
+            <MenuItem Header="_Настройки" Style="{StaticResource MenuItemTemplate}"/>
 
-            <MenuItem Header="_Справка"/>
+            <MenuItem Header="_Справка" Style="{StaticResource MenuItemTemplate}"/>
         </Menu>
-
-        <!--<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <title>axis-arrow</title>
-            <path d="M12,2L16,6H13V13.85L19.53,17.61L21,15.03L22.5,20.5L17,21.96L18.53,19.35L12,15.58L5.47,19.35L7,21.96L1.5,20.5L3,15.03L4.47,17.61L11,13.85V6H8L12,2Z" />
-        </svg>-->
 
         <Menu Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
             <Menu.Resources>
-                <ControlTemplate x:Key="MenuItemTemplate" TargetType="{x:Type MenuItem}">
-                    <Button Content="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}}"
-                            ToolTip="{Binding Header, RelativeSource={RelativeSource TemplatedParent}}"
-                            Width="Auto" Margin="3,2" Padding="5"/>
-                </ControlTemplate>
-
                 <ControlTemplate x:Key="SeparatorTemplate" TargetType="{x:Type MenuItem}">
                     <Separator HorizontalAlignment="Right" Margin="10,2">
                         <Separator.LayoutTransform>
@@ -146,6 +313,10 @@
                         </Separator.LayoutTransform>
                     </Separator>
                 </ControlTemplate>
+
+                <Style TargetType="{x:Type Path}">
+                    <Setter Property="Stretch" Value="Uniform"/>
+                </Style>
             </Menu.Resources>
 
             <Menu.ItemsPanel>
@@ -154,48 +325,47 @@
                 </ItemsPanelTemplate>
             </Menu.ItemsPanel>
 
-            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Создать">
+            <MenuItem Template="{StaticResource MenuItemTemplate1}" Header="Создать">
                 <MenuItem.Icon>
-                    <Path Stretch="Uniform"  Fill="#FF03A436"
-                          Stroke="#FF00491E" StrokeThickness="0"
-                          Data="M13.81 22H6C4.89 22 4 21.11 4 20V4C4 2.9 4.89 2 6 2H14L20 8V13.09C19.67 13.04 19.34 13 19 13S18.33 13.04 18 13.09V9H13V4H6V20H13.09C13.21 20.72 13.46 21.39 13.81 22M23 18H20V15H18V18H15V20H18V23H20V20H23V18Z"/>
+                    <Path Fill="{StaticResource IconNewFileBrush}" StrokeThickness="0"
+                          Data="{StaticResource NewFilePathGeomerty}"/>
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Открыть">
+            <MenuItem Template="{StaticResource MenuItemTemplate1}" Header="Открыть">
                 <MenuItem.Icon>
-                    <Path Stretch="Uniform"  Fill="#FFFFBA01"
-                        Data="M20,6A2,2 0 0,1 22,8V18A2,2 0 0,1 20,20H4C2.89,20 2,19.1 2,18V6C2,4.89 2.89,4 4,4H10L12,6H20M19.25,13H16V9H14V13H10.75L15,17.25"/>
+                    <Path Fill="{StaticResource IconOpenFileBrush}"
+                          Data="{StaticResource OpenPathGeomerty}"/>
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Сохранить">
+            <MenuItem Template="{StaticResource MenuItemTemplate1}" Header="Сохранить">
                 <MenuItem.Icon>
-                    <Path Stretch="Uniform" Fill="#FF3E3E3E"
-                          Data="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"/>
+                    <Path Fill="{StaticResource IconSaveBrush}"
+                          Data="{StaticResource SavePathGeomerty}"/>
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Сохранить как">
+            <MenuItem Template="{StaticResource MenuItemTemplate1}" Header="Сохранить как">
                 <MenuItem.Icon>
-                    <Path Stretch="Uniform" Fill="#FF3E3E3E"
-                          Data="M17,7V3H7V7H17M14,17A3,3 0 0,0 17,14A3,3 0 0,0 14,11A3,3 0 0,0 11,14A3,3 0 0,0 14,17M19,1L23,5V17A2,2 0 0,1 21,19H7C5.89,19 5,18.1 5,17V3A2,2 0 0,1 7,1H19M1,7H3V21H17V23H3A2,2 0 0,1 1,21V7Z"/>
+                    <Path Fill="{StaticResource IconSaveAsBrush}"
+                          Data="{StaticResource SaveAsPathGeomerty}"/>
                 </MenuItem.Icon>
             </MenuItem>
 
             <MenuItem Template="{StaticResource SeparatorTemplate}"/>
 
-            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Отменить">
+            <MenuItem Template="{StaticResource MenuItemTemplate1}" Header="Отменить">
                 <MenuItem.Icon>
-                    <Path Stretch="Uniform" Fill="#FF00C5FF"
-                          Data="M20 13.5C20 17.09 17.09 20 13.5 20H6V18H13.5C16 18 18 16 18 13.5S16 9 13.5 9H7.83L10.91 12.09L9.5 13.5L4 8L9.5 2.5L10.92 3.91L7.83 7H13.5C17.09 7 20 9.91 20 13.5Z"/>
+                    <Path Fill="{StaticResource IconBackBrush}"
+                          Data="{StaticResource BackPathGeomerty}"/>
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Вернуть">
+            <MenuItem Template="{StaticResource MenuItemTemplate1}" Header="Вернуть">
                 <MenuItem.Icon>
-                    <Path Stretch="Uniform" Fill="#FF00C5FF"
-                          Data="M10.5 18H18V20H10.5C6.91 20 4 17.09 4 13.5S6.91 7 10.5 7H16.17L13.08 3.91L14.5 2.5L20 8L14.5 13.5L13.09 12.09L16.17 9H10.5C8 9 6 11 6 13.5S8 18 10.5 18Z"/>
+                    <Path Fill="{StaticResource IconReternBrush}"
+                          Data="{StaticResource ReternPathGeomerty}"/>
                 </MenuItem.Icon>
             </MenuItem>
 
@@ -211,102 +381,89 @@
                     </ControlTemplate>
                 </MenuItem.Template>
             </MenuItem>
-            
-            <MenuItem Header="Генерировать" Margin="10,0">
-                <MenuItem.Template>
-                    <ControlTemplate TargetType="{x:Type MenuItem}">
-                        <DockPanel TextBlock.FontSize="15px" Height="30">
-                            <Path Stroke="Transparent" Fill="Black" Stretch="Uniform"
-                                  Data="M248,152a8,8,0,0,1-8,8H224v16a8,8,0,0,1-16,0V160H192a8,8,0,0,1,0-16h16V128a8,8,0,0,1,16,0v16h16A8,8,0,0,1,248,152ZM64,68H76V80a8,8,0,0,0,16,0V68h12a8,8,0,0,0,0-16H92V40a8,8,0,0,0-16,0V52H64a8,8,0,0,0,0,16ZM184,192h-8v-8a8,8,0,0,0-16,0v8h-8a8,8,0,0,0,0,16h8v8a8,8,0,0,0,16,0v-8h8a8,8,0,0,0,0-16Zm-2.3-74.3L75.3,224a15.9,15.9,0,0,1-22.6,0L32,203.3a15.9,15.9,0,0,1,0-22.6L180.7,32a16.1,16.1,0,0,1,22.6,0L224,52.7a15.9,15.9,0,0,1,0,22.6l-42.3,42.4ZM155.3,80,176,100.7,212.7,64h0L192,43.3Z"/>
 
-                            <Label Content="{Binding Header, RelativeSource={RelativeSource TemplatedParent}}"/>
-                        </DockPanel>
-                    </ControlTemplate>
-                </MenuItem.Template>
+            <MenuItem Template="{StaticResource MenuItemTemplate2}" Header="Генерировать" Margin="10,2">
+                <MenuItem.Icon>
+                    <Path Fill="{StaticResource IconGenerateBrush}"
+                          Data="{StaticResource GeneratePathGeomerty}"/>
+                </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Параметры по-умолчанию">
+            <MenuItem Template="{StaticResource MenuItemTemplate1}" Header="Параметры по-умолчанию">
                 <MenuItem.Icon>
-                    <Path Stretch="Uniform" Fill="Black" StrokeThickness="1"
-                              RenderTransformOrigin="0.5,0.5"
-                              Data="m13.79925 7.767890625 -3.74296875 -3.7432499999999997a0.9381562499999999 0.9381562499999999 0 0 0 -1.326140625 0l-2.5117499999999997 2.5117499999999997L4.21875 0.9375H3.28125L0.9375 7.5h0.9375l0.46828125 -1.40625h2.8125l0.376640625 1.1286093750000001 -3.382828125 3.382828125a0.9375 0.9375 0 0 0 0 1.3257187499999998L4.280437500000001 14.0625h4.4956875l5.023124999999999 -5.02359375a0.898734375 0.898734375 0 0 0 0 -1.271015625ZM2.655609375 5.15625l1.0926562499999999 -3.28125 1.094765625 3.28125Zm5.73234375 7.96875H4.66875L2.8125 11.267859375l2.958890625 -2.958515625 3.716109375 3.715875Zm1.7625 -1.7625 -3.7160156250000003 -3.715875L9.393421875 4.6875l3.7156875 3.715875Z">
+                    <Path Fill="{StaticResource IconCleanBrush}"
+                          RenderTransformOrigin="0.5,0.5"
+                          Data="{StaticResource CleanPathGeomerty}">
 
                         <Path.LayoutTransform >
-                            <ScaleTransform ScaleX="2" ScaleY="2"/>
+                            <ScaleTransform ScaleX="1.75" ScaleY="1.75"/>
                         </Path.LayoutTransform>
                     </Path>
                 </MenuItem.Icon>
             </MenuItem>
-
-            <!--<svg id="Text-Clear-Format-Streamline-Carbon" xmlns="http://www.w3.org/2000/svg" viewBox="-0.5 -0.5 16 16" height="16" width="16">
-                <desc>Text Clear Format Streamline Icon: https://streamlinehq.com</desc>
-                <defs></defs>
-                <path d="m13.79925 7.767890625 -3.74296875 -3.7432499999999997a0.9381562499999999 0.9381562499999999 0 0 0 -1.326140625 0l-2.5117499999999997 2.5117499999999997L4.21875 0.9375H3.28125L0.9375 7.5h0.9375l0.46828125 -1.40625h2.8125l0.376640625 1.1286093750000001 -3.382828125 3.382828125a0.9375 0.9375 0 0 0 0 1.3257187499999998L4.280437500000001 14.0625h4.4956875l5.023124999999999 -5.02359375a0.898734375 0.898734375 0 0 0 0 -1.271015625ZM2.655609375 5.15625l1.0926562499999999 -3.28125 1.094765625 3.28125Zm5.73234375 7.96875H4.66875L2.8125 11.267859375l2.958890625 -2.958515625 3.716109375 3.715875Zm1.7625 -1.7625 -3.7160156250000003 -3.715875L9.393421875 4.6875l3.7156875 3.715875Z" fill="#000000" stroke-width="1"></path>
-                <path id="_Transparent_Rectangle_" d="M0 0h15v15H0Z" fill="none" stroke-width="1"></path>
-            </svg>-->
-
+            
             <MenuItem Template="{StaticResource SeparatorTemplate}"/>
 
-            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Уменьшить">
+            <MenuItem Template="{StaticResource MenuItemTemplate1}" Header="Уменьшить">
                 <MenuItem.Icon>
-                    <Path Stretch="Uniform" Fill="#FF002EFF"
-                          Data="M15.5,14H14.71L14.43,13.73C15.41,12.59 16,11.11 16,9.5A6.5,6.5 0 0,0 9.5,3A6.5,6.5 0 0,0 3,9.5A6.5,6.5 0 0,0 9.5,16C11.11,16 12.59,15.41 13.73,14.43L14,14.71V15.5L19,20.5L20.5,19L15.5,14M9.5,14C7,14 5,12 5,9.5C5,7 7,5 9.5,5C12,5 14,7 14,9.5C14,12 12,14 9.5,14M7,9H12V10H7V9Z"/>
+                    <Path Fill="{StaticResource IconDecreaseBrush}"
+                          Data="{StaticResource DecreasePathGeomerty}"/>
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Увеличить">
+            <MenuItem Template="{StaticResource MenuItemTemplate1}" Header="Увеличить">
                 <MenuItem.Icon>
-                    <Path Stretch="Uniform" Fill="#FF002EFF"
-                          Data="M15.5,14L20.5,19L19,20.5L14,15.5V14.71L13.73,14.43C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.43,13.73L14.71,14H15.5M9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14M12,10H10V12H9V10H7V9H9V7H10V9H12V10Z"/>
+                    <Path Fill="{StaticResource IconIncreaseBrush}"
+                          Data="{StaticResource IncreasePathGeomerty}"/>
                 </MenuItem.Icon>
             </MenuItem>
 
             <MenuItem Template="{StaticResource SeparatorTemplate}"/>
 
-            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Увеличить">
+            <MenuItem Template="{StaticResource MenuItemTemplate1}" Header="Скрыть\показать оси координат">
                 <MenuItem.Icon>                   
-                    <Path Stretch="Uniform" Fill="Black"
-                        Data="M12,2L16,6H13V13.85L19.53,17.61L21,15.03L22.5,20.5L17,21.96L18.53,19.35L12,15.58L5.47,19.35L7,21.96L1.5,20.5L3,15.03L4.47,17.61L11,13.85V6H8L12,2Z"/>
+                    <Path Fill="{StaticResource IconAxistBrush}"
+                        Data="{StaticResource AxistPathGeomerty}"/>
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Увеличить">
+            <MenuItem Template="{StaticResource MenuItemTemplate1}" Header="Увеличить">
                 <MenuItem.Icon>
                     <Image Source="/InterfaceOfRobots;component/Themes/Images/isometric_view.png" Height="24" Width="24" Stretch="Uniform"/>
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Увеличить">
+            <MenuItem Template="{StaticResource MenuItemTemplate1}" Header="Увеличить">
                 <MenuItem.Icon>
                     <Image Source="/InterfaceOfRobots;component/Themes/Images/top_view.png" Height="24" Width="24" Stretch="Uniform"/>
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Увеличить">
+            <MenuItem Template="{StaticResource MenuItemTemplate1}" Header="Увеличить">
                 <MenuItem.Icon>
                     <Image Source="/InterfaceOfRobots;component/Themes/Images/bottom_view.png" Height="24" Width="24" Stretch="Uniform"/>
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Увеличить">
+            <MenuItem Template="{StaticResource MenuItemTemplate1}" Header="Увеличить">
                 <MenuItem.Icon>
                     <Image Source="/InterfaceOfRobots;component/Themes/Images/front_view.png" Height="24" Width="24" Stretch="Uniform"/>
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Увеличить">
+            <MenuItem Template="{StaticResource MenuItemTemplate1}" Header="Увеличить">
                 <MenuItem.Icon>
                     <Image Source="/InterfaceOfRobots;component/Themes/Images/back_view.png" Height="24" Width="24" Stretch="Uniform"/>
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Увеличить">
+            <MenuItem Template="{StaticResource MenuItemTemplate1}" Header="Увеличить">
                 <MenuItem.Icon>
                     <Image Source="/InterfaceOfRobots;component/Themes/Images/left_side_view.png" Height="24" Width="24" Stretch="Uniform"/>
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Увеличить">
+            <MenuItem Template="{StaticResource MenuItemTemplate1}" Header="Увеличить">
                 <MenuItem.Icon>
                     <Image Source="/InterfaceOfRobots;component/Themes/Images/right_side_view.png" Height="24" Width="24" Stretch="Uniform"/>
                 </MenuItem.Icon>
@@ -316,7 +473,8 @@
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
-                <ColumnDefinition Width="Auto" MaxWidth="450"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
             <Grid Grid.Column="0" Margin="15,10,15,0">
@@ -324,12 +482,6 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="150"/>
                 </Grid.RowDefinitions>
-
-                <!--<TabControl Grid.Row="0" TabStripPlacement="Bottom" Background="Transparent">
-                    <TabItem Header="Файл 1">
-
-                    </TabItem>
-                </TabControl>-->
 
                 <TabControl Grid.Row="0" TabStripPlacement="Bottom">
                     <TabControl.Resources>
@@ -402,7 +554,11 @@
                 </TabControl>
             </Grid>
 
-            <Grid Grid.Column="1">
+
+            <GridSplitter Grid.Column="1" ShowsPreview="False" Width="5" HorizontalAlignment="Center" VerticalAlignment="Stretch"
+                          ResizeDirection="Columns" ResizeBehavior="PreviousAndNext"/>
+            
+            <Grid Grid.Column="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
@@ -410,94 +566,59 @@
 
                 <Grid Grid.Column="0">
                     <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <Border Grid.Row="0" Background="{StaticResource {x:Static SystemColors.InfoBrushKey}}" BorderBrush="#4a4a4a" BorderThickness="3, 3, 3, 0">
+                    <Border Grid.Row="0" Background="{StaticResource {x:Static SystemColors.InfoBrushKey}}" BorderBrush="#4a4a4a" BorderThickness="3">
                         <ScrollViewer CanContentScroll="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                             <ContentControl>
                                 <ContentControl.Style>
                                     <Style TargetType="{x:Type ContentControl}">
-                                        <Setter Property="Template">
+                                        <!--<Setter Property="Template">
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="ContentControl">
+                                                    --><!--Для примера--><!--
                                                     <TreeView FontSize="15" Padding="5,5,10,5" HorizontalContentAlignment="Center">
                                                         <TreeViewItem Header="Базы данных">
                                                             <TreeViewItem Header="MS SQL Server" />
                                                             <TreeViewItem Header="MySQL" />
-                                                            <TreeViewItem Header="MongoDB" />
-                                                            <TreeViewItem Header="Postgres" />
                                                         </TreeViewItem>
                                                         <TreeViewItem Header="Языки программирования">
                                                             <TreeViewItem Header="C-языки">
                                                                 <TreeViewItem Header="C#" />
-                                                                <TreeViewItem Header="C/C++" />
-                                                                <TreeViewItem Header="Java" />
                                                             </TreeViewItem>
                                                             <TreeViewItem Header="Basic">
                                                                 <TreeViewItem Header="Visual Basic" />
-                                                                <TreeViewItem Header="VB.Net" />
-                                                                <TreeViewItem Header="PureBasic" />
                                                             </TreeViewItem>
                                                         </TreeViewItem>
                                                     </TreeView>
                                                 </ControlTemplate>
                                             </Setter.Value>
-                                        </Setter>
+                                        </Setter>-->
+
+                                        <Setter Property="ContentTemplate" Value="{StaticResource OtherTemplateStyle}"/>
 
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding Path=IsChecked, ElementName=RobotRadioButton}" Value="True">
-                                                <Setter Property="Template">
-                                                    <Setter.Value>
-                                                        <ControlTemplate TargetType="ContentControl">
-                                                            <Border Background="Aqua"/>
-                                                        </ControlTemplate>
-                                                    </Setter.Value>
-                                                </Setter>
+                                                <Setter Property="ContentTemplate" Value="{StaticResource RobotControlTemplate}"/>
                                             </DataTrigger>
 
                                             <DataTrigger Binding="{Binding Path=IsChecked, ElementName=ControlRadioButton}" Value="True">
-                                                <Setter Property="Template">
-                                                    <Setter.Value>
-                                                        <ControlTemplate TargetType="ContentControl">
-                                                            <Border Background="Pink"/>
-                                                        </ControlTemplate>
-                                                    </Setter.Value>
-                                                </Setter>
+                                                <Setter Property="ContentTemplate" Value="{StaticResource UprControlTemplate}"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </ContentControl.Style>
                             </ContentControl>
                         </ScrollViewer>
-                        <!--<TreeView FontSize="15" Padding="5,5,10,5"
-                                  HorizontalContentAlignment="Center"
-                                  ScrollViewer.CanContentScroll="True"
-                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                  ScrollViewer.HorizontalScrollBarVisibility="Auto">
-                            <TreeViewItem Header="Базы данных">
-                                <TreeViewItem Header="MS SQL Server" />
-                                <TreeViewItem Header="MySQL" />
-                                <TreeViewItem Header="MongoDB" />
-                                <TreeViewItem Header="Postgres" />
-                            </TreeViewItem>
-                            <TreeViewItem Header="Языки программирования">
-                                <TreeViewItem Header="C-языки">
-                                    <TreeViewItem Header="C#" />
-                                    <TreeViewItem Header="C/C++" />
-                                    <TreeViewItem Header="Java" />
-                                </TreeViewItem>
-                                <TreeViewItem Header="Basic">
-                                    <TreeViewItem Header="Visual Basic" />
-                                    <TreeViewItem Header="VB.Net" />
-                                    <TreeViewItem Header="PureBasic" />
-                                </TreeViewItem>
-                            </TreeViewItem>
-                        </TreeView>-->
                     </Border>
 
-                    <TabControl Grid.Row="1" Grid.Column="0"  TabStripPlacement="Bottom">
+                    <GridSplitter Grid.Column="0" Grid.Row="1" ShowsPreview="False" Height="5" HorizontalAlignment="Stretch"
+                                  ResizeDirection="Rows"  ResizeBehavior="PreviousAndNext"/>
+
+                    <TabControl Grid.Row="2" Grid.Column="0"  TabStripPlacement="Bottom">
                         <!--<TabControl.Resources>
                         <Style TargetType="{x:Type TabItem}">
                             <Setter Property="FontSize" Value="15"/>
@@ -537,61 +658,26 @@
                         </TabItem>
 
                         <TabItem Header="Параметры">
+                            <TreeView FontSize="14" VerticalContentAlignment="Top" HorizontalContentAlignment="Stretch"
+                                      ScrollViewer.CanContentScroll="True"
+                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                      ScrollViewer.VerticalScrollBarVisibility="Auto">
+                               
+                                <TreeViewItem Header="Общие">
+                                    <ContentControl ContentTemplate="{StaticResource PlitaTemplateStyle}"/>
+                                </TreeViewItem>
 
+                                <TreeViewItem Header="Доп.">
+                                    <ContentControl ContentTemplate="{StaticResource PlitaDopTemplateStyle}"/>
+                                </TreeViewItem>
+
+                                <TreeViewItem Header="Сварка">
+                                    <ContentControl ContentTemplate="{StaticResource PlitaSvarkaTemplate3Style}" Margin="-35,0,0,0"/>
+                                </TreeViewItem>
+                            </TreeView>
                         </TabItem>
                     </TabControl>
                 </Grid>
-
-                <!--<StackPanel Grid.Column="1" Orientation="Vertical">
-                    <ToggleButton Width="150" Content="Роботы" FontSize="14"
-                          VerticalAlignment="Top" HorizontalAlignment="Right">
-                        <ToggleButton.LayoutTransform>
-                            <RotateTransform Angle="90"/>
-                        </ToggleButton.LayoutTransform>
-                    </ToggleButton>
-
-                    <ToggleButton Width="150" Content="Управление" FontSize="14"
-                          VerticalAlignment="Top" HorizontalAlignment="Right">
-                        <ToggleButton.LayoutTransform>
-                            <RotateTransform Angle="90"/>
-                        </ToggleButton.LayoutTransform>
-                    </ToggleButton>
-                </StackPanel>-->
-
-                <!--<ListBox Grid.Column="1" FontSize="14" Background="Transparent">
-                    <ListBox.Resources>
-                        <Style TargetType="{x:Type ListBox}">
-                            <Setter Property="ListBox.ItemTemplate">
-                                <Setter.Value>
-                                    <DataTemplate>
-                                        <ToggleButton Content="{Binding}" Width="150"
-                                                      IsChecked="{Binding IsSelected, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}}"/>
-                                    </DataTemplate>
-                                </Setter.Value>
-                            </Setter>
-
-                            <Setter Property="ListBox.ItemsPanel">
-                                <Setter.Value>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel IsItemsHost="True" Orientation="Vertical"/>
-                                    </ItemsPanelTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-
-                        <Style TargetType="{x:Type ListBoxItem}">
-                            --><!--<Setter Property="IsSelected" Value="{Binding Path=., TargetNullValue=False, FallbackValue=False}"/>--><!--
-                            <Setter Property="LayoutTransform">
-                                <Setter.Value>
-                                    <RotateTransform CenterX="0" CenterY="0" Angle="90"/>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </ListBox.Resources>
-
-                    <ListBoxItem x:Name="RobotToggleButton" Content="Роботы"/>
-                    <ListBoxItem x:Name="ControlToggleButton" Content="Управление"/>
-                </ListBox>-->
 
                 <Grid Grid.Column="1">
                     <Grid.RowDefinitions>
@@ -600,9 +686,10 @@
                     </Grid.RowDefinitions>
 
                     <Grid.Resources>
-                        <Style TargetType="{x:Type ToggleButton}">
+                        <Style TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource TextBase}">
                             <Setter Property="FontSize" Value="14"/>
-                            <Setter Property="Padding" Value="15,2"/>
+                            <!--<Setter Property="Padding" Value="15,2"/>-->
+                            <Setter Property="Template" Value="{StaticResource MenuToggleButtonTemplate}"/>
                             <Setter Property="LayoutTransform">
                                 <Setter.Value>
                                     <RotateTransform CenterX="0" CenterY="0" Angle="90"/>
@@ -611,7 +698,7 @@
                         </Style>
                     </Grid.Resources>
 
-                    <RadioButton Grid.Row="0" x:Name="RobotRadioButton" Content="Роботы"
+                    <RadioButton Grid.Row="0" x:Name="RobotRadioButton" Content="Роботы" IsChecked="True"
                                  Template="{StaticResource RadioButtonInToggleTemplate}"/>
                     <RadioButton Grid.Row="1" x:Name="ControlRadioButton" Content="Управление"
                                  Template="{StaticResource RadioButtonInToggleTemplate}"/>

@@ -2,21 +2,113 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:ForRobot.Themes"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib"
-                    xmlns:conv="clr-namespace:ForRobot.Libr.Converters">
+                    xmlns:opt="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options">
+    <!--Control Content property -->
+    <!--M => minus  P=> plus-->
+    <!-- more font choice http://www.microsoft.com/typography/fonts/family.aspx?FID=331-->
+    <FontFamily x:Key="DefaultFont">Segoe UI</FontFamily>
+    <FontFamily x:Key="FontFamilyTitle">Segoe UI Light</FontFamily>
+    <FontFamily x:Key="DefaultFontFamily">SegoeUI Regular</FontFamily>
 
-    <!--Data Type-->
-    <sys:Boolean x:Key="True">True</sys:Boolean>
-    <sys:Boolean x:Key="False">False</sys:Boolean>
+    <!--Font size key value-->
+    <sys:Double x:Key="FontSizeNM4">8</sys:Double>
+    <sys:Double x:Key="FontSizeNM3">9</sys:Double>
+    <sys:Double x:Key="FontSizeNM2">10</sys:Double>
+    <sys:Double x:Key="FontSizeNM1">11</sys:Double>
+    <sys:Double x:Key="FontSizeN">12</sys:Double>
+    <sys:Double x:Key="FontSizeNP1">13</sys:Double>
+    <sys:Double x:Key="FontSizeNP2">14</sys:Double>
+    <sys:Double x:Key="FontSizeNP3">15</sys:Double>
+    <sys:Double x:Key="FontSizeNP4">16</sys:Double>
+    <sys:Double x:Key="FontSizeNP5">17</sys:Double>
+    <sys:Double x:Key="FontSizeNP6">18</sys:Double>
+    <sys:Double x:Key="FontSizeNP7">19</sys:Double>
+    <sys:Double x:Key="FontSizeNP8">20</sys:Double>
 
-    <!--Converters-->
-    <conv:RowNumberConverter x:Key="RowNumberConvert"/>
-    <conv:RadioButtonConverter x:Key="RadioButtonConvert"/>
-    <conv:StatusColorConverter x:Key="StatusColorConvert"/>
-    <conv:StringFormatConverter x:Key="StringConvert"/>
-    <conv:ThicknessConverter x:Key="ThicknessConvert"/>
-    <conv:SelectProgramConverter x:Key="SelectProgramConvert"/>
-    <conv:VisibilityFolderOnRobot x:Key="VisibilityFolderOnRobot"/>
-    <conv:NumbersForWeldingSchemaConverter x:Key="NumbersForWeldingSchemaConvert"/>
+    <!--Colors-->
+    <!--Controls colors.-->
+    <Color x:Key="ThemeBgM2Color">#ffffff</Color>
+    <Color x:Key="ThemeBgM1Color">#f2f2f2</Color>
+    <Color x:Key="ThemeBgColor"  >#eaeaea</Color>
+    <Color x:Key="ThemeBgP1Color">#dadada</Color>
+    <Color x:Key="ThemeBgP2Color">#FF919191</Color>
+    <Color x:Key="ThemeBgP3Color">#333333</Color>
+
+    <Color x:Key="ThemeFgM2Color">#aaaaaa</Color>
+    <Color x:Key="ThemeFgM1Color">#777777</Color>
+    <Color x:Key="ThemeFgColor"  >#393939</Color>
+    <Color x:Key="ThemeFgP1Color">#141414</Color>
+    <Color x:Key="ThemeFgP2Color">#000000</Color>
+    <Color x:Key="ThemeFgP3Color">#ffffff</Color>
+
+    <Color x:Key="ThemeIsMouseOverMenuItemBgColor">#FFC1C1C1</Color>
+    <Color x:Key="ThemeIsPressedMenuItemBgColor">#FF61FFB7</Color>
+
+    <Color x:Key="ThemeNotActiveToggleButBordColor">#FF919191</Color>
+    <Color x:Key="ThemeIsMouseOverToggleButBgColor">#FFC1C1C1</Color>
+    <Color x:Key="ThemeIsMouseOverToggleButBordColor">#FF209BFF</Color>
+    <Color x:Key="ThemeIsPressedToggleButBgColor">#FF45D7FF</Color>
+    <Color x:Key="ThemeIsPressedToggleButBordColor">#FF209BFF</Color>
+
+
+    <SolidColorBrush opt:Freeze="True" x:Key="ThemeBgM2Brush" Color="{StaticResource ThemeBgM2Color}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="ThemeBgM1Brush" Color="{StaticResource ThemeBgM1Color}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="ThemeBgBrush"   Color="{StaticResource ThemeBgColor  }"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="ThemeBgP1Brush" Color="{StaticResource ThemeBgP1Color}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="ThemeBgP2Brush" Color="{StaticResource ThemeBgP2Color}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="ThemeBgP3Brush" Color="{StaticResource ThemeBgP3Color}"/>
+
+    <SolidColorBrush opt:Freeze="True" x:Key="ThemeFgM2Brush" Color="{StaticResource ThemeFgM2Color}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="ThemeFgM1Brush" Color="{StaticResource ThemeFgM1Color}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="ThemeFgBrush"   Color="{StaticResource ThemeFgColor  }"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="ThemeFgP1Brush" Color="{StaticResource ThemeFgP1Color}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="ThemeFgP2Brush" Color="{StaticResource ThemeFgP2Color}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="ThemeFgP3Brush" Color="{StaticResource ThemeFgP3Color}"/>
+
+    <SolidColorBrush opt:Freeze="True" x:Key="ThemeIsMouseOverMenuItemBgBrush" Color="{StaticResource ThemeIsMouseOverMenuItemBgColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="ThemeIsPressedMenuItemBgBrush" Color="{StaticResource ThemeIsPressedMenuItemBgColor}"/>
+
+    <SolidColorBrush opt:Freeze="True" x:Key="ThemeNotActiveToggleButBordBrush" Color="{StaticResource ThemeNotActiveToggleButBordColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="ThemeIsMouseOverToggleButBgBrush" Color="{StaticResource ThemeIsMouseOverToggleButBgColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="ThemeIsMouseOverToggleButBordBrush" Color="{StaticResource ThemeIsMouseOverToggleButBordColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="ThemeIsPressedToggleButBgBrush" Color="{StaticResource ThemeIsPressedToggleButBgColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="ThemeIsPressedToggleButBordBrush" Color="{StaticResource ThemeIsPressedToggleButBordColor}"/>
+    
+    <!--Icons colors-->
+    <Color x:Key="IconNewFileColor">#FF03A436</Color>
+    <Color x:Key="IconOpenFileColor">#FFFFBA01</Color>
+    <Color x:Key="IconSaveColor">#FF3E3E3E</Color>
+    <Color x:Key="IconSaveAsColor">#FF3E3E3E</Color>
+    <Color x:Key="IconBackColor">#FF00C5FF</Color>
+    <Color x:Key="IconReternColor">#FF00C5FF</Color>
+    <Color x:Key="IconGenerateColor">#000000</Color>
+    <Color x:Key="IconCleanColor">#000000</Color>
+    <Color x:Key="IconDecreaseColor">#FF002EFF</Color>
+    <Color x:Key="IconIncreaseColor">#FF002EFF</Color>
+    <Color x:Key="IconAxistColor">#000000</Color>
+    <Color x:Key="IconDeleteColor">#000000</Color>
+    <Color x:Key="IconUpDateColor">#000000</Color>
+    <Color x:Key="IconAddColor">#000000</Color>
+    <Color x:Key="IconEditColor">#000000</Color>
+
+    <SolidColorBrush opt:Freeze="True" x:Key="IconNewFileBrush" Color="{StaticResource IconNewFileColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="IconOpenFileBrush" Color="{StaticResource IconOpenFileColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="IconSaveBrush" Color="{StaticResource IconSaveColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="IconSaveAsBrush" Color="{StaticResource IconSaveAsColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="IconBackBrush" Color="{StaticResource IconBackColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="IconReternBrush" Color="{StaticResource IconReternColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="IconGenerateBrush" Color="{StaticResource IconGenerateColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="IconCleanBrush" Color="{StaticResource IconCleanColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="IconDecreaseBrush" Color="{StaticResource IconDecreaseColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="IconIncreaseBrush" Color="{StaticResource IconIncreaseColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="IconAxistBrush" Color="{StaticResource IconAxistColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="IconDeleteBrush" Color="{StaticResource IconDeleteColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="IconUpDateBrush" Color="{StaticResource IconUpDateColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="IconAddBrush" Color="{StaticResource IconAddColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="IconEditBrush" Color="{StaticResource IconEditColor}"/>
+
+    <!--***************************************************************************-->
+
 
     <!--Colors-->
     <Color x:Key="Aqua">#00FFFF</Color>    
@@ -35,17 +127,17 @@
     <BitmapImage x:Key="ImageGenerationOff" UriSource="/InterfaceOfRobots;component/Themes/Images/generationOff.png"/>
     <BitmapImage x:Key="ImageGenerationOn" UriSource="/InterfaceOfRobots;component/Themes/Images/generationOn.png"/>
 
-    <BitmapImage x:Key="ImageStart" UriSource="/InterfaceOfRobots;component/Themes/Images/Start.png"/>
+    <!--<BitmapImage x:Key="ImageStart" UriSource="/InterfaceOfRobots;component/Themes/Images/Start.png"/>
     <BitmapImage x:Key="ImagePause" UriSource="/InterfaceOfRobots;component/Themes/Images/Pause.png"/>
     <BitmapImage x:Key="ImageRepeat" UriSource="/InterfaceOfRobots;component/Themes/Images/repeat.png"/>
     <BitmapImage x:Key="ImageCancel" UriSource="/InterfaceOfRobots;component/Themes/Images/Stop.png"/>
-    <BitmapImage x:Key="ImageSelectProgramm" UriSource="/InterfaceOfRobots;component/Themes/Images/SelectProgramm.png"/>
+    <BitmapImage x:Key="ImageSelectProgramm" UriSource="/InterfaceOfRobots;component/Themes/Images/SelectProgramm.png"/>-->
 
-    <BitmapImage x:Key="ImageDelete" UriSource="/InterfaceOfRobots;component/Themes/Images/delete.png"/>
+    <!--<BitmapImage x:Key="ImageDelete" UriSource="/InterfaceOfRobots;component/Themes/Images/delete.png"/>-->
     <BitmapImage x:Key="ImageUpdate" UriSource="/InterfaceOfRobots;component/Themes/Images/update.png" x:Shared="false"/>
-    <BitmapImage x:Key="ImageAdd" UriSource="/InterfaceOfRobots;component/Themes/Images/Add.png"/>
+    <!--<BitmapImage x:Key="ImageAdd" UriSource="/InterfaceOfRobots;component/Themes/Images/Add.png"/>
     <BitmapImage x:Key="ImageEdit" UriSource="/InterfaceOfRobots;component/Themes/Images/edit.png" x:Shared="false"/>
-    <BitmapImage x:Key="ImageUp" UriSource="/InterfaceOfRobots;component/Themes/Images/up.png" x:Shared="false"/>
+    <BitmapImage x:Key="ImageUp" UriSource="/InterfaceOfRobots;component/Themes/Images/up.png" x:Shared="false"/>-->
 
     <!--Скосы-->
     <BitmapImage x:Key="ImageSlopeLeft" UriSource="/InterfaceOfRobots;component/Themes/Images/Slope_left.png"/>
@@ -243,7 +335,7 @@
     </Style>
     
     <!--Стиль кнопки повторной генерации1-->
-    <Style x:Key="buttonRefrashStyle" TargetType="Button">
+    <!--<Style x:Key="buttonRefrashStyle" TargetType="Button">
         <Setter Property="Width" Value="0"/>
         <Setter Property="Height" Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"/>
         <Setter Property="Visibility" Value="Hidden"/>
@@ -284,7 +376,7 @@
                 </MultiDataTrigger.EnterActions>
             </MultiDataTrigger>
         </Style.Triggers>
-    </Style>
+    </Style>-->
 
     <!--Стиль кнопки повторной генерации2-->
     <Style x:Key="buttonRefrashStyle2" TargetType="Button">
@@ -434,14 +526,14 @@
     </Style>
 
     <!--Стиль кнопки поиска программы-->
-    <Style x:Key="buttonSearchStyle" TargetType="ToggleButton">
+    <!--<Style x:Key="buttonSearchStyle" TargetType="ToggleButton">
         <Setter Property="Width" Value="50"/>
         <Setter Property="Height" Value="50"/>
         <Setter Property="IsEnabled" Value="False"/>
         <Setter Property="Background" Value="{StaticResource ImageSearchProgramm}"/>
-        <!--<Setter Property="Command" Value="{Binding SelectProgrammCommand}"/>-->
+        --><!--<Setter Property="Command" Value="{Binding SelectProgrammCommand}"/>--><!--
         <Setter Property="ToolTip" Value="Поиск программы"/>
-    </Style>
+    </Style>-->
 
     <!--Анимация мигания надписи-->
     <Style x:Key="BlinkStyle" TargetType="StackPanel">
