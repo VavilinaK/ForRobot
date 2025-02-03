@@ -69,6 +69,8 @@ namespace ForRobot.Model.Detals
 
         public Rib() { }
 
+        public void OnChangeDistanceEvent(object sender, EventArgs e) => this.ChangeDistance?.Invoke(sender, e);
+
         public object Clone() => (Rib)this.MemberwiseClone();
     }
 }

@@ -142,6 +142,13 @@ namespace ForRobot.Model.Detals
             set
             {
                 Set(ref this._paralleleRibs, value);
+
+                if (this.RibsCollection != null && this._paralleleRibs) // Изменение расстояния для параллельных рёбер.
+                    foreach (var rib in this.RibsCollection)
+                    {
+                        rib.OnChangeDistanceEvent(rib, null);
+                    }
+
                 this.Change?.Invoke(this, null);
             }
         }
@@ -669,7 +676,17 @@ namespace ForRobot.Model.Detals
         public FullyObservableCollection<Rib> RibsCollection
         {
             get => _ribsCollection;
-            set => Set(ref this._ribsCollection, value);
+            set
+            {
+                Set(ref this._ribsCollection, value);
+
+                foreach(var rib in this._ribsCollection)
+                    rib.ChangeDistance += (s, e) =>
+                    {
+                        if (this.ParalleleRibs)
+                            (s as Rib).DistanceRight = (s as Rib).Distance;
+                    };
+            }
         }
 
         [JsonIgnore]
@@ -819,11 +836,11 @@ namespace ForRobot.Model.Detals
                     rib.Distance = this.DistanceBetween;
                     rib.DistanceRight = this.DistanceBetween;
                 }
-                rib.ChangeDistance += (s, e) => 
-                {
-                    if (this.ParalleleRibs)
-                        (s as Rib).DistanceRight = (s as Rib).Distance;
-                };
+                //rib.ChangeDistance += (s, e) => 
+                //{
+                //    if (this.ParalleleRibs)
+                //        (s as Rib).DistanceRight = (s as Rib).Distance;
+                //};
                 
                 ribs.Add(rib);
             }

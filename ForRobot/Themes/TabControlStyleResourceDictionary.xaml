@@ -1083,7 +1083,8 @@
     <DataTemplate x:Key="PlitaSvarkaTemplate3Style">
         <DataTemplate.Resources>
             <Style x:Key="TextBase" TargetType="{x:Type FrameworkElement}">
-                <Setter Property="TextElement.FontSize"  Value="14"/>
+                <Setter Property="TextElement.FontSize" Value="{StaticResource FontSizeNP2}"/>
+                <Setter Property="TextElement.Foreground" Value="{StaticResource ThemeFgP2Brush}"/>
             </Style>
 
             <Style TargetType="{x:Type Label}" BasedOn="{StaticResource TextBase}">
@@ -1194,7 +1195,7 @@
                               Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type Grid}, Mode=FindAncestor}}"
                               ItemsSource="{Binding Path=DataContext.DetalObject.WeldingSchema, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=OneWay}">
 
-                        <DataGrid.Resources>
+                        <!--<DataGrid.Resources>
                             <Style TargetType="{x:Type ComboBox}">
                                 <Setter Property="MaxDropDownHeight" Value="150"/>
                                 <Setter Property="ItemsSource" Value="{Binding Path=., RelativeSource={RelativeSource AncestorType=DataGrid, Mode=FindAncestor}, Converter={StaticResource NumbersForWeldingSchemaConvert}}"/>
@@ -1259,10 +1260,109 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                        </DataGrid.Columns>
+                        </DataGrid.Columns>-->
                     </DataGrid>
                 </Grid>
             </GroupBox>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="PlitaDopTemplate3Style" DataType="{x:Type ContentControl}">
+        <DataTemplate.Resources>
+            <Style x:Key="TextBase" TargetType="{x:Type FrameworkElement}">
+                <Setter Property="TextElement.FontSize" Value="{StaticResource FontSizeNP2}"/>
+                <Setter Property="TextElement.Foreground" Value="{StaticResource ThemeFgP2Brush}"/>
+            </Style>
+            
+            <Style TargetType="{x:Type Label}" BasedOn="{StaticResource TextBase}">
+                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
+            </Style>
+
+            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource TextBase}">
+                <Setter Property="Padding" Value="5"/>
+                <Setter Property="Height" Value="37"/>
+                <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
+                <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
+                <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
+            </Style>
+        </DataTemplate.Resources>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="0" Content="Толщина настила, мм."/>
+            <Label Grid.Row="1" Grid.Column="0" Content="Толщина ребра, мм."/>
+            <Label Grid.Row="2" Grid.Column="0" Content="Высота ребра, мм."/>
+            <Label Grid.Row="3" Grid.Column="0" Content="Отступ поиска в начале, мм."/>
+            <Label Grid.Row="4" Grid.Column="0" Content="Отступ поиска в конце, мм."/>
+            <Label Grid.Row="5" Grid.Column="0" Content="Перекрытие швов, мм."/>
+            <Label Grid.Row="6" Grid.Column="0" Content="Технологический отступ начала шва, мм."/>
+            <Label Grid.Row="7" Grid.Column="0" Content="Технологический отступ конца шва, мм."/>
+            <Label Grid.Row="8" Grid.Column="0" Content="Дистанция до позиционера для сварки, мм."/>
+            <Label Grid.Row="9" Grid.Column="0" Content="Дистанция до позиционера для поиска, мм."/>
+            <Label Grid.Row="10" Grid.Column="0" Content="Смещение детали от 0 точки по оси X, мм."/>
+            <Label Grid.Row="11" Grid.Column="0" Content="Смещение детали от 0 точки по оси Y, мм."/>
+            <Label Grid.Row="12" Grid.Column="0" Content="Обратный прогиб, мм."/>
+
+            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.ThicknessPlita, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00, FallbackValue=00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+
+            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.ThicknessRebro, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00, FallbackValue=00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+
+            <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Vertical">
+                <TextBox Name="textBoxHieght" Text="{Binding Path=DataContext.DetalObject.Hight, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+
+                <Popup PlacementTarget="{Binding ElementName=textBoxHieght}"
+                       IsOpen="{Binding IsKeyboardFocused, ElementName=textBoxHieght, Mode=OneWay}"
+                       AllowsTransparency="True" AllowDrop="True"
+                       Placement="Left">
+
+                    <Border Background="#FF68DDFF" Height="45" Width="170" Padding="2" CornerRadius="3" Opacity="0.90">
+                        <TextBlock Style="{StaticResource TextBase}"
+                                   Text="Отклонение до 40 мм. можно игнорировать" TextWrapping="Wrap"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </Popup>
+            </StackPanel>
+
+            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.SearchOffsetStart, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+
+            <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.SearchOffsetEnd, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+
+            <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.SeamsOverlap, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+
+            <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.TechOffsetSeamStart, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+
+            <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.TechOffsetSeamEnd, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+
+            <TextBox Grid.Row="8" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DistanceForWelding, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+
+            <TextBox Grid.Row="9" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DistanceForSearch, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+
+            <TextBox Grid.Row="10" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.XOffset, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+
+            <TextBox Grid.Row="11" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.YOffset, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+
+            <TextBox Grid.Row="12" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.ReverseDeflection, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
         </Grid>
     </DataTemplate>
 </ResourceDictionary>

@@ -1,8 +1,25 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:ForRobot.Themes"
+                    xmlns:conv="clr-namespace:ForRobot.Libr.Converters"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib"
                     xmlns:opt="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options">
+
+    <!--Data Type-->
+    <!--Boolean-->
+    <sys:Boolean x:Key="True">True</sys:Boolean>
+    <sys:Boolean x:Key="False">False</sys:Boolean>
+
+    <!--Converters-->
+    <conv:RowNumberConverter x:Key="RowNumberConvert"/>
+    <conv:RadioButtonConverter x:Key="RadioButtonConvert"/>
+    <conv:StatusColorConverter x:Key="StatusColorConvert"/>
+    <conv:StringFormatConverter x:Key="StringConvert"/>
+    <conv:ThicknessConverter x:Key="ThicknessConvert"/>
+    <conv:SelectProgramConverter x:Key="SelectProgramConvert"/>
+    <conv:VisibilityFolderOnRobot x:Key="VisibilityFolderOnRobot"/>
+    <conv:NumbersForWeldingSchemaConverter x:Key="NumbersForWeldingSchemaConvert"/>
+
     <!--Control Content property -->
     <!--M => minus  P=> plus-->
     <!-- more font choice http://www.microsoft.com/typography/fonts/family.aspx?FID=331-->
@@ -90,6 +107,12 @@
     <Color x:Key="IconUpDateColor">#000000</Color>
     <Color x:Key="IconAddColor">#000000</Color>
     <Color x:Key="IconEditColor">#000000</Color>
+    <Color x:Key="IconDisconnectColor">#FF4682B4</Color>
+    <Color x:Key="IconRunProgramColor">#FF20B500</Color>
+    <Color x:Key="IconRestartProgramColor">#3b88c3</Color>
+    <Color x:Key="IconStopProgramColor">#FFFF0000</Color>
+    <Color x:Key="IconCancelProgramColor">#FFFF0000</Color>
+    <Color x:Key="IconSelectGenProgramColor">#FF008AD8</Color>
 
     <SolidColorBrush opt:Freeze="True" x:Key="IconNewFileBrush" Color="{StaticResource IconNewFileColor}"/>
     <SolidColorBrush opt:Freeze="True" x:Key="IconOpenFileBrush" Color="{StaticResource IconOpenFileColor}"/>
@@ -106,6 +129,12 @@
     <SolidColorBrush opt:Freeze="True" x:Key="IconUpDateBrush" Color="{StaticResource IconUpDateColor}"/>
     <SolidColorBrush opt:Freeze="True" x:Key="IconAddBrush" Color="{StaticResource IconAddColor}"/>
     <SolidColorBrush opt:Freeze="True" x:Key="IconEditBrush" Color="{StaticResource IconEditColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="IconDisconnectBrush" Color="{StaticResource IconDisconnectColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="IconRunProgramBrush" Color="{StaticResource IconRunProgramColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="IconRestartProgramBrush" Color="{StaticResource IconRestartProgramColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="IconStopProgramBrush" Color="{StaticResource IconStopProgramColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="IconCancelProgramBrush" Color="{StaticResource IconCancelProgramColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="IconSelectGenProgramBrush" Color="{StaticResource IconSelectGenProgramColor}"/>
 
     <!--***************************************************************************-->
 

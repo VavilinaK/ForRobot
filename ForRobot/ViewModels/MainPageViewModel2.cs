@@ -651,7 +651,7 @@ namespace ForRobot.ViewModels
             }
         }
         
-        #region Async
+        #region Async Commands
 
         /// <summary>
         /// Команда генерации программы и её выбор на роботе/ах

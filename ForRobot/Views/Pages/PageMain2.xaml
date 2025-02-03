@@ -564,7 +564,7 @@
                 <MenuItem.Template>
                     <ControlTemplate TargetType="{x:Type MenuItem}">
                         <StackPanel Orientation="Horizontal">
-                            <Button Padding="5" ToolTip="Значения по-умолчанию"                                    
+                            <Button Padding="5" ToolTip="Значения по-умолчанию" Margin="15,0"                                    
                                     Template="{StaticResource buttonTemplate}"
                                     Command="{Binding Path=StandartParametrsCommand}">
 
@@ -584,13 +584,13 @@
                                 </Button.Style>
                             </Button>
 
-                            <Separator HorizontalAlignment="Right" Margin="10">
+                            <!--<Separator HorizontalAlignment="Right" Margin="10">
                                 <Separator.LayoutTransform>
                                     <RotateTransform Angle="90" />
                                 </Separator.LayoutTransform>
-                            </Separator>
+                            </Separator>-->
 
-                            <RadioButton Content="One" Width="45" Margin="3,0" Style="{StaticResource toggleButtonCordinateStyle}"
+                            <!--<RadioButton Content="One" Width="45" Margin="3,0" Style="{StaticResource toggleButtonCordinateStyle}"
                                          IsChecked="{Binding Path=PageNowString, Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter=Page2D, Mode=TwoWay}">
 
                                 <RadioButton.Template>
@@ -600,7 +600,7 @@
                                         </Border>
                                     </ControlTemplate>
                                 </RadioButton.Template>
-                            </RadioButton>
+                            </RadioButton>-->
 
                             <!--<RadioButton Content="Two" Width="45" Margin="3,0" Style="{StaticResource toggleButtonCordinateStyle}"
                                      IsChecked="{Binding Path=PageNowString, Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter=Page3D, Mode=TwoWay}">
