@@ -865,12 +865,18 @@
                                       ScrollViewer.CanContentScroll="True"
                                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                       ScrollViewer.VerticalScrollBarVisibility="Auto">
+
                                 <TreeView.Resources>
+                                    <Style TargetType="{x:Type TreeViewItem}">
+                                        <Setter Property="Focusable" Value="False" />
+                                        <Setter Property="Margin" Value="5"/>
+                                    </Style>
+
                                     <Style TargetType="{x:Type ContentControl}">
-                                        <Setter Property="Margin" Value="-30,0,10,0"/>
+                                        <Setter Property="Margin" Value="-23,0,10,0"/>
                                     </Style>
                                 </TreeView.Resources>
-                               
+                                
                                 <TreeViewItem Header="Общие">
                                     <ContentControl ContentTemplate="{StaticResource PlitaTemplate3Style}"/>
                                 </TreeViewItem>
@@ -911,11 +917,10 @@
                     <RadioButton Grid.Row="1" x:Name="ControlRadioButton" Content="Управление"
                                  Template="{StaticResource RadioButtonInToggleTemplate}"/>
                 </Grid>
-
             </Grid>
         </Grid>
 
-        <DockPanel Grid.Row="3" Background="#FF1680C9">
+        <DockPanel Grid.Row="3" Background="{StaticResource ThemeBottomMenuBarBrush}">
             
         </DockPanel>
     </Grid>

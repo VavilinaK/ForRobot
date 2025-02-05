@@ -129,6 +129,7 @@
 
                 <TreeView.ItemContainerStyle>
                     <Style TargetType="{x:Type TreeViewItem}">
+                        <Setter Property="Focusable" Value="False"/>
                         <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}"/>
 
                         <Style.Triggers>

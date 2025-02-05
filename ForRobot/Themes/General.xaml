@@ -67,6 +67,9 @@
     <Color x:Key="ThemeIsPressedToggleButBgColor">#FF45D7FF</Color>
     <Color x:Key="ThemeIsPressedToggleButBordColor">#FF209BFF</Color>
 
+    <Color x:Key="ThemePopupColor">#FF68DDFF</Color>
+    <Color x:Key="ThemeBottomMenuBarColor">#FF1680C9</Color>
+
 
     <SolidColorBrush opt:Freeze="True" x:Key="ThemeBgM2Brush" Color="{StaticResource ThemeBgM2Color}"/>
     <SolidColorBrush opt:Freeze="True" x:Key="ThemeBgM1Brush" Color="{StaticResource ThemeBgM1Color}"/>
@@ -90,6 +93,9 @@
     <SolidColorBrush opt:Freeze="True" x:Key="ThemeIsMouseOverToggleButBordBrush" Color="{StaticResource ThemeIsMouseOverToggleButBordColor}"/>
     <SolidColorBrush opt:Freeze="True" x:Key="ThemeIsPressedToggleButBgBrush" Color="{StaticResource ThemeIsPressedToggleButBgColor}"/>
     <SolidColorBrush opt:Freeze="True" x:Key="ThemeIsPressedToggleButBordBrush" Color="{StaticResource ThemeIsPressedToggleButBordColor}"/>
+
+    <SolidColorBrush opt:Freeze="True" x:Key="ThemePopupBrush" Color="{StaticResource ThemePopupColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="ThemeBottomMenuBarBrush" Color="{StaticResource ThemeBottomMenuBarColor}"/>
     
     <!--Icons colors-->
     <Color x:Key="IconRectangularColor">#000000</Color>
