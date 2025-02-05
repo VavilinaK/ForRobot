@@ -92,6 +92,7 @@
     <SolidColorBrush opt:Freeze="True" x:Key="ThemeIsPressedToggleButBordBrush" Color="{StaticResource ThemeIsPressedToggleButBordColor}"/>
     
     <!--Icons colors-->
+    <Color x:Key="IconRectangularColor">#000000</Color>
     <Color x:Key="IconNewFileColor">#FF03A436</Color>
     <Color x:Key="IconOpenFileColor">#FFFFBA01</Color>
     <Color x:Key="IconSaveColor">#FF3E3E3E</Color>
@@ -114,6 +115,7 @@
     <Color x:Key="IconCancelProgramColor">#FFFF0000</Color>
     <Color x:Key="IconSelectGenProgramColor">#FF008AD8</Color>
 
+    <SolidColorBrush opt:Freeze="True" x:Key="IconRectangularBrush" Color="{StaticResource IconRectangularColor}"/>
     <SolidColorBrush opt:Freeze="True" x:Key="IconNewFileBrush" Color="{StaticResource IconNewFileColor}"/>
     <SolidColorBrush opt:Freeze="True" x:Key="IconOpenFileBrush" Color="{StaticResource IconOpenFileColor}"/>
     <SolidColorBrush opt:Freeze="True" x:Key="IconSaveBrush" Color="{StaticResource IconSaveColor}"/>

@@ -241,6 +241,7 @@
     <Compile Include="Libr\SingleGlobalInstance.cs" />
     <Compile Include="Model\Controls\FileFlags.cs" />
     <Compile Include="Model\Detals\WeldingSchemas.cs" />
+    <Compile Include="ViewModels\CreateWindowViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel3.cs" />
     <Compile Include="ViewModels\PropertiesWindowViewModel.cs" />
     <Compile Include="Views\Controls\Breadcrumb.xaml.cs">
@@ -257,6 +258,9 @@
     </Compile>
     <Compile Include="Views\Pages\PageMain3.xaml.cs">
       <DependentUpon>PageMain3.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Windows\CreateWindow.xaml.cs">
+      <DependentUpon>CreateWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Windows\MainWindow2.xaml.cs">
       <DependentUpon>MainWindow2.xaml</DependentUpon>
@@ -313,6 +317,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Pages\PageMain3.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Windows\CreateWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -69,7 +69,12 @@
                 </Setter.Value>
             </Setter>
         </Style>
-       
+
+        <!--<Style TargetType="{x:Type Canvas}">
+            <Setter Property="Background" Value="Red"/>
+            <Setter Property="Block.BorderThickness" Value="10"/>
+        </Style>-->
+
         <ControlTemplate x:Key="RadioButtonInToggleTemplate" TargetType="{x:Type RadioButton}">
             <ToggleButton IsChecked="{Binding IsChecked, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
                                               Content="{Binding Content, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"/>
@@ -461,7 +466,8 @@
                 </ItemsPanelTemplate>
             </Menu.ItemsPanel>
 
-            <MenuItem Template="{StaticResource MenuItemTemplate1}" Header="Создать">
+            <MenuItem Template="{StaticResource MenuItemTemplate1}" Header="Создать"
+                      Command="{Binding Path=CreateNewFileCommand}">
                 <MenuItem.Icon>
                     <Path Fill="{StaticResource IconNewFileBrush}" StrokeThickness="0"
                           Data="{StaticResource NewFilePathGeomerty}"/>
@@ -531,7 +537,7 @@
                           RenderTransformOrigin="0.5,0.5"
                           Data="{StaticResource CleanPathGeomerty}">
 
-                        <Path.LayoutTransform >
+                        <Path.LayoutTransform>
                             <ScaleTransform ScaleX="1.75" ScaleY="1.75"/>
                         </Path.LayoutTransform>
                     </Path>
@@ -556,14 +562,14 @@
 
             <MenuItem Template="{StaticResource SeparatorTemplate}"/>
 
-            <MenuItem Template="{StaticResource MenuItemTemplate1}" Header="Скрыть\показать оси координат">
+            <MenuItem Template="{StaticResource MenuItemTemplate1}" Header="Вкл/выкл. оси координат">
                 <MenuItem.Icon>                   
                     <Path Fill="{StaticResource IconAxistBrush}"
                         Data="{StaticResource AxistPathGeomerty}"/>
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem Template="{StaticResource MenuItemTemplate1}" Header="Увеличить">
+            <MenuItem Template="{StaticResource MenuItemTemplate1}" Header="Вкл/выкл. отображение плоскостей">
                 <MenuItem.Icon>
                     <Image Source="/InterfaceOfRobots;component/Themes/Images/isometric_view.png" Height="24" Width="24" Stretch="Uniform"/>
                 </MenuItem.Icon>
@@ -639,7 +645,8 @@
                                                                   VerticalAlignment="Center" HorizontalAlignment="Center"
                                                                   ContentSource="Header" Margin="0"/>
 
-                                                <Button Grid.Column="1" Padding="3" Margin="5,0">
+                                                <Button Grid.Column="1" Padding="3" Margin="5,0"
+                                                        Command="{Binding Path=CloseFileCommand}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type TabItem}, Mode=FindAncestor}}">
                                                     <Path Stretch="Uniform" Fill="Black"
                                                           Data="M12.567039999999999 4.300341333333334c0.23957333333333333 -0.23951999999999998 0.23957333333333333 -0.6278613333333334 0 -0.8673813333333332 -0.23946666666666666 -0.23951999999999998 -0.62784 -0.23951999999999998 -0.8673066666666667 0L8.000053333333334 7.132608 4.300416 3.43296c-0.23953066666666667 -0.23951999999999998 -0.627872 -0.23951999999999998 -0.867392 0 -0.23951999999999998 0.23951999999999998 -0.23951999999999998 0.6278613333333334 0 0.8673813333333332l3.699648 3.699648 -3.699648 3.6996373333333334c-0.23951999999999998 0.23957333333333333 -0.23951999999999998 0.62784 0 0.8674133333333334 0.23951999999999998 0.23946666666666666 0.6278613333333334 0.23946666666666666 0.867392 0l3.6996373333333334 -3.6996693333333335 3.69968 3.6996693333333335c0.23946666666666666 0.23946666666666666 0.62784 0.23946666666666666 0.8673066666666667 0 0.23957333333333333 -0.23957333333333333 0.23957333333333333 -0.62784 0 -0.8674133333333334L8.867434666666666 7.999989333333334l3.699605333333333 -3.699648Z"/>
                                                 </Button>
@@ -662,9 +669,70 @@
                             </Setter>
                         </Style>
                     </TabControl.Resources>
-                    
-                    <TabItem Header="Файл 1">
 
+                    <TabItem Header="Файл 1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Canvas Grid.Row="1">
+                                <Viewport3D Height="{Binding Parent.ActualHeight, RelativeSource={RelativeSource Self}}"
+                                            Width="{Binding Parent.ActualWidth, RelativeSource={RelativeSource Self}}">
+                                    <Viewport3D.Camera>
+                                        <PerspectiveCamera Position=" 6 5 4" LookDirection="-6 -5 -4"/>
+                                    </Viewport3D.Camera>
+
+                                    <ModelVisual3D>
+                                        <ModelVisual3D.Content>
+                                            <DirectionalLight Direction="-1 -1 -1"/>
+                                        </ModelVisual3D.Content>
+                                    </ModelVisual3D>
+
+                                    <ModelVisual3D>
+                                        <ModelVisual3D.Content>
+                                            <GeometryModel3D>
+                                                <GeometryModel3D.Geometry>
+                                                    <MeshGeometry3D 
+                                                    Positions = "0 0 0  1 0 0  0 1 0  1 1 0  0 0 1  1 0 1  0 1 1  0 1 1"      
+                                                    TriangleIndices = "2 3 1  3 1 0  7 1 3  7 5 1  6 5 7  6 4 5  6 2 0 2 0 4  2 7 3  2 6 7  0 1 5  0 5 4"/>
+                                                </GeometryModel3D.Geometry>
+
+                                                <GeometryModel3D.Material>
+                                                    <DiffuseMaterial>
+                                                        <DiffuseMaterial.Brush>
+                                                            <SolidColorBrush Color="Aqua"/>
+                                                        </DiffuseMaterial.Brush>
+                                                    </DiffuseMaterial>
+                                                </GeometryModel3D.Material>
+                                            </GeometryModel3D>
+                                        </ModelVisual3D.Content>
+
+                                        <ModelVisual3D.Transform>
+                                            <Transform3DGroup>
+                                                <Transform3DGroup.Children>
+                                                    <ScaleTransform3D x:Name="Scale3DOjbect" CenterX="0" CenterY="0" CenterZ="0"/>
+
+                                                    <RotateTransform3D>
+                                                        <RotateTransform3D.Rotation>
+                                                            <AxisAngleRotation3D x:Name="Roate3DOjbect" Axis="1 1 1"/>
+                                                        </RotateTransform3D.Rotation>
+                                                    </RotateTransform3D>
+                                                </Transform3DGroup.Children>
+                                            </Transform3DGroup>
+                                        </ModelVisual3D.Transform>
+                                    </ModelVisual3D>
+                                </Viewport3D>
+                            </Canvas>
+
+                            <Slider Grid.Row="0" Minimum="0"  Maximum="360" Height="20" Width="100"  VerticalAlignment="Top"    
+                                    Value="{Binding ElementName=Roate3DOjbect, Path=Angle}"/>
+
+                            <Slider Grid.Row="2" Minimum="0"  Maximum="50" Height="20" Width="250"  VerticalAlignment="Top"
+                                    Value="{Binding ElementName=Scale3DOjbect, Path=ScaleX}"/>
+                        </Grid>
                     </TabItem>
 
                     <TabItem Header="Файл 2">
@@ -689,7 +757,6 @@
                     </TabItem>
                 </TabControl>
             </Grid>
-
 
             <GridSplitter Grid.Column="1" ShowsPreview="False" Width="5" HorizontalAlignment="Center" VerticalAlignment="Stretch"
                           ResizeDirection="Columns" ResizeBehavior="PreviousAndNext"/>
@@ -794,18 +861,18 @@
                         </TabItem>
 
                         <TabItem Header="Параметры">
-                            <TreeView FontSize="14" VerticalContentAlignment="Top" HorizontalContentAlignment="Stretch"
+                            <TreeView FontSize="{StaticResource FontSizeNP2}" VerticalContentAlignment="Top" HorizontalContentAlignment="Stretch"
                                       ScrollViewer.CanContentScroll="True"
                                       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                       ScrollViewer.VerticalScrollBarVisibility="Auto">
                                 <TreeView.Resources>
                                     <Style TargetType="{x:Type ContentControl}">
-                                        <Setter Property="Margin" Value="-35,0,0,0"/>
+                                        <Setter Property="Margin" Value="-30,0,10,0"/>
                                     </Style>
                                 </TreeView.Resources>
                                
                                 <TreeViewItem Header="Общие">
-                                    <ContentControl ContentTemplate="{StaticResource PlitaTemplateStyle}"/>
+                                    <ContentControl ContentTemplate="{StaticResource PlitaTemplate3Style}"/>
                                 </TreeViewItem>
 
                                 <TreeViewItem Header="Доп.">

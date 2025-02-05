@@ -191,7 +191,7 @@ namespace ForRobot.ViewModels
         }
 
         /// <summary>
-        /// выбранный тип детали
+        /// Выбранный тип детали
         /// </summary>
         public string SelectedDetalType
         {

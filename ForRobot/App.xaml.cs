@@ -98,6 +98,11 @@ namespace ForRobot
         public Views.Windows.MainWindow2 MainWindowView2 { get => _mainWindow2 ?? (_mainWindow2 = new Views.Windows.MainWindow2()); }
 
         /// <summary>
+        /// Окно создания нового файла
+        /// </summary>
+        public Views.Windows.CreateWindow CreateWindow { get; set; }
+
+        /// <summary>
         /// Окно настроек
         /// </summary>
         public Views.Windows.PropertiesWindow PropertiesWindow { get; set; }

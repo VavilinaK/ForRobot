@@ -55,6 +55,12 @@ namespace ForRobot.Views.Windows
         {
             lock (App.Current)
             {
+                if (!((System.Windows.Controls.Page)this.MainFrame.Content is Pages.PageMain2))
+                {
+                    e.Cancel = false;
+                    return;
+                }
+
                 switch (this.Settings.ModeClosingApp)
                 {
                     case Libr.Settings.ModeClosingApp.Ever:

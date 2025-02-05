@@ -19,7 +19,7 @@
                 <!--<Setter Property="" Value="16"/>-->
 
             </Style>
-            
+
             <Style TargetType="{x:Type Label}">
                 <Setter Property="FontSize" Value="16"/>
                 <Setter Property="HorizontalContentAlignment" Value="Left"/>
@@ -35,7 +35,7 @@
                 <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
             </Style>
         </DataTemplate.Resources>
-        
+
         <Grid Height="Auto">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -114,7 +114,7 @@
                             </Border>
                         </ControlTemplate>
                     </RadioButton.Template>
-                </RadioButton>               
+                </RadioButton>
 
                 <RadioButton Grid.Column="4" IsChecked="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, 
                                                 Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static detals:ScoseTypes.TrapezoidBottom}, Mode=TwoWay}"
@@ -284,7 +284,7 @@
                                 <Setter Property="TextBlock.TextAlignment" Value="Center"/>
                             </Style>
                         </ContentControl.Resources>
-                        
+
                         <ContentControl.Style>
                             <Style TargetType="ContentControl">
                                 <Style.Triggers>
@@ -411,7 +411,7 @@
                                                         Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
                         <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
                         <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
-                        
+
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="d_rect">
                                 <Setter Property="Text" Value="0.00"/>
@@ -423,7 +423,7 @@
             </TextBox>
 
             <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DistanceToFirst, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
-                Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}">                
+                Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}">
                 <TextBox.Style>
                     <Style TargetType="{x:Type TextBox}">
                         <Setter Property="FontSize" Value="16"/>
@@ -744,7 +744,7 @@
                                                         Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
                         <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
                         <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
-                        
+
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="d_rect">
                                 <Setter Property="Text" Value="0.00"/>
@@ -766,7 +766,7 @@
                                                         Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
                         <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
                         <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
-                        
+
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="d_rect">
                                 <Setter Property="Text" Value="0.00"/>
@@ -781,7 +781,7 @@
                 Mode=TwoWay, FallbackValue=4, UpdateSourceTrigger=LostFocus}" />
         </Grid>
     </DataTemplate>
-    
+
     <!--Доп. параметры (настила с ребром)-->
     <DataTemplate x:Key="PlitaDopTemplateStyle" DataType="{x:Type ContentControl}">
         <DataTemplate.Resources>
@@ -1082,23 +1082,37 @@
     <!--v3-->
     <DataTemplate x:Key="PlitaSvarkaTemplate3Style">
         <DataTemplate.Resources>
-            <Style x:Key="TextBase" TargetType="{x:Type FrameworkElement}">
+            <Style TargetType="{x:Type FrameworkElement}">
                 <Setter Property="TextElement.FontSize" Value="{StaticResource FontSizeNP2}"/>
                 <Setter Property="TextElement.Foreground" Value="{StaticResource ThemeFgP2Brush}"/>
             </Style>
 
-            <Style TargetType="{x:Type Label}" BasedOn="{StaticResource TextBase}">
-                <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                <Setter Property="VerticalContentAlignment" Value="Center"/>
-                <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="FontSize" Value="{StaticResource FontSizeNP2}"/>
+                <Setter Property="MaxWidth" Value="160"/>
+                <Setter Property="TextWrapping" Value="Wrap"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
             </Style>
 
-            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource TextBase}">
-                <Setter Property="Padding" Value="5"/>
+            <Style TargetType="{x:Type TextBox}">
+                <Setter Property="FontSize" Value="{StaticResource FontSizeNP2}"/>
                 <Setter Property="Height" Value="37"/>
                 <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                <Setter Property="Padding" Value="40,5"/>
+                <Setter Property="Margin" Value="10,5,0,5"/>
                 <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
                 <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
+            </Style>
+
+            <Style TargetType="{x:Type GroupBox}">
+                <Setter Property="FontWeight" Value="DemiBold"/>
+                <Setter Property="Padding" Value="4"/>
+                <Setter Property="Margin" Value="0,4,0,0"/>
             </Style>
 
             <Style TargetType="{x:Type DataGrid}" BasedOn="{StaticResource TextBase}">
@@ -1154,17 +1168,17 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" MaxWidth="160"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*" MinWidth="100"/>
             </Grid.ColumnDefinitions>
-
-            <Label Grid.Row="0" Grid.Column="0" Content="Скорость сварки, см/м"/>
-            <Label Grid.Row="1" Grid.Column="0" Content="Номер сварочной программы"/>
+            
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Скорость сварки, см/м"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Номер сварочной программы"/>
 
             <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.WildingSpead, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay,TargetNullValue=0, FallbackValue=0, ConverterCulture='en-us', StringFormat=F0, UpdateSourceTrigger=LostFocus}"/>
             <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.ProgramNom, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay,TargetNullValue=1, FallbackValue=1, ConverterCulture='en-us', StringFormat=F0, UpdateSourceTrigger=LostFocus}"/>
 
-            <GroupBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Header="Схема сварки" Margin="4" Style="{StaticResource TextBase}">
+            <GroupBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Header="Схема сварки">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -1269,21 +1283,33 @@
 
     <DataTemplate x:Key="PlitaDopTemplate3Style" DataType="{x:Type ContentControl}">
         <DataTemplate.Resources>
-            <Style x:Key="TextBase" TargetType="{x:Type FrameworkElement}">
+            <Style TargetType="{x:Type FrameworkElement}">
                 <Setter Property="TextElement.FontSize" Value="{StaticResource FontSizeNP2}"/>
                 <Setter Property="TextElement.Foreground" Value="{StaticResource ThemeFgP2Brush}"/>
             </Style>
             
-            <Style TargetType="{x:Type Label}" BasedOn="{StaticResource TextBase}">
+            <!--<Style TargetType="{x:Type Label}">
                 <Setter Property="HorizontalContentAlignment" Value="Left"/>
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                 <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
+            </Style>-->
+
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="MaxWidth" Value="160"/>
+                <Setter Property="TextWrapping" Value="Wrap"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
             </Style>
 
-            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource TextBase}">
-                <Setter Property="Padding" Value="5"/>
+            <Style TargetType="{x:Type TextBox}">
                 <Setter Property="Height" Value="37"/>
                 <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                <Setter Property="Padding" Value="15,5"/>
+                <Setter Property="Margin" Value="10,5,0,5"/>
                 <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
                 <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
             </Style>
@@ -1306,11 +1332,17 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto" MaxWidth="160"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Label Grid.Row="0" Grid.Column="0" Content="Толщина настила, мм."/>
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Толщина настила, мм."/>
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Толщина ребра, мм."/>
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Высота ребра, мм."/>
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="Отступ поиска в начале, мм.."/>
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="Отступ поиска в конце, мм."/>
+
+            <!--<Label Grid.Row="0" Grid.Column="0" Content="Толщина настила, мм."/>
             <Label Grid.Row="1" Grid.Column="0" Content="Толщина ребра, мм."/>
             <Label Grid.Row="2" Grid.Column="0" Content="Высота ребра, мм."/>
             <Label Grid.Row="3" Grid.Column="0" Content="Отступ поиска в начале, мм."/>
@@ -1322,7 +1354,7 @@
             <Label Grid.Row="9" Grid.Column="0" Content="Дистанция до позиционера для поиска, мм."/>
             <Label Grid.Row="10" Grid.Column="0" Content="Смещение детали от 0 точки по оси X, мм."/>
             <Label Grid.Row="11" Grid.Column="0" Content="Смещение детали от 0 точки по оси Y, мм."/>
-            <Label Grid.Row="12" Grid.Column="0" Content="Обратный прогиб, мм."/>
+            <Label Grid.Row="12" Grid.Column="0" Content="Обратный прогиб, мм."/>-->
 
             <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.ThicknessPlita, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00, FallbackValue=00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
 
@@ -1363,6 +1395,766 @@
             <TextBox Grid.Row="11" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.YOffset, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
 
             <TextBox Grid.Row="12" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.ReverseDeflection, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="PlitaTemplate3Style" DataType="{x:Type ContentControl}">
+        <DataTemplate.Resources>
+            <Style TargetType="{x:Type FrameworkElement}">
+                <Setter Property="TextElement.FontFamily" Value="{StaticResource DefaultFont}"/>
+                <Setter Property="TextElement.Foreground" Value="{StaticResource ThemeFgP2Brush}"/>
+            </Style>
+
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="FontSize" Value="{StaticResource FontSizeNP2}"/>
+                <Setter Property="MaxWidth" Value="160"/>
+                <Setter Property="TextWrapping" Value="Wrap"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+
+            <Style TargetType="{x:Type TextBox}">
+                <Setter Property="FontSize" Value="{StaticResource FontSizeNP2}"/>
+                <Setter Property="Height" Value="37"/>
+                <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                <Setter Property="Padding" Value="15,5"/>
+                <Setter Property="Margin" Value="10,5,0,5"/>
+                <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
+                <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
+            </Style>
+
+            <Style TargetType="{x:Type GroupBox}">
+                <Setter Property="FontSize" Value="{StaticResource FontSizeNP2}"/>
+                <Setter Property="Padding" Value="4"/>
+                <Setter Property="Margin" Value="4"/>
+            </Style>
+        </DataTemplate.Resources>
+
+        <Grid Height="Auto">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" MaxWidth="160"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!--<Grid Grid.Row="0" Grid.ColumnSpan="2" Margin="0, 10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <RadioButton Grid.Column="0" IsChecked="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
+                             Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static detals:ScoseTypes.Rect}, Mode=TwoWay}"
+                             Style="{StaticResource toggleButtonScosStyle}" ToolTip="Прямоугольная форма">
+
+                    <RadioButton.Template>
+                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                            <Border BorderThickness="0" CornerRadius="3" Style="{StaticResource toggleButtonScosTemplateStyle}">
+                                <Image Source="{StaticResource ImageRectangular}"  Stretch="Fill"/>
+                            </Border>
+                        </ControlTemplate>
+                    </RadioButton.Template>
+                </RadioButton>
+
+                <RadioButton Grid.Column="1" IsChecked="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, 
+                                                Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static detals:ScoseTypes.SlopeRight}, Mode=TwoWay}"
+                                             Style="{StaticResource toggleButtonScosStyle}" ToolTip="Наклон вправо">
+                    <RadioButton.Template>
+                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                            <Border BorderThickness="0" CornerRadius="3" Style="{StaticResource toggleButtonScosTemplateStyle}">
+                                <Image Source="{StaticResource ImageParallelogramRight}"  Stretch="Fill"/>
+                            </Border>
+                        </ControlTemplate>
+                    </RadioButton.Template>
+                </RadioButton>
+
+                <RadioButton Grid.Column="2" IsChecked="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, 
+                                                Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static detals:ScoseTypes.SlopeLeft}, Mode=TwoWay}"
+                                             Style="{StaticResource toggleButtonScosStyle}" ToolTip="Наклон влево">
+
+                    <RadioButton.Template>
+                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                            <Border BorderThickness="0" CornerRadius="3" Padding="2" Style="{StaticResource toggleButtonScosTemplateStyle}">
+                                <Image Source="{StaticResource ImageParallelogramLeft}" Stretch="Fill"/>
+                            </Border>
+                        </ControlTemplate>
+                    </RadioButton.Template>
+                </RadioButton>
+
+                <RadioButton Grid.Column="3" IsChecked="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, 
+                                                Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static detals:ScoseTypes.TrapezoidTop}, Mode=TwoWay}"
+                                             Style="{StaticResource toggleButtonScosStyle}" ToolTip="Трапеция">
+
+                    <RadioButton.Template>
+                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                            <Border BorderThickness="0" CornerRadius="3" Padding="2" Style="{StaticResource toggleButtonScosTemplateStyle}">
+                                <Image Source="{StaticResource ImageTrapezoidTop}" Stretch="Fill"/>
+                            </Border>
+                        </ControlTemplate>
+                    </RadioButton.Template>
+                </RadioButton>               
+
+                <RadioButton Grid.Column="4" IsChecked="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, 
+                                                Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static detals:ScoseTypes.TrapezoidBottom}, Mode=TwoWay}"
+                                             Style="{StaticResource toggleButtonScosStyle}" ToolTip="Перевёрнутая трапеция">
+                    <RadioButton.Template>
+                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                            <Border BorderThickness="0" CornerRadius="3" Style="{StaticResource toggleButtonScosTemplateStyle}">
+                                <Image Source="{StaticResource ImageTrapezoidBottom}"  Stretch="Fill"/>
+                            </Border>
+                        </ControlTemplate>
+                    </RadioButton.Template>
+                </RadioButton>
+            </Grid>-->
+
+            <StackPanel Grid.Row="0" Grid.ColumnSpan="2">
+                <ComboBox VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0"
+                          Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}"
+                          Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}"
+                          SelectedIndex="0">
+
+                </ComboBox>
+            </StackPanel>
+
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Длина настила, мм."/>
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Ширина настила, мм."/>
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="Расстояние до осевой линии первого ребра сверху, мм."/>
+            <TextBlock Grid.Row="5" Grid.Column="0" Text="Расстояние до торца ребра слева, мм."/>
+            <TextBlock Grid.Row="6" Grid.Column="0" Text="Расстояние до торца ребра справа, мм."/>
+            <TextBlock Grid.Row="9" Grid.Column="0" Text="Скос слева, мм."/>
+            <TextBlock Grid.Row="10" Grid.Column="0" Text="Скос справа, мм."/>
+            <TextBlock Grid.Row="11" Grid.Column="0" Text="Количество ребер, шт."/>
+
+            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.Long, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, 
+                                                         Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+
+            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.Wight, RelativeSource={RelativeSource AncestorType={x:Type Page},
+                                                        Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}">
+                <!--<TextBox.Style>
+                    <Style TargetType="TextBox">
+                        <Setter Property="FontSize" Value="16"/>
+                        <Setter Property="Padding" Value="5"/>
+                        <Setter Property="Height" Value="37"/>
+                        <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
+                        <Setter Property="Text" Value="{Binding Path=DataContext.DetalObject.Wight, RelativeSource={RelativeSource AncestorType={x:Type Page},
+                                                        Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                        <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
+                        <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
+                        
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="d_rect">
+                                <Setter Property="Text" Value="0.00"/>
+                                <Setter Property="IsEnabled" Value="False"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>-->
+            </TextBox>
+
+            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DistanceToFirst, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
+                                                         Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}">
+                <!--<TextBox.Style>
+                    <Style TargetType="{x:Type TextBox}">
+                        <Setter Property="FontSize" Value="16"/>
+                        <Setter Property="Padding" Value="5"/>
+                        <Setter Property="Height" Value="37"/>
+                        <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
+                        <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
+                        <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
+
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=DataContext.DetalObject.DiferentDistance, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="{StaticResource True}">
+                                <Setter Property="Height" Value="0"/>
+                                <Setter Property="Visibility" Value="Hidden"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>-->
+            </TextBox>
+
+            <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.IdentToLeft, RelativeSource={RelativeSource AncestorType={x:Type Page},
+                                                         Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}">
+                <!--<TextBox.Style>
+                    <Style TargetType="{x:Type TextBox}">
+                        <Setter Property="FontSize" Value="16"/>
+                        <Setter Property="Padding" Value="5"/>
+                        <Setter Property="Height" Value="37"/>
+                        <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
+                        <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
+                        <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
+
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=DataContext.DetalObject.DiferentDistance, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="{StaticResource True}">
+                                <Setter Property="Height" Value="0"/>
+                                <Setter Property="Visibility" Value="Hidden"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>-->
+            </TextBox>
+
+            <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.IdentToRight, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
+                                                         Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}">
+                <!--<TextBox.Style>
+                    <Style TargetType="{x:Type TextBox}">
+                        <Setter Property="FontSize" Value="16"/>
+                        <Setter Property="Padding" Value="5"/>
+                        <Setter Property="Height" Value="37"/>
+                        <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
+                        <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
+                        <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
+
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=DataContext.DetalObject.DiferentDistance, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="{StaticResource True}">
+                                <Setter Property="Height" Value="0"/>
+                                <Setter Property="Visibility" Value="Hidden"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>-->
+            </TextBox>
+
+            <TextBox Grid.Row="9" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.BevelToLeft, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
+                                                        Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}">
+                <!--<TextBox.Style>
+                    <Style TargetType="TextBox">
+                        <Setter Property="FontSize" Value="16"/>
+                        <Setter Property="Padding" Value="5"/>
+                        <Setter Property="Height" Value="37"/>
+                        <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
+                        <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
+                        <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
+                        
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="d_rect">
+                                <Setter Property="Text" Value="0.00"/>
+                                <Setter Property="IsEnabled" Value="False"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>-->
+            </TextBox>
+
+            <TextBox Grid.Row="10" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.BevelToRight, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
+                                                          Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}">
+                <!--<TextBox.Style>
+                    <Style TargetType="TextBox">
+                        <Setter Property="FontSize" Value="16"/>
+                        <Setter Property="Padding" Value="5"/>
+                        <Setter Property="Height" Value="37"/>
+                        <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
+                        <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
+                        <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
+                        
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="d_rect">
+                                <Setter Property="Text" Value="0.00"/>
+                                <Setter Property="IsEnabled" Value="False"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>-->
+            </TextBox>
+
+            <TextBox Grid.Row="11" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.SumReber, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
+                                                          Mode=TwoWay, FallbackValue=4, UpdateSourceTrigger=LostFocus}"/>
+
+            <GroupBox Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Header="Расстояние между осевыми линиями рёбер, мм.">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.Resources>
+                        <Style TargetType="{x:Type RadioButton}">
+                            <Setter Property="FontSize" Value="16"/>
+                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" Value="True">
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+
+                        <Style x:Key="groupBoxParalleleRibs" TargetType="{x:Type GroupBox}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=DataContext.DetalObject.DiferentDistance, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="{StaticResource False}">
+                                    <Setter Property="Height" Value="0"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Resources>
+
+                    <RadioButton Grid.Row="0" Grid.Column="0" Content="Одинаковое" Margin="0,0,0,5"
+                                 IsChecked="{Binding Path=DataContext.DetalObject.DiferentDistance, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
+                                            Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={StaticResource False}, Mode=TwoWay, TargetNullValue={StaticResource False}}"/>
+
+                    <RadioButton Grid.Row="0" Grid.Column="1" Content="Разное" Margin="0,0,0,5"
+                                 IsChecked="{Binding Path=DataContext.DetalObject.DiferentDistance, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
+                                            Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={StaticResource True}, Mode=TwoWay, TargetNullValue={StaticResource False}}"/>
+
+                    <GroupBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Header="Рёбра" Style="{StaticResource groupBoxParalleleRibs}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+
+                            <RadioButton Grid.Column="0" Content="Параллельны"
+                                         IsChecked="{Binding Path=DataContext.DetalObject.ParalleleRibs, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
+                                                    Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={StaticResource True}, Mode=TwoWay, TargetNullValue={StaticResource False}}"/>
+
+                            <RadioButton Grid.Column="1" Content="Не параллельны"
+                                         IsChecked="{Binding Path=DataContext.DetalObject.ParalleleRibs, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
+                                                    Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={StaticResource False}, Mode=TwoWay, TargetNullValue={StaticResource False}}"/>
+                        </Grid>
+                    </GroupBox>
+
+                    <ContentControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+                        <ContentControl.Resources>
+                            <Style TargetType="{x:Type TextBox}">
+                                <Setter Property="FontSize" Value="16"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                <EventSetter Event="PreviewMouseDown"  Handler="IgnoreMouseButton"/>
+                                <EventSetter Event="GotFocus"  Handler="Text_GotFocus"/>
+                            </Style>
+
+                            <Style TargetType="{x:Type DataGrid}">
+                                <Setter Property="Width" Value="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}, Mode=FindAncestor}}"/>
+                                <Setter Property="ItemsSource" Value="{Binding Path=DataContext.DetalObject.RibsCollection, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=OneWay}"/>
+                                <Setter Property="FontSize" Value="16"/>
+                                <Setter Property="AutoGenerateColumns" Value="False"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                <Setter Property="CanUserAddRows" Value="False"/>
+                                <Setter Property="CanUserDeleteRows" Value="False"/>
+                                <Setter Property="CanUserResizeRows" Value="False"/>
+                                <Setter Property="CanUserReorderColumns" Value="False"/>
+                                <Setter Property="CanUserSortColumns" Value="False"/>
+                                <Setter Property="CanUserResizeColumns" Value="False"/>
+                                <Setter Property="EnableRowVirtualization" Value="False"/>
+                                <Setter Property="SelectionMode" Value="Single"/>
+                                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+
+                                <Setter Property="RowHeaderTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=., RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={StaticResource RowNumberConvert}}"/>
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="ContentTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate>
+                                            <TextBlock TextWrapping="Wrap" Text="{Binding}" TextAlignment="Center"/>
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
+                                <Setter Property="Height" Value="35"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            </Style>
+
+                            <Style TargetType="{x:Type DataGridCell}">
+                                <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
+                                <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+                            </Style>
+                        </ContentControl.Resources>
+
+                        <ContentControl.Style>
+                            <Style TargetType="ContentControl">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=DataContext.DetalObject.DiferentDistance, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="{StaticResource False}">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ContentControl">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBox Text="{Binding Path=DataContext.DetalObject.DistanceBetween, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
+                                                                 Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}" Padding="5" Height="37"/>
+                                                    </StackPanel>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Path=DataContext.DetalObject.DiferentDistance, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="{StaticResource True}"/>
+                                            <Condition Binding="{Binding Path=DataContext.DetalObject.ParalleleRibs, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="{StaticResource True}"/>
+                                        </MultiDataTrigger.Conditions>
+
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type ContentControl}">
+                                                    <DataGrid>
+                                                        <DataGrid.Columns>
+                                                            <DataGridTemplateColumn Header="Расстояние до следующего ребра, мм." Width="*">
+                                                                <DataGridTemplateColumn.CellTemplate>
+                                                                    <DataTemplate>
+                                                                        <TextBox Text="{Binding Path=Distance, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                                                                    </DataTemplate>
+                                                                </DataGridTemplateColumn.CellTemplate>
+                                                            </DataGridTemplateColumn>
+
+                                                            <DataGridTemplateColumn Header="Отступ слева, мм." Width="Auto">
+                                                                <DataGridTemplateColumn.CellTemplate>
+                                                                    <DataTemplate>
+                                                                        <TextBox Text="{Binding Path=IdentToLeft, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                                                                    </DataTemplate>
+                                                                </DataGridTemplateColumn.CellTemplate>
+                                                            </DataGridTemplateColumn>
+
+                                                            <DataGridTemplateColumn Header="Отступ справа, мм." Width="Auto">
+                                                                <DataGridTemplateColumn.CellTemplate>
+                                                                    <DataTemplate>
+                                                                        <TextBox Text="{Binding Path=IdentToRight, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                                                                    </DataTemplate>
+                                                                </DataGridTemplateColumn.CellTemplate>
+                                                            </DataGridTemplateColumn>
+                                                        </DataGrid.Columns>
+                                                    </DataGrid>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </MultiDataTrigger>
+
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Path=DataContext.DetalObject.DiferentDistance, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="{StaticResource True}"/>
+                                            <Condition Binding="{Binding Path=DataContext.DetalObject.ParalleleRibs, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="{StaticResource False}"/>
+                                        </MultiDataTrigger.Conditions>
+
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type ContentControl}">
+                                                    <DataGrid>
+                                                        <DataGrid.Columns>
+                                                            <DataGridTemplateColumn Header="Отступ слева, мм." Width="Auto">
+                                                                <DataGridTemplateColumn.CellTemplate>
+                                                                    <DataTemplate>
+                                                                        <TextBox Text="{Binding Path=IdentToLeft, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                                                                    </DataTemplate>
+                                                                </DataGridTemplateColumn.CellTemplate>
+                                                            </DataGridTemplateColumn>
+
+                                                            <DataGridTemplateColumn Header="Отступ справа, мм." Width="Auto">
+                                                                <DataGridTemplateColumn.CellTemplate>
+                                                                    <DataTemplate>
+                                                                        <TextBox Text="{Binding Path=IdentToRight, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                                                                    </DataTemplate>
+                                                                </DataGridTemplateColumn.CellTemplate>
+                                                            </DataGridTemplateColumn>
+
+                                                            <DataGridTemplateColumn Header="Расстояние до ребра слева, мм." Width="*">
+                                                                <DataGridTemplateColumn.CellTemplate>
+                                                                    <DataTemplate>
+                                                                        <TextBox Text="{Binding Path=Distance, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                                                                    </DataTemplate>
+                                                                </DataGridTemplateColumn.CellTemplate>
+                                                            </DataGridTemplateColumn>
+
+                                                            <DataGridTemplateColumn Header="Расстояние до ребра справа, мм." Width="*">
+                                                                <DataGridTemplateColumn.CellTemplate>
+                                                                    <DataTemplate>
+                                                                        <TextBox Text="{Binding Path=DistanceRight, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                                                                    </DataTemplate>
+                                                                </DataGridTemplateColumn.CellTemplate>
+                                                            </DataGridTemplateColumn>
+                                                        </DataGrid.Columns>
+                                                    </DataGrid>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ContentControl.Style>
+                    </ContentControl>
+                </Grid>
+            </GroupBox>
+
+            <!--<GroupBox Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Header="Роспуск слева, мм." FontSize="16" Margin="4">
+                <GroupBox.Resources>
+                    <Style TargetType="{x:Type RadioButton}">
+                        <Setter Property="FontSize" Value="16"/>
+                        <Setter Property="Margin" Value="0,0,0,5"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" Value="True">
+                                <Setter Property="FontWeight" Value="Bold"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </GroupBox.Resources>
+
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <RadioButton Grid.Row="0" Grid.Column="0" Content="Одинаковый"
+                                 IsChecked="{Binding Path=DataContext.DetalObject.DiferentDissolutionLeft, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
+                                    Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={StaticResource False}, Mode=TwoWay, TargetNullValue={StaticResource False}}"/>
+
+                    <RadioButton Grid.Row="0" Grid.Column="1" Content="Разный"
+                                 IsChecked="{Binding Path=DataContext.DetalObject.DiferentDissolutionLeft, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
+                                    Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={StaticResource True}, Mode=TwoWay, TargetNullValue={StaticResource False}}"/>
+
+                    <ContentControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+                        <ContentControl.Resources>
+                            <Style TargetType="{x:Type TextBox}">
+                                <Setter Property="FontSize" Value="16"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                <EventSetter Event="PreviewMouseDown"  Handler="IgnoreMouseButton"/>
+                                <EventSetter Event="GotFocus"  Handler="Text_GotFocus"/>
+                            </Style>
+
+                            <Style TargetType="{x:Type DataGrid}">
+                                <Setter Property="Width" Value="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}, Mode=FindAncestor}}"/>
+                                <Setter Property="ItemsSource" Value="{Binding Path=DataContext.DetalObject.RibsCollection, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=OneWay}"/>
+                                <Setter Property="FontSize" Value="16"/>
+                                <Setter Property="AutoGenerateColumns" Value="False"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                <Setter Property="CanUserAddRows" Value="False"/>
+                                <Setter Property="CanUserDeleteRows" Value="False"/>
+                                <Setter Property="CanUserResizeRows" Value="False"/>
+                                <Setter Property="CanUserReorderColumns" Value="False"/>
+                                <Setter Property="CanUserSortColumns" Value="False"/>
+                                <Setter Property="CanUserResizeColumns" Value="False"/>
+                                <Setter Property="EnableRowVirtualization" Value="False"/>
+                                <Setter Property="SelectionMode" Value="Single"/>
+                                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+
+                                <Setter Property="RowHeaderTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=., RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={StaticResource RowNumberConvert}}"/>
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
+                                <Setter Property="Height" Value="35"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            </Style>
+
+                            <Style TargetType="{x:Type DataGridCell}">
+                                <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
+                                <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+                            </Style>
+                        </ContentControl.Resources>
+
+                        <ContentControl.Style>
+                            <Style TargetType="{x:Type ContentControl}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=DataContext.DetalObject.DiferentDissolutionLeft, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="{StaticResource False}">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ContentControl">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DissolutionStart, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
+                                                                    Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
+                                                                 Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}" Padding="5"/>
+                                                    </StackPanel>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+
+                                    <DataTrigger Binding="{Binding Path=DataContext.DetalObject.DiferentDissolutionLeft, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="{StaticResource True}">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type ContentControl}">
+                                                    <DataGrid>
+                                                        <DataGrid.Columns>
+                                                            <DataGridTemplateColumn Width="*">
+                                                                <DataGridTemplateColumn.CellTemplate>
+                                                                    <DataTemplate>
+                                                                        <TextBox Text="{Binding Path=DissolutionLeft, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                                                                    </DataTemplate>
+                                                                </DataGridTemplateColumn.CellTemplate>
+                                                            </DataGridTemplateColumn>
+                                                        </DataGrid.Columns>
+                                                    </DataGrid>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ContentControl.Style>
+                    </ContentControl>
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Header="Роспуск справа, мм." FontSize="16" Margin="4">
+                <GroupBox.Resources>
+                    <Style TargetType="{x:Type RadioButton}">
+                        <Setter Property="FontSize" Value="16"/>
+                        <Setter Property="Margin" Value="0,0,0,5"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=IsChecked, RelativeSource={RelativeSource Self}}" Value="True">
+                                <Setter Property="FontWeight" Value="Bold"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </GroupBox.Resources>
+
+                <Grid Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <RadioButton Grid.Row="0" Grid.Column="0" Content="Одинаковый"
+                                 IsChecked="{Binding Path=DataContext.DetalObject.DiferentDissolutionRight, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
+                                    Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={StaticResource False}, Mode=TwoWay, TargetNullValue={StaticResource False}}"/>
+
+                    <RadioButton Grid.Row="0" Grid.Column="1" Content="Разный"
+                                 IsChecked="{Binding Path=DataContext.DetalObject.DiferentDissolutionRight, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
+                                    Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={StaticResource True}, Mode=TwoWay, TargetNullValue={StaticResource False}}"/>
+
+                    <ContentControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+                        <ContentControl.Resources>
+                            <Style TargetType="{x:Type TextBox}">
+                                <Setter Property="FontSize" Value="16"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                <EventSetter Event="PreviewMouseDown"  Handler="IgnoreMouseButton"/>
+                                <EventSetter Event="GotFocus"  Handler="Text_GotFocus"/>
+                            </Style>
+
+                            <Style TargetType="{x:Type DataGrid}">
+                                <Setter Property="Width" Value="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}, Mode=FindAncestor}}"/>
+                                <Setter Property="ItemsSource" Value="{Binding Path=DataContext.DetalObject.RibsCollection, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=OneWay}"/>
+                                <Setter Property="FontSize" Value="16"/>
+                                <Setter Property="AutoGenerateColumns" Value="False"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                <Setter Property="CanUserAddRows" Value="False"/>
+                                <Setter Property="CanUserDeleteRows" Value="False"/>
+                                <Setter Property="CanUserResizeRows" Value="False"/>
+                                <Setter Property="CanUserReorderColumns" Value="False"/>
+                                <Setter Property="CanUserSortColumns" Value="False"/>
+                                <Setter Property="CanUserResizeColumns" Value="False"/>
+                                <Setter Property="EnableRowVirtualization" Value="False"/>
+                                <Setter Property="SelectionMode" Value="Single"/>
+                                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+
+                                <Setter Property="RowHeaderTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=., RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={StaticResource RowNumberConvert}}"/>
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
+                                <Setter Property="Height" Value="35"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            </Style>
+
+                            <Style TargetType="{x:Type DataGridCell}">
+                                <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
+                                <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+                            </Style>
+                        </ContentControl.Resources>
+
+                        <ContentControl.Style>
+                            <Style TargetType="{x:Type ContentControl}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=DataContext.DetalObject.DiferentDissolutionRight, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="{StaticResource False}">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ContentControl">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DissolutionEnd, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
+                                                                    Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
+                                                                 Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}" Padding="5"/>
+                                                    </StackPanel>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+
+                                    <DataTrigger Binding="{Binding Path=DataContext.DetalObject.DiferentDissolutionRight, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="{StaticResource True}">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type ContentControl}">
+                                                    <DataGrid>
+                                                        <DataGrid.Columns>
+                                                            <DataGridTemplateColumn Width="*">
+                                                                <DataGridTemplateColumn.CellTemplate>
+                                                                    <DataTemplate>
+                                                                        <TextBox Text="{Binding Path=DissolutionRight, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                                                                    </DataTemplate>
+                                                                </DataGridTemplateColumn.CellTemplate>
+                                                            </DataGridTemplateColumn>
+                                                        </DataGrid.Columns>
+                                                    </DataGrid>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ContentControl.Style>
+                    </ContentControl>
+                </Grid>
+            </GroupBox>-->
         </Grid>
     </DataTemplate>
 </ResourceDictionary>

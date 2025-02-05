@@ -1,0 +1,238 @@
+﻿<Window x:Class="ForRobot.Views.Windows.CreateWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ForRobot.Views.Windows"
+        xmlns:detals="clr-namespace:ForRobot.Model.Detals"
+        xmlns:vm="clr-namespace:ForRobot.ViewModels"
+        mc:Ignorable="d"
+        Title="Создание модели генерации" 
+        Background="#cfcfcf"
+        Height="450" Width="800" ResizeMode="NoResize"
+        ShowInTaskbar="True" WindowStartupLocation="CenterScreen">
+
+    <Window.DataContext>
+        <vm:CreateWindowViewModel/>
+    </Window.DataContext>
+
+    <Window.Resources>
+        <Style x:Key="TextBase" TargetType="{x:Type FrameworkElement}">
+            <Setter Property="TextElement.FontFamily" Value="DefaultFont"/>
+        </Style>
+
+        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBase}">
+            <Setter Property="FontSize" Value="{StaticResource FontSizeNP1}"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource TextBase}">
+            <Setter Property="FontSize" Value="{StaticResource FontSizeNP1}"/>
+            <Setter Property="Height" Value="26"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+
+        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource TextBase}">
+            <Setter Property="FontSize" Value="{StaticResource FontSizeNP1}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="MinWidth" Value="100"/>
+            <Setter Property="Padding" Value="10, 5"/>
+        </Style>
+
+        <Style x:Key="toggleButtonScosStyle" TargetType="{x:Type ToggleButton}">
+            <Setter Property="MaxHeight" Value="80"/>
+            <Setter Property="MaxWidth" Value="140"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Border Name="Panel" CornerRadius="3" Padding="15"
+                                Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}, Mode=FindAncestor}}">
+                            <ContentPresenter x:Name="ContentSite"
+                                              VerticalAlignment="Center" HorizontalAlignment="Center"
+                                              ContentSource="Content"/>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Panel" Property="Background" Value="#FF959595"/>
+                            </Trigger>
+                            
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Panel" Property="Background" Value="{StaticResource ThemeIsMouseOverMenuItemBgBrush}"/>
+                                <Setter TargetName="Panel" Property="BorderBrush" Value="{StaticResource ThemeIsMouseOverToggleButBordBrush}"/>
+                            </Trigger>
+
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Panel" Property="Background" Value="{StaticResource ThemeIsPressedToggleButBgBrush}"/>
+                                <Setter TargetName="Panel" Property="BorderBrush" Value="{StaticResource ThemeIsPressedToggleButBordBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.Resources>
+                <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBase}">
+                    <Setter Property="FontSize" Value="{StaticResource FontSizeNP3}"/>
+                    <Setter Property="HorizontalAlignment" Value="Left"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                </Style>
+
+                <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource TextBase}">
+                    <Setter Property="FontSize" Value="{StaticResource FontSizeNP3}"/>
+                    <Setter Property="Padding" Value="0,10"/>
+                    <Setter Property="Margin" Value="5"/>
+                </Style>
+            </Grid.Resources>
+            
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Тип детали"/>
+            <ComboBox Grid.Row="0" Grid.Column="1" FontWeight="DemiBold"
+                      VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
+                      ItemsSource="{Binding Path=DetalTypeCollection, Mode=OneWay}"
+                      SelectedItem="{Binding Path=SelectedDetalType, Mode=TwoWay}"
+                      SelectedIndex="0">
+
+                <ComboBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ComboBoxItem}">
+                        <Setter Property="Height" Value="30"/>
+                        <Setter Property="TextElement.FontWeight" Value="Normal"/>
+                        <!--<Setter Property="TextBlock.TextAlignment" Value="Center"/>
+                        <Setter Property="TextBlock.VerticalAlignment" Value="Center"/>-->
+                    </Style>
+                </ComboBox.ItemContainerStyle>
+            </ComboBox>
+
+            <ContentControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+                <ContentControl.ContentTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+
+                                <RadioButton Grid.Column="0" IsChecked="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor},
+                                                    Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static detals:ScoseTypes.Rect}, Mode=TwoWay}"
+                                             Style="{StaticResource toggleButtonScosStyle}" ToolTip="Прямоугольная форма">
+
+                                    <Path Fill="{StaticResource IconRectangularBrush}" StrokeThickness="0" Stretch="Fill"
+                                          Data="{StaticResource RectangularPathGeomerty}"/>
+                                </RadioButton>
+
+                                <RadioButton Grid.Column="1" IsChecked="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, 
+                                                Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static detals:ScoseTypes.SlopeRight}, Mode=TwoWay}"
+                                             Style="{StaticResource toggleButtonScosStyle}" ToolTip="Наклон вправо">
+
+                                    <Path Stroke="{StaticResource IconRectangularBrush}" StrokeThickness="5.5" Stretch="Fill"
+                                          Data="{StaticResource ParallelogramRightPathGeomerty}"/>
+                                </RadioButton>
+
+                                <RadioButton Grid.Column="2" IsChecked="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, 
+                                                Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static detals:ScoseTypes.SlopeLeft}, Mode=TwoWay}"
+                                             Style="{StaticResource toggleButtonScosStyle}" ToolTip="Наклон влево">
+
+                                    <Path Stroke="{StaticResource IconRectangularBrush}" StrokeThickness="5.5" Stretch="Fill"
+                                          Data="{StaticResource ParallelogramRightPathGeomerty}">
+
+                                        <Path.LayoutTransform>
+                                            <ScaleTransform ScaleX="-1.0"/>
+                                        </Path.LayoutTransform>
+                                    </Path>
+                                </RadioButton>
+
+                                <RadioButton Grid.Column="3" IsChecked="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, 
+                                                Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static detals:ScoseTypes.TrapezoidTop}, Mode=TwoWay}"
+                                             Style="{StaticResource toggleButtonScosStyle}" ToolTip="Трапеция">
+
+                                    <Path Fill="{StaticResource IconRectangularBrush}" Stroke="{StaticResource IconRectangularBrush}" StrokeThickness="1.5" Stretch="Fill"
+                                          Data="{StaticResource TrapezoidTopPathGeomerty}"/>
+                                </RadioButton>
+
+                                <RadioButton Grid.Column="4" IsChecked="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, 
+                                                Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static detals:ScoseTypes.TrapezoidBottom}, Mode=TwoWay}"
+                                             Style="{StaticResource toggleButtonScosStyle}" ToolTip="Перевёрнутая трапеция">
+
+                                    <Path Fill="{StaticResource IconRectangularBrush}" Stroke="{StaticResource IconRectangularBrush}" StrokeThickness="1.5" Stretch="Fill"
+                                          Data="{StaticResource TrapezoidTopPathGeomerty}">
+
+                                        <Path.LayoutTransform>
+                                            <ScaleTransform ScaleY="-1.0"/>
+                                        </Path.LayoutTransform>
+                                    </Path>
+                                </RadioButton>
+                            </Grid>
+                            
+                            
+                        </Grid>
+                    </DataTemplate>
+                </ContentControl.ContentTemplate>
+            </ContentControl>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="3.5*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Имя"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Расположение"/>
+
+            <TextBox Grid.Row="0" Grid.Column="1"/>
+            <TextBox Grid.Row="1" Grid.Column="1"/>
+
+            <Button Grid.Row="1" Grid.Column="2" Content="_Обзор" 
+                    MaxWidth="100" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                    Command="{Binding Path=ReviewCommand}"/>
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="15"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="1" Content="_OK" IsDefault="True" Command="{Binding Path=CreateCommand}"/>
+            <Button Grid.Column="3" Content="_Отмена" IsCancel="True" Command="{Binding Path=CancelCommand}"/>
+        </Grid>
+    </Grid>
+</Window>

@@ -19,6 +19,12 @@
             </ResourceDictionary.MergedDictionaries>
 
             <!--Icons paths-->
+            <Geometry x:Key="RectangularPathGeomerty">M2 20V4h20v16H2Zm1.5 -1.5h17V5.5H3.5v13Z</Geometry>
+            <Geometry x:Key="ParallelogramRightPathGeomerty">M6 4.5h17l-5 15H1l5 -15Z</Geometry>
+            <Geometry x:Key="TrapezoidTopPathGeomerty">M 5.1308594 3 L 0.82226562 17 L 1.5 17 L 19.177734 17 L 14.869141 3 L 5.1308594 3 z M 5.8691406 4 L 14.130859 4 L 17.822266 16 L 2.1777344 16 L 5.8691406 4 z</Geometry>
+            <!--<Geometry x:Key="ParallelogramLeftPathGeomerty">M6 4.5h17l-5 15H1l5 -15Z</Geometry>-->
+
+
             <Geometry x:Key="NewFilePathGeomerty">M13.81 22H6C4.89 22 4 21.11 4 20V4C4 2.9 4.89 2 6 2H14L20 8V13.09C19.67 13.04 19.34 13 19 13S18.33 13.04 18 13.09V9H13V4H6V20H13.09C13.21 20.72 13.46 21.39 13.81 22M23 18H20V15H18V18H15V20H18V23H20V20H23V18Z</Geometry>
             <Geometry x:Key="OpenPathGeomerty">M20,6A2,2 0 0,1 22,8V18A2,2 0 0,1 20,20H4C2.89,20 2,19.1 2,18V6C2,4.89 2.89,4 4,4H10L12,6H20M19.25,13H16V9H14V13H10.75L15,17.25</Geometry>
             <Geometry x:Key="SavePathGeomerty">M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z</Geometry>
