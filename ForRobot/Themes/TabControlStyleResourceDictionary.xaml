@@ -1390,7 +1390,7 @@
                 <Setter Property="VerticalAlignment" Value="Center"/>
             </Style>
 
-            <Style TargetType="{x:Type TextBox}">
+            <Style x:Key="textBoxBase" TargetType="{x:Type TextBox}">
                 <Setter Property="FontSize" Value="{StaticResource FontSizeNP2}"/>
                 <Setter Property="Height" Value="37"/>
                 <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
@@ -1404,12 +1404,16 @@
                 <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
             </Style>
 
-            <Style TargetType="{x:Type GroupBox}">
+            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource textBoxBase}"></Style>
+
+            <Style x:Key="groupBoxBase" TargetType="{x:Type GroupBox}">
                 <Setter Property="FontSize" Value="{StaticResource FontSizeNP2}"/>
                 <Setter Property="FontWeight" Value="DemiBold"/>
                 <Setter Property="Padding" Value="4"/>
                 <Setter Property="Margin" Value="4"/>
             </Style>
+
+            <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource groupBoxBase}"></Style>
 
             <Style TargetType="{x:Type RadioButton}">
                 <Setter Property="FontSize" Value="{StaticResource FontSizeNP2}"/>
@@ -1424,6 +1428,7 @@
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
+
         </DataTemplate.Resources>
 
         <Grid Height="Auto">
@@ -1537,20 +1542,11 @@
             <TextBlock Grid.Row="10" Grid.Column="0" Text="Скос справа, мм."/>
             <TextBlock Grid.Row="11" Grid.Column="0" Text="Количество ребер, шт."/>
 
-            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.Long, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.Long, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
 
-            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.Wight, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}">
-                <!--<TextBox.Style>
-                    <Style TargetType="TextBox">
-                        <Setter Property="FontSize" Value="16"/>
-                        <Setter Property="Padding" Value="5"/>
-                        <Setter Property="Height" Value="37"/>
-                        <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
-                        <Setter Property="Text" Value="{Binding Path=DataContext.DetalObject.Wight, RelativeSource={RelativeSource AncestorType={x:Type Page},
-                                                        Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
-                        <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
-                        <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
-                        
+            <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.Wight, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}">
+                <TextBox.Style>
+                    <Style TargetType="TextBox" BasedOn="{StaticResource textBoxBase}">
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="d_rect">
                                 <Setter Property="Text" Value="0.00"/>
@@ -1558,20 +1554,13 @@
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </TextBox.Style>-->
+                </TextBox.Style>
             </TextBox>
 
             <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DistanceToFirst, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
                                                          Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}">
-                <!--<TextBox.Style>
-                    <Style TargetType="{x:Type TextBox}">
-                        <Setter Property="FontSize" Value="16"/>
-                        <Setter Property="Padding" Value="5"/>
-                        <Setter Property="Height" Value="37"/>
-                        <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
-                        <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
-                        <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
-
+                <TextBox.Style>
+                    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource textBoxBase}">
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Path=DataContext.DetalObject.DiferentDistance, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="{StaticResource True}">
                                 <Setter Property="Height" Value="0"/>
@@ -1579,20 +1568,13 @@
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </TextBox.Style>-->
+                </TextBox.Style>
             </TextBox>
 
             <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.IdentToLeft, RelativeSource={RelativeSource AncestorType={x:Type Page},
                                                          Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}">
-                <!--<TextBox.Style>
-                    <Style TargetType="{x:Type TextBox}">
-                        <Setter Property="FontSize" Value="16"/>
-                        <Setter Property="Padding" Value="5"/>
-                        <Setter Property="Height" Value="37"/>
-                        <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
-                        <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
-                        <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
-
+                <TextBox.Style>
+                    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource textBoxBase}">
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Path=DataContext.DetalObject.DiferentDistance, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="{StaticResource True}">
                                 <Setter Property="Height" Value="0"/>
@@ -1600,20 +1582,13 @@
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </TextBox.Style>-->
+                </TextBox.Style>
             </TextBox>
 
             <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.IdentToRight, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
                                                          Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}">
-                <!--<TextBox.Style>
-                    <Style TargetType="{x:Type TextBox}">
-                        <Setter Property="FontSize" Value="16"/>
-                        <Setter Property="Padding" Value="5"/>
-                        <Setter Property="Height" Value="37"/>
-                        <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
-                        <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
-                        <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
-
+                <TextBox.Style>
+                    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource textBoxBase}">
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Path=DataContext.DetalObject.DiferentDistance, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="{StaticResource True}">
                                 <Setter Property="Height" Value="0"/>
@@ -1621,20 +1596,13 @@
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </TextBox.Style>-->
+                </TextBox.Style>
             </TextBox>
 
             <TextBox Grid.Row="9" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.BevelToLeft, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
                                                         Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}">
-                <!--<TextBox.Style>
-                    <Style TargetType="TextBox">
-                        <Setter Property="FontSize" Value="16"/>
-                        <Setter Property="Padding" Value="5"/>
-                        <Setter Property="Height" Value="37"/>
-                        <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
-                        <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
-                        <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
-                        
+                <TextBox.Style>
+                    <Style TargetType="TextBox" BasedOn="{StaticResource textBoxBase}">
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="d_rect">
                                 <Setter Property="Text" Value="0.00"/>
@@ -1642,7 +1610,7 @@
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
-                </TextBox.Style>-->
+                </TextBox.Style>
             </TextBox>
 
             <TextBox Grid.Row="10" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.BevelToRight, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}">
@@ -1689,12 +1657,7 @@
 
                     <GroupBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Header="Рёбра">
                         <GroupBox.Style>
-                            <Style TargetType="{x:Type GroupBox}">
-                                <Setter Property="FontSize" Value="{StaticResource FontSizeNP2}"/>
-                                <Setter Property="FontWeight" Value="DemiBold"/>
-                                <Setter Property="Padding" Value="4"/>
-                                <Setter Property="Margin" Value="4"/>
-
+                            <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource groupBoxBase}">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Path=DataContext.DetalObject.DiferentDistance, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="{StaticResource False}">
                                         <Setter Property="Height" Value="0"/>

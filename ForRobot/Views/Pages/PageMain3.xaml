@@ -6,6 +6,7 @@
       xmlns:control="clr-namespace:ForRobot.Views.Controls"
       xmlns:local="clr-namespace:ForRobot.Views.Pages"
       xmlns:vm="clr-namespace:ForRobot.ViewModels"      
+      xmlns:h="http://helix-toolkit.org/wpf"
       mc:Ignorable="d"       
       d:DesignHeight="800" d:DesignWidth="1500"
       Background="#cfcfcf">
@@ -671,14 +672,14 @@
                     </TabControl.Resources>
 
                     <TabItem Header="Файл 1">
-                        <Grid>
+                        <!--<Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
-                            <Canvas Grid.Row="1">
+                            --><!--<Canvas Grid.Row="1">
                                 <Viewport3D Height="{Binding Parent.ActualHeight, RelativeSource={RelativeSource Self}}"
                                             Width="{Binding Parent.ActualWidth, RelativeSource={RelativeSource Self}}">
                                     <Viewport3D.Camera>
@@ -731,8 +732,26 @@
                                     Value="{Binding ElementName=Roate3DOjbect, Path=Angle}"/>
 
                             <Slider Grid.Row="2" Minimum="0"  Maximum="50" Height="20" Width="250"  VerticalAlignment="Top"
-                                    Value="{Binding ElementName=Scale3DOjbect, Path=ScaleX}"/>
-                        </Grid>
+                                    Value="{Binding ElementName=Scale3DOjbect, Path=ScaleX}"/>--><!--
+                        </Grid>-->
+
+                        <h:HelixViewport3D PageUpDownZoomSensitivity="5"
+                                           Orthographic="False"
+                                           MinimumFieldOfView="1"
+                                           ShowCameraInfo="True"
+                                           ShowCameraTarget="True"
+                                           ShowCoordinateSystem="True" CoordinateSystemHorizontalPosition="Right" CoordinateSystemVerticalPosition="Top"
+                                           >
+                          
+                            <h:DirectionalHeadLight/>
+
+                            <h:GridLinesVisual3D Center="-6.5 0 0" Fill="Gray"/>
+
+                            <h:CubeVisual3D Center="3 0 0"
+                    Fill="Yellow"
+                    SideLength="0.9"
+                    Visible="{Binding IsChecked, ElementName=CubeVisible}" />
+                        </h:HelixViewport3D>
                     </TabItem>
 
                     <TabItem Header="Файл 2">
