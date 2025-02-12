@@ -1,15 +1,35 @@
 ﻿using System;
+using System.IO;
+using System.Text;
+using System.Linq;
+using System.Windows;
+using System.Windows.Forms;
+using System.Windows.Controls;
+using System.Windows.Media.Imaging;
+using System.Diagnostics;
+using System.Configuration;
+using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Security.Cryptography;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
+using ForRobot.Libr;
+using ForRobot.Model;
+using ForRobot.Model.Detals;
 
 namespace ForRobot.ViewModels
 {
     public class MainPageViewModel3 : BaseClass
     {
         #region Private variables
+
+        private Robot _selectedRobot;
+
+        private ObservableCollection<Robot> _robotsCollection = new ObservableCollection<Robot>();
 
         #region Commands
 
@@ -24,20 +44,27 @@ namespace ForRobot.ViewModels
 
         public Version Version { get => System.Reflection.Assembly.GetEntryAssembly().GetName().Version; }
 
+        public Robot SelectedRobot { get => this._selectedRobot; set => Set(ref this._selectedRobot, value); }
+
         #region Collections
 
+        ///// <summary>
+        ///// Коллекция возможных схем сварки
+        ///// </summary>
+        //public ObservableCollection<string> WeldingSchemaCollection
+        //{
+        //    get
+        //    {
+        //        var Descriptions = typeof(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes).GetFields().Select(field => field.GetCustomAttributes(typeof(System.ComponentModel.DescriptionAttribute), false).SingleOrDefault() as System.ComponentModel.DescriptionAttribute);
+        //        List<string> DescriptionList = Descriptions.Where(item => item != null).Select(item => item.Description).ToList<string>();
+        //        return new ObservableCollection<string>(DescriptionList);
+        //    }
+        //}
+
         /// <summary>
-        /// Коллекция возможных схем сварки
+        /// Коллекция всех добаленнных роботов
         /// </summary>
-        public ObservableCollection<string> WeldingSchemaCollection
-        {
-            get
-            {
-                var Descriptions = typeof(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes).GetFields().Select(field => field.GetCustomAttributes(typeof(System.ComponentModel.DescriptionAttribute), false).SingleOrDefault() as System.ComponentModel.DescriptionAttribute);
-                List<string> DescriptionList = Descriptions.Where(item => item != null).Select(item => item.Description).ToList<string>();
-                return new ObservableCollection<string>(DescriptionList);
-            }
-        }
+        public ObservableCollection<Robot> RobotsCollection { get => this._robotsCollection; set => Set(ref this._robotsCollection, value); }
 
         #endregion
 
@@ -90,8 +117,16 @@ namespace ForRobot.ViewModels
             //if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
             //    return;
 
-            //if (Properties.Settings.Default.SaveRobots == null)
-            //    Properties.Settings.Default.SaveRobots = new System.Collections.Specialized.StringCollection();
+            if (Properties.Settings.Default.SaveRobots == null)
+                Properties.Settings.Default.SaveRobots = new System.Collections.Specialized.StringCollection();
+
+            else if (Properties.Settings.Default.SaveRobots.Count > 0)
+            {
+                for (int i = 0; i < Properties.Settings.Default.SaveRobots.Count; i++)
+                {
+                    this.AddRobot(JsonConvert.DeserializeObject<Robot>(Properties.Settings.Default.SaveRobots[i]));
+                }
+            }
 
             //App.Current.Log += new EventHandler<LogEventArgs>(SelectAppLogger);
         }
@@ -99,6 +134,15 @@ namespace ForRobot.ViewModels
         #endregion
 
         #region Private functions
+
+        private void AddRobot(Robot robot)
+        {
+            if (robot.Name == string.Empty)
+                robot.Name = $"Робот {this.RobotsCollection.Count + 1}";
+
+            this.RobotsCollection.Add(robot);
+            RaisePropertyChanged(nameof(this.RobotsCollection));
+        }
 
         #endregion
 

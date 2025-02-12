@@ -216,6 +216,23 @@ namespace ForRobot.ViewModels
             }
         }
 
+        /// <summary>
+        /// Выбор отображающихся вкладок
+        /// </summary>
+        public RelayCommand CheckBoxAvailableTabCommand
+        {
+            get
+            {
+                return _checkBoxAvailableFolderCommand ??
+                    (_checkBoxAvailableFolderCommand = new RelayCommand(obj =>
+                    {
+                        var tuple = (System.Collections.Generic.KeyValuePair<string, bool>)obj;
+                        this.Settings.AvailableTab.Remove(this.Settings.AvailableTab.Where(x => x.Key == tuple.Key).First().Key);
+                        this.Settings.AvailableTab.Add(tuple.Key, !tuple.Value);
+                    }));
+            }
+        }
+
         #endregion
 
         #endregion

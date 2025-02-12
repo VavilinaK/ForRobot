@@ -34,6 +34,6 @@ namespace ForRobot.Themes
                 e.Handled = true;
                 textBox.Focus();
             }
-        }        
+        }
     }
 }

@@ -32,9 +32,11 @@
 
         <TreeView Grid.Row="0" Grid.Column="0" x:Name="TreeViewProperties" FontSize="13">
 
-            <TreeViewItem Header="Общие" Tag="General" IsSelected="True"/>
+            <TreeViewItem Header="Общие" Tag="General"/>
 
-            <TreeViewItem Header="Навигация" Tag="NavigationTree">
+            <TreeViewItem Header="Навигация" Tag="NavigationTree"/>
+
+            <TreeViewItem Header="Вид" Tag="View" IsSelected="True">
                 <!--<i:Interaction.Triggers>
                     <i:EventTrigger EventName="Selected">
                         <i:InvokeCommandAction Command="{Binding Path=SelectClosedTabCommand}" CommandParameter="{Binding Path=., RelativeSource={RelativeSource AncestorType={x:Type TreeView}, Mode=FindAncestor}}"/>
@@ -73,6 +75,7 @@
 
             <Label Grid.Row="0" Grid.Column="0" Content="{Binding Path=SelectedItem.Header, ElementName=TreeViewProperties}"
                    FontSize="13" VerticalContentAlignment="Top"/>
+            
             <Separator Grid.Row="0" Grid.Column="1"/>
 
             <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
@@ -108,6 +111,16 @@
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="ContentControl">
                                                     <ContentControl ContentTemplate="{StaticResource NavigationTreeProperiesTemplate}"/>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+
+                                    <DataTrigger Binding="{Binding Path=SelectedItem.Tag, ElementName=TreeViewProperties}" Value="View">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ContentControl">
+                                                    <ContentControl ContentTemplate="{StaticResource ViewProperiesTemplate}"/>
                                                 </ControlTemplate>
                                             </Setter.Value>
                                         </Setter>

@@ -15,10 +15,12 @@
     <conv:RadioButtonConverter x:Key="RadioButtonConvert"/>
     <conv:StatusColorConverter x:Key="StatusColorConvert"/>
     <conv:StringFormatConverter x:Key="StringConvert"/>
+    <conv:StringFormatMultiConverter x:Key="StringFormatMultiConvert"/>
     <conv:ThicknessConverter x:Key="ThicknessConvert"/>
     <conv:SelectProgramConverter x:Key="SelectProgramConvert"/>
     <conv:VisibilityFolderOnRobot x:Key="VisibilityFolderOnRobot"/>
     <conv:NumbersForWeldingSchemaConverter x:Key="NumbersForWeldingSchemaConvert"/>
+    <conv:CollectionsStringToBoolConverter x:Key="CollectionsStringToBoolConvert"/>
 
     <!--Control Content property -->
     <!--M => minus  P=> plus-->
@@ -51,15 +53,15 @@
     <Color x:Key="ThemeBgP2Color">#FF919191</Color>
     <Color x:Key="ThemeBgP3Color">#333333</Color>
 
+    <Color x:Key="ThemeFgM3Color">#ffffff</Color>
     <Color x:Key="ThemeFgM2Color">#aaaaaa</Color>
     <Color x:Key="ThemeFgM1Color">#777777</Color>
     <Color x:Key="ThemeFgColor"  >#393939</Color>
     <Color x:Key="ThemeFgP1Color">#141414</Color>
     <Color x:Key="ThemeFgP2Color">#000000</Color>
-    <Color x:Key="ThemeFgP3Color">#ffffff</Color>
 
     <Color x:Key="ThemeIsMouseOverMenuItemBgColor">#FFC1C1C1</Color>
-    <Color x:Key="ThemeIsPressedMenuItemBgColor">#FF61FFB7</Color>
+    <Color x:Key="ThemeIsPressedMenuItemBgColor">#FF008AD8</Color>
 
     <Color x:Key="ThemeNotActiveToggleButBordColor">#FF919191</Color>
     <Color x:Key="ThemeIsMouseOverToggleButBgColor">#FFC1C1C1</Color>
@@ -78,12 +80,12 @@
     <SolidColorBrush opt:Freeze="True" x:Key="ThemeBgP2Brush" Color="{StaticResource ThemeBgP2Color}"/>
     <SolidColorBrush opt:Freeze="True" x:Key="ThemeBgP3Brush" Color="{StaticResource ThemeBgP3Color}"/>
 
+    <SolidColorBrush opt:Freeze="True" x:Key="ThemeFgM3Brush" Color="{StaticResource ThemeFgM3Color}"/>
     <SolidColorBrush opt:Freeze="True" x:Key="ThemeFgM2Brush" Color="{StaticResource ThemeFgM2Color}"/>
     <SolidColorBrush opt:Freeze="True" x:Key="ThemeFgM1Brush" Color="{StaticResource ThemeFgM1Color}"/>
     <SolidColorBrush opt:Freeze="True" x:Key="ThemeFgBrush"   Color="{StaticResource ThemeFgColor  }"/>
     <SolidColorBrush opt:Freeze="True" x:Key="ThemeFgP1Brush" Color="{StaticResource ThemeFgP1Color}"/>
     <SolidColorBrush opt:Freeze="True" x:Key="ThemeFgP2Brush" Color="{StaticResource ThemeFgP2Color}"/>
-    <SolidColorBrush opt:Freeze="True" x:Key="ThemeFgP3Brush" Color="{StaticResource ThemeFgP3Color}"/>
 
     <SolidColorBrush opt:Freeze="True" x:Key="ThemeIsMouseOverMenuItemBgBrush" Color="{StaticResource ThemeIsMouseOverMenuItemBgColor}"/>
     <SolidColorBrush opt:Freeze="True" x:Key="ThemeIsPressedMenuItemBgBrush" Color="{StaticResource ThemeIsPressedMenuItemBgColor}"/>
@@ -754,7 +756,7 @@
         </Setter>
 
         <Style.Triggers>
-            <DataTrigger Binding="{Binding Path=SelectedRobot.Item2.IsConnection}" Value="False">
+            <DataTrigger Binding="{Binding Path=SelectedRobot.IsConnection}" Value="False">
                 <Setter Property="Width" Value="40"/>
                 <Setter Property="Visibility" Value="Visible"/>
             </DataTrigger>

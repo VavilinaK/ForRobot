@@ -153,5 +153,41 @@ namespace ForRobot.Properties {
                 this["IsSettingsUpgradeRequired"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LeftColumnWidth {
+            get {
+                return ((string)(this["LeftColumnWidth"]));
+            }
+            set {
+                this["LeftColumnWidth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string BottomRowHeight {
+            get {
+                return ((string)(this["BottomRowHeight"]));
+            }
+            set {
+                this["BottomRowHeight"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("80")]
+        public double StatusColumnWidth {
+            get {
+                return ((double)(this["StatusColumnWidth"]));
+            }
+            set {
+                this["StatusColumnWidth"] = value;
+            }
+        }
     }
 }

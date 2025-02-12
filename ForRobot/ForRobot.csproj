@@ -242,6 +242,7 @@
     </ApplicationDefinition>
     <Compile Include="Libr\ConfigurationProperties\AppConfigurationSection.cs" />
     <Compile Include="Libr\Converters\ArrayMultiValueConverter.cs" />
+    <Compile Include="Libr\Converters\CollectionsStringToBoolConverter.cs" />
     <Compile Include="Libr\Converters\NumbersForWeldingSchemaConverter.cs" />
     <Compile Include="Libr\Converters\VisibilityFolderOnRobot.cs" />
     <Compile Include="Libr\Json\PlitaWithRibsAttributesResolver.cs" />
@@ -250,6 +251,7 @@
     <Compile Include="Libr\SingleGlobalInstance.cs" />
     <Compile Include="Model\Controls\FileFlags.cs" />
     <Compile Include="Model\Detals\WeldingSchemas.cs" />
+    <Compile Include="Model\File3D\File3D.cs" />
     <Compile Include="ViewModels\CreateWindowViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel3.cs" />
     <Compile Include="ViewModels\PropertiesWindowViewModel.cs" />
@@ -259,6 +261,7 @@
     <Compile Include="Views\Controls\FileTabControl.xaml.cs">
       <DependentUpon>FileTabControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Controls\Image2D.cs" />
     <Compile Include="Views\Controls\SliderButton.xaml.cs">
       <DependentUpon>SliderButton.xaml</DependentUpon>
     </Compile>
@@ -473,6 +476,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <Resource Include="Themes\Images\none.png" />
+    <EmbeddedResource Include="Help\HelpManual.chm">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <None Include="InterfaceOfRobots.pfx" />
     <Resource Include="Themes\Images\settings.png" />
     <Resource Include="robot_icon.ico" />
@@ -536,9 +542,6 @@
       <SubType>Designer</SubType>
     </Content>
     <None Include="ClassDiagram1.cd" />
-    <EmbeddedResource Include="Help\HelpManual.chm">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

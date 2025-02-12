@@ -22,7 +22,8 @@ namespace ForRobot.Model
 
         private volatile bool _disposed = false;
         private JsonRpcConnection _connection;
-            
+
+        private string _name;
         private string _programName;
         private string _pathProgram;
         private string _pathControllerFolder;
@@ -41,8 +42,8 @@ namespace ForRobot.Model
 
         private List<ForRobot.Model.Controls.File> FilesCollection = new List<Controls.File>();
 
-        private decimal[] _currentArray = new decimal[] { }; // = new decimal[] { 0, 4, 6, 5, 3, -3, -1, 2 }; // Примерные данные
-        private decimal[] _wireFeedArray = new decimal[] { }; // new decimal[] { 0, 4, 6, 3, 6, -3, -1, 2 }; // Примерные данные
+        //private decimal[] _currentArray = new decimal[] { }; // = new decimal[] { 0, 4, 6, 5, 3, -3, -1, 2 }; // Примерные данные
+        //private decimal[] _wireFeedArray = new decimal[] { }; // new decimal[] { 0, 4, 6, 3, 6, -3, -1, 2 }; // Примерные данные
 
         #region Readonly
 
@@ -75,12 +76,37 @@ namespace ForRobot.Model
 
         #region Public variables
 
+        public string Name
+        {
+            get => this._name;
+            set
+            {
+                Set(ref this._name, value);
+                this.ChangeRobot?.Invoke(this, null);
+            }
+        }
+
         [JsonIgnore]
         public const string PathOfTempFolder = @"C:\Windows\Temp";
         [JsonIgnore]
         public const string DefaultHost = "0.0.0.0";
         [JsonIgnore]
         public const int DefaultPort = 3333;
+        [JsonIgnore]
+        /// <summary>
+        /// Задержка запроса состояния процесса на роботе
+        /// </summary>
+        public const int DelayProcessStatus = 1;
+        [JsonIgnore]
+        /// <summary>
+        /// Задержка запроса
+        /// </summary>
+        public const int DelayTelegraf = 3;
+        [JsonIgnore]
+        /// <summary>
+        /// Задержка запроса имени запущенной на роботе программы
+        /// </summary>
+        public const int DelayProgramName = 3;
 
         [JsonIgnore]
         /// <summary>
@@ -214,7 +240,7 @@ namespace ForRobot.Model
             set
             {
                 Set(ref this._current, value);
-                this.CurrentArray.Append(this._current);
+                //this.CurrentArray.Append(this._current);
             }
         }
 
@@ -228,7 +254,7 @@ namespace ForRobot.Model
             set
             {
                 Set(ref this._wire_feed, value);
-                this.WireFeedArray.Append(this._wire_feed);
+                //this.WireFeedArray.Append(this._wire_feed);
             }
         }
 
@@ -260,17 +286,17 @@ namespace ForRobot.Model
         /// </summary>
         public ObservableCollection<ForRobot.Model.Controls.File> Files { get => new ObservableCollection<Controls.File>(this.FilesCollection); }
 
-        [JsonIgnore]
-        /// <summary>
-        /// Массив значений тока
-        /// </summary>
-        public decimal[] CurrentArray { get => this._currentArray; set => Set(ref this._currentArray, value); }
+        //[JsonIgnore]
+        ///// <summary>
+        ///// Массив значений тока
+        ///// </summary>
+        //public decimal[] CurrentArray { get => this._currentArray; set => Set(ref this._currentArray, value); }
 
-        [JsonIgnore]
-        /// <summary>
-        /// Массив значений силы подачи
-        /// </summary>
-        public decimal[] WireFeedArray { get => this._wireFeedArray; set => Set(ref this._wireFeedArray, value); }
+        //[JsonIgnore]
+        ///// <summary>
+        ///// Массив значений силы подачи
+        ///// </summary>
+        //public decimal[] WireFeedArray { get => this._wireFeedArray; set => Set(ref this._wireFeedArray, value); }
 
         #endregion
 
@@ -330,11 +356,11 @@ namespace ForRobot.Model
                 {
                     this._cancelTokenSource = new CancellationTokenSource();
 
-                    var task1 = PeriodicTask(() => { if (this.IsConnection) this.Pro_State = this.Connection.Process_StateAsync().Result; }, new TimeSpan(0, 0, 0, 0, 1000), this._cancelTokenSource.Token); // Переодический запрос состояния процесса на роботе.
+                    var task1 = PeriodicTask(() => { if (this.IsConnection) this.Pro_State = this.Connection.Process_StateAsync().Result; }, new TimeSpan(0, 0, 0, 0, DelayProcessStatus * 1000), this._cancelTokenSource.Token); // Переодический запрос состояния процесса на роботе.
 
-                    var task2 = PeriodicTask(() => { if (this.IsConnection) this.ConvertToTelegraf(this.Connection.InAsync().Result.ToArray()); }, new TimeSpan(0, 0, 0, 0, 3000), this._cancelTokenSource.Token); // Переодический запрос тока на роботе.
+                    var task2 = PeriodicTask(() => { if (this.IsConnection) this.ConvertToTelegraf(this.Connection.InAsync().Result.ToArray()); }, new TimeSpan(0, 0, 0, 0, DelayTelegraf * 1000), this._cancelTokenSource.Token); // Переодический запрос тока на роботе.
 
-                    var task3 = PeriodicTask(() => {  if (this.IsConnection) this.RobotProgramName = this.Connection.Pro_NameAsync().Result.Replace("\"", ""); }, new TimeSpan(0, 0, 0, 0, 1000), this._cancelTokenSource.Token); // Переодический запрос имени выбранной на роботе программы
+                    var task3 = PeriodicTask(() => {  if (this.IsConnection) this.RobotProgramName = this.Connection.Pro_NameAsync().Result.Replace("\"", ""); }, new TimeSpan(0, 0, 0, 0, DelayProgramName * 1000), this._cancelTokenSource.Token); // Переодический запрос имени выбранной на роботе программы
 
                     Task.Run(async () => await Task.WhenAll(task1, task2, task3));
                     Task.Run(async () => await this.GetFilesAsync());

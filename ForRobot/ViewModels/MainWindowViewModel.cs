@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.ComponentModel;
 
-
 namespace ForRobot.ViewModels
 {
     public class MainWindowViewModel : BaseClass
@@ -17,9 +16,9 @@ namespace ForRobot.ViewModels
 
         public WindowState State { get; set; } = WindowState.Maximized;
 
-        //public Page NowPage { get; set; } = new Views.Pages.PageMain2();
+        public Page NowPage { get; set; } = new Views.Pages.PageMain2();
 
-        public Page NowPage { get; set; } = new Views.Pages.PageMain3();
+        //public Page NowPage { get; set; } = new Views.Pages.PageMain3();
 
         #endregion
 

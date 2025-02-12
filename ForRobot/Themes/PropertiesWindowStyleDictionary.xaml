@@ -4,27 +4,39 @@
                     xmlns:properties="clr-namespace:ForRobot.Properties"
                     xmlns:settings="clr-namespace:ForRobot.Libr.Settings"
                     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity">
-
+    
     <!--Вкладка "Общии"-->
     <DataTemplate x:Key="GeneralProperiesTemplate" DataType="{x:Type ContentControl}">
         <DataTemplate.Resources>
-            <Style TargetType="{x:Type CheckBox}">
-                <Setter Property="FontSize" Value="13"/>
-                <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
+            <Style x:Key="textBase" TargetType="{x:Type FrameworkElement}">
+                <Setter Property="TextElement.FontSize" Value="{StaticResource FontSizeNP1}"/>
+                <Setter Property="TextElement.FontFamily" Value="{StaticResource DefaultFont}"/>
             </Style>
 
-            <Style TargetType="{x:Type Label}">
-                <Setter Property="FontSize" Value="13"/>
+            <Style TargetType="{x:Type Label}" BasedOn="{StaticResource textBase}">
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
             </Style>
 
-            <Style TargetType="{x:Type Button}">
-                <Setter Property="FontSize" Value="13"/>
+            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource textBase}">
                 <Setter Property="Padding" Value="0, 5"/>
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
             </Style>
+
+            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource textBase}">
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            </Style>
+
+            <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource textBase}">
+                <Setter Property="Margin" Value="0,5"/>
+                <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
+            </Style>
+
+            <Style TargetType="{x:Type RadioButton}" BasedOn="{StaticResource textBase}"></Style>
+            
+            <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource textBase}"></Style>
         </DataTemplate.Resources>
         
         <Grid Background="Transparent">
@@ -68,7 +80,7 @@
 
             <Button Grid.Row="1" Content="Изменить пин-код" Margin="15" Command="{Binding Path=DataContext.EditPinCodeCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
 
-            <GroupBox Grid.Row="2" Header="Делать запрос пользователю перед закрытием окна" FontSize="13">
+            <GroupBox Grid.Row="2" Header="Делать запрос пользователю перед закрытием окна">
                 <Grid Margin="10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -101,21 +113,8 @@
                 <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
             </Style>
 
-            <Style TargetType="{x:Type Label}">
-                <Setter Property="FontSize" Value="13"/>
-                <Setter Property="VerticalContentAlignment" Value="Center"/>
-                <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            </Style>
-
             <Style TargetType="{x:Type TextBox}">
                 <Setter Property="FontSize" Value="13"/>
-                <Setter Property="VerticalContentAlignment" Value="Center"/>
-                <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            </Style>
-
-            <Style TargetType="{x:Type Button}">
-                <Setter Property="FontSize" Value="13"/>
-                <Setter Property="Padding" Value="0, 5"/>
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
             </Style>
@@ -160,30 +159,33 @@
     <!--Вкладка "Навигация"-->
     <DataTemplate x:Key="NavigationTreeProperiesTemplate" DataType="{x:Type ContentControl}">
         <DataTemplate.Resources>
-            <Style x:Key="LabelBase" TargetType="{x:Type FrameworkElement}">
-                <Setter Property="TextElement.FontSize" Value="13"/>
-                <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+            <Style x:Key="textBase" TargetType="{x:Type FrameworkElement}">
+                <Setter Property="TextElement.FontSize" Value="{StaticResource FontSizeNP1}"/>
+                <Setter Property="TextElement.FontFamily" Value="{StaticResource DefaultFont}"/>
             </Style>
 
-            <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource LabelBase}">
-                <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
-            </Style>
-
-            <Style TargetType="{x:Type Label}" BasedOn="{StaticResource LabelBase}">
+            <Style TargetType="{x:Type Label}" BasedOn="{StaticResource textBase}">
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
             </Style>
 
-            <Style TargetType="{x:Type TextBox}">
-                <Setter Property="VerticalContentAlignment" Value="Center"/>
-                <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            </Style>
-
-            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource LabelBase}">
+            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource textBase}">
                 <Setter Property="Padding" Value="0, 5"/>
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
             </Style>
+
+            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource textBase}">
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            </Style>
+
+            <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource textBase}">
+                <Setter Property="Margin" Value="0,5"/>
+                <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
+            </Style>
+
+            <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource textBase}"></Style>
         </DataTemplate.Resources>
 
         <Grid Background="Transparent">
@@ -193,7 +195,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <GroupBox Grid.Row="0" Header="Видимость папок:" FontSize="13">
+            <GroupBox Grid.Row="0" Header="Видимость папок">
                 <Grid>
                     <ListBox SelectionMode="Single" FontSize="13" Padding="0" Margin="3"
                              Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0"
@@ -224,4 +226,82 @@
         </Grid>
     </DataTemplate>
 
+    <!--Вкладка "Вид"-->
+    <DataTemplate x:Key="ViewProperiesTemplate" DataType="{x:Type ContentControl}">
+        <DataTemplate.Resources>
+            <Style x:Key="textBase" TargetType="{x:Type FrameworkElement}">
+                <Setter Property="TextElement.FontSize" Value="{StaticResource FontSizeNP1}"/>
+                <Setter Property="TextElement.FontFamily" Value="{StaticResource DefaultFont}"/>
+            </Style>
+
+            <Style TargetType="{x:Type Label}" BasedOn="{StaticResource textBase}">
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            </Style>
+
+            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource textBase}">
+                <Setter Property="Padding" Value="0, 5"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            </Style>
+
+            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource textBase}">
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            </Style>
+
+            <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource textBase}">
+                <Setter Property="Margin" Value="0,5"/>
+                <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
+            </Style>
+
+            <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource textBase}"></Style>
+        </DataTemplate.Resources>
+        
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <GroupBox Header="Видимость вкладок">
+                <Grid>
+                    <ListBox SelectionMode="Single"
+                             Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0"
+                             ItemsSource="{Binding Path=DataContext.Settings.AvailableTab, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}">
+
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding Value, Mode=OneWay}" Content="{Binding Key}">
+
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="Checked">
+                                            <i:InvokeCommandAction Command="{Binding Path=DataContext.CheckBoxAvailableTabCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}" CommandParameter="{Binding}"/>
+                                        </i:EventTrigger>
+
+                                        <i:EventTrigger EventName="Unchecked">
+                                            <i:InvokeCommandAction Command="{Binding Path=DataContext.CheckBoxAvailableTabCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}" CommandParameter="{Binding}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                </CheckBox>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </GroupBox>
+
+            <CheckBox Grid.Row="1" Content="Видимость изображений детали" IsChecked="{Binding Path=DataContext.Settings.VisibilityPictures, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Mode=TwoWay}">
+                <!--<CheckBox.Style>
+                        <Style TargetType="{x:Type CheckBox}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Path=Settings.AvailableTab, Source={x:Static Application.Current}, 
+                                             Converter={StaticResource CollectionsStringToBoolConvert}, ConverterParameter='Программа'}" Value="False">
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </CheckBox.Style>-->
+            </CheckBox>
+        </Grid>
+    </DataTemplate>
 </ResourceDictionary>

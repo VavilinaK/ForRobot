@@ -20,6 +20,13 @@ namespace ForRobot.Views.Pages
     /// </summary>
     public partial class PageMain3 : Page
     {
+        private ViewModels.MainPageViewModel3 _viewModel;
+
+        public ViewModels.MainPageViewModel3 ViewModel
+        {
+            get { return _viewModel ?? (ViewModels.MainPageViewModel3)this.DataContext ?? (_viewModel = new ViewModels.MainPageViewModel3()); }
+        }
+        
         public PageMain3()
         {
             InitializeComponent();

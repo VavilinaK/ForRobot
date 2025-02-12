@@ -65,6 +65,25 @@ namespace ForRobot.Libr.Settings
 
         #endregion
 
+        #region View
+
+        /// <summary>
+        /// Отображение рёбер
+        /// </summary>
+        public bool VisibilityPictures { get; set; } = true;
+
+        /// <summary>
+        /// Доступность системных папок в дереве файлов
+        /// </summary>
+        public SortedDictionary<string, bool> AvailableTab { get; set; } = new SortedDictionary<string, bool>()
+                                                                                    {
+                                                                                        { "Роботы", true },
+                                                                                        { "Управление", true },
+                                                                                        { "Программа", true }
+                                                                                    };
+
+        #endregion
+
         #endregion
 
         #region Constructor

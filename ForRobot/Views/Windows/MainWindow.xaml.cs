@@ -64,7 +64,7 @@ namespace ForRobot.Views.Windows
                 switch (this.Settings.ModeClosingApp)
                 {
                     case Libr.Settings.ModeClosingApp.Ever:
-                        if (((Pages.PageMain2)this.MainFrame.Content).ViewModel.RobotsCollection.Where(robot => robot.Item2.IsConnection).Count() > 0)
+                        if (((Pages.PageMain2)this.MainFrame.Content).ViewModel.RobotsCollection.Where(robot => robot.IsConnection).Count() > 0)
                         {
                             if (MessageBox.Show($"Закрыть соединение?", "Закрытие приложения", MessageBoxButton.OKCancel, MessageBoxImage.Question) != MessageBoxResult.OK)
                             {
@@ -82,7 +82,7 @@ namespace ForRobot.Views.Windows
                         break;
 
                     case Libr.Settings.ModeClosingApp.HaveConnected:
-                        if (((Pages.PageMain2)this.MainFrame.Content).ViewModel.RobotsCollection.Where(robot => robot.Item2.IsConnection).Count() > 0 &&
+                        if (((Pages.PageMain2)this.MainFrame.Content).ViewModel.RobotsCollection.Where(robot => robot.IsConnection).Count() > 0 &&
                             MessageBox.Show($"Закрыть соединение?", "Закрытие приложения", MessageBoxButton.OKCancel, MessageBoxImage.Question) != MessageBoxResult.OK)
                         {
                             e.Cancel = true;
@@ -91,11 +91,11 @@ namespace ForRobot.Views.Windows
                         break;
                 }
 
-                if (((Pages.PageMain2)this.MainFrame.Content).ViewModel.RobotsCollection.Where(robot => robot.Item2.IsConnection).Count() > 0)
+                if (((Pages.PageMain2)this.MainFrame.Content).ViewModel.RobotsCollection.Where(robot => robot.IsConnection).Count() > 0)
                 {
                     foreach (var robot in ((Pages.PageMain2)this.MainFrame.Content).ViewModel.RobotsCollection)
                     {
-                        robot.Item2.Dispose();
+                        robot.Dispose();
                     }
                 }
             }

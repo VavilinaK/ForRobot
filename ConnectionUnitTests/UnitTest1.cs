@@ -109,5 +109,29 @@ namespace ConnectionUnitTests
                 string mess = ex.Message;
             }
         }
+
+        [TestMethod]
+        public void TestPeriodTask()
+        {
+            try
+            {
+                CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
+                JsonRpcConnection connection = new JsonRpcConnection("192.168.92.167", 3333);
+                connection.Open();
+
+                string s = Task.Run(() => _connection.Process_StateAsync(), cancelTokenSource.Token).Result;
+
+                Thread.Sleep(10000);
+
+                cancelTokenSource.Cancel();
+                connection.Close();
+                //bool answer = Task.Run(async () => await connection.CopyMem2File("D:\\newPrograms\\R1\\edge_0_left_stm.dat", "D:\\newPrograms\\R1\\edge_0_left_stm.dat")).Result;
+                //Assert.AreEqual(answer, true);
+            }
+            catch (Exception ex)
+            {
+                string mess = ex.Message;
+            }
+        }
     }
 }
