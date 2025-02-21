@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Input;
 using System.Windows.Controls;
 
@@ -32,13 +33,13 @@ namespace ForRobot.Views.Pages
         public PageMain2()
         {
             InitializeComponent();
-            
+
+            if (this.DataContext == null) { this.DataContext = ViewModel; }
+
             if (Properties.Settings.Default.LeftColumnWidth != string.Empty)
                 this.leftColumn.Width = (GridLength)converter.ConvertFromString(Properties.Settings.Default.LeftColumnWidth);
             if (Properties.Settings.Default.BottomRowHeight != string.Empty)
                 this.bottomRow.Height = (GridLength)converter.ConvertFromString(Properties.Settings.Default.BottomRowHeight);
-
-            if (this.DataContext == null) { this.DataContext = ViewModel; }
         }
 
         #endregion
@@ -55,6 +56,28 @@ namespace ForRobot.Views.Pages
         {
             Properties.Settings.Default.BottomRowHeight = converter.ConvertToString(bottomRow.Height);
             Properties.Settings.Default.Save();
+        }
+
+        private void Expander_Expanded(object sender, RoutedEventArgs e)
+        {
+            for (var vis = sender as Visual; vis != null; vis = VisualTreeHelper.GetParent(vis) as Visual)
+                if (vis is DataGridRow)
+                {
+                    var row = (DataGridRow)vis;
+                    row.DetailsVisibility = row.DetailsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+                    break;
+                }
+        }
+
+        private void Expander_Collapsed(object sender, RoutedEventArgs e)
+        {
+            for (var vis = sender as Visual; vis != null; vis = VisualTreeHelper.GetParent(vis) as Visual)
+                if (vis is DataGridRow)
+                {
+                    var row = (DataGridRow)vis;
+                    row.DetailsVisibility = row.DetailsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+                    break;
+                }
         }
 
         #endregion

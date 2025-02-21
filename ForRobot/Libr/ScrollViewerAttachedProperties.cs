@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Controls;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace ForRobot.Libr
 {
-    public static class ScrollViewerAttachedProperties
+    public static class ScrollViewerAttachedPropertiesTextBox
     {
         #region Private variables
 
@@ -21,8 +23,8 @@ namespace ForRobot.Libr
 
         #region Readonly
 
-        public static readonly DependencyProperty ScrollOnTextChangedProperty = DependencyProperty.RegisterAttached("ScrollOnTextChanged", 
-            typeof(bool), typeof(ScrollViewerAttachedProperties), new UIPropertyMetadata(false, OnScrollOnTextChanged));
+        public static readonly DependencyProperty ScrollOnTextChangedProperty = DependencyProperty.RegisterAttached("ScrollOnTextChanged",
+            typeof(bool), typeof(ScrollViewerAttachedPropertiesTextBox), new UIPropertyMetadata(false, OnScrollOnTextChanged));
 
         #endregion
 
@@ -87,6 +89,98 @@ namespace ForRobot.Libr
             public void Dispose()
             {
                 TextBox.TextChanged -= OnTextBoxOnTextChanged;
+            }
+        }
+    }
+
+    public static class ScrollViewerAttachedPropertiesDataGrid
+    {
+        #region Private variables
+
+        static readonly Dictionary<DataGrid, DataGridScrollingTrigger> _associations = new Dictionary<DataGrid, DataGridScrollingTrigger>();
+
+        #endregion
+
+        #region Public variables
+
+        public static bool GetScrollOnLoadingRow(DependencyObject dependencyObject) => (bool)dependencyObject.GetValue(ScrollOnLoadingRowProperty);
+
+        public static void SetScrollOnLoadingRow(DependencyObject dependencyObject, bool value) => dependencyObject.SetValue(ScrollOnLoadingRowProperty, value);
+
+        #region Readonly
+
+        public static readonly DependencyProperty ScrollOnLoadingRowProperty = DependencyProperty.RegisterAttached("ScrollOnContentChanged",
+                                                                                        typeof(bool), typeof(ScrollViewerAttachedPropertiesDataGrid), new UIPropertyMetadata(false, OnLoadingRow));
+
+        #endregion
+
+        #endregion
+
+        #region Private function
+
+        private static void OnLoadingRow(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
+        {
+            DataGrid dataGrid = dependencyObject as DataGrid;
+            if (dataGrid == null)
+                throw new InvalidOperationException("Dependency object is not DataGrid.");
+
+            bool oldValue = (bool)e.OldValue, newValue = (bool)e.NewValue;
+            if (newValue == oldValue)
+                return;
+
+            if (newValue)
+            {
+                dataGrid.Loaded += DataGridLoaded;
+                dataGrid.Unloaded += DataGridUnloaded;
+            }
+            else
+            {
+                dataGrid.Loaded -= DataGridLoaded;
+                dataGrid.Unloaded -= DataGridUnloaded;
+                if (_associations.ContainsKey(dataGrid))
+                {
+                    _associations[dataGrid].Dispose();
+                }
+            }
+        }
+
+        private static void DataGridUnloaded(object sender, RoutedEventArgs routedEventArgs)
+        {
+            var dataGrid = (DataGrid)sender;
+            _associations[dataGrid].Dispose();
+            dataGrid.Unloaded -= DataGridUnloaded;
+        }
+
+        private static void DataGridLoaded(object sender, RoutedEventArgs routedEventArgs)
+        {
+            var dataGrid = (DataGrid)sender;
+            dataGrid.Loaded -= DataGridLoaded;
+            _associations[dataGrid] = new DataGridScrollingTrigger(dataGrid);
+        }
+
+        #endregion
+
+        class DataGridScrollingTrigger : IDisposable
+        {
+            private DataGrid DataGrid { get; set; }
+
+            public DataGridScrollingTrigger(DataGrid dataGrid)
+            {
+                DataGrid = dataGrid;
+                DataGrid.LoadingRow += OnLoadingRow;
+            }
+
+            private void OnLoadingRow(object sender, DataGridRowEventArgs args)
+            {
+                if (DataGrid.Items.Count == 0)
+                    return;
+                
+                DataGrid.ScrollIntoView(DataGrid.Items[DataGrid.Items.Count - 1]);
+            }
+
+            public void Dispose()
+            {
+                DataGrid.LoadingRow -= OnLoadingRow;
             }
         }
     }

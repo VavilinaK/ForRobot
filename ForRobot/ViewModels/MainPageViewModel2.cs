@@ -43,8 +43,8 @@ namespace ForRobot.ViewModels
 
         //private string _selectedWeldingSchema;
 
-        private string _logger;
-        
+        private double _statusColumnWidth = Properties.Settings.Default.StatusColumnWidth;
+
         private TabItem _selectedItem;        
 
         private Robot _selectedRobot;
@@ -57,6 +57,8 @@ namespace ForRobot.ViewModels
         private System.Threading.CancellationTokenSource _runCancelTokenSource;
 
         private ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection RobotConfig { get; set; } = ConfigurationManager.GetSection("robot") as ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection;
+
+        private ObservableCollection<AppMessage> _messagesCollection = new ObservableCollection<AppMessage>();
 
         #region Readonly
 
@@ -73,10 +75,13 @@ namespace ForRobot.ViewModels
             {
                 System.Windows.MessageBox.Show(ex.Message);
             }
+            catch (System.Threading.Tasks.TaskCanceledException ex)
+            {
+                App.Current.Logger.Error(new Exception(ex.TargetSite.DeclaringType.ToString() + "\t|\t" + ex.TargetSite + "\t|\t" + ex), ex.Message);
+            }
             catch (Exception ex)
             {
-                App.Current.LoggerString += ex.Message;
-                App.Current.Logger.Error(ex.Message);
+                App.Current.Logger.Error(ex, ex.Message);
             }
         });
 
@@ -141,7 +146,9 @@ namespace ForRobot.ViewModels
 
         public Version Version { get => System.Reflection.Assembly.GetEntryAssembly().GetName().Version; }
 
-        private double _statusColumnWidth = Properties.Settings.Default.StatusColumnWidth;
+        /// <summary>
+        /// Ширена колонки "Статус" в управлении
+        /// </summary>
         public double StatusColumnWidth
         {
             get => this._statusColumnWidth;
@@ -157,8 +164,6 @@ namespace ForRobot.ViewModels
         /// Отправляются ли сгенерированные файлы на робота/ов
         /// </summary>
         public bool SendingGeneratedFiles { get => this._sendingGeneratedFiles; set => Set(ref this._sendingGeneratedFiles, value); }
-
-        public string Logger { get => this._logger; set => Set(ref this._logger, value); }
 
         /// <summary>
         /// Название сгенерированной программы (зависит от типа детали)
@@ -217,11 +222,6 @@ namespace ForRobot.ViewModels
                 RaisePropertyChanged(nameof(this.SelectedDetalType), nameof(this.ProgrammName));
             }
         }
-
-        ///// <summary>
-        ///// Нынешняя страница
-        ///// </summary>
-        //public Page PageNow { get => this._nowPage ?? (this._nowPage = this._page2D); set => Set(ref this._nowPage, value); }
 
         /// <summary>
         /// Объект детали
@@ -300,7 +300,12 @@ namespace ForRobot.ViewModels
         /// Коллекция всех введённых роботов
         /// </summary>
         public ObservableCollection<Robot> RobotsCollection { get => this._robotsCollection; set => Set(ref this._robotsCollection, value); }
-        
+
+        /// <summary>
+        /// Коллекция сообщений
+        /// </summary>
+        public ObservableCollection<AppMessage> MessagesCollection { get => this._messagesCollection; set => Set(ref this._messagesCollection, value); }
+
         #endregion
 
         #region Commands
@@ -353,6 +358,7 @@ namespace ForRobot.ViewModels
                     {
                         OpenFileDialog openFileDialog = new OpenFileDialog()
                         {
+                            Multiselect = false,
                             Filter = "Json files (*.json)|*.json|Text files (*.txt)|*.txt",
                             Title = "Импорт параметров программы"
                         };
@@ -362,10 +368,9 @@ namespace ForRobot.ViewModels
 
                         this.DetalObject = JsonConvert.DeserializeObject<Plita>(JObject.Parse(File.ReadAllText(openFileDialog.FileName), _jsonLoadSettings).ToString(), this._jsonSettings);
                         this.SaveDetal();
-
-                        string message = $"{DateTime.Now.ToString("HH:mm:ss")} Импортированы параметры программы из файла {openFileDialog.FileName}\n";
-                        App.Current.LoggerString = message + App.Current.LoggerString;
-                        App.Current.Logger.Trace(message + $"Содержание файла {openFileDialog.FileName}:\n" + File.ReadAllText(openFileDialog.FileName) + "\n");
+                        
+                        App.Current.Logger.Info(new Exception($"Содержимое файла {openFileDialog.FileName}:\n" + File.ReadAllText(openFileDialog.FileName)),
+                                                $"Параметры программы импортированы из файла {openFileDialog.FileName}.");
                     }));
             }
         }
@@ -392,9 +397,8 @@ namespace ForRobot.ViewModels
                         File.WriteAllText(saveFileDialog.FileName, this.DetalObject.JsonForSave);
                         if (File.Exists(saveFileDialog.FileName))
                         {
-                            string message = $"{DateTime.Now.ToString("HH:mm:ss")} Параметры программы экспортированы в файл {saveFileDialog.FileName}\n";
-                            App.Current.LoggerString = message + App.Current.LoggerString;
-                            App.Current.Logger.Trace(message + $"Содержание файла {saveFileDialog.FileName}:\n" + this.DetalObject.JsonForSave + "\n");
+                            App.Current.Logger.Info(new Exception($"Содержимое файла {saveFileDialog.FileName}:\n" + File.ReadAllText(saveFileDialog.FileName)),
+                                                    $"Параметры программы экспортированы в файл {saveFileDialog.FileName}.");
                         }                     
                     }));
             }
@@ -448,7 +452,7 @@ namespace ForRobot.ViewModels
                 return _addRobotCommand ??
                     (_addRobotCommand = new RelayCommand(obj =>
                     {
-                        this.AddRobot(this.GetNewRobot());
+                        this.RobotsCollection.Add(this.GetNewRobot());
                         this.SelectedRobot = this.RobotsCollection.Last();
                     }));
             }
@@ -511,7 +515,7 @@ namespace ForRobot.ViewModels
                 return _upDateConnectionCommand ??
                     (_upDateConnectionCommand = new RelayCommand(obj =>
                     {
-                        this.SelectedRobot.OpenConnection(this.ConnectionTimeOut);
+                        this.SelectedRobot.OpenConnection();
                     }));
             }
         }
@@ -696,7 +700,7 @@ namespace ForRobot.ViewModels
 
                             File.WriteAllText(Path.Combine(foldForGenerate, $"{this.ProgrammName}.json"), jObject.ToString());
                             if (File.Exists(Path.Combine(foldForGenerate, $"{this.ProgrammName}.json")))
-                                App.Current.Logger.Trace($"{DateTime.Now.ToString("HH:mm:ss")} Сгенерирован файл {Path.Combine(foldForGenerate, $"{this.ProgrammName}.json")}, содержащий:\n" + jObject.ToString() + "\n");
+                                App.Current.Logger.Info($"Сгенерирован файл {Path.Combine(foldForGenerate, $"{this.ProgrammName}.json")}, содержащий:\n" + jObject.ToString());
 
                             // Генерация программы.
                             Generation generationProcess = new Generation(this.ProgrammName, foldForGenerate);
@@ -810,8 +814,7 @@ namespace ForRobot.ViewModels
                         }
                         catch(Exception e)
                         {
-                            App.Current.LoggerString += e.Message;
-                            App.Current.Logger.Error(e.Message, e);
+                            App.Current.Logger.Error(e, e.Message);
                         }
                     }, _exceptionCallback));
             }
@@ -1046,6 +1049,9 @@ namespace ForRobot.ViewModels
 
         #region Constructor
 
+        private System.Collections.Generic.List<Model.AppMessage> _appMessages = new System.Collections.Generic.List<Model.AppMessage>();
+        public System.Collections.ObjectModel.ObservableCollection<Model.AppMessage> AppMessages { get => new System.Collections.ObjectModel.ObservableCollection<Model.AppMessage>(_appMessages); }
+
         public MainPageViewModel2()
         {
             if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
@@ -1054,46 +1060,54 @@ namespace ForRobot.ViewModels
             if (Properties.Settings.Default.SaveRobots == null)
                 Properties.Settings.Default.SaveRobots = new System.Collections.Specialized.StringCollection();
 
-            App.Current.Log += new EventHandler<LogEventArgs>(SelectAppLogger);
+            //App.Current.Log += new EventHandler<LogEventArgs>(SelectAppLogger);
+
+            Libr.Logger.LoggingEvent += (s, o) =>
+            {
+                System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() => this.MessagesCollection.Add(new Model.AppMessage(o))));
+            };
 
             if (Properties.Settings.Default.SaveRobots.Count > 0)
             {
                 for (int i = 0; i < Properties.Settings.Default.SaveRobots.Count; i++)
                 {
-                    this.AddRobot(JsonConvert.DeserializeObject<Robot>(Properties.Settings.Default.SaveRobots[i]));
+                    this.RobotsCollection.Add(this.GetNewRobot(JsonConvert.DeserializeObject<Robot>(Properties.Settings.Default.SaveRobots[i])));
                 }
             }
             else
-                this.AddRobot(this.GetNewRobot());
+                this.RobotsCollection.Add(this.GetNewRobot());
         }
 
         #endregion
 
         #region Private functions
 
-        private Robot GetNewRobot()
-        {
-            return new Robot()
-            {
-                PathProgramm = (this.RobotsCollection.Count > 0) ?
-                                            Path.Combine(Directory.GetParent(this.RobotsCollection.Last().PathProgramm).ToString(), $"R{this.RobotsCollection.Count + 1}")
-                                            : Path.Combine(this.RobotConfig.PathForGeneration, $"R{this.RobotsCollection.Count + 1}"),
-                PathControllerFolder = this.RobotConfig.PathControllerFolder
-            };
-        }
-
         /// <summary>
-        /// Добавление робота
+        /// Возврат робота с инициализированными собитиями и открытым соединением
         /// </summary>
-        private void AddRobot(Robot robot)
+        /// <param name="robot"></param>
+        /// <returns></returns>
+        private Robot GetNewRobot(Robot robot = null)
         {
+            if (robot == null)
+            {
+                robot = new Robot()
+                {
+                    PathProgramm = (this.RobotsCollection.Count > 0) ?
+                            Path.Combine(Directory.GetParent(this.RobotsCollection.Last().PathProgramm).ToString(), $"R{this.RobotsCollection.Count + 1}")
+                            : Path.Combine(this.RobotConfig.PathForGeneration, $"R{this.RobotsCollection.Count + 1}"),
+                    PathControllerFolder = this.RobotConfig.PathControllerFolder,
+                    ConnectionTimeOutMilliseconds = Convert.ToInt32(App.Settings.ConnectionTimeOut) * 1000
+                };
+            }
+
             if (string.IsNullOrEmpty(robot.Name))
-                robot.Name = $"Робот {this.RobotsCollection.Count + 1}";
+                robot.Name = $"Соединение {this.RobotsCollection.Count + 1}";
 
             robot.Log += new EventHandler<ForRobot.Libr.LogEventArgs>(this.WreteLog);
             robot.LogError += new EventHandler<ForRobot.Libr.LogErrorEventArgs>(WreteLogError);
-            robot.OpenConnection(this.ConnectionTimeOut * 1000);           
-            robot.ChangeRobot += (s, e) => 
+            Task.Run(() => robot.OpenConnection());
+            robot.ChangeRobot += (s, e) =>
             {
                 Properties.Settings.Default.SaveRobots.Clear();
                 foreach (var r in this.RobotsCollection)
@@ -1102,10 +1116,9 @@ namespace ForRobot.ViewModels
                     Properties.Settings.Default.Save();
                 }
             };
-            this.RobotsCollection.Add(robot);
-            RaisePropertyChanged(nameof(this.RobotsCollection), nameof(this.RobotNamesCollection));
+            return robot;
         }
-
+        
         /// <summary>
         /// Сохранение изменений Detal
         /// </summary>
@@ -1128,6 +1141,8 @@ namespace ForRobot.ViewModels
             Properties.Settings.Default.Save();
         }
 
+        #region Logging
+
         /// <summary>
         /// Системное сообщение
         /// </summary>
@@ -1135,8 +1150,10 @@ namespace ForRobot.ViewModels
         /// <param name="e"></param>
         private void WreteLog(object sender, LogEventArgs e)
         {
-            App.Current.LoggerString = e.Message + App.Current.LoggerString;
+            //App.Current.LoggerString += e.Message;
+
             App.Current.Logger.Trace(e.Message);
+            //System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() => this.MessagesCollection.Add(new AppMessage(e.Message, AppMessageTypes.Info))));
         }
 
         /// <summary>
@@ -1146,34 +1163,18 @@ namespace ForRobot.ViewModels
         /// <param name="e"></param>
         private void WreteLogError(object sender, LogErrorEventArgs e)
         {
-            App.Current.LoggerString = e.Message + App.Current.LoggerString;
-            App.Current.Logger.Error(e.Message);
+            //App.Current.LoggerString += e.Message + "\n";
+
+            //App.Current.Logger.Error(e.Exception, e.Message + (e.Exception != null ?
+            //                                      "\t|\t" + e.Exception.TargetSite.DeclaringType.ToString() + "\t|\t" + e.Exception.TargetSite + "\t|\t" + e.Exception :
+            //                                      "") + "\n");
+
+            App.Current.Logger.Error(e.Exception, e.Message);
+
+            //System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() => this.MessagesCollection.Add(new AppMessage(e.Message, AppMessageTypes.Error, e.Exception))));
         }
 
-        /// <summary>
-        /// Обработчик собития изменения журнала приложения
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void SelectAppLogger(object sender, LogEventArgs e) => this.Logger = ((ForRobot.App)sender).LoggerString;
-
-        ///// <summary>
-        ///// Отправка на файлов на ПК робота
-        ///// </summary>
-        ///// <param name="robot"></param>
-        //private bool FileToPC(Robot robot)
-        //{
-        //    try
-        //    {
-
-        //    }
-        //    catch(Exception ex)
-        //    {
-        //        this.LogErrorMessage(ex.Message, ex);
-        //        return false;
-        //    }
-        //    return true;
-        //}
+        #endregion
 
         #region Deserialize Properties
 

@@ -127,7 +127,8 @@ namespace ForRobot.Libr
                 return;
             }
 
-            this.Log(this, new LogEventArgs($"{DateTime.Now.ToString("HH:mm:ss")} " + message + "\n"));
+            //this.Log(this, new LogEventArgs($"{DateTime.Now.ToString("HH:mm:ss")} " + message + "\n"));
+            this.Log(this, new LogEventArgs(String.Format("{0:HH:mm:ss}\t{1}", DateTime.Now, message)));
         }
 
         internal void LogErrorMessage(string message) => this.LogErrorMessage(message, null);
@@ -139,7 +140,8 @@ namespace ForRobot.Libr
                 return;
             }
 
-            this.LogError(this, new LogErrorEventArgs($"{DateTime.Now.ToString("HH:mm:ss")} " + message + "\n", exception));
+            //this.LogError(this, new LogErrorEventArgs($"{DateTime.Now.ToString("HH:mm:ss")} " + message + "\n", exception));
+            this.LogError(this, new LogErrorEventArgs(String.Format("{0:HH:mm:ss}\t{1}", DateTime.Now, message), exception));
         }
 
         #endregion

@@ -27,7 +27,6 @@ namespace ForRobot.Model
         private string _programName;
         private string _pathProgram;
         private string _pathControllerFolder;
-        private int _timeout_milliseconds;
         private string _pro_state;
 
         private decimal _voltage;
@@ -76,16 +75,6 @@ namespace ForRobot.Model
 
         #region Public variables
 
-        public string Name
-        {
-            get => this._name;
-            set
-            {
-                Set(ref this._name, value);
-                this.ChangeRobot?.Invoke(this, null);
-            }
-        }
-
         [JsonIgnore]
         public const string PathOfTempFolder = @"C:\Windows\Temp";
         [JsonIgnore]
@@ -107,6 +96,20 @@ namespace ForRobot.Model
         /// Задержка запроса имени запущенной на роботе программы
         /// </summary>
         public const int DelayProgramName = 3;
+
+
+        /// <summary>
+        /// Наименование робота
+        /// </summary>
+        public string Name
+        {
+            get => this._name;
+            set
+            {
+                Set(ref this._name, value);
+                this.ChangeRobot?.Invoke(this, null);
+            }
+        }
 
         [JsonIgnore]
         /// <summary>
@@ -146,9 +149,9 @@ namespace ForRobot.Model
             set
             {
                 this.Connection.Host = value;
-                if (this._timeout_milliseconds == 0 || this.Port == 0 || string.IsNullOrWhiteSpace(this.Connection.Host) || this.Connection.Host == "0.0.0.0")
+                if (this.ConnectionTimeOutMilliseconds == 0 || this.Port == 0 || string.IsNullOrWhiteSpace(this.Connection.Host) || this.Connection.Host == "0.0.0.0")
                     return;
-                this.OpenConnection(this._timeout_milliseconds);
+                this.OpenConnection();
                 this.ChangeRobot?.Invoke(this, null);
             }
         }
@@ -159,12 +162,18 @@ namespace ForRobot.Model
             set
             {
                 this.Connection.Port = value;
-                if (this._timeout_milliseconds == 0 || this.Connection.Port == 0 || string.IsNullOrWhiteSpace(this.Host) || this.Host == "0.0.0.0")
+                if (this.ConnectionTimeOutMilliseconds == 0 || this.Connection.Port == 0 || string.IsNullOrWhiteSpace(this.Host) || this.Host == "0.0.0.0")
                     return;
-                this.OpenConnection(this._timeout_milliseconds);
+                this.OpenConnection();
                 this.ChangeRobot?.Invoke(this, null);
             }
         }
+
+        /// <summary>
+        /// Время ожидания ответа от сервера, сек.
+        /// </summary>
+        [JsonIgnore]
+        public int ConnectionTimeOutMilliseconds { get; set; } = 0;
 
         [JsonIgnore]
         /// <summary>
@@ -178,9 +187,12 @@ namespace ForRobot.Model
                 Set(ref this._connection, value);
                 RaisePropertyChanged(nameof(this.IsConnection));
             }
-        } 
+        }
 
         [JsonIgnore]
+        /// <summary>
+        /// Активно ли соединение
+        /// </summary>
         public bool IsConnection { get => (this.Connection is null) || (this.Connection.Client is null) ? false : this.Connection.Client.Connected; }
 
         [JsonIgnore]
@@ -317,7 +329,7 @@ namespace ForRobot.Model
             if (string.IsNullOrEmpty(message) || this.Log == null)
                 return;
 
-            this.Log(this, new LogEventArgs($"{DateTime.Now.ToString("HH:mm:ss")} {this.Host}:{this.Port} " + message + "\n"));
+            this.Log(this, new LogEventArgs(String.Format("{0}:{1}\t{2}", this.Host, this.Port, message)));
         }
 
         private void LogErrorMessage(string message) => this.LogErrorMessage(message, null);
@@ -327,7 +339,7 @@ namespace ForRobot.Model
             if (string.IsNullOrEmpty(message) || this.LogError == null)
                 return;
 
-            this.LogError(this, new LogErrorEventArgs($"{DateTime.Now.ToString("HH:mm:ss")} {this.Host}:{this.Port} " + message + "\n", exception));
+            this.LogError(this, new LogErrorEventArgs(String.Format("{0}:{1}\t{2}", this.Host, this.Port, message), exception));
         }
 
         /// <summary>
@@ -343,13 +355,13 @@ namespace ForRobot.Model
                 this.Connection.Connected += (sender, e) => RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
                 this.Connection.Aborted += (sender, e) =>
                 {
-                    this.LogMessage("Соединение разорвано");
+                    this.LogMessage("Соединение разорвано со стороны сервера");
                     RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
                 };
                 this.Connection.Disconnected += (sender, e) => this.CloseConnection();
 
                 this.LogMessage($"Открытие соединения с сервером . . .");
-                if (this.Connection.Open())
+                if (this.Connection.Open(this.ConnectionTimeOutMilliseconds))
                     this.LogMessage($"Открыто соединение");
 
                 if (this.IsConnection)
@@ -477,10 +489,10 @@ namespace ForRobot.Model
         /// <returns></returns>
         private string SearchPath(string sNameForSearch)
         {
-            string path = "";
+            //string path = string.Empty;
             foreach (var file in this.Files)
             {
-                path = ForRobot.Libr.FileCollection.Search(file, sNameForSearch)?.Path;
+                string path = ForRobot.Libr.FileCollection.Search(file, sNameForSearch)?.Path;
                 if (!string.IsNullOrEmpty(path))
                     return path;
             }
@@ -504,19 +516,18 @@ namespace ForRobot.Model
         /// Открытие соединения
         /// </summary>
         /// <param name="timeout_milliseconds"></param>
-        public void OpenConnection(int timeout_milliseconds)
+        public bool OpenConnection()
         {
-            this._timeout_milliseconds = timeout_milliseconds;
-
-            if (this._timeout_milliseconds == 0 || this.Port == 0 || string.IsNullOrWhiteSpace(this.Host) || this.Host == "0.0.0.0")
-                return;
+            if (this.Port == 0 || string.IsNullOrWhiteSpace(this.Host) || this.Host == "0.0.0.0")
+                return false;
 
             Thread thread = new Thread(new ThreadStart(BeginConnect))
             {
                 IsBackground = true
             };
             thread.Start();
-            thread.Join(this._timeout_milliseconds);  // Закроется даже при неудачном подключении.
+            thread.Join(this.ConnectionTimeOutMilliseconds);  // Закроется даже при неудачном подключении.
+            return this.IsConnection;
         }
 
         /// <summary>
@@ -819,9 +830,9 @@ namespace ForRobot.Model
                 string sFilePath = Path.Combine(JsonRpcConnection.DefaulRoot, sProgramPath);
 
                 if (Task.Run<bool>(async () => await this.Connection.SelectAsync(sFilePath)).Result)
-                    this.LogMessage($"Файл программы {sFilePath} выбран");
+                    this.LogMessage($"Выбран файл {sFilePath}.");
                 else
-                    throw new Exception("Ошибка выбора файла " + sFilePath);
+                    throw new Exception($"Ошибка выбора файла {sFilePath}.");
             }
             catch (Exception ex)
             {

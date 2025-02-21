@@ -246,9 +246,11 @@
     <Compile Include="Libr\Converters\NumbersForWeldingSchemaConverter.cs" />
     <Compile Include="Libr\Converters\VisibilityFolderOnRobot.cs" />
     <Compile Include="Libr\Json\PlitaWithRibsAttributesResolver.cs" />
+    <Compile Include="Libr\Logger.cs" />
     <Compile Include="Libr\Settings\ModeClosingApp.cs" />
     <Compile Include="Libr\Settings\Settings.cs" />
     <Compile Include="Libr\SingleGlobalInstance.cs" />
+    <Compile Include="Model\AppMessage.cs" />
     <Compile Include="Model\Controls\FileFlags.cs" />
     <Compile Include="Model\Detals\WeldingSchemas.cs" />
     <Compile Include="Model\File3D\File3D.cs" />
@@ -288,10 +290,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Themes\ToolBarTrayForRobot.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\Controls\Breadcrumb.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -317,10 +315,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Pages\Page3D_2.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Pages\PageMain.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -399,14 +393,9 @@
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Themes\MetroStyleResourceDictionary.cs" />
     <Compile Include="Libr\Converters\RowNumberConverter.cs" />
-    <Compile Include="Themes\ToolBarTrayForRobot.xaml.cs">
-      <DependentUpon>ToolBarTrayForRobot.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel2.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\Controls\NavigationTreeViewVM.cs" />
-    <Compile Include="ViewModels\ToolBarViewModel.cs" />
     <Compile Include="Views\Controls\NavigationTreeView.xaml.cs">
       <DependentUpon>NavigationTreeView.xaml</DependentUpon>
     </Compile>
@@ -415,9 +404,6 @@
     </Compile>
     <Compile Include="Views\Pages\Page3D.xaml.cs">
       <DependentUpon>Page3D.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Pages\PageMain.xaml.cs">
-      <DependentUpon>PageMain.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Pages\PageMain2.xaml.cs">
       <DependentUpon>PageMain2.xaml</DependentUpon>

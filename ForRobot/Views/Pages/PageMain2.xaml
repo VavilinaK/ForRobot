@@ -12,6 +12,7 @@
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
       xmlns:control="clr-namespace:ForRobot.Views.Controls"
       xmlns:properties="clr-namespace:ForRobot.Properties"
+      xmlns:nlog="clr-namespace:NLog;assembly=NLog"
       mc:Ignorable="d" 
       d:DesignHeight="800" d:DesignWidth="1500"
       Background="#cfcfcf">
@@ -109,7 +110,7 @@
                 </MenuItem.Template>
             </MenuItem>
 
-            <MenuItem>
+            <MenuItem Margin="5,0">
                 <MenuItem.Template>
                     <ControlTemplate TargetType="{x:Type MenuItem}">
                         <control:SliderButton IsChecked="{Binding Path=SendingGeneratedFiles, FallbackValue=True, Mode=TwoWay}"
@@ -130,7 +131,7 @@
                 </MenuItem.Template>
             </MenuItem>
 
-            <MenuItem>
+            <MenuItem Padding="5" Margin="5,0">
                 <MenuItem.Template>
                     <ControlTemplate TargetType="{x:Type MenuItem}">
                         <Button Grid.Column="1" Height="50" Padding="5" Margin="5, 0" ToolTip="Генерация программ"
@@ -537,7 +538,7 @@
                 </MenuItem.Template>
             </MenuItem>
 
-            <MenuItem HorizontalAlignment="Right">
+            <MenuItem HorizontalAlignment="Right" Padding="5" Margin="5,0">
                 <MenuItem.Template>
                     <ControlTemplate TargetType="{x:Type MenuItem}">
                         <StackPanel Orientation="Horizontal">
@@ -820,13 +821,8 @@
                         <DataTemplate.Resources>
                             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource textBlockBase}"></Style>
                         </DataTemplate.Resources>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-
+                        
+                        <WrapPanel Orientation="Horizontal" Margin="0, 5">
                             <Button Grid.Column="0">
                                 <Button.Style>
                                     <Style TargetType="{x:Type Button}">
@@ -913,7 +909,7 @@
                                         <i:InvokeCommandAction Command="{Binding Path=DataContext.RetentionRunButtonCommandAsync, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
                                                                CommandParameter="{Binding}"/>
                                     </i:EventTrigger>
-                                    
+
                                     <!--<i:EventTrigger EventName="Click">
                                         <i:InvokeCommandAction Command="{Binding Path=DataContext.RunProgramCommandAsync, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
                                                                CommandParameter="{Binding}"/>
@@ -929,6 +925,7 @@
                             <Button Grid.Column="1" ToolTip="Остановка программы"
                                     Command="{Binding Path=DataContext.PauseProgramCommandAsync, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
                                     CommandParameter="{Binding}">
+
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
@@ -969,7 +966,7 @@
                                     <TextBlock Grid.Column="1" Text="Аннулировать"/>
                                 </Grid>
                             </Button>
-                        </Grid>
+                        </WrapPanel>
                     </DataTemplate>
                 </TabControl.Resources>
 
@@ -1634,7 +1631,7 @@
                 <Grid Grid.Row="0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
                     <Grid.Style>
@@ -1741,140 +1738,88 @@
                             </Style>
                         </TabControl.Resources>
 
-                        <!--<TabItem Header="Статус">
-                        <ListBox SelectionMode="Single" FontSize="18" Padding="0, 10" Margin="3"
-                                 Background="White"
-                                 ScrollViewer.CanContentScroll="True"
-                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                 ItemsSource="{Binding Path=RobotsCollection, Mode=OneWay}">
-
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid>
-                                        <Grid.Resources>
-                                            <Style TargetType="{x:Type TextBlock}">
-                                                <Setter Property="Margin" Value="5, 0"/>
-                                                <Setter Property="VerticalAlignment" Value="Center"/>
-                                                <Setter Property="TextAlignment" Value="Center"/>
-                                            </Style>
-                                        </Grid.Resources>
-
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="20"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <Ellipse Grid.Column="0" 
-                                                 Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"
-                                                 Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}">
-
-                                            <Ellipse.Style>
-                                                <Style TargetType="{x:Type Ellipse}">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Path=Item2.Pro_State}" Value="#P_ACTIVE">
-                                                            <DataTrigger.EnterActions>
-                                                                <BeginStoryboard x:Name="blinkAnimation">
-                                                                    <Storyboard>
-                                                                        <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" RepeatBehavior="Forever" AutoReverse="True" Duration="0:0:1.25"/>
-                                                                    </Storyboard>
-                                                                </BeginStoryboard>
-                                                            </DataTrigger.EnterActions>
-
-                                                            <DataTrigger.ExitActions>
-                                                                <StopStoryboard BeginStoryboardName="blinkAnimation"/>
-                                                            </DataTrigger.ExitActions>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Ellipse.Style>
-
-                                            <Ellipse.Fill>
-                                                <RadialGradientBrush>
-                                                    <GradientStop Color="White" Offset="0"/>
-                                                    <GradientStop Color="{Binding Path=Foreground.Color, ElementName=statusString}" Offset="1"/>
-                                                </RadialGradientBrush>
-                                            </Ellipse.Fill>
-                                        </Ellipse>
-
-                                        <TextBlock Grid.Column="1" Text="{Binding Item1}"/>
-                                        <TextBlock Grid.Column="2" Text="-"/>
-                                        <TextBlock x:Name="statusString" Grid.Column="3" FontWeight="Bold"
-                                                   Foreground="{Binding Path=Text, RelativeSource={RelativeSource Self}, Converter={StaticResource StatusColorConvert}}">
-
-                                            <TextBlock.Style>
-                                                <Style TargetType="{x:Type TextBlock}">
-                                                    <Setter Property="Text" Value="Нет соединения"/>
-
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Path=Item2.Pro_State}" Value="#P_FREE">
-                                                            <Setter Property="Text" Value="Программа не выбрана"/>
-                                                        </DataTrigger>
-
-                                                        <DataTrigger Binding="{Binding Path=Item2.Pro_State}" Value="#P_RESET">
-                                                            <Setter Property="Text">
-                                                                <Setter.Value>
-                                                                    <MultiBinding Converter="{StaticResource StringFormatMultiConvert}" ConverterParameter="Выбрана программа {0}">
-                                                                        <Binding Path="Item2.RobotProgramName" Mode="OneWay"/>
-                                                                    </MultiBinding>
-                                                                </Setter.Value>
-                                                            </Setter>
-                                                        </DataTrigger>
-
-                                                        <DataTrigger Binding="{Binding Path=Item2.Pro_State}" Value="#P_ACTIVE">
-                                                            <Setter Property="Text">
-                                                                <Setter.Value>
-                                                                    <MultiBinding Converter="{StaticResource StringFormatMultiConvert}" ConverterParameter="Запущена программа {0}">
-                                                                        <Binding Path="Item2.RobotProgramName" Mode="OneWay"/>
-                                                                    </MultiBinding>
-                                                                </Setter.Value>
-                                                            </Setter>
-                                                        </DataTrigger>
-
-                                                        <DataTrigger Binding="{Binding Path=Item2.Pro_State}" Value="#P_STOP">
-                                                            <Setter Property="Text">
-                                                                <Setter.Value>
-                                                                    <MultiBinding Converter="{StaticResource StringFormatMultiConvert}" ConverterParameter="Программа {0} остановлена">
-                                                                        <Binding Path="Item2.RobotProgramName" Mode="OneWay"/>
-                                                                    </MultiBinding>
-                                                                </Setter.Value>
-                                                            </Setter>
-                                                        </DataTrigger>
-
-                                                        <DataTrigger Binding="{Binding Path=Item2.Pro_State}" Value="#P_END">
-                                                            <Setter Property="Text">
-                                                                <Setter.Value>
-                                                                    <MultiBinding Converter="{StaticResource StringFormatMultiConvert}" ConverterParameter="Программа {0} завершена">
-                                                                        <Binding Path="Item2.RobotProgramName" Mode="OneWay"/>
-                                                                    </MultiBinding>
-                                                                </Setter.Value>
-                                                            </Setter>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
-                                    </Grid>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-
-                            <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="SelectionChanged">
-                                    <i:InvokeCommandAction Command="{Binding Path=SelectRobotCommand}" CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource AncestorType={x:Type ListBox}, Mode=FindAncestor}}"/>
-                                </i:EventTrigger>
-                            </i:Interaction.Triggers>
-                        </ListBox>
-                    </TabItem>-->
-
                         <TabItem Header="Сообщения">
-                            <TextBox Text="{Binding Path=Logger, UpdateSourceTrigger=PropertyChanged}"
-                                 FontSize="15" Foreground="Black" TextWrapping="Wrap"
-                                 Padding="10" Margin="3" Background="White"
-                                 AcceptsReturn="True" IsReadOnly="True"
-                                 ScrollViewer.CanContentScroll="True"
-                                 ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                            <Grid>
+                                <DataGrid FontSize="15" Margin="3"
+                                          ItemsSource="{Binding Path=MessagesCollection, Mode=OneWay}"
+                                          SelectionMode="Single"
+                                          AutoGenerateColumns="False"
+                                          EnableRowVirtualization="False"
+                                          ScrollViewer.CanContentScroll="True"
+                                          ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                          lib:ScrollViewerAttachedPropertiesDataGrid.ScrollOnLoadingRow="True">
+
+                                    <DataGrid.Resources>
+                                        <Style x:Key="dgCellBase" TargetType="{x:Type DataGridCell}">
+                                            <Setter Property="IsEnabled" Value="False"/>
+                                            <Setter Property="Focusable" Value="False"/>
+                                            <Setter Property="Foreground" Value="Black"/>
+                                            <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="{x:Type DataGridCell}">
+                                                        <Grid Background="{TemplateBinding Background}">
+                                                            <ContentPresenter VerticalAlignment="Center" Margin="15,0"/>
+                                                        </Grid>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding LogLevel}" Value="Error">
+                                                    <Setter Property="Foreground" Value="Red"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+
+                                        <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource dgCellBase}"></Style>
+
+                                        <Style x:Key="dgCellLeft" TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource dgCellBase}">
+                                            <Setter Property="TextBlock.TextAlignment" Value="Left"/>
+                                        </Style>
+
+                                        <Style TargetType="{x:Type DataGridColumnHeader}">
+                                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                        </Style>
+
+                                        <Style TargetType="{x:Type DataGridRowHeader}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=Item.Ditails, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}" Value="">
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </DataGrid.Resources>
+                                    
+                                    <DataGrid.RowHeaderTemplate>
+                                        <DataTemplate>
+                                            <Expander Expanded="Expander_Expanded"  Collapsed="Expander_Collapsed">
+                                                <Expander.Style>
+                                                    <Style TargetType="{x:Type Expander}">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Path=Item.Ditails, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}" Value="">
+                                                                <Setter Property="Visibility" Value="Hidden"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Expander.Style>
+                                            </Expander>
+                                        </DataTemplate>
+                                    </DataGrid.RowHeaderTemplate>
+
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Время" Binding="{Binding Time, StringFormat=\{0:HH:mm:ss\}}" Width="Auto"/>
+                                        <DataGridTextColumn Header="Сообщение" Binding="{Binding Message}" Width="*" CellStyle="{StaticResource dgCellLeft}"/>
+                                    </DataGrid.Columns>
+
+                                    <DataGrid.RowDetailsTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Ditails}" Focusable="False" IsEnabled="False" Padding="5,10"/>
+                                        </DataTemplate>
+                                    </DataGrid.RowDetailsTemplate>
+                                </DataGrid>
+                            </Grid>
                         </TabItem>
                     </TabControl>
                 </Grid>

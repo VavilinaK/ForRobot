@@ -191,7 +191,7 @@ namespace ForRobot.Libr.Client
                 return;
             }
 
-            this.Log(this, new LogEventArgs($"{DateTime.Now.ToString("HH:mm:ss")} {this.Host}:{this.Port} " + message + "\n"));
+            this.Log(this, new LogEventArgs(String.Format("{0}:{1}\t{2}", this.Host, this.Port, message)));
         }
 
         internal void LogErrorMessage(string message) => this.LogErrorMessage(message, null);
@@ -203,7 +203,7 @@ namespace ForRobot.Libr.Client
                 return;
             }
 
-            this.LogError(this, new LogErrorEventArgs($"{DateTime.Now.ToString("HH:mm:ss")} {this.Host}:{this.Port} " + message + "\n", exception));
+            this.LogError(this, new LogErrorEventArgs(String.Format("{0}:{1}\t{2}", this.Host, this.Port, message), exception));
         }
 
         #endregion
@@ -214,15 +214,15 @@ namespace ForRobot.Libr.Client
         /// Открытие соединения
         /// </summary>
         /// <returns></returns>
-        public bool Open()
+        public bool Open(int timeout_milliseconds)
         {
             bool opened = false;
             try
             {
                 this.Client = new TcpClient(this.Host, this.Port)
                 {
-                    ReceiveTimeout = 3000,
-                    SendTimeout = 3000
+                    SendTimeout = timeout_milliseconds,
+                    ReceiveTimeout = timeout_milliseconds + 500
                 };
                 this.JsonRpc = new JsonRpc(new NewLineDelimitedMessageHandler(Client.GetStream(), Client.GetStream(), new JsonMessageFormatter()));
                 this.JsonRpc.StartListening();
@@ -432,7 +432,7 @@ namespace ForRobot.Libr.Client
             }
             catch (Exception e)
             {
-                App.Current.Logger.Error(e.Message, e);
+                App.Current.Logger.Error(e, e.Message);
             }
             return result;
         }

@@ -18,7 +18,7 @@ namespace ForRobot.Libr.Converters
             ObservableCollection<ForRobot.Model.Controls.File> files = values[0] as ObservableCollection<ForRobot.Model.Controls.File>; // Коллекция файлов на роботе.
             SortedDictionary<string, bool> settings = values[1] as SortedDictionary<string, bool>; // Коллекция доступных для блокировки папок из настроек.
             
-            if(files != null)
+            if(files != null && settings != null)
             {
                 var set = settings.Where(x => !x.Value).Select(s => s.Key).ToList<string>();
 
