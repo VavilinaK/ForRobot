@@ -50,11 +50,6 @@ namespace ForRobot.ViewModels
         private Robot _selectedRobot;
         
         private ObservableCollection<Robot> _robotsCollection = new ObservableCollection<Robot>();
-    
-        /// <summary>
-        /// Токен отмены задачи запуска программы на роботе (нужен при зажатии клавиши)
-        /// </summary>
-        private System.Threading.CancellationTokenSource _runCancelTokenSource;
 
         private ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection RobotConfig { get; set; } = ConfigurationManager.GetSection("robot") as ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection;
 
@@ -77,7 +72,7 @@ namespace ForRobot.ViewModels
             }
             catch (System.Threading.Tasks.TaskCanceledException ex)
             {
-                App.Current.Logger.Error(new Exception(ex.TargetSite.DeclaringType.ToString() + "\t|\t" + ex.TargetSite + "\t|\t" + ex), ex.Message);
+                //App.Current.Logger.Error(new Exception(ex.TargetSite.DeclaringType.ToString() + "\t|\t" + ex.TargetSite + "\t|\t" + ex), ex.Message);
             }
             catch (Exception ex)
             {
@@ -126,7 +121,7 @@ namespace ForRobot.ViewModels
 
         private IAsyncCommand _runProgramCommandAsync;
 
-        private IAsyncCommand _retentionRunButtonCommandAsync;
+        private RelayCommand _retentionRunButtonCommandAsync;
 
         private IAsyncCommand _pauseProgramCommand;
 
@@ -877,27 +872,26 @@ namespace ForRobot.ViewModels
                     (_runProgramCommandAsync = new AsyncRelayCommand(async obj =>
                     {
                         Robot robot = (Robot)obj;
-                        //if (robot.Pro_State == "#P_RESET" && System.Windows.MessageBox.Show($"Запустить программу {robot.RobotProgramName}?",
-                        //                                                                    $"{this.RobotsCollection.Where(item => item == robot).Select(item => item.Name).First()}", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK,
-                        //                                                                    System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK ||
 
-                        //    robot.Pro_State == "#P_END" && System.Windows.MessageBox.Show($"Перезапустить программу {robot.RobotProgramName}?",
-                        //                                                                  $"{this.RobotsCollection.Where(item => item == robot).Select(item => item.Name).First()}", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK,
-                        //                                                                  System.Windows.MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK ||
-                        //    robot.Pro_State == "#P_STOP")
+                        //this._runCancelTokenSource = new System.Threading.CancellationTokenSource();
+                        //if (robot.Pro_State == "#P_RESET" || robot.Pro_State == "#P_END" || robot.Pro_State == "#P_STOP")
                         //{
-                        //    await Task.Run(() => robot.Run());
+                        //    while (!this._runCancelTokenSource.IsCancellationRequested)
+                        //    {
+                        //        await Task.Delay(new TimeSpan(0, 0, 0, 0, 1000), this._runCancelTokenSource.Token);
+                        //        await Task.Run(() => robot.Run(), this._runCancelTokenSource.Token);
+                        //    }
                         //}
 
-                        this._runCancelTokenSource = new System.Threading.CancellationTokenSource();
-                        if (robot.Pro_State == "#P_RESET" || robot.Pro_State == "#P_END" || robot.Pro_State == "#P_STOP")
-                        {
-                            while (!this._runCancelTokenSource.IsCancellationRequested)
-                            {
-                                await Task.Delay(new TimeSpan(0, 0, 0, 0, 1000), this._runCancelTokenSource.Token);
-                                await Task.Run(() => robot.Run(), this._runCancelTokenSource.Token);
-                            }
-                        }
+                        robot.RunCancelTokenSource = new System.Threading.CancellationTokenSource();
+                        await robot.PeriodicTask(async () => {
+                                                                if (robot.Pro_State == "#P_RESET" || robot.Pro_State == "#P_END" || robot.Pro_State == "#P_STOP")
+                                                                {
+                                                                    await Task.Run(() => robot.Run());
+                                                                }
+                                                            }, 
+                                                            new TimeSpan(0, 0, 0, 0, 1000), 
+                                                            robot.RunCancelTokenSource.Token);
                     }, _exceptionCallback));
             }
         }
@@ -905,20 +899,32 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Команда удержания кнопки запуска
         /// </summary>
-        public IAsyncCommand RetentionRunButtonCommandAsync
+        public RelayCommand RetentionRunButtonCommandAsync
         {
             get
             {
                 return _retentionRunButtonCommandAsync ??
-                    (_retentionRunButtonCommandAsync = new AsyncRelayCommand(async obj =>
+                    (_retentionRunButtonCommandAsync = new RelayCommand(obj =>
                     {
-                        //Robot robot = (Robot)obj;
-                        //await Task.Run(() => robot.Run());
-
-                        this._runCancelTokenSource.Cancel();
-                    }, _exceptionCallback));
+                        Robot robot = (Robot)obj;
+                        robot.RunCancelTokenSource.Cancel();
+                    }));
             }
         }
+
+        //public IAsyncCommand RetentionRunButtonCommandAsync
+        //{
+        //    get
+        //    {
+        //        return _retentionRunButtonCommandAsync ??
+        //            (_retentionRunButtonCommandAsync = new AsyncRelayCommand(async obj =>
+        //            {
+        //                Robot robot = (Robot)obj;
+        //                robot.RunCancelTokenSource.Cancel();
+        //                //this._runCancelTokenSource.Cancel();
+        //            }, _exceptionCallback));
+        //    }
+        //}
 
         /// <summary>
         /// Команда остановки программы на роботе/ах
@@ -1049,9 +1055,6 @@ namespace ForRobot.ViewModels
 
         #region Constructor
 
-        private System.Collections.Generic.List<Model.AppMessage> _appMessages = new System.Collections.Generic.List<Model.AppMessage>();
-        public System.Collections.ObjectModel.ObservableCollection<Model.AppMessage> AppMessages { get => new System.Collections.ObjectModel.ObservableCollection<Model.AppMessage>(_appMessages); }
-
         public MainPageViewModel2()
         {
             if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
@@ -1059,9 +1062,7 @@ namespace ForRobot.ViewModels
 
             if (Properties.Settings.Default.SaveRobots == null)
                 Properties.Settings.Default.SaveRobots = new System.Collections.Specialized.StringCollection();
-
-            //App.Current.Log += new EventHandler<LogEventArgs>(SelectAppLogger);
-
+            
             Libr.Logger.LoggingEvent += (s, o) =>
             {
                 System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() => this.MessagesCollection.Add(new Model.AppMessage(o))));
@@ -1148,31 +1149,14 @@ namespace ForRobot.ViewModels
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void WreteLog(object sender, LogEventArgs e)
-        {
-            //App.Current.LoggerString += e.Message;
-
-            App.Current.Logger.Trace(e.Message);
-            //System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() => this.MessagesCollection.Add(new AppMessage(e.Message, AppMessageTypes.Info))));
-        }
+        private void WreteLog(object sender, LogEventArgs e) => App.Current.Logger.Info(e.Message);
 
         /// <summary>
         /// Сообщение об ошибке
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void WreteLogError(object sender, LogErrorEventArgs e)
-        {
-            //App.Current.LoggerString += e.Message + "\n";
-
-            //App.Current.Logger.Error(e.Exception, e.Message + (e.Exception != null ?
-            //                                      "\t|\t" + e.Exception.TargetSite.DeclaringType.ToString() + "\t|\t" + e.Exception.TargetSite + "\t|\t" + e.Exception :
-            //                                      "") + "\n");
-
-            App.Current.Logger.Error(e.Exception, e.Message);
-
-            //System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() => this.MessagesCollection.Add(new AppMessage(e.Message, AppMessageTypes.Error, e.Exception))));
-        }
+        private void WreteLogError(object sender, LogErrorEventArgs e) => App.Current.Logger.Error(e.Exception, e.Message);
 
         #endregion
 

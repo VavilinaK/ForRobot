@@ -41,6 +41,9 @@ namespace ForRobot.ViewModels
         private RelayCommand _deleteRobotCommand;
         private RelayCommand _connectedRobotCommand;
         private RelayCommand _disconnectedRobotCommand;
+        private RelayCommand _renameRobotCommand;
+        private RelayCommand _changePathOnPCCommand;
+        private RelayCommand _upDateFilesCommand;
 
         #endregion
 
@@ -154,7 +157,8 @@ namespace ForRobot.ViewModels
                     (_deleteRobotCommand = new RelayCommand(obj =>
                     {
                         Robot robot = (Robot)obj;
-                        if ( System.Windows.MessageBox.Show($"Удалить робота с соединением {robot.Host}:{robot.Port}?", robot.Name, MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK)
+                        if (robot.Host == Robot.DefaultHost ||
+                            System.Windows.MessageBox.Show($"Удалить робота с соединением {robot.Host}:{robot.Port}?", robot.Name, MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK)
                         {
                             this.RobotsCollection.Remove(robot);
                             if (this.RobotsCollection.Count > 0)
@@ -195,10 +199,82 @@ namespace ForRobot.ViewModels
                     (_disconnectedRobotCommand = new RelayCommand(obj =>
                     {
                         Robot robot = (Robot)obj;
-                        //robot.OpenConnection();
+                        robot.CloseConnection();
                     }));
             }
         }
+
+        /// <summary>
+        /// Переименование робота
+        /// </summary>
+        public RelayCommand RenameRobotCommand
+        {
+            get
+            {
+                return _renameRobotCommand ??
+                    (_renameRobotCommand = new RelayCommand(obj =>
+                    {
+                        Robot robot = (Robot)obj;
+                        using (ForRobot.Views.Windows.InputWindow _inputWindow = new ForRobot.Views.Windows.InputWindow("Введите новое название для робота") { Title = "Переименование робота" })
+                        {
+                            if (_inputWindow.ShowDialog() == true)
+                            {
+                                robot.Name = _inputWindow.Answer;
+                            }
+                        }
+                    }));
+            }
+        }
+
+        /// <summary>
+        /// Изменение папки робота
+        /// </summary>
+        public RelayCommand ChangePatnOnPCCommand
+        {
+            get
+            {
+                return _changePathOnPCCommand ??
+                    (_changePathOnPCCommand = new RelayCommand(obj =>
+                    {
+                        using (var fbd = new FolderBrowserDialog())
+                        {
+                            DialogResult result = fbd.ShowDialog();
+                            if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                            {
+                                for (int i = 0; i < this.RobotsCollection.Count; i++)
+                                {
+                                    this.RobotsCollection.ToList<Robot>()[i].PathProgramm = Path.Combine(fbd.SelectedPath, $"R{i + 1}");
+                                }
+                            }
+                        }
+                    }));
+            }
+        }
+
+        /// <summary>
+        /// Обновление содержимого робота
+        /// </summary>
+        public RelayCommand UpDateFilesCommand
+        {
+            get
+            {
+                return _upDateFilesCommand ??
+                    (_upDateFilesCommand = new RelayCommand(obj =>
+                    {
+                        Task.Run(async () => await this.SelectedRobot.GetFilesAsync());
+                    }));
+            }
+        }
+
+        #region Navigation Tree
+
+
+
+        #endregion
+
+        #region Управление роботом
+
+        #endregion
 
         #endregion
 

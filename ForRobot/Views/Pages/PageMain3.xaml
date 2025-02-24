@@ -115,8 +115,8 @@
         </ControlTemplate>
 
         <ControlTemplate x:Key="MenuItemTemplate2" TargetType="{x:Type MenuItem}">
-            <Border Name="Panel" BorderThickness="0">
-                <StackPanel Orientation="Horizontal">
+            <Border Name="Panel" BorderThickness="0" CornerRadius="5">
+                <StackPanel Orientation="Horizontal" Margin="5">
                     <ContentPresenter x:Name="Icon" ContentSource="Icon" Height="30" Margin="5,0"/>
                     <ContentPresenter ContentSource="Header" RecognizesAccessKey="True"
                                       TextElement.FontSize="{StaticResource FontSizeNP3}"
@@ -204,9 +204,7 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="5"/>
                             <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="5"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
 
@@ -235,13 +233,51 @@
                                 Command="{Binding Path=ConnectedRobotCommand}"
                                 CommandParameter="{Binding Path=SelectedRobot}">
 
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource buttonBaseStyle}">
+                                    <Setter Property="Height" Value="0"/>
+                                    <Setter Property="Width" Value="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"/>
+
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=SelectedRobot.IsConnection}" Value="False">
+                                            <Setter Property="Height" Value="35"/>
+                                            <Setter Property="Margin" Value="0,0,5,0"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Binding="{Binding Path=Visibility, RelativeSource={RelativeSource Self}}" Value="Visible">
+                                            <DataTrigger.EnterActions>
+                                                <BeginStoryboard Name="StartBlinking">
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" RepeatBehavior="Forever" AutoReverse="True" Duration="0:0:1"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </DataTrigger.EnterActions>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+
                             <Path Fill="{StaticResource IconUpDateBrush}"
                                   Data="{StaticResource UpDatePathGeomerty}"/>
                         </Button>
 
-                        <Button Grid.Column="4" ToolTip="Закрыть соединение"
+                        <Button Grid.Column="3" ToolTip="Закрыть соединение"
                                 Command="{Binding Path=DisconnectedRobotCommand}"
                                 CommandParameter="{Binding Path=SelectedRobot}">
+
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource buttonBaseStyle}">
+                                    <Setter Property="Height" Value="0"/>
+                                    <Setter Property="Width" Value="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"/>
+
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=SelectedRobot.IsConnection}" Value="True">
+                                            <Setter Property="Height" Value="35"/>
+                                            <Setter Property="Margin" Value="0,0,5,0"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
 
                             <Path Stroke="{StaticResource IconAddBrush}" StrokeThickness="2.5">
                                 <Path.Data>
@@ -257,7 +293,7 @@
                             </Path>
                         </Button>
 
-                        <Button Grid.Column="6" ToolTip="Добавить робота"
+                        <Button Grid.Column="4" ToolTip="Добавить робота"
                                 Command="{Binding Path=AddRobotCommand}">
 
                             <Path Stroke="{StaticResource IconAddBrush}" StrokeThickness="2">
@@ -293,7 +329,7 @@
 
                         <Button Grid.Column="2"
                                 ToolTip="Изменить папку генерации"
-                                Command="{Binding ChangePatnOnPCCommand}">
+                                Command="{Binding Path=DataContext.ChangePatnOnPCCommand, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}">
 
                             <Path Fill="{StaticResource IconEditBrush}"
                                   Data="{StaticResource EditPathGeomerty}">
@@ -312,8 +348,28 @@
                                         IsProgress="{Binding Path=SelectedRobot.IsLoadFiles, Mode=OneWay}"/>
 
                     <Grid Grid.Row="5" Background="Pink" Margin="0">
-                        <control:NavigationTreeView>
+                        <control:NavigationTreeView DataFileIsHidden="{Binding Path=Settings.AccessDataFile, Source={x:Static Application.Current}, Mode=TwoWay}"
+                                                    SelectedFile="{Binding Path=SelectedRobot.RobotProgramName, Mode=TwoWay}"
+                                                    SelectItemCommand="{Binding Path=SelectFileCommandAsync}"
+                                                    SelectFolderCommand="{Binding Path=SelectFolderCommand}"
+                                                    DeleteNodeCommand="{Binding Path=DeleteFileCommandAsync}">
 
+                            <control:NavigationTreeView.FileCollection>
+                                <MultiBinding Converter="{StaticResource VisibilityFolderOnRobot}">
+                                    <Binding Path="DataContext.SelectedRobot.Files" RelativeSource="{RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}"/>
+                                    <Binding Path="Settings.AvailableFolders" Source="{x:Static Application.Current}"/>
+                                </MultiBinding>
+                            </control:NavigationTreeView.FileCollection>
+
+                            <control:NavigationTreeView.Style>
+                                <Style TargetType="{x:Type control:NavigationTreeView}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=SelectedRobot.IsLoadFiles, Mode=OneWay}" Value="True">
+                                            <Setter Property="IsEnabled" Value="False"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </control:NavigationTreeView.Style>
                         </control:NavigationTreeView>
                     </Grid>
                 </Grid>
@@ -384,7 +440,9 @@
                                     </TextBlock.ToolTip>
                                 </TextBlock>
 
-                                <Button Grid.Column="2" ToolTip="Переименовать робота">
+                                <Button Grid.Column="2" ToolTip="Переименовать робота"
+                                        Command="{Binding Path=DataContext.RenameRobotCommand, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
+                                        CommandParameter="{Binding}">
 
                                     <Path Fill="{StaticResource IconEditBrush}"
                                           Data="{StaticResource EditPathGeomerty}">
@@ -396,14 +454,16 @@
                                 </Button>
 
                                 <Button Grid.Column="3" ToolTip="Повторное соединение"
-                                        Command="{Binding Path=UpDateConnectionCommand}">
+                                        Command="{Binding Path=DataContext.ConnectedRobotCommand, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
+                                        CommandParameter="{Binding}">
 
                                     <Path Fill="{StaticResource IconUpDateBrush}"
                                           Data="{StaticResource UpDatePathGeomerty}"/>
                                 </Button>
 
                                 <Button Grid.Column="4" ToolTip="Закрыть соединение"
-                                        Command="{Binding Path}">
+                                        Command="{Binding Path=DataContext.DisconnectedRobotCommand, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
+                                        CommandParameter="{Binding}">
 
                                     <Path Stroke="{StaticResource IconAddBrush}" StrokeThickness="2.5">
                                         <Path.Data>
@@ -441,7 +501,7 @@
                                     </ControlTemplate>
 
                                     <ControlTemplate x:Key="MenuItemTemplate" TargetType="{x:Type MenuItem}">
-                                        <Border Name="Panel" BorderThickness="0" Background="{StaticResource ThemeBgP1Brush}" CornerRadius="4">
+                                        <Border Name="Panel" BorderThickness="0" Background="{StaticResource ThemeBgM1Brush}" CornerRadius="4">
                                             <StackPanel Orientation="Horizontal" Margin="5">
                                                 <ContentPresenter x:Name="Icon" ContentSource="Icon"/>
                                                 <ContentPresenter ContentSource="Header" RecognizesAccessKey="True"
@@ -949,89 +1009,28 @@
                         </Style>
                     </TabControl.Style>
 
-                    <TabItem Header="Файл 1">
-                        <!--<Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            --><!--<Canvas Grid.Row="1">
-                                <Viewport3D Height="{Binding Parent.ActualHeight, RelativeSource={RelativeSource Self}}"
-                                            Width="{Binding Parent.ActualWidth, RelativeSource={RelativeSource Self}}">
-                                    <Viewport3D.Camera>
-                                        <PerspectiveCamera Position=" 6 5 4" LookDirection="-6 -5 -4"/>
-                                    </Viewport3D.Camera>
-
-                                    <ModelVisual3D>
-                                        <ModelVisual3D.Content>
-                                            <DirectionalLight Direction="-1 -1 -1"/>
-                                        </ModelVisual3D.Content>
-                                    </ModelVisual3D>
-
-                                    <ModelVisual3D>
-                                        <ModelVisual3D.Content>
-                                            <GeometryModel3D>
-                                                <GeometryModel3D.Geometry>
-                                                    <MeshGeometry3D 
-                                                    Positions = "0 0 0  1 0 0  0 1 0  1 1 0  0 0 1  1 0 1  0 1 1  0 1 1"      
-                                                    TriangleIndices = "2 3 1  3 1 0  7 1 3  7 5 1  6 5 7  6 4 5  6 2 0 2 0 4  2 7 3  2 6 7  0 1 5  0 5 4"/>
-                                                </GeometryModel3D.Geometry>
-
-                                                <GeometryModel3D.Material>
-                                                    <DiffuseMaterial>
-                                                        <DiffuseMaterial.Brush>
-                                                            <SolidColorBrush Color="Aqua"/>
-                                                        </DiffuseMaterial.Brush>
-                                                    </DiffuseMaterial>
-                                                </GeometryModel3D.Material>
-                                            </GeometryModel3D>
-                                        </ModelVisual3D.Content>
-
-                                        <ModelVisual3D.Transform>
-                                            <Transform3DGroup>
-                                                <Transform3DGroup.Children>
-                                                    <ScaleTransform3D x:Name="Scale3DOjbect" CenterX="0" CenterY="0" CenterZ="0"/>
-
-                                                    <RotateTransform3D>
-                                                        <RotateTransform3D.Rotation>
-                                                            <AxisAngleRotation3D x:Name="Roate3DOjbect" Axis="1 1 1"/>
-                                                        </RotateTransform3D.Rotation>
-                                                    </RotateTransform3D>
-                                                </Transform3DGroup.Children>
-                                            </Transform3DGroup>
-                                        </ModelVisual3D.Transform>
-                                    </ModelVisual3D>
-                                </Viewport3D>
-                            </Canvas>
-
-                            <Slider Grid.Row="0" Minimum="0"  Maximum="360" Height="20" Width="100"  VerticalAlignment="Top"    
-                                    Value="{Binding ElementName=Roate3DOjbect, Path=Angle}"/>
-
-                            <Slider Grid.Row="2" Minimum="0"  Maximum="50" Height="20" Width="250"  VerticalAlignment="Top"
-                                    Value="{Binding ElementName=Scale3DOjbect, Path=ScaleX}"/>--><!--
-                        </Grid>-->
-
-                        <h:HelixViewport3D PageUpDownZoomSensitivity="5"
+                    <TabControl.ContentTemplate>
+                        <DataTemplate>
+                            <h:HelixViewport3D PageUpDownZoomSensitivity="5"
                                            Orthographic="False"
                                            MinimumFieldOfView="1"
                                            ShowCameraInfo="True"
                                            ShowCameraTarget="True"
                                            ShowCoordinateSystem="True" CoordinateSystemHorizontalPosition="Right" CoordinateSystemVerticalPosition="Top"
                                            >
-                          
-                            <h:DirectionalHeadLight/>
 
-                            <h:GridLinesVisual3D Center="-6.5 0 0" Fill="Gray"/>
+                                <h:DirectionalHeadLight/>
 
-                            <h:CubeVisual3D Center="3 0 0" Fill="Yellow" SideLength="0.9"/>
-                        </h:HelixViewport3D>
-                    </TabItem>
+                                <h:GridLinesVisual3D Center="-6.5 0 0" Fill="Gray"/>
 
-                    <TabItem Header="Файл 2">
+                                <h:CubeVisual3D Center="3 0 0" Fill="Yellow" SideLength="0.9"/>
+                            </h:HelixViewport3D>
+                        </DataTemplate>
+                    </TabControl.ContentTemplate>
 
-                    </TabItem>
+                    <TabItem Header="Файл 1"></TabItem>
+
+                    <TabItem Header="Файл 2"></TabItem>
                 </TabControl>
 
                 <GridSplitter Grid.Row="1" ShowsPreview="False" Height="5" HorizontalAlignment="Stretch" VerticalAlignment="Center"

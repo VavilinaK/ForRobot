@@ -35,8 +35,11 @@ namespace ForRobot.Model
         private decimal _m1;
         private decimal _tracking;
 
-        private CancellationTokenSource _cancelTokenSource;
-
+        /// <summary>
+        /// Токен отмены переодического запроса: статуса процесса, тока и активной программы
+        /// </summary>
+        private CancellationTokenSource _periodicTaskCancelTokenSource;
+        
         private Task LoadFilesTask;
 
         private List<ForRobot.Model.Controls.File> FilesCollection = new List<Controls.File>();
@@ -188,6 +191,11 @@ namespace ForRobot.Model
                 RaisePropertyChanged(nameof(this.IsConnection));
             }
         }
+
+        /// <summary>
+        /// Токен отмены задачи запуска программы на роботе (нужен при зажатии кнопки)
+        /// </summary>
+        public CancellationTokenSource RunCancelTokenSource;
 
         [JsonIgnore]
         /// <summary>
@@ -366,13 +374,13 @@ namespace ForRobot.Model
 
                 if (this.IsConnection)
                 {
-                    this._cancelTokenSource = new CancellationTokenSource();
+                    this._periodicTaskCancelTokenSource = new CancellationTokenSource();
 
-                    var task1 = PeriodicTask(() => { if (this.IsConnection) this.Pro_State = this.Connection.Process_StateAsync().Result; }, new TimeSpan(0, 0, 0, 0, DelayProcessStatus * 1000), this._cancelTokenSource.Token); // Переодический запрос состояния процесса на роботе.
+                    var task1 = PeriodicTask(() => { if (this.IsConnection) this.Pro_State = this.Connection.Process_StateAsync().Result; }, new TimeSpan(0, 0, 0, 0, DelayProcessStatus * 1000), this._periodicTaskCancelTokenSource.Token); // Переодический запрос состояния процесса на роботе.
 
-                    var task2 = PeriodicTask(() => { if (this.IsConnection) this.ConvertToTelegraf(this.Connection.InAsync().Result.ToArray()); }, new TimeSpan(0, 0, 0, 0, DelayTelegraf * 1000), this._cancelTokenSource.Token); // Переодический запрос тока на роботе.
+                    var task2 = PeriodicTask(() => { if (this.IsConnection) this.ConvertToTelegraf(this.Connection.InAsync().Result.ToArray()); }, new TimeSpan(0, 0, 0, 0, DelayTelegraf * 1000), this._periodicTaskCancelTokenSource.Token); // Переодический запрос тока на роботе.
 
-                    var task3 = PeriodicTask(() => {  if (this.IsConnection) this.RobotProgramName = this.Connection.Pro_NameAsync().Result.Replace("\"", ""); }, new TimeSpan(0, 0, 0, 0, DelayProgramName * 1000), this._cancelTokenSource.Token); // Переодический запрос имени выбранной на роботе программы
+                    var task3 = PeriodicTask(() => {  if (this.IsConnection) this.RobotProgramName = this.Connection.Pro_NameAsync().Result.Replace("\"", ""); }, new TimeSpan(0, 0, 0, 0, DelayProgramName * 1000), this._periodicTaskCancelTokenSource.Token); // Переодический запрос имени выбранной на роботе программы
 
                     Task.Run(async () => await Task.WhenAll(task1, task2, task3));
                     Task.Run(async () => await this.GetFilesAsync());
@@ -434,54 +442,6 @@ namespace ForRobot.Model
             }
         }
 
-        #region Asunc
-
-        /// <summary>
-        /// Переодическое выполнение задачи
-        /// </summary>
-        /// <param name="action">Выполняемое действие</param>
-        /// <param name="period">Промежуток между выполнением, мс</param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        private async Task PeriodicTask(Action action, TimeSpan period, CancellationToken cancellationToken)
-        {
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                await Task.Delay(period, cancellationToken);
-
-                if (!cancellationToken.IsCancellationRequested)
-                    action();
-            }
-        }
-
-        /// <summary>
-        /// Переодическое выполнение задачи
-        /// </summary>
-        /// <param name="action">Выполняемое действие</param>
-        /// <param name="period">Промежуток между выполнением, мс</param>
-        /// <returns></returns>
-        public async Task PeriodicTask(Action action, TimeSpan period) => await this.PeriodicTask(action, period, CancellationToken.None);
-
-        /// <summary>
-        /// Выборка файлов робота и сборка дерева
-        /// </summary>
-        /// <param name="data"></param>
-        /// <param name="node"></param>
-        /// <param name="index"></param>
-        public async Task GetFilesAsync(List<ForRobot.Model.Controls.File> data = null, ForRobot.Model.Controls.File node = null, int index = 0)
-        {
-            await Task.Run(() =>
-            {
-                this.LoadFilesTask = new Task(() => { this.LoadFiles(data, node, index); });
-                this.LoadFilesTask.Start();
-                RaisePropertyChanged(nameof(this.IsLoadFiles));
-                this.LoadFilesTask.Wait();
-                RaisePropertyChanged(nameof(this.Files), nameof(this.IsLoadFiles));
-            });
-        }
-        
-        #endregion
-
         /// <summary>
         /// Поиск пути файла по его имени
         /// </summary>
@@ -489,7 +449,6 @@ namespace ForRobot.Model
         /// <returns></returns>
         private string SearchPath(string sNameForSearch)
         {
-            //string path = string.Empty;
             foreach (var file in this.Files)
             {
                 string path = ForRobot.Libr.FileCollection.Search(file, sNameForSearch)?.Path;
@@ -535,7 +494,9 @@ namespace ForRobot.Model
         /// </summary>
         public void CloseConnection()
         {
-            this._cancelTokenSource?.Cancel();
+            this._periodicTaskCancelTokenSource?.Cancel();
+            this.RunCancelTokenSource?.Cancel();
+
             if (this.IsConnection)
             {
                 this.LogMessage($"Закрытие соединения . . .");
@@ -922,7 +883,55 @@ namespace ForRobot.Model
             }
             return true;
         }
-        
+
+        #region Asunc
+
+        /// <summary>
+        /// Переодическое выполнение задачи
+        /// </summary>
+        /// <param name="action">Выполняемое действие</param>
+        /// <param name="period">Промежуток между выполнением, мс</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task PeriodicTask(Action action, TimeSpan period, CancellationToken cancellationToken)
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                await Task.Delay(period, cancellationToken);
+
+                if (!cancellationToken.IsCancellationRequested)
+                    action();
+            }
+        }
+
+        /// <summary>
+        /// Переодическое выполнение задачи
+        /// </summary>
+        /// <param name="action">Выполняемое действие</param>
+        /// <param name="period">Промежуток между выполнением, мс</param>
+        /// <returns></returns>
+        public async Task PeriodicTask(Action action, TimeSpan period) => await this.PeriodicTask(action, period, CancellationToken.None);
+
+        /// <summary>
+        /// Выборка файлов робота и сборка дерева
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="node"></param>
+        /// <param name="index"></param>
+        public async Task GetFilesAsync(List<ForRobot.Model.Controls.File> data = null, ForRobot.Model.Controls.File node = null, int index = 0)
+        {
+            await Task.Run(() =>
+            {
+                this.LoadFilesTask = new Task(() => { this.LoadFiles(data, node, index); });
+                this.LoadFilesTask.Start();
+                RaisePropertyChanged(nameof(this.IsLoadFiles));
+                this.LoadFilesTask.Wait();
+                RaisePropertyChanged(nameof(this.Files), nameof(this.IsLoadFiles));
+            });
+        }
+
+        #endregion
+
         #endregion
 
         #region Implementations of IDisposable

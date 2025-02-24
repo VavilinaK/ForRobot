@@ -23,7 +23,7 @@ namespace ConnectionUnitTests
             try
             {
                 JsonRpcConnection connection = new JsonRpcConnection("192.168.92.128", 3333);
-                connection.Open();
+                //connection.Open();
                 //bool answer = Task.Run(async () => await connection.CopyMem2File("D:\\newPrograms\\R1\\edge_0_left_stm.dat", "D:\\newPrograms\\R1\\edge_0_left_stm.dat")).Result;
                 //Assert.AreEqual(answer, true);
             }
@@ -42,7 +42,7 @@ namespace ConnectionUnitTests
             try
             {
                 JsonRpcConnection connection = new JsonRpcConnection("192.168.92.128", 3333);
-                connection.Open();
+                //connection.Open();
                 //bool answer = Task.Run(async () => await connection.Start()).Result;
                 //Assert.AreEqual(answer, true);
             }
@@ -60,7 +60,7 @@ namespace ConnectionUnitTests
         {
             try
             {
-                _connection.Open();
+                //_connection.Open();
                 string filePath = @"D:\newPrograms\R1\main_gen.src";
                 //string tempPath = @"C:\Users\KukaUser\AppData\Local\Temp";
                 //string tempPath = $@"C:\Windows\Temp\{ResourceAssembly.GetName().Name}";
@@ -96,7 +96,7 @@ namespace ConnectionUnitTests
             try
             {
                 //JsonRpcConnection connection = new JsonRpcConnection("192.168.92.143", 3333);
-                _connection.Open();
+                //_connection.Open();
                 string filePath = @"KRC:\R1\Program\Generation\main_gen.src";
 
                 //if (!Task.Run<bool>(async () => await _connection.Delet(filePath)).Result)
@@ -117,7 +117,7 @@ namespace ConnectionUnitTests
             {
                 CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
                 JsonRpcConnection connection = new JsonRpcConnection("192.168.92.167", 3333);
-                connection.Open();
+                //connection.Open();
 
                 string s = Task.Run(() => _connection.Process_StateAsync(), cancelTokenSource.Token).Result;
 
