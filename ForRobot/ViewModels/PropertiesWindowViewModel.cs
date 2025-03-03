@@ -14,20 +14,16 @@ namespace ForRobot.ViewModels
     {
         #region Private variables
 
-        //private System.Windows.Controls.TreeViewItem _selectedItem;
+        private System.Windows.Controls.TreeViewItem _selectedItem;
 
         #region Commands
 
         private RelayCommand _selectClosedTabCommand;
-
+        private RelayCommand _selectedMainTreeViewItem;        
         private RelayCommand _saveCommand;
-
-        private RelayCommand _cancelCommand;
-        
+        private RelayCommand _cancelCommand;        
         private RelayCommand _editPathForUpdateCommand;
-
         private RelayCommand _editPinCodeCommand;
-
         private RelayCommand _checkBoxAvailableFolderCommand;
 
         #endregion
@@ -38,7 +34,7 @@ namespace ForRobot.ViewModels
 
         public ForRobot.Libr.Settings.Settings Settings { get; set; } = ForRobot.Libr.Settings.Settings.GetSettings();
 
-        //public System.Windows.Controls.TreeViewItem SelectedItem { get => this._selectedItem; set => Set(ref this._selectedItem, value); }
+        public System.Windows.Controls.TreeViewItem SelectedItem { get => this._selectedItem; set => Set(ref this._selectedItem, value); }
 
         #region Commands
 
@@ -95,6 +91,21 @@ namespace ForRobot.ViewModels
                         //    if (!Equals(pass, Properties.Settings.Default.PinCode))
                         //        ((System.Windows.Controls.Primitives.ToggleButton)obj).IsChecked = false;
                         //}
+                    }));
+            }
+        }
+
+        public RelayCommand SelectedMainTreeViewItem
+        {
+            get
+            {
+                return _selectedMainTreeViewItem ??
+                    (_selectedMainTreeViewItem = new RelayCommand(obj =>
+                    {
+                        var control = (System.Windows.Controls.TreeViewItem)obj;
+                        control.IsSelected = false;
+                        (control.Items[0] as System.Windows.Controls.TreeViewItem).IsSelected = true;
+                        this.SelectedItem = control.Items[0] as System.Windows.Controls.TreeViewItem;
                     }));
             }
         }

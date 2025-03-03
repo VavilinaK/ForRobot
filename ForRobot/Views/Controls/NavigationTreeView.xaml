@@ -118,47 +118,52 @@
         </HierarchicalDataTemplate>
     </UserControl.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+    <TreeView FontSize="{Binding Path=FontSize, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}" 
+              BorderThickness="{Binding Path=BorderThickness, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}" 
+              Padding="{Binding Path=Padding, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}"
+              ItemsSource="{Binding Path=FileCollection, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}"
+              ItemTemplate="{StaticResource NavTreeItemTemplate}"
+              Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}"
+              Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}"
+              ScrollViewer.CanContentScroll="False">
+
+        <TreeView.ItemContainerStyle>
+            <Style TargetType="{x:Type TreeViewItem}">
+                <Setter Property="Focusable" Value="False"/>
+                <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}"/>
+
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding Path=Type}" Value="{x:Static model:FileTypes.DataList}"/>
+                            <Condition Binding="{Binding Path=DataFileIsHidden, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}" Value="False"/>
+                        </MultiDataTrigger.Conditions>
+
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="Visibility" Value="Hidden"/>
+                            <Setter Property="Height" Value="0"/>
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+
+                    <DataTrigger Value="True">
+                        <DataTrigger.Binding>
+                            <MultiBinding Converter="{StaticResource SelectProgramConvert}">
+                                <Binding Path="Name"/>
+                                <Binding Path="SelectedFile" RelativeSource="{RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}"/>
+                            </MultiBinding>
+                        </DataTrigger.Binding>
+
+                        <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </TreeView.ItemContainerStyle>
+    </TreeView>
+
+    <!--<ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
         <StackPanel>
-            <!--<FrameworkElement Visibility="Hidden" x:Name="dummy"/>-->
-            <TreeView FontSize="18" BorderThickness="0" Padding="10"
-                      ItemsSource="{Binding Path=FileCollection, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}"
-                      ItemTemplate="{StaticResource NavTreeItemTemplate}"
-                      Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}"
-                      Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}">
+            --><!--<FrameworkElement Visibility="Hidden" x:Name="dummy"/>--><!--
 
-                <TreeView.ItemContainerStyle>
-                    <Style TargetType="{x:Type TreeViewItem}">
-                        <Setter Property="Focusable" Value="False"/>
-                        <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}"/>
-
-                        <Style.Triggers>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding Path=Type}" Value="{x:Static model:FileTypes.DataList}"/>
-                                    <Condition Binding="{Binding Path=DataFileIsHidden, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}" Value="False"/>
-                                </MultiDataTrigger.Conditions>
-
-                                <MultiDataTrigger.Setters>
-                                    <Setter Property="Visibility" Value="Hidden"/>
-                                    <Setter Property="Height" Value="0"/>
-                                </MultiDataTrigger.Setters>
-                            </MultiDataTrigger>
-
-                            <DataTrigger Value="True">
-                                <DataTrigger.Binding>
-                                    <MultiBinding Converter="{StaticResource SelectProgramConvert}">
-                                        <Binding Path="Name"/>
-                                        <Binding Path="SelectedFile" RelativeSource="{RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}"/>
-                                    </MultiBinding>
-                                </DataTrigger.Binding>
-
-                                <Setter Property="TextBlock.FontWeight" Value="Bold"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TreeView.ItemContainerStyle>
-            </TreeView>
         </StackPanel>
-    </ScrollViewer> 
+    </ScrollViewer>--> 
 </UserControl>

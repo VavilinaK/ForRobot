@@ -3,6 +3,7 @@
                     xmlns:local="clr-namespace:ForRobot.Themes"
                     xmlns:properties="clr-namespace:ForRobot.Properties"
                     xmlns:settings="clr-namespace:ForRobot.Libr.Settings"
+                    xmlns:h="http://helix-toolkit.org/wpf"
                     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity">
     
     <!--Вкладка "Общии"-->
@@ -302,6 +303,172 @@
                         </Style>
                     </CheckBox.Style>-->
             </CheckBox>
+        </Grid>
+    </DataTemplate>
+
+    <!--Вкладка "3D сцена"-->
+    <DataTemplate x:Key="3DViewProperiesTemplate" DataType="{x:Type ContentControl}">
+        <DataTemplate.Resources>
+            <Style x:Key="textBase" TargetType="{x:Type FrameworkElement}">
+                <Setter Property="TextElement.FontSize" Value="{StaticResource FontSizeNP1}"/>
+                <Setter Property="TextElement.FontFamily" Value="{StaticResource DefaultFont}"/>
+                <Setter Property="TextElement.FontWeight" Value="Normal"/>
+            </Style>
+
+            <Style TargetType="{x:Type Label}" BasedOn="{StaticResource textBase}">
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            </Style>
+            
+            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource textBase}">
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Background" Value="Transparent"/>
+            </Style>
+
+            <Style TargetType="{x:Type Slider}">
+                <Setter Property="Margin" Value="5,0"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+
+            <!--<Style TargetType="{x:Type Button}" BasedOn="{StaticResource textBase}">
+                <Setter Property="Padding" Value="0, 5"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            </Style>-->
+
+            <!--<Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource textBase}">
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            </Style>-->
+
+            <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource textBase}">
+                <Setter Property="Margin" Value="0,5"/>
+                <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+            </Style>
+            
+            <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource textBase}">
+                <Setter Property="TextElement.FontWeight" Value="Bold"/>
+                <Setter Property="Padding" Value="5"/>
+            </Style>
+
+            <Style TargetType="{x:Type RadioButton}" BasedOn="{StaticResource textBase}"></Style>
+        </DataTemplate.Resources>
+
+        <Grid DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}" Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <CheckBox Grid.Row="0" Content="Система координат" IsChecked="{Binding Path=Settings.ShowCoordinateSystem, Mode=TwoWay}"/>
+            <CheckBox Grid.Row="1" Content="Пространственный куб" IsChecked="{Binding Path=Settings.ShowViewCube, Mode=TwoWay}"/>
+            <CheckBox Grid.Row="2" Content="Количество полигонов" IsChecked="{Binding Path=Settings.ShowTriangleCountInfo, Mode=TwoWay}"/>
+            <CheckBox Grid.Row="3" Content="Количество кадров" IsChecked="{Binding Path=Settings.ShowFrameRate, Mode=TwoWay}"/>
+
+            <GroupBox Grid.Row="4" Header="Камера">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <CheckBox Grid.Row="0" Content="Включена ли ортоганальная камера" IsChecked="{Binding Path=Settings.Orthographic, Mode=TwoWay}"/>
+                    <CheckBox Grid.Row="1" Content="Демонстрация информации о камере" IsChecked="{Binding Path=Settings.ShowCameraInfo, Mode=TwoWay}"/>
+                    <CheckBox Grid.Row="2" Content="Демонстрация курсора камеры" IsChecked="{Binding Path=Settings.ShowCameraTarget, Mode=TwoWay}"/>
+                    <CheckBox Grid.Row="3" Content="Поворот камеры осуществляется вокруг курсора мыши" IsChecked="{Binding Path=Settings.RotateAroundMouseDownPoint, Mode=TwoWay}"/>
+                    <CheckBox Grid.Row="4" Content="Приближение камеры осуществляется в месте курсора мыши" IsChecked="{Binding Path=Settings.ZoomAroundMouseDownPoint, Mode=TwoWay}"/>
+                    <CheckBox Grid.Row="5" Content="Инерция камеры" IsChecked="{Binding Path=Settings.IsInertiaEnabled, Mode=TwoWay}"/>
+                    <CheckBox Grid.Row="6" Content="Включено ли панорамирование" IsChecked="{Binding Path=Settings.IsPanEnabled, Mode=TwoWay}"/>
+                    <CheckBox Grid.Row="7" Content="Включено ли перемещение" IsChecked="{Binding Path=Settings.IsMoveEnabled, Mode=TwoWay}"/>
+                    <CheckBox Grid.Row="8" Content="Включено ли вращение" IsChecked="{Binding Path=Settings.IsRotationEnabled, Mode=TwoWay}"/>
+                    <CheckBox Grid.Row="9" Content="Включено ли маштабирование" IsChecked="{Binding Path=Settings.IsZoomEnabled, Mode=TwoWay}"/>
+
+                    <StackPanel Grid.Row="10" Orientation="Horizontal">
+                        <Label Content="Чувствительность вращения"/>
+                        <Slider Value="{Binding Path=Settings.RotationSensitivity, Mode=TwoWay}" Minimum="0.1" Maximum="5" Width="200"/>
+                        <TextBlock Text="{Binding Path=Settings.RotationSensitivity, Mode=OneWay, StringFormat='{}{0:0.0}'}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="11" Orientation="Horizontal">
+                        <Label Content="Чувствительность маштабирования"/>
+                        <Slider Value="{Binding Path=Settings.ZoomSensitivity, Mode=TwoWay}" Minimum="0.1" Maximum="5" Width="200"/>
+                        <TextBlock Text="{Binding Path=Settings.ZoomSensitivity, Mode=OneWay, StringFormat='{}{0:0.0}'}"/>
+                    </StackPanel>
+                    
+                    <StackPanel Grid.Row="12" Orientation="Horizontal">
+                        <Label Content="Степень инерции камеры"/>
+                        <Slider Value="{Binding Path=Settings.CameraInertiaFactor, Mode=TwoWay}" Minimum="0.7" Maximum="1" Width="200"/>
+                        <TextBlock Text="{Binding Path=Settings.CameraInertiaFactor, Mode=OneWay, StringFormat='{}{0:0.0}'}"/>
+                    </StackPanel>
+
+                    <GroupBox Grid.Row="13" Header="Режим поворота камеры">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <RadioButton Grid.Column="0" GroupName="CameraRotation" Content="Turntable" IsChecked="{Binding Path=Settings.CameraRotationMode,
+                                                                                                                         Converter={StaticResource ResourceKey=RadioButtonConvert}, 
+                                                                                                                         ConverterParameter=Turntable, Mode=TwoWay,
+                                                                                                                         TargetNullValue={StaticResource False}, FallbackValue={StaticResource False}}"/>
+
+                            <RadioButton Grid.Column="1" GroupName="CameraRotation" Content="Turnball" IsChecked="{Binding Path=Settings.CameraRotationMode,
+                                                                                                                         Converter={StaticResource ResourceKey=RadioButtonConvert}, 
+                                                                                                                         ConverterParameter=Turnball, Mode=TwoWay,
+                                                                                                                         TargetNullValue={StaticResource False}, FallbackValue={StaticResource False}}"/>
+
+                            <RadioButton Grid.Column="2" GroupName="CameraRotation" Content="Trackball" IsChecked="{Binding Path=Settings.CameraRotationMode,
+                                                                                                                         Converter={StaticResource ResourceKey=RadioButtonConvert}, 
+                                                                                                                         ConverterParameter=Trackball, Mode=TwoWay,
+                                                                                                                         TargetNullValue={StaticResource False}, FallbackValue={StaticResource False}}"/>
+                        </Grid>
+                    </GroupBox>
+
+                    <GroupBox Grid.Row="14" Header="Режим работы камеры">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <RadioButton Grid.Column="0" GroupName="CameraMode" Content="Inspect" IsChecked="{Binding Path=Settings.CameraMode,
+                                                                                                                         Converter={StaticResource ResourceKey=RadioButtonConvert}, 
+                                                                                                                         ConverterParameter=Inspect, Mode=TwoWay,
+                                                                                                                         TargetNullValue={StaticResource False}, FallbackValue={StaticResource False}}"/>
+
+                            <RadioButton Grid.Column="1" GroupName="CameraMode" Content="CameraMode" IsChecked="{Binding Path=Settings.CameraMode,
+                                                                                                                         Converter={StaticResource ResourceKey=RadioButtonConvert}, 
+                                                                                                                         ConverterParameter=WalkAround, Mode=TwoWay,
+                                                                                                                         TargetNullValue={StaticResource False}, FallbackValue={StaticResource False}}"/>
+
+                            <RadioButton Grid.Column="2" GroupName="CameraMode" Content="WalkAround" IsChecked="{Binding Path=Settings.CameraMode,
+                                                                                                                         Converter={StaticResource ResourceKey=RadioButtonConvert}, 
+                                                                                                                         ConverterParameter=FixedPosition, Mode=TwoWay,
+                                                                                                                         TargetNullValue={StaticResource False}, FallbackValue={StaticResource False}}"/>
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+            </GroupBox>
         </Grid>
     </DataTemplate>
 </ResourceDictionary>

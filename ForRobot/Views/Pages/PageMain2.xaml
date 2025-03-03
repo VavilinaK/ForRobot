@@ -990,210 +990,209 @@
                         </Style>
                     </TabItem.Resources>
 
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <Grid Margin="15">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="15"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
+                    <Grid Margin="15">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="15"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
-                            <Button Grid.Row="0" Grid.Column="0" ToolTip="Удалить робота"
+                        <Button Grid.Row="0" Grid.Column="0" ToolTip="Удалить робота"
                                     Height="45" Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"
                                     Template="{StaticResource buttonTemplate}"
                                     Command="{Binding Path=DeleteRobotCommand}">
 
-                                <Path Stretch="Fill" Fill="Black"
+                            <Path Stretch="Fill" Fill="Black"
                                       Data="M 10.6 34 c -0.7 0 -1.2 -0.2 -1.7 -0.7 -0.5 -0.5 -0.7 -1 -0.7 -1.7 V 8.5 H 7.7 c -0.3 0 -0.634700625 -0.11756875 -0.86815625 -0.352625C6.616861875 7.943812499999999 6.5 7.652669375 6.5 7.3051875c0 -0.34720562499999996 0.116861875 -0.635919375 0.35059375 -0.866125C7.084049375 6.208856875 7.3734375 6.09375 7.71875 6.09375h6.41875c0 -0.352080625 0.11683750000000001 -0.643231875 0.35059375 -0.8734375C14.721525 4.990106875 15.0109375 4.875 15.35625 4.875h8.2875c0.34531249999999997 0 0.63480625 0.116731875 0.8685624999999999 0.3501875 0.23343125 0.23373187499999998 0.3501875 0.52325 0.3501875 0.8685624999999999h6.41875c0.34531249999999997 0 0.63480625 0.11754437499999999 0.8685624999999999 0.352625 0.23343125 0.23481249999999998 0.3501875 0.5259556249999999 0.3501875 0.8734375 0 0.34720562499999996 -0.11675624999999999 0.635919375 -0.3501875 0.866125 -0.23375625 0.23018125 -0.52325 0.34531249999999997 -0.8685624999999999 0.34531249999999997h-0.446875V31.6875c0 0.6703125 -0.23863125000000002 1.2441 -0.7158125 1.72128125 -0.47750625 0.47750625 -1.051375 0.7162187499999999 -1.7216875000000003 0.7162187499999999h-17.79375Zm17.79375 -25.59375h-17.79375V31.6875h17.79375V8.53125ZM16.135437500000002 28.19375c0.34718125 0 0.6359437499999999 -0.11683750000000001 0.866125 -0.35059375 0.23018125 -0.23343125 0.34531249999999997 -0.5228437499999999 0.34531249999999997 -0.86815625V13.203125c0 -0.34531249999999997 -0.11756875 -0.63480625 -0.352625 -0.8685624999999999 -0.23481249999999998 -0.23343125 -0.52593125 -0.3501875 -0.8734375 -0.3501875 -0.34718125 0 -0.6359437499999999 0.11675624999999999 -0.866125 0.3501875 -0.23018125 0.23375625 -0.34531249999999997 0.52325 -0.34531249999999997 0.8685624999999999V26.975c0 0.34531249999999997 0.11756875 0.634725 0.352625 0.86815625 0.23481249999999998 0.23375625 0.52593125 0.35059375 0.8734375 0.35059375Zm6.74375 0c0.34718125 0 0.6359437499999999 -0.11683750000000001 0.866125 -0.35059375 0.23018125 -0.23343125 0.34531249999999997 -0.5228437499999999 0.34531249999999997 -0.86815625V13.203125c0 -0.34531249999999997 -0.11756875 -0.63480625 -0.352625 -0.8685624999999999 -0.23481249999999998 -0.23343125 -0.52593125 -0.3501875 -0.8734375 -0.3501875 -0.34718125 0 -0.6359437499999999 0.11675624999999999 -0.866125 0.3501875 -0.23018125 0.23375625 -0.34531249999999997 0.52325 -0.34531249999999997 0.8685624999999999V26.975c0 0.34531249999999997 0.11756875 0.634725 0.352625 0.86815625 0.23481249999999998 0.23375625 0.52593125 0.35059375 0.8734375 0.35059375Z"/>
-                            </Button>
+                        </Button>
 
-                            <ComboBox Grid.Row="0" Grid.Column="1" Margin="5" FontSize="18"
+                        <ComboBox Grid.Row="0" Grid.Column="1" Margin="5" FontSize="18"
                                       VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
                                       ItemsSource="{Binding Path=RobotsCollection, Mode=OneWay}"
                                       SelectedItem="{Binding Path=SelectedRobot, Mode=TwoWay}"                
                                       StaysOpenOnEdit="False" IsTextSearchCaseSensitive="False"  
                                       SelectedIndex="0">
 
-                                <ComboBox.Style>
-                                    <Style TargetType="{x:Type ComboBox}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=RobotsCollection.Count}" Value="0">
-                                                <Setter Property="IsEnabled" Value="False"/>
-                                                <Setter Property="IsEditable" Value="True"/>
-                                                <Setter Property="Text" Value="Нет введёных роботов"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ComboBox.Style>
+                            <ComboBox.Style>
+                                <Style TargetType="{x:Type ComboBox}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=RobotsCollection.Count}" Value="0">
+                                            <Setter Property="IsEnabled" Value="False"/>
+                                            <Setter Property="IsEditable" Value="True"/>
+                                            <Setter Property="Text" Value="Нет введёных роботов"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ComboBox.Style>
 
-                                <ComboBox.ItemContainerStyle>
-                                    <Style TargetType="{x:Type ComboBoxItem}">
-                                        <Setter Property="Height" Value="45"/>
-                                        <Setter Property="TextBlock.TextAlignment" Value="Center"/>
-                                        <Setter Property="TextBlock.VerticalAlignment" Value="Center"/>
-                                    </Style>
-                                </ComboBox.ItemContainerStyle>
+                            <ComboBox.ItemContainerStyle>
+                                <Style TargetType="{x:Type ComboBoxItem}">
+                                    <Setter Property="Height" Value="45"/>
+                                    <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+                                    <Setter Property="TextBlock.VerticalAlignment" Value="Center"/>
+                                </Style>
+                            </ComboBox.ItemContainerStyle>
 
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Name, Mode=OneWay}" Padding="0,5"/>
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name, Mode=OneWay}" Padding="0,5"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
 
-                            <Button Grid.Row="0" Grid.Column="2" ToolTip="Повторное соединение"
+                        <Button Grid.Row="0" Grid.Column="2" ToolTip="Повторное соединение"
                                     Template="{StaticResource buttonTemplate}"
                                     Command="{Binding UpDateConnectionCommand}">
-                                <Button.Style>
-                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource buttonBaseStyle}">
-                                        <Setter Property="Height" Value="0"/>
-                                        <Setter Property="Width" Value="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"/>
+                            <Button.Style>
+                                <Style TargetType="{x:Type Button}" BasedOn="{StaticResource buttonBaseStyle}">
+                                    <Setter Property="Height" Value="0"/>
+                                    <Setter Property="Width" Value="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"/>
 
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=SelectedRobot.IsConnection}" Value="False">
-                                                <Setter Property="Height" Value="45"/>
-                                            </DataTrigger>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=SelectedRobot.IsConnection}" Value="False">
+                                            <Setter Property="Height" Value="45"/>
+                                        </DataTrigger>
 
-                                            <DataTrigger Binding="{Binding Path=Visibility, RelativeSource={RelativeSource Self}}" Value="Visible">
-                                                <DataTrigger.EnterActions>
-                                                    <BeginStoryboard Name="StartBlinking">
-                                                        <Storyboard>
-                                                            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" RepeatBehavior="Forever" AutoReverse="True" Duration="0:0:1"/>
-                                                        </Storyboard>
-                                                    </BeginStoryboard>
-                                                </DataTrigger.EnterActions>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
+                                        <DataTrigger Binding="{Binding Path=Visibility, RelativeSource={RelativeSource Self}}" Value="Visible">
+                                            <DataTrigger.EnterActions>
+                                                <BeginStoryboard Name="StartBlinking">
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" RepeatBehavior="Forever" AutoReverse="True" Duration="0:0:1"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </DataTrigger.EnterActions>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
 
-                                <Image Stretch="Fill" Source="{StaticResource ImageUpdate}"/>
-                            </Button>
+                            <Image Stretch="Fill" Source="{StaticResource ImageUpdate}"/>
+                        </Button>
 
-                            <Button Grid.Row="0" Grid.Column="3" ToolTip="Добавить робота"
+                        <Button Grid.Row="0" Grid.Column="3" ToolTip="Добавить робота"
                                     Height="40" Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"
                                     Template="{StaticResource buttonTemplate}"
                                     Command="{Binding Path=AddRobotCommand}">
-                                
-                                <Path Stroke="Black" StrokeThickness="2" Stretch="Fill">
-                                    <Path.Data>
-                                        <GeometryGroup>
-                                            <EllipseGeometry RadiusX="10" RadiusY="10" Center="12,12"/>
-                                            <PathGeometry Figures="M 15 12 L12 12M12 12L9 12M12 12L12 9M12 12L12 15"/>
-                                        </GeometryGroup>
-                                    </Path.Data>
-                                </Path>
-                            </Button>
 
-                            <TabControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" TabStripPlacement="Bottom"
+                            <Path Stroke="Black" StrokeThickness="2" Stretch="Fill">
+                                <Path.Data>
+                                    <GeometryGroup>
+                                        <EllipseGeometry RadiusX="10" RadiusY="10" Center="12,12"/>
+                                        <PathGeometry Figures="M 15 12 L12 12M12 12L9 12M12 12L12 9M12 12L12 15"/>
+                                    </GeometryGroup>
+                                </Path.Data>
+                            </Path>
+                        </Button>
+
+                        <TabControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4" TabStripPlacement="Bottom"
                                         Background="#a3a3a3" BorderBrush="#4a4a4a" BorderThickness="1.25">
 
-                                <TabControl.Resources>
-                                    <Style TargetType="{x:Type TabItem}">
-                                        <Setter Property="FontSize" Value="15"/>
-                                        <Setter Property="Foreground" Value="Black"/>
-                                        <Setter Property="MinWidth" Value="90"/>
+                            <TabControl.Resources>
+                                <Style TargetType="{x:Type TabItem}">
+                                    <Setter Property="FontSize" Value="15"/>
+                                    <Setter Property="Foreground" Value="Black"/>
+                                    <Setter Property="MinWidth" Value="90"/>
 
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="{x:Type TabItem}">
-                                                    <Border Name="Panel">
-                                                        <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type TabItem}">
+                                                <Border Name="Panel">
+                                                    <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center" HorizontalAlignment="Center"
                                                                           ContentSource="Header" Margin="15, 5"/>
-                                                    </Border>
+                                                </Border>
 
-                                                    <ControlTemplate.Triggers>
-                                                        <Trigger Property="IsSelected" Value="True">
-                                                            <Setter TargetName="Panel" Property="Background" Value="#4a4a4a"/>
-                                                            <Setter TargetName="Panel" Property="BorderBrush" Value="#3094ff"/>
-                                                            <Setter TargetName="Panel" Property="BorderThickness"  Value="1.5"/>
-                                                            <Setter TargetName="ContentSite" Property="TextElement.Foreground" Value="#3094ff"/>
-                                                        </Trigger>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsSelected" Value="True">
+                                                        <Setter TargetName="Panel" Property="Background" Value="#4a4a4a"/>
+                                                        <Setter TargetName="Panel" Property="BorderBrush" Value="#3094ff"/>
+                                                        <Setter TargetName="Panel" Property="BorderThickness"  Value="1.5"/>
+                                                        <Setter TargetName="ContentSite" Property="TextElement.Foreground" Value="#3094ff"/>
+                                                    </Trigger>
 
-                                                        <Trigger Property="IsSelected" Value="False">
-                                                            <Setter TargetName="Panel" Property="Background" Value="#b0b0b0"/>
-                                                        </Trigger>
-                                                    </ControlTemplate.Triggers>
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
+                                                    <Trigger Property="IsSelected" Value="False">
+                                                        <Setter TargetName="Panel" Property="Background" Value="#b0b0b0"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </TabControl.Resources>
+
+                            <TabItem Header="Свойства">
+                                <TabItem.Resources>
+                                    <Style TargetType="{x:Type Label}">
+                                        <Setter Property="FontSize" Value="14"/>
+                                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
                                     </Style>
-                                </TabControl.Resources>
 
-                                <TabItem Header="Свойства">
-                                    <TabItem.Resources>
-                                        <Style TargetType="{x:Type Label}">
-                                            <Setter Property="FontSize" Value="14"/>
-                                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                                            <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                        </Style>
+                                    <Style TargetType="{x:Type TextBox}">
+                                        <Setter Property="FontSize" Value="16"/>
+                                        <Setter Property="Padding" Value="5"/>
+                                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                    </Style>
+                                </TabItem.Resources>
 
-                                        <Style TargetType="{x:Type TextBox}">
-                                            <Setter Property="FontSize" Value="16"/>
-                                            <Setter Property="Padding" Value="5"/>
-                                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                                            <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                        </Style>
-                                    </TabItem.Resources>
+                                <Grid Margin="15, 0, 15, 15">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="10"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="10"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="10"/>
+                                        <RowDefinition Height="200*"/>
+                                    </Grid.RowDefinitions>
 
-                                    <Grid Margin="15, 0, 15, 15">
+                                    <Grid Grid.Row="0">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="10"/>
                                             <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="10"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="10"/>
-                                            <RowDefinition Height="200*"/>
                                         </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1.6*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
 
-                                        <Grid Grid.Row="0">
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto"/>
-                                                <RowDefinition Height="Auto"/>
-                                            </Grid.RowDefinitions>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="1.6*"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
+                                        <Label Grid.Row="0" Grid.Column="0" Content="Хост"/>
+                                        <Label Grid.Row="0" Grid.Column="1" Content="Порт"/>
 
-                                            <Label Grid.Row="0" Grid.Column="0" Content="Хост"/>
-                                            <Label Grid.Row="0" Grid.Column="1" Content="Порт"/>
+                                        <TextBox Grid.Row="1" Grid.Column="0" Text="{Binding Path=SelectedRobot.Host, Mode=TwoWay, FallbackValue='0.0.0.0', TargetNullValue='0.0.0.0', UpdateSourceTrigger=LostFocus}"/>
+                                        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=SelectedRobot.Port, Mode=TwoWay, FallbackValue=0000, TargetNullValue=0000, UpdateSourceTrigger=LostFocus}"/>
+                                    </Grid>
 
-                                            <TextBox Grid.Row="1" Grid.Column="0" Text="{Binding Path=SelectedRobot.Host, Mode=TwoWay, FallbackValue='0.0.0.0', TargetNullValue='0.0.0.0', UpdateSourceTrigger=LostFocus}"/>
-                                            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=SelectedRobot.Port, Mode=TwoWay, FallbackValue=0000, TargetNullValue=0000, UpdateSourceTrigger=LostFocus}"/>
-                                        </Grid>
+                                    <Grid Grid.Row="2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="10"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
 
-                                        <Grid Grid.Row="2">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="10"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
+                                        <TextBox Grid.Column="0" Text="{Binding Path=SelectedRobot.PathProgramm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                                            <TextBox Grid.Column="0" Text="{Binding Path=SelectedRobot.PathProgramm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
-                                            <Button Grid.Column="2" Height="40" Padding="5" Margin="0"
+                                        <Button Grid.Column="2" Height="40" Padding="5" Margin="0"
                                                     ToolTip="Изменить папку генерации"
                                                     Command="{Binding ChangePatnOnPCCommand}"
                                                     Template="{StaticResource buttonTemplate}">
 
-                                                <Path Fill="Black" Stretch="Fill"
+                                            <Path Fill="Black" Stretch="Fill"
                                                       Data="M 277.974 49.076c65.267-65.379 171.733-65.49 237.448 0l232.186 232.187 1055.697 1055.809L1919.958 1920l-582.928-116.653-950.128-950.015 79.15-79.15 801.792 801.68 307.977-307.976-907.362-907.474L281.22 747.65 49.034 515.464c-65.379-65.603-65.379-172.069 0-237.448Zm1376.996 1297.96-307.977 307.976 45.117 45.116 384.999 77.023-77.023-385-45.116-45.116ZM675.355 596.258l692.304 692.304-79.149 79.15-692.304-692.305 79.149-79.15ZM396.642 111.88c-14.33 0-28.547 5.374-39.519 16.345l-228.94 228.94c-21.718 21.718-21.718 57.318 0 79.149l153.038 153.037 308.089-308.09-153.037-153.036c-10.972-10.971-25.301-16.345-39.63-16.345Z">
-                                                    <Path.LayoutTransform>
-                                                        <RotateTransform Angle="90"/>
-                                                    </Path.LayoutTransform>
-                                                </Path>
-                                            </Button>
-                                        </Grid>
+                                                <Path.LayoutTransform>
+                                                    <RotateTransform Angle="90"/>
+                                                </Path.LayoutTransform>
+                                            </Path>
+                                        </Button>
+                                    </Grid>
 
-                                        <control:Breadcrumb Grid.Row="4" Height="40" Padding="0"
+                                    <control:Breadcrumb Grid.Row="4" Height="40" Padding="0"
                                                             Root="{Binding Path=DefaulRoot, Source={x:Type client:JsonRpcConnection}}"
                                                             Directory="{Binding Path=SelectedRobot.PathControllerFolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                             ItemsSource="{Binding Path=SelectedRobot.Files, Mode=OneWay}"
@@ -1202,75 +1201,76 @@
                                                             SelectFilesCommand="{Binding Path=DataContext.DropFilesCommandAsync, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
                                                             DeleteFilesCommand="{Binding Path=DataContext.DeleteFileCommandAsync, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"/>
 
-                                        <control:NavigationTreeView Grid.Row="6"
+                                    <control:NavigationTreeView Grid.Row="6" FontSize="18"
                                                                     DataFileIsHidden="{Binding Path=Settings.AccessDataFile, Source={x:Static Application.Current}, Mode=TwoWay}"
                                                                     SelectedFile="{Binding Path=DataContext.SelectedRobot.RobotProgramName, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
                                                                     SelectItemCommand="{Binding Path=DataContext.SelectFileCommandAsync, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
                                                                     SelectFolderCommand="{Binding Path=DataContext.SelectFolderCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
-                                                                    DeleteNodeCommand="{Binding Path=DataContext.DeleteFileCommandAsync, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}">
+                                                                    DeleteNodeCommand="{Binding Path=DataContext.DeleteFileCommandAsync, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
+                                                                    ScrollViewer.CanContentScroll="False"
+                                                                    ScrollViewer.VerticalScrollBarVisibility="Auto">
 
-                                            <control:NavigationTreeView.FileCollection>
-                                                <MultiBinding Converter="{StaticResource VisibilityFolderOnRobot}">
-                                                    <Binding Path="DataContext.SelectedRobot.Files" RelativeSource="{RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}"/>
-                                                    <Binding Path="Settings.AvailableFolders" Source="{x:Static Application.Current}"/>
-                                                </MultiBinding>
-                                            </control:NavigationTreeView.FileCollection>
-                                            
-                                            <control:NavigationTreeView.Style>
-                                                <Style TargetType="{x:Type control:NavigationTreeView}">
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Path=SelectedRobot.IsLoadFiles, Mode=OneWay}" Value="True">
-                                                            <Setter Property="IsEnabled" Value="False"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </control:NavigationTreeView.Style>
-                                        </control:NavigationTreeView>
-                                    </Grid>
-                                </TabItem>
+                                        <control:NavigationTreeView.FileCollection>
+                                            <MultiBinding Converter="{StaticResource VisibilityFolderOnRobot}">
+                                                <Binding Path="DataContext.SelectedRobot.Files" RelativeSource="{RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}"/>
+                                                <Binding Path="Settings.AvailableFolders" Source="{x:Static Application.Current}"/>
+                                            </MultiBinding>
+                                        </control:NavigationTreeView.FileCollection>
 
-                                <TabItem Header="Ток">
-                                    <TabItem.Resources>
-                                        <Style TargetType="{x:Type Label}">
-                                            <Setter Property="FontSize" Value="16"/>
-                                            <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                                            <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                        </Style>
+                                        <control:NavigationTreeView.Style>
+                                            <Style TargetType="{x:Type control:NavigationTreeView}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=SelectedRobot.IsLoadFiles, Mode=OneWay}" Value="True">
+                                                        <Setter Property="IsEnabled" Value="False"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </control:NavigationTreeView.Style>
+                                    </control:NavigationTreeView>
+                                </Grid>
+                            </TabItem>
 
-                                        <Style TargetType="{x:Type TextBox}">
-                                            <Setter Property="FontSize" Value="14"/>
-                                            <Setter Property="Padding" Value="5"/>
-                                            <Setter Property="Margin" Value="5"/>
-                                            <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                                            <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                        </Style>
-                                    </TabItem.Resources>
+                            <TabItem Header="Ток">
+                                <TabItem.Resources>
+                                    <Style TargetType="{x:Type Label}">
+                                        <Setter Property="FontSize" Value="16"/>
+                                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                    </Style>
 
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="*"/>
-                                        </Grid.RowDefinitions>
+                                    <Style TargetType="{x:Type TextBox}">
+                                        <Setter Property="FontSize" Value="14"/>
+                                        <Setter Property="Padding" Value="5"/>
+                                        <Setter Property="Margin" Value="5"/>
+                                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                    </Style>
+                                </TabItem.Resources>
 
-                                        <Label Grid.Row="0">
-                                            <Label.Content>
-                                                <MultiBinding Converter="{StaticResource StringFormatMultiConvert}" ConverterParameter="Ток - {0}">
-                                                    <Binding Path="SelectedRobot.Current"  Mode="OneWay" TargetNullValue="0" FallbackValue="0" UpdateSourceTrigger="PropertyChanged"/>
-                                                </MultiBinding>
-                                            </Label.Content>
-                                        </Label>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
 
+                                    <Label Grid.Row="0">
+                                        <Label.Content>
+                                            <MultiBinding Converter="{StaticResource StringFormatMultiConvert}" ConverterParameter="Ток - {0}">
+                                                <Binding Path="SelectedRobot.Current"  Mode="OneWay" TargetNullValue="0" FallbackValue="0" UpdateSourceTrigger="PropertyChanged"/>
+                                            </MultiBinding>
+                                        </Label.Content>
+                                    </Label>
 
-                                        <Label Grid.Row="1">
-                                            <Label.Content>
-                                                <MultiBinding Converter="{StaticResource StringFormatMultiConvert}" ConverterParameter="Усилие подачи - {0}">
-                                                    <Binding Path="SelectedRobot.WireFeed"  Mode="OneWay" TargetNullValue="0" FallbackValue="0" UpdateSourceTrigger="PropertyChanged"/>
-                                                </MultiBinding>
-                                            </Label.Content>
-                                        </Label>
+                                    <Label Grid.Row="1">
+                                        <Label.Content>
+                                            <MultiBinding Converter="{StaticResource StringFormatMultiConvert}" ConverterParameter="Усилие подачи - {0}">
+                                                <Binding Path="SelectedRobot.WireFeed"  Mode="OneWay" TargetNullValue="0" FallbackValue="0" UpdateSourceTrigger="PropertyChanged"/>
+                                            </MultiBinding>
+                                        </Label.Content>
+                                    </Label>
 
-                                        <!--<lvc:CartesianChart Grid.Row="2" AnimationsSpeed="0:0:1.0" Hoverable="False" Zoom="X"
+                                    <!--<lvc:CartesianChart Grid.Row="2" AnimationsSpeed="0:0:1.0" Hoverable="False" Zoom="X"
                                                              LegendLocation="Top" DataTooltip="{x:Null}"
                                                              Margin="0, 0, 10, 0">
 
@@ -1291,7 +1291,7 @@
                                                                 Fill="Transparent"/>
                                                 </lvc:CartesianChart.Series>
                                                 -->
-                                        <!--<lvc:CartesianChart.AxisX>
+                                    <!--<lvc:CartesianChart.AxisX>
                                             <lvc:Axis LabelFormatter="{Binding DateTimeFormatter}"
                                                       MaxValue="{Binding AxisMax}" 
                                                       MinValue="{Binding AxisMin}"
@@ -1302,13 +1302,12 @@
                                                 </lvc:Axis.Separator>
                                             </lvc:Axis>
                                         </lvc:CartesianChart.AxisX>-->
-                                        <!--
+                                    <!--
                                             </lvc:CartesianChart>-->
-                                    </Grid>
-                                </TabItem>
-                            </TabControl>
-                        </Grid>
-                    </ScrollViewer>
+                                </Grid>
+                            </TabItem>
+                        </TabControl>
+                    </Grid>
                 </TabItem>
 
                 <TabItem Header="Управление">

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 using Newtonsoft.Json;
 
+using HelixToolkit.Wpf;
+
 namespace ForRobot.Libr.Settings
 {
     public class Settings
@@ -81,6 +83,109 @@ namespace ForRobot.Libr.Settings
                                                                                         { "Управление", true },
                                                                                         { "Программа", true }
                                                                                     };
+
+        #region 3DView
+
+        /// <summary>
+        /// Показ системы координат
+        /// </summary>
+        public bool ShowCoordinateSystem { get; set; } = true;
+        /// <summary>
+        /// Показ пространственного куба
+        /// </summary>
+        public bool ShowViewCube { get; set; } = true;
+        /// <summary>
+        /// Показ кол-ва полигонов
+        /// </summary>
+        public bool ShowTriangleCountInfo { get; set; } = false;
+
+        public bool ShowFieldOfView { get; set; } = false;
+        public bool ShowFrameRate { get; set; } = false;
+
+        #endregion
+
+        #region Camera
+
+        /// <summary>
+        /// Включена ли ортоганальная камера
+        /// </summary>
+        public bool Orthographic { get; set; } = false;
+        /// <summary>
+        /// Демонстрация информации о камере
+        /// </summary>
+        public bool ShowCameraInfo { get; set; } = false;
+        /// <summary>
+        /// Демонстрация курсора камеры
+        /// </summary>
+        public bool ShowCameraTarget { get; set; } = true;
+        /// <summary>
+        /// Поворот вокруг мыши
+        /// </summary>
+        public bool RotateAroundMouseDownPoint { get; set; } = false;
+        /// <summary>
+        /// Приближение около мыши
+        /// </summary>
+        public bool ZoomAroundMouseDownPoint { get; set; } = false;
+        /// <summary>
+        /// Инерция камеры
+        /// </summary>
+        public bool IsInertiaEnabled { get; set; } = false;
+        /// <summary>
+        /// Вкличено ли панорамирование
+        /// </summary>
+        public bool IsPanEnabled { get; set; } = true;
+        /// <summary>
+        /// Вкличено ли перемещение
+        /// </summary>
+        public bool IsMoveEnabled { get; set; } = true;
+        /// <summary>
+        /// Вкличено ли вращение
+        /// </summary>
+        public bool IsRotationEnabled { get; set; } = true;
+        /// <summary>
+        /// Вкличено ли маштабирование
+        /// </summary>
+        public bool IsZoomEnabled { get; set; } = true;
+
+        ///// <summary>
+        ///// Включено ли панаромирование
+        ///// </summary>
+        //public bool IsChangeFieldOfViewEnabled { get; set; } = true;
+        
+        /// <summary>
+        /// Режим поворота камеры
+        /// <example>
+        /// <para/>Turntable - is constrained to two axes of rotation (model up and right direction).
+        /// <para/>Turnball - using three axes (look direction, right direction and up direction (on the left/right edges)).
+        /// <para/>Trackball - using a virtual trackball.
+        /// </example>
+        /// </summary>
+        public CameraRotationMode CameraRotationMode { get; set; } = CameraRotationMode.Turntable;
+
+        /// <summary>
+        /// Режим камеры
+        /// <example>
+        /// <para/>Inspect - orbits around a point (fixed target position, move closer target when zooming).
+        /// <para/>WalkAround - walk around (fixed camera position when rotating, move in camera direction when zooming).
+        /// <para/>FixedPosition - fixed camera target, change field of view when zooming.
+        /// </example>
+        /// </summary>
+        public CameraMode CameraMode { get; set; } = CameraMode.Inspect;
+
+        /// <summary>
+        /// Чувствительность вращения
+        /// </summary>
+        public double RotationSensitivity { get; set; } = 1;
+        /// <summary>
+        /// Чувствительность маштабирования
+        /// </summary>
+        public double ZoomSensitivity { get; set; } = 1;
+        /// <summary>
+        /// Степень инерции камеры
+        /// </summary>
+        public double CameraInertiaFactor { get; set; } = 0.930;
+
+        #endregion
 
         #endregion
 

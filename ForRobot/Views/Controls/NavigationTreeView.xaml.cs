@@ -49,9 +49,9 @@ namespace ForRobot.Views.Controls
             set { SetValue(DeleteNodeCommandProperty, value); }
         }
 
-        public RelayCommand SelectFolderCommand
+        public IAsyncCommand SelectFolderCommand
         {
-            get { return (RelayCommand)GetValue(SelectFolderCommandProperty); }
+            get { return (IAsyncCommand)GetValue(SelectFolderCommandProperty); }
             set { SetValue(SelectFolderCommandProperty, value); }
         }
 
@@ -64,7 +64,7 @@ namespace ForRobot.Views.Controls
 
         public static readonly DependencyProperty DataFileIsHiddenProperty = DependencyProperty.Register(nameof(DataFileIsHidden), typeof(bool), typeof(NavigationTreeView));
 
-        public static readonly DependencyProperty FileCollectionProperty = DependencyProperty.Register(nameof(FileCollection), typeof(ObservableCollection<File>), typeof(NavigationTreeView));
+        public static readonly DependencyProperty FileCollectionProperty = DependencyProperty.Register(nameof(FileCollection), typeof(ObservableCollection<File>), typeof(NavigationTreeView), new PropertyMetadata(null));
 
         #region Command
 
@@ -80,7 +80,8 @@ namespace ForRobot.Views.Controls
 
         public static readonly DependencyProperty SelectFolderCommandProperty = DependencyProperty.Register(nameof(SelectFolderCommand),
                                                                                                             typeof(RelayCommand),
-                                                                                                            typeof(NavigationTreeView));
+                                                                                                            typeof(NavigationTreeView),
+                                                                                                            new PropertyMetadata());
 
         #endregion
 
@@ -93,7 +94,6 @@ namespace ForRobot.Views.Controls
         public NavigationTreeView()
         {
             InitializeComponent();
-            this.SelectFolderCommand = new RelayCommand(obj => { });
         }
 
         #endregion

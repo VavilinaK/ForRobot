@@ -47,11 +47,13 @@ namespace ForRobot
 
         private static ForRobot.Libr.Settings.Settings _settings;
 
+        private static string[] ExtensionsFilter = new string[] { ".3ds", ".obj", ".objz", ".off", ".lwo", ".stl", ".ply" };
+
         #region Widows
 
         private Views.Windows.MainWindow _mainWindow;
 
-        private Views.Windows.MainWindow2 _mainWindow2;
+        //private Views.Windows.MainWindow2 _mainWindow2;
 
         #endregion
 
@@ -77,7 +79,23 @@ namespace ForRobot
         /// Настройки приложения
         /// (Выгружаются из временных файлов, иначе инициализируются как класс)
         /// </summary>
-        public static ForRobot.Libr.Settings.Settings Settings { get => _settings ?? (_settings = ForRobot.Libr.Settings.Settings.GetSettings()); }
+        public ForRobot.Libr.Settings.Settings Settings
+        {
+            get => _settings ?? (_settings = ForRobot.Libr.Settings.Settings.GetSettings());
+            set
+            {
+                _settings = value;
+                _settings.Save();
+            }
+        }
+
+        /// <summary>
+        /// Открытые файлы
+        /// </summary>
+        public System.Collections.ObjectModel.ObservableCollection<Model.File3D.File3D> OpenedFiles { get; set; } = new System.Collections.ObjectModel.ObservableCollection<Model.File3D.File3D>()
+        {
+            new Model.File3D.File3D("pack://application:,,,/ForRobot;component/Resources/cube.stl")
+        };
 
         #region Windows
 
@@ -86,10 +104,10 @@ namespace ForRobot
         /// </summary>
         public Views.Windows.MainWindow MainWindowView { get => _mainWindow ?? (_mainWindow = new Views.Windows.MainWindow()); }
 
-        /// <summary>
-        /// Главное окно
-        /// </summary>
-        public Views.Windows.MainWindow2 MainWindowView2 { get => _mainWindow2 ?? (_mainWindow2 = new Views.Windows.MainWindow2()); }
+        ///// <summary>
+        ///// Главное окно
+        ///// </summary>
+        //public Views.Windows.MainWindow2 MainWindowView2 { get => _mainWindow2 ?? (_mainWindow2 = new Views.Windows.MainWindow2()); }
 
         /// <summary>
         /// Окно создания нового файла
@@ -119,8 +137,14 @@ namespace ForRobot
             {
                 //foreach (var i in e.Args) // Исп. для открытия файла модели "с помощью"
                 //{
-                //    MessageBox.Show(i);
+                //    //MessageBox.Show(i);
+                //    if (File.Exists(i) && ExtensionsFilter.Count(item => Path.GetExtension(i) == item) == 1)
+                //    {
+                //        //MessageBox.Show(i);
+                //    }
                 //}
+
+                //pack://application:,,,/ForRobot;component/Resources/cube.stl
 
                 // Проверка версии файла в папке с обновлением и запрос к пользователю.
                 if (Settings.AutoUpdate && 

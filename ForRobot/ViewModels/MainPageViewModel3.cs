@@ -32,7 +32,32 @@ namespace ForRobot.ViewModels
         private ObservableCollection<Robot> _robotsCollection = new ObservableCollection<Robot>();
 
         private ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection RobotConfig { get; set; } = ConfigurationManager.GetSection("robot") as ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection;
-        
+
+        private ObservableCollection<AppMessage> _messagesCollection = new ObservableCollection<AppMessage>();
+
+        /// <summary>
+        /// Обработчик исключений асинхронных комманд
+        /// </summary>
+        private readonly Action<Exception> _exceptionCallback = new Action<Exception>(e =>
+        {
+            try
+            {
+                throw e;
+            }
+            catch (DivideByZeroException ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+            }
+            catch (System.Threading.Tasks.TaskCanceledException ex)
+            {
+                //App.Current.Logger.Error(new Exception(ex.TargetSite.DeclaringType.ToString() + "\t|\t" + ex.TargetSite + "\t|\t" + ex), ex.Message);
+            }
+            catch (Exception ex)
+            {
+                App.Current.Logger.Error(ex, ex.Message);
+            }
+        });
+
         #region Commands
 
         private RelayCommand _createNewFileCommand;
@@ -44,6 +69,16 @@ namespace ForRobot.ViewModels
         private RelayCommand _renameRobotCommand;
         private RelayCommand _changePathOnPCCommand;
         private RelayCommand _upDateFilesCommand;
+        private RelayCommand _selectFolderCommand;
+        private RelayCommand _retentionRunButtonCommand;
+        private RelayCommand _propertiesCommand;
+
+        private IAsyncCommand _selectFileCommandAsunc;
+        private IAsyncCommand _deleteFileCommandAsync;
+        private IAsyncCommand _runProgramCommandAsync;
+        private IAsyncCommand _pauseProgramCommand;
+        private IAsyncCommand _cancelProgramCommand;
+        private IAsyncCommand _dropFilesCommandAsync;
 
         #endregion
 
@@ -53,10 +88,23 @@ namespace ForRobot.ViewModels
 
         public Version Version { get => System.Reflection.Assembly.GetEntryAssembly().GetName().Version; }
 
+        //public Libr.Settings.Settings Settings
+        //{
+        //    get => ForRobot.App.Settings;
+        //    set
+        //    {
+        //        ForRobot.App.Settings = value;
+        //        RaisePropertyChanged(nameof(this.Settings));
+        //    }
+        //}
+
+        public bool VisibilityAxis { get; set; } = true;
+
         /// <summary>
         /// Выбранный робот
         /// </summary>
         public Robot SelectedRobot { get => this._selectedRobot; set => Set(ref this._selectedRobot, value); }
+
         /// <summary>
         /// Имя выбранного робота для генерации
         /// </summary>
@@ -86,6 +134,11 @@ namespace ForRobot.ViewModels
         /// Коллекция названияй роботов для генерации
         /// </summary>
         public ObservableCollection<string> RobotNamesCollection { get => new ObservableCollection<string>(new List<string>() { "Все" }.Union(this.RobotsCollection.Select(item => item.Name)).ToList<string>()); }
+
+        /// <summary>
+        /// Коллекция сообщений
+        /// </summary>
+        public ObservableCollection<AppMessage> MessagesCollection { get => this._messagesCollection; set => Set(ref this._messagesCollection, value); }
 
         #endregion
 
@@ -122,10 +175,11 @@ namespace ForRobot.ViewModels
                 return _closeFileCommand ??
                     (_closeFileCommand = new RelayCommand(obj =>
                     {
-                        System.Windows.Controls.TabControl tabControl = (System.Windows.Controls.TabControl)(obj as object[])[0];
-                        System.Windows.Controls.TabItem tabItem = (System.Windows.Controls.TabItem)(obj as object[])[1];
+                        App.Current.OpenedFiles.Remove(obj as Model.File3D.File3D);
+                        //System.Windows.Controls.TabControl tabControl = (System.Windows.Controls.TabControl)(obj as object[])[0];
+                        //System.Windows.Controls.TabItem tabItem = (System.Windows.Controls.TabItem)(obj as object[])[1];
 
-                        tabControl.Items.Remove(tabItem);
+                        //tabControl.Items.Remove(tabItem);
                     }));
             }
         }
@@ -266,13 +320,231 @@ namespace ForRobot.ViewModels
             }
         }
 
-        #region Navigation Tree
+        /// <summary>
+        /// Выбор папки на контроллер
+        /// </summary>
+        public RelayCommand SelectFolderCommand
+        {
+            get
+            {
+                return _selectFolderCommand ??
+                    (_selectFolderCommand = new RelayCommand(obj =>
+                    {
+                        this.SelectedRobot.PathControllerFolder = Path.Combine(ForRobot.Libr.Client.JsonRpcConnection.DefaulRoot, obj as string);
+                    }));
+            }
+        }
 
+        /// <summary>
+        /// Команда удержания кнопки запуска
+        /// </summary>
+        public RelayCommand RetentionRunButtonCommand
+        {
+            get
+            {
+                return _retentionRunButtonCommand ??
+                    (_retentionRunButtonCommand = new RelayCommand(obj =>
+                    {
+                        Robot robot = (Robot)obj;
+                        robot.RunCancelTokenSource.Cancel();
+                    }));
+            }
+        }
 
+        /// <summary>
+        /// Открытие окна настроек
+        /// </summary>
+        public RelayCommand PropertiesCommand
+        {
+            get
+            {
+                return _propertiesCommand ??
+                    (_propertiesCommand = new RelayCommand(obj =>
+                    {
+                        if (object.Equals(App.Current.PropertiesWindow, null))
+                        {
+                            App.Current.PropertiesWindow = new Views.Windows.PropertiesWindow();
+                            App.Current.PropertiesWindow.Closed += (a, b) => App.Current.PropertiesWindow = null;
+                            App.Current.PropertiesWindow.Owner = App.Current.MainWindowView;
+                            App.Current.PropertiesWindow.Show();
+                        }
+                    }));
+            }
+        }
 
-        #endregion
+        #region Async
 
-        #region Управление роботом
+        /// <summary>
+        /// Выбор файла программы
+        /// </summary>
+        public IAsyncCommand SelectFileCommandAsync
+        {
+            get
+            {
+                return _selectFileCommandAsunc ??
+                    (_selectFileCommandAsunc = new AsyncRelayCommand(async obj =>
+                    {
+                        string sFilePath = obj as string;
+                        await Task.Run(() => this.SelectedRobot.SelectProgramByPath(sFilePath));
+                    }, _exceptionCallback));
+            }
+        }
+
+        /// <summary>
+        /// Удаление узла в дереве навигации
+        /// </summary>
+        public IAsyncCommand DeleteFileCommandAsync
+        {
+            get
+            {
+                return _deleteFileCommandAsync ??
+                    (_deleteFileCommandAsync = new AsyncRelayCommand(async obj =>
+                    {
+                        List<string> checkedFiles;
+                        if (obj == null)
+                        {
+                            checkedFiles = new List<string>();
+                            foreach (var file in this.SelectedRobot.Files)
+                            {
+                                Stack<ForRobot.Model.Controls.IFile> stack = new Stack<Model.Controls.IFile>();
+                                stack.Push(file);
+                                ForRobot.Model.Controls.IFile current;
+                                do
+                                {
+                                    current = stack.Pop();
+                                    ObservableCollection<ForRobot.Model.Controls.IFile> files = current.Children;
+
+                                    if (current.IsCheck)
+                                        checkedFiles.Add(current.Path);
+
+                                    foreach (var f in files)
+                                        stack.Push(f);
+                                }
+                                while (stack.Count > 0);
+                            }
+                        }
+                        else
+                            checkedFiles = new List<string>() { obj as string };
+
+                        var task = Task.Run(async () => 
+                        {
+                            foreach(string path in checkedFiles)
+                            {
+                                await Task.Run(() => this.SelectedRobot.DeleteFile(Path.Combine(ForRobot.Libr.Client.JsonRpcConnection.DefaulRoot, path)));
+                            }
+                        });
+                        await Task.WhenAll(task);
+                    }, _exceptionCallback));
+            }
+        }
+
+        /// <summary>
+        /// Команда запуска программы на роботе/ах
+        /// </summary>
+        public IAsyncCommand RunProgramCommandAsync
+        {
+            get
+            {
+                return _runProgramCommandAsync ??
+                    (_runProgramCommandAsync = new AsyncRelayCommand(async obj =>
+                    {
+                        Robot robot = (Robot)obj;
+                        robot.RunCancelTokenSource = new System.Threading.CancellationTokenSource();
+                        await robot.PeriodicTask(async () => {
+                            if (robot.Pro_State == "#P_RESET" || robot.Pro_State == "#P_END" || robot.Pro_State == "#P_STOP")
+                            {
+                                await Task.Run(() => robot.Run());
+                            }
+                        },
+                        new TimeSpan(0, 0, 0, 0, 1000),
+                        robot.RunCancelTokenSource.Token);
+                    }, _exceptionCallback));
+            }
+        }
+
+        /// <summary>
+        /// Команда остановки программы на роботе/ах
+        /// </summary>
+        public IAsyncCommand PauseProgramCommandAsync
+        {
+            get
+            {
+                return _pauseProgramCommand ??
+                    (_pauseProgramCommand = new AsyncRelayCommand(async obj =>
+                    {
+                        Robot robot = (Robot)obj;
+                        await Task.Run(() => robot.Pause());
+                    }, _exceptionCallback));
+            }
+        }
+
+        /// <summary>
+        /// Аннулирование программы
+        /// </summary>
+        public IAsyncCommand CancelProgramCommandAsync
+        {
+            get
+            {
+                return _cancelProgramCommand ??
+                    (_cancelProgramCommand = new AsyncRelayCommand(async obj =>
+                    {
+                        Robot robot = (Robot)obj;
+
+                        if (robot.Pro_State == "#P_ACTIVE" && System.Windows.MessageBox.Show($"Прервать выполнение программы {robot.RobotProgramName}?",
+                                                                                            $"{this.RobotsCollection.Where(item => item == robot).Select(item => item.Name).First()}", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK,
+                                                                                            System.Windows.MessageBoxOptions.DefaultDesktopOnly) != MessageBoxResult.OK)
+                            return;
+
+                        await Task.Run(() => robot.Cancel());
+                    }, _exceptionCallback));
+            }
+        }
+
+        /// <summary>
+        /// Команда отправки файлов на робота/ов
+        /// </summary>
+        public IAsyncCommand DropFilesCommandAsync
+        {
+            get
+            {
+                return _dropFilesCommandAsync ??
+                  (_dropFilesCommandAsync = new AsyncRelayCommand(async obj =>
+                  {
+                      System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog()
+                      {
+                          Filter = "Source Code or Data files (*.src, *.dat)|*.src;*.dat|Data files (*.dat)|*.dat|Source Code File (*.src)|*src",
+                          Title = $"Отправка файла/ов на {this.RobotsCollection.IndexOf(this.SelectedRobot)} робота",
+                          Multiselect = true
+                      };
+
+                      if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.Cancel && (string.IsNullOrEmpty(openFileDialog.FileName) || string.IsNullOrEmpty(openFileDialog.FileNames[0])))
+                          return;
+
+                      foreach (var path in openFileDialog.FileNames)
+                      {
+                          ForRobot.Model.Controls.File file = new Model.Controls.File(path);
+                          string tempFile = Path.Combine(Robot.PathOfTempFolder, file.Name);
+
+                          if (!this.SelectedRobot.CopyToPC(file.Path, tempFile))
+                              continue;
+
+                          if (!this.SelectedRobot.Copy(tempFile, Path.Combine(this.SelectedRobot.PathControllerFolder, file.Name)))
+                              continue;
+                      }
+
+                      await this.SelectedRobot.GetFilesAsync();
+
+                      foreach (var file in this.SelectedRobot.Files)
+                      {
+                          foreach (var path in openFileDialog.FileNames)
+                          {
+                              file.Search(Path.GetFileName(path)).IsCopy = true;
+                          }
+                      }
+                      openFileDialog.Dispose();
+                  }, this._exceptionCallback));
+            }
+        }
 
         #endregion
 
@@ -290,7 +562,10 @@ namespace ForRobot.ViewModels
             if (Properties.Settings.Default.SaveRobots == null)
                 Properties.Settings.Default.SaveRobots = new System.Collections.Specialized.StringCollection();
 
-            //App.Current.Log += new EventHandler<LogEventArgs>(SelectAppLogger);
+            Libr.Logger.LoggingEvent += (s, o) =>
+            {
+                System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() => this.MessagesCollection.Add(new Model.AppMessage(o))));
+            };
 
             if (Properties.Settings.Default.SaveRobots.Count > 0)
             {
@@ -323,16 +598,19 @@ namespace ForRobot.ViewModels
                     PathProgramm = (this.RobotsCollection.Count > 0) ?
                             Path.Combine(Directory.GetParent(this.RobotsCollection.Last().PathProgramm).ToString(), $"R{this.RobotsCollection.Count + 1}")
                             : Path.Combine(this.RobotConfig.PathForGeneration, $"R{this.RobotsCollection.Count + 1}"),
-                    PathControllerFolder = this.RobotConfig.PathControllerFolder
+                    PathControllerFolder = this.RobotConfig.PathControllerFolder,
+                    ConnectionTimeOutMilliseconds = Convert.ToInt32(App.Current.Settings.ConnectionTimeOut) * 1000
                 };
             }
 
             if (string.IsNullOrEmpty(robot.Name))
                 robot.Name = $"Соединение {this.RobotsCollection.Count + 1}";
 
-            //robot.Log += new EventHandler<ForRobot.Libr.LogEventArgs>(this.WreteLog);
-            //robot.LogError += new EventHandler<ForRobot.Libr.LogErrorEventArgs>(WreteLogError);
-            //Task.Run(() => robot.OpenConnection(this.ConnectionTimeOut));
+            robot.Log += new EventHandler<ForRobot.Libr.LogEventArgs>(this.WreteLog);
+            robot.LogError += new EventHandler<ForRobot.Libr.LogErrorEventArgs>(WreteLogError);
+
+            Task.Run(() => robot.OpenConnection());
+
             robot.ChangeRobot += (s, e) =>
             {
                 Properties.Settings.Default.SaveRobots.Clear();
@@ -344,6 +622,24 @@ namespace ForRobot.ViewModels
             };
             return robot;
         }
+
+        #region Logging
+
+        /// <summary>
+        /// Системное сообщение
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void WreteLog(object sender, LogEventArgs e) => App.Current.Logger.Info(e.Message);
+
+        /// <summary>
+        /// Сообщение об ошибке
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void WreteLogError(object sender, LogErrorEventArgs e) => App.Current.Logger.Error(e.Exception, e.Message);
+
+        #endregion
 
         #endregion
 

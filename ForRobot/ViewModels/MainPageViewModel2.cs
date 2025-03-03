@@ -1098,7 +1098,7 @@ namespace ForRobot.ViewModels
                             Path.Combine(Directory.GetParent(this.RobotsCollection.Last().PathProgramm).ToString(), $"R{this.RobotsCollection.Count + 1}")
                             : Path.Combine(this.RobotConfig.PathForGeneration, $"R{this.RobotsCollection.Count + 1}"),
                     PathControllerFolder = this.RobotConfig.PathControllerFolder,
-                    ConnectionTimeOutMilliseconds = Convert.ToInt32(App.Settings.ConnectionTimeOut) * 1000
+                    ConnectionTimeOutMilliseconds = Convert.ToInt32(App.Current.Settings.ConnectionTimeOut) * 1000
                 };
             }
 

@@ -267,8 +267,7 @@
                             </Grid.Style>
 
                             <Button Grid.Column="0" x:Name="buttonHome" ToolTip="Возврат к начальной папке"
-                                    Command="{Binding Path=HomeCommand, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}"
-                                    CommandParameter="{Binding Path=., RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}">
+                                    Click="ButtonHome_Click">
 
                                 <Path Data="{StaticResource HomeIcon}"/>
                             </Button>
@@ -342,7 +341,7 @@
                                                                          Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}"
                                                                          FontSize="{Binding Path=FontSize, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}"
                                                                          Background="Transparent" BorderBrush="Transparent" BorderThickness="0"
-                                                                         HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
+                                                                         HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
                                                                          ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"
                                                                          ItemsSource="{Binding Path=FoldersCollection, Mode=OneWay, UpdateSourceTrigger=PropertyChanged,
                                                                                        RelativeSource={RelativeSource AncestorType={x:Type ComboBox}, Mode=FindAncestor}}"
@@ -372,7 +371,7 @@
                                                                     <ControlTemplate TargetType="{x:Type ContentControl}">
                                                                         <TextBox x:Name="textBoxFullPath"
                                                                                  Text="{Binding Path=Directory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, 
-                                                                                    RelativeSource={RelativeSource AncestorType={x:Type ComboBox}, Mode=FindAncestor}}"
+                                                                                        RelativeSource={RelativeSource AncestorType={x:Type ComboBox}, Mode=FindAncestor}}"
                                                                                  VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
                                                                     </ControlTemplate>
                                                                 </Setter.Value>

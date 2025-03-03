@@ -61,6 +61,7 @@ namespace ForRobot.ViewModels
                 {
                     case string a when a == DetalTypes.Plita:
                         this.DetalObject = new Plita(DetalType.Plita);
+                        ((Plita)this.DetalObject).RibsCollection.ItemPropertyChanged += (o, e) => { Task.Run(() => SaveDetal(o as Detal)); };
                         break;
 
                     case string b when b == DetalTypes.Stringer:
@@ -71,7 +72,7 @@ namespace ForRobot.ViewModels
                         DetalObject = new PlitaTreygolnik(DetalType.Treygolnik);
                         break;
                 }
-                this.DetalObject.Change += (s, o) => { Task.Run(() => SaveDetal(s as Detal)); }; // Обределение события изменения свойств
+                this.DetalObject.Change += (o, e) => { Task.Run(() => SaveDetal(o as Detal)); }; // Обределение события изменения свойств
                 RaisePropertyChanged(nameof(this.SelectedDetalType));
             }
         }

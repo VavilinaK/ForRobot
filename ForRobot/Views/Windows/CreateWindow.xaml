@@ -18,11 +18,11 @@
 
     <Window.Resources>
         <Style x:Key="TextBase" TargetType="{x:Type FrameworkElement}">
+            <Setter Property="TextElement.FontSize" Value="{StaticResource FontSizeNP2}"/>
             <Setter Property="TextElement.FontFamily" Value="DefaultFont"/>
         </Style>
 
         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBase}">
-            <Setter Property="FontSize" Value="{StaticResource FontSizeNP1}"/>
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
@@ -86,12 +86,6 @@
 
         <Grid Grid.Row="0">
             <Grid.Resources>
-                <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBase}">
-                    <Setter Property="FontSize" Value="{StaticResource FontSizeNP3}"/>
-                    <Setter Property="HorizontalAlignment" Value="Left"/>
-                    <Setter Property="VerticalAlignment" Value="Center"/>
-                </Style>
-
                 <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource TextBase}">
                     <Setter Property="FontSize" Value="{StaticResource FontSizeNP3}"/>
                     <Setter Property="Padding" Value="0,10"/>
@@ -125,80 +119,82 @@
                 </ComboBox.ItemContainerStyle>
             </ComboBox>
 
-            <ContentControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+            <!--<ContentControl Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
                 <ContentControl.ContentTemplate>
                     <DataTemplate>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
+                       
+                    </DataTemplate>
+                </ContentControl.ContentTemplate>
+            </ContentControl>-->
 
-                            <Grid Grid.Row="0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                </Grid.ColumnDefinitions>
+            <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                                <RadioButton Grid.Column="0" IsChecked="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor},
+                <Grid Grid.Row="0" Margin="0,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <RadioButton Grid.Column="0" IsChecked="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor},
                                                     Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static detals:ScoseTypes.Rect}, Mode=TwoWay}"
                                              Style="{StaticResource toggleButtonScosStyle}" ToolTip="Прямоугольная форма">
 
-                                    <Path Fill="{StaticResource IconRectangularBrush}" StrokeThickness="0" Stretch="Fill"
+                        <Path Fill="{StaticResource IconRectangularBrush}" StrokeThickness="0" Stretch="Fill"
                                           Data="{StaticResource RectangularPathGeomerty}"/>
-                                </RadioButton>
+                    </RadioButton>
 
-                                <RadioButton Grid.Column="1" IsChecked="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, 
+                    <RadioButton Grid.Column="1" IsChecked="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, 
                                                 Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static detals:ScoseTypes.SlopeRight}, Mode=TwoWay}"
                                              Style="{StaticResource toggleButtonScosStyle}" ToolTip="Наклон вправо">
 
-                                    <Path Stroke="{StaticResource IconRectangularBrush}" StrokeThickness="5.5" Stretch="Fill"
+                        <Path Stroke="{StaticResource IconRectangularBrush}" StrokeThickness="5.5" Stretch="Fill"
                                           Data="{StaticResource ParallelogramRightPathGeomerty}"/>
-                                </RadioButton>
+                    </RadioButton>
 
-                                <RadioButton Grid.Column="2" IsChecked="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, 
+                    <RadioButton Grid.Column="2" IsChecked="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, 
                                                 Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static detals:ScoseTypes.SlopeLeft}, Mode=TwoWay}"
                                              Style="{StaticResource toggleButtonScosStyle}" ToolTip="Наклон влево">
 
-                                    <Path Stroke="{StaticResource IconRectangularBrush}" StrokeThickness="5.5" Stretch="Fill"
+                        <Path Stroke="{StaticResource IconRectangularBrush}" StrokeThickness="5.5" Stretch="Fill"
                                           Data="{StaticResource ParallelogramRightPathGeomerty}">
 
-                                        <Path.LayoutTransform>
-                                            <ScaleTransform ScaleX="-1.0"/>
-                                        </Path.LayoutTransform>
-                                    </Path>
-                                </RadioButton>
+                            <Path.LayoutTransform>
+                                <ScaleTransform ScaleX="-1.0"/>
+                            </Path.LayoutTransform>
+                        </Path>
+                    </RadioButton>
 
-                                <RadioButton Grid.Column="3" IsChecked="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, 
+                    <RadioButton Grid.Column="3" IsChecked="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, 
                                                 Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static detals:ScoseTypes.TrapezoidTop}, Mode=TwoWay}"
                                              Style="{StaticResource toggleButtonScosStyle}" ToolTip="Трапеция">
 
-                                    <Path Fill="{StaticResource IconRectangularBrush}" Stroke="{StaticResource IconRectangularBrush}" StrokeThickness="1.5" Stretch="Fill"
+                        <Path Fill="{StaticResource IconRectangularBrush}" Stroke="{StaticResource IconRectangularBrush}" StrokeThickness="1.5" Stretch="Fill"
                                           Data="{StaticResource TrapezoidTopPathGeomerty}"/>
-                                </RadioButton>
+                    </RadioButton>
 
-                                <RadioButton Grid.Column="4" IsChecked="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, 
+                    <RadioButton Grid.Column="4" IsChecked="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, 
                                                 Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static detals:ScoseTypes.TrapezoidBottom}, Mode=TwoWay}"
                                              Style="{StaticResource toggleButtonScosStyle}" ToolTip="Перевёрнутая трапеция">
 
-                                    <Path Fill="{StaticResource IconRectangularBrush}" Stroke="{StaticResource IconRectangularBrush}" StrokeThickness="1.5" Stretch="Fill"
+                        <Path Fill="{StaticResource IconRectangularBrush}" Stroke="{StaticResource IconRectangularBrush}" StrokeThickness="1.5" Stretch="Fill"
                                           Data="{StaticResource TrapezoidTopPathGeomerty}">
 
-                                        <Path.LayoutTransform>
-                                            <ScaleTransform ScaleY="-1.0"/>
-                                        </Path.LayoutTransform>
-                                    </Path>
-                                </RadioButton>
-                            </Grid>
-                            
-                            
-                        </Grid>
-                    </DataTemplate>
-                </ContentControl.ContentTemplate>
-            </ContentControl>
+                            <Path.LayoutTransform>
+                                <ScaleTransform ScaleY="-1.0"/>
+                            </Path.LayoutTransform>
+                        </Path>
+                    </RadioButton>
+                </Grid>
+
+
+            </Grid>
         </Grid>
 
         <Grid Grid.Row="1">
