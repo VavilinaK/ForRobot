@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 using System.Diagnostics;
 using System.Configuration;
 using System.ComponentModel;
@@ -17,6 +18,8 @@ using System.Security.Cryptography;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+using HelixToolkit.Wpf;
+
 using ForRobot.Libr;
 using ForRobot.Model;
 using ForRobot.Model.Detals;
@@ -26,6 +29,10 @@ namespace ForRobot.ViewModels
     public class MainPageViewModel3 : BaseClass
     {
         #region Private variables
+
+        private Model.File3D.File3D _selectedFile;
+
+        private object selectedObject;
 
         private Robot _selectedRobot;
 
@@ -58,9 +65,24 @@ namespace ForRobot.ViewModels
             }
         });
 
+        public readonly Libr.Behavior.ZoomBehavior _zoomBehavior;
+
+        public IHelixViewport3D Viewport { get; set; } 
+
+        private System.Windows.Controls.TreeViewItem _selectedItem;
+
         #region Commands
 
         private RelayCommand _createNewFileCommand;
+        private RelayCommand _openedFileCommand;
+        private RelayCommand _saveFileCommand;
+        private RelayCommand _saveAsFileCommand;
+        private RelayCommand _saveAllFilesCommand;
+        private RelayCommand _backCommand;
+        private RelayCommand _returnCommand;
+        private RelayCommand _standartParametrsCommand;
+        private RelayCommand _zoomCommand;
+
         private RelayCommand _closeFileCommand;
         private RelayCommand _addRobotCommand;
         private RelayCommand _deleteRobotCommand;
@@ -70,12 +92,16 @@ namespace ForRobot.ViewModels
         private RelayCommand _changePathOnPCCommand;
         private RelayCommand _upDateFilesCommand;
         private RelayCommand _selectFolderCommand;
-        private RelayCommand _retentionRunButtonCommand;
+        //private RelayCommand _retentionRunButtonCommand;
         private RelayCommand _propertiesCommand;
+        private RelayCommand _helpCommand;
 
+        private IAsyncCommand _generateProgramCommandAsync;
         private IAsyncCommand _selectFileCommandAsunc;
         private IAsyncCommand _deleteFileCommandAsync;
         private IAsyncCommand _runProgramCommandAsync;
+        private IAsyncCommand _retentionRunButtonCommandAsync;
+
         private IAsyncCommand _pauseProgramCommand;
         private IAsyncCommand _cancelProgramCommand;
         private IAsyncCommand _dropFilesCommandAsync;
@@ -98,7 +124,10 @@ namespace ForRobot.ViewModels
         //    }
         //}
 
-        public bool VisibilityAxis { get; set; } = true;
+        /// <summary>
+        /// Выбранный файл
+        /// </summary>
+        public Model.File3D.File3D SelectedFile { get => this._selectedFile; set => Set(ref this._selectedFile, value); }
 
         /// <summary>
         /// Выбранный робот
@@ -110,20 +139,71 @@ namespace ForRobot.ViewModels
         /// </summary>
         public string SelectedRobotsName { get; set; }
 
+        /// <summary>
+        /// Выбранный 3D объект
+        /// </summary>
+        public object SelectedObject { get => this.selectedObject; set => Set(ref this.selectedObject, value); }
+
+        public System.Windows.Controls.TreeViewItem SelectedItem {
+            get => this._selectedItem;
+            set => Set(ref this._selectedItem, value); }
+
         #region Collections
 
         ///// <summary>
-        ///// Коллекция возможных схем сварки
+        ///// Коллекция типов детали
         ///// </summary>
-        //public ObservableCollection<string> WeldingSchemaCollection
+        //public ObservableCollection<string> DetalTypesCollection
         //{
         //    get
         //    {
-        //        var Descriptions = typeof(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes).GetFields().Select(field => field.GetCustomAttributes(typeof(System.ComponentModel.DescriptionAttribute), false).SingleOrDefault() as System.ComponentModel.DescriptionAttribute);
+        //        var Descriptions = typeof(ForRobot.Model.Detals.ScoseTypes).GetFields().Select(field => field.GetCustomAttributes(typeof(System.ComponentModel.DescriptionAttribute), false).SingleOrDefault() as System.ComponentModel.DescriptionAttribute);
         //        List<string> DescriptionList = Descriptions.Where(item => item != null).Select(item => item.Description).ToList<string>();
         //        return new ObservableCollection<string>(DescriptionList);
         //    }
         //}
+
+        ///// <summary>
+        ///// Коллекция типов скосов настила
+        ///// </summary>
+        //public ObservableCollection<string> ScoseTypesCollection
+        //{
+        //    get
+        //    {
+        //        var Descriptions = typeof(ForRobot.Model.Detals.ScoseTypes).GetFields().Select(field => field.GetCustomAttributes(typeof(System.ComponentModel.DescriptionAttribute), false).SingleOrDefault() as System.ComponentModel.DescriptionAttribute);
+        //        List<string> DescriptionList = Descriptions.Where(item => item != null).Select(item => item.Description).ToList<string>();
+        //        return new ObservableCollection<string>(DescriptionList);
+        //    }
+        //}
+
+
+        /// <summary>
+        /// Коллекция типов скосов настила
+        /// </summary>
+        public ObservableCollection<string> ScoseTypesCollection
+        {
+            get
+            {
+                var Descriptions = typeof(ForRobot.Model.Detals.ScoseTypes).GetFields().Select(field => field.GetCustomAttributes(typeof(System.ComponentModel.DescriptionAttribute), false).SingleOrDefault() as System.ComponentModel.DescriptionAttribute);
+                //var Descriptions = typeof(ForRobot.Model.Detals.ScoseTypes).GetFields().Where(field => (field.GetCustomAttributes(typeof(System.ComponentModel.DescriptionAttribute), false).SingleOrDefault() as System.ComponentModel.DescriptionAttribute).Description == "Прямоугольник");
+                List<string> DescriptionList = Descriptions.Where(item => item != null).Select(item => item.Description).ToList<string>();
+                //return typeof(ForRobot.Model.Detals.ScoseTypes).GetFields().ToList();
+                return new ObservableCollection<string>(DescriptionList);
+            }
+        }
+
+        /// <summary>
+        /// Коллекция возможных схем сварки
+        /// </summary>
+        public ObservableCollection<string> WeldingSchemaCollection
+        {
+            get
+            {
+                var Descriptions = typeof(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes).GetFields().Select(field => field.GetCustomAttributes(typeof(System.ComponentModel.DescriptionAttribute), false).SingleOrDefault() as System.ComponentModel.DescriptionAttribute);
+                List<string> DescriptionList = Descriptions.Where(item => item != null).Select(item => item.Description).ToList<string>();
+                return new ObservableCollection<string>(DescriptionList);
+            }
+        }
 
         /// <summary>
         /// Коллекция всех добаленнных роботов
@@ -166,6 +246,180 @@ namespace ForRobot.ViewModels
         }
 
         /// <summary>
+        /// Открытие файла программы
+        /// </summary>
+        public RelayCommand OpenedFileCommand
+        {
+            get
+            {
+                return _openedFileCommand ??
+                    (_openedFileCommand = new RelayCommand(obj =>
+                    {
+                        var file = Model.File3D.File3D.Open();
+                        App.Current.OpenedFiles.Add(file);
+                        this.SelectedFile = file;
+                    }));
+            }
+        }
+
+        /// <summary>
+        /// Сохранение файла программы
+        /// </summary>
+        public RelayCommand SaveFileCommand
+        {
+            get
+            {
+                return _saveFileCommand ??
+                    (_saveFileCommand = new RelayCommand(obj =>
+                    {
+                        if (obj == null)
+                            return;
+
+                        var file = (Model.File3D.File3D)obj;
+
+                        if (!file.IsSaved)
+                            file.Save();
+                    }));
+            }
+        }
+
+        /// <summary>
+        /// Сохранение файла программы как
+        /// </summary>
+        public RelayCommand SaveAsFileCommand
+        {
+            get
+            {
+                return _saveAsFileCommand ??
+                    (_saveAsFileCommand = new RelayCommand(obj =>
+                    {
+                        using(SaveFileDialog sfd = new SaveFileDialog()
+                        {
+                            CheckPathExists = true,
+                            Filter = HelixToolkit.Wpf.Exporters.Filter,
+                            DefaultExt = HelixToolkit.Wpf.Exporters.DefaultExtension
+                        })
+                        {
+                            if (sfd.ShowDialog() == DialogResult.Cancel && string.IsNullOrEmpty(sfd.FileName))
+                                return;
+
+                            this.Viewport.Export(sfd.FileName);
+
+                            //HelixToolkit.Wpf.ObjExporter.
+                        } 
+                    }));
+            }
+        }
+
+        /// <summary>
+        /// Сохранение всех файлов
+        /// </summary>
+        public RelayCommand SaveAllFilesCommand
+        {
+            get
+            {
+                return _saveAllFilesCommand ??
+                    (_saveAllFilesCommand = new RelayCommand(obj =>
+                    {
+                        if (obj == null)
+                            return;
+
+                        var files = (ObservableCollection<Model.File3D.File3D>)obj;
+
+                        foreach (var file in files.Where(item => !item.IsSaved))
+                        {
+                            file.Save();
+                        }
+                    }));
+            }
+        }
+
+        /// <summary>
+        /// Отмена действий
+        /// </summary>
+        public RelayCommand BackCommand
+        {
+            get
+            {
+                return _backCommand ??
+                    (_backCommand = new RelayCommand(obj =>
+                    {
+
+                    }));
+            }
+        }
+
+        /// <summary>
+        /// Возврат действий
+        /// </summary>
+        public RelayCommand ReturnCommand
+        {
+            get
+            {
+                return _returnCommand ??
+                    (_returnCommand = new RelayCommand(obj =>
+                    {
+
+                    }));
+            }
+        }
+
+        /// <summary>
+        /// Сброс параметров детали до стандартных
+        /// </summary>
+        public RelayCommand StandartParametrsCommand
+        {
+            get
+            {
+                return _standartParametrsCommand ??
+                    (_standartParametrsCommand = new RelayCommand(obj =>
+                    {
+                        var detal = this.SelectedFile.Detal;
+                        switch (detal.DetalType)
+                        {
+                            case string a when a == DetalTypes.Plita:
+                                this.SelectedFile.Detal = new Plita(DetalType.Plita)
+                                {
+                                    ScoseType = ((Plita)detal).ScoseType,
+                                    DiferentDistance = ((Plita)detal).DiferentDistance,
+                                    ParalleleRibs = ((Plita)detal).ParalleleRibs,
+                                    DiferentDissolutionLeft = ((Plita)detal).DiferentDissolutionLeft,
+                                    DiferentDissolutionRight = ((Plita)detal).DiferentDissolutionRight
+                                };
+                                break;
+
+                            case string b when b == DetalTypes.Stringer:
+                                this.SelectedFile.Detal = new PlitaStringer(DetalType.Stringer);
+                                break;
+
+                            case string c when c == DetalTypes.Treygolnik:
+                                this.SelectedFile.Detal = new PlitaTreygolnik(DetalType.Treygolnik);
+                                break;
+                        }
+                        RaisePropertyChanged(nameof(this.SelectedFile.Detal));
+                    }));
+            }
+        }
+
+        /// <summary>
+        /// Маштабирование модели
+        /// </summary>
+        public RelayCommand ZoomCommand
+        {
+            get
+            {
+                return _zoomCommand ??
+                    (_zoomCommand = new RelayCommand(obj =>
+                    {
+                        if (obj == null)
+                            GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Behavior.ZoomMessage());
+                        else
+                            GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Behavior.ZoomMessage((double)obj));
+                    }));
+            }
+        }
+
+        /// <summary>
         /// Закрытие вкладки файла
         /// </summary>
         public RelayCommand CloseFileCommand
@@ -175,11 +429,13 @@ namespace ForRobot.ViewModels
                 return _closeFileCommand ??
                     (_closeFileCommand = new RelayCommand(obj =>
                     {
-                        App.Current.OpenedFiles.Remove(obj as Model.File3D.File3D);
-                        //System.Windows.Controls.TabControl tabControl = (System.Windows.Controls.TabControl)(obj as object[])[0];
-                        //System.Windows.Controls.TabItem tabItem = (System.Windows.Controls.TabItem)(obj as object[])[1];
+                        var file = obj as Model.File3D.File3D;
 
-                        //tabControl.Items.Remove(tabItem);
+                        if (!file.IsSaved &&
+                            System.Windows.MessageBox.Show($"Сохранить файл {file.Name}?", "Сохранение файла", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK)
+                            file.Save();
+
+                        App.Current.OpenedFiles.Remove(file);
                     }));
             }
         }
@@ -335,21 +591,21 @@ namespace ForRobot.ViewModels
             }
         }
 
-        /// <summary>
-        /// Команда удержания кнопки запуска
-        /// </summary>
-        public RelayCommand RetentionRunButtonCommand
-        {
-            get
-            {
-                return _retentionRunButtonCommand ??
-                    (_retentionRunButtonCommand = new RelayCommand(obj =>
-                    {
-                        Robot robot = (Robot)obj;
-                        robot.RunCancelTokenSource.Cancel();
-                    }));
-            }
-        }
+        ///// <summary>
+        ///// Команда удержания кнопки запуска
+        ///// </summary>
+        //public RelayCommand RetentionRunButtonCommand
+        //{
+        //    get
+        //    {
+        //        return _retentionRunButtonCommand ??
+        //            (_retentionRunButtonCommand = new RelayCommand(obj =>
+        //            {
+        //                Robot robot = (Robot)obj;
+        //                robot.RunCancelTokenSource.Cancel();
+        //            }));
+        //    }
+        //}
 
         /// <summary>
         /// Открытие окна настроек
@@ -372,7 +628,63 @@ namespace ForRobot.ViewModels
             }
         }
 
+        /// <summary>
+        /// Открытие chm-справки
+        /// </summary>
+        public RelayCommand HelpCommand
+        {
+            get
+            {
+                return _helpCommand ??
+                    (_helpCommand = new RelayCommand(obj =>
+                    {
+                        Help.ShowHelp(null, "Help/HelpManual.chm");
+                    }));
+            }
+        }
+
         #region Async
+
+        /// <summary>
+        /// Команда генерации программы и её выбор на роботе/ах
+        /// </summary>
+        public IAsyncCommand GenerateProgramCommandAsync
+        {
+            get
+            {
+                return _generateProgramCommandAsync ??
+                    (_generateProgramCommandAsync = new AsyncRelayCommand(async obj =>
+                    {
+                        // Сброс фокуса перед генерацией.
+                        System.Windows.Input.Keyboard.ClearFocus();
+                        System.Windows.Input.FocusManager.SetFocusedElement(System.Windows.Input.FocusManager.GetFocusScope(obj as FrameworkElement), null);
+
+                        string foldForGenerate = Directory.GetParent(this.RobotsCollection.First().PathProgramm).ToString(); // Путь для генерации скриптом.
+                        
+                        // Запись Json-файла
+                        JObject jObject = JObject.Parse(this.SelectedFile.Detal.Json);
+                        int[] sumRobots;
+                        if (this.SelectedRobotsName == "Все")
+                        {
+                            sumRobots = new int[this.RobotsCollection.Count];
+                            for (int i = 0; i < this.RobotsCollection.Count(); i++)
+                            {
+                                sumRobots[i] = i + 1;
+                            }
+                        }
+                        else
+                            sumRobots = new int[1] { this.RobotsCollection.IndexOf(this.RobotsCollection.Where(p => p.Name == this.SelectedRobotsName).ToArray()[0]) + 1 };
+                        jObject.Add("robots", JToken.FromObject(sumRobots)); // Запись в json-строку выбранных для генерации роботов (не зависит от подключения).
+
+                        var sch = WeldingSchemas.GetSchema(this.SelectedFile.Detal.WeldingSchema);
+                        jObject.Add("welding_sequence", JToken.FromObject(sch)); // Запись в json-строку схему сварки детали.
+
+                        //File.WriteAllText(Path.Combine(foldForGenerate, $"{this.ProgrammName}.json"), jObject.ToString());
+                        //if (File.Exists(Path.Combine(foldForGenerate, $"{this.ProgrammName}.json")))
+                        //    App.Current.Logger.Info($"Сгенерирован файл {Path.Combine(foldForGenerate, $"{this.ProgrammName}.json")}, содержащий:\n" + jObject.ToString());
+                    }, _exceptionCallback));
+            }
+        }
 
         /// <summary>
         /// Выбор файла программы
@@ -458,6 +770,19 @@ namespace ForRobot.ViewModels
                         },
                         new TimeSpan(0, 0, 0, 0, 1000),
                         robot.RunCancelTokenSource.Token);
+                    }, _exceptionCallback));
+            }
+        }
+
+        public IAsyncCommand RetentionRunButtonCommandAsync
+        {
+            get
+            {
+                return _retentionRunButtonCommandAsync ??
+                    (_retentionRunButtonCommandAsync = new AsyncRelayCommand(async obj =>
+                    {
+                        Robot robot = (Robot)obj;
+                        await Task.Run(() => robot.RunCancelTokenSource.Cancel());
                     }, _exceptionCallback));
             }
         }
@@ -578,6 +903,11 @@ namespace ForRobot.ViewModels
                 this.RobotsCollection.Add(this.GetNewRobot());
 
             this.SelectedRobot = this.RobotsCollection[0];
+
+            if (App.Current.OpenedFiles.Count == 0)
+                App.Current.OpenedFiles.Add(new Model.File3D.File3D());
+
+            //App.Current.OpenedFiles.Add(new Model.File3D.File3D(new Plita(DetalType.Plita), Path.Combine(Path.GetTempPath(), "Новый.rGen")));
         }
 
         #endregion
@@ -644,6 +974,8 @@ namespace ForRobot.ViewModels
         #endregion
 
         #region Public functions
+
+        public void Select(Visual3D visual) => this.SelectedObject = visual;
 
         #endregion
     }

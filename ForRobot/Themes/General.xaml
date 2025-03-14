@@ -11,6 +11,7 @@
     <sys:Boolean x:Key="False">False</sys:Boolean>
 
     <!--Converters-->
+    <conv:BoundsConverter x:Key="BoundsConvert"/>
     <conv:RowNumberConverter x:Key="RowNumberConvert"/>
     <conv:RadioButtonConverter x:Key="RadioButtonConvert"/>
     <conv:StatusColorConverter x:Key="StatusColorConvert"/>
@@ -22,6 +23,7 @@
     <conv:VisibilityFolderOnRobot x:Key="VisibilityFolderOnRobot"/>
     <conv:NumbersForWeldingSchemaConverter x:Key="NumbersForWeldingSchemaConvert"/>
     <conv:CollectionsStringToBoolConverter x:Key="CollectionsStringToBoolConvert"/>
+    <conv:DescriptionsStaticClassConverter x:Key="DescriptionsStaticClassConvert"/>
 
     <!--Control Content property -->
     <!--M => minus  P=> plus-->
@@ -73,6 +75,8 @@
     <Color x:Key="ThemePopupColor">#FF68DDFF</Color>
     <Color x:Key="ThemeBottomMenuBarColor">#FF1680C9</Color>
 
+    <Color x:Key="ThemeInfoBorderColor">#FF1680C9</Color>
+
 
     <SolidColorBrush opt:Freeze="True" x:Key="ThemeBgM2Brush" Color="{StaticResource ThemeBgM2Color}"/>
     <SolidColorBrush opt:Freeze="True" x:Key="ThemeBgM1Brush" Color="{StaticResource ThemeBgM1Color}"/>
@@ -100,6 +104,8 @@
     <SolidColorBrush opt:Freeze="True" x:Key="ThemePopupBrush" Color="{StaticResource ThemePopupColor}"/>
     <SolidColorBrush opt:Freeze="True" x:Key="ThemeBottomMenuBarBrush" Color="{StaticResource ThemeBottomMenuBarColor}"/>
     
+    <SolidColorBrush opt:Freeze="True" x:Key="ThemeInfoBorderBrush" Color="{StaticResource ThemeInfoBorderColor}"/>
+    
     <!--Icons colors-->
     <Color x:Key="IconRectangularColor">#000000</Color>
     <Color x:Key="IconNewFileColor">#FF03A436</Color>
@@ -107,11 +113,13 @@
     <Color x:Key="IconSaveColor">#FF3E3E3E</Color>
     <Color x:Key="IconSaveAsColor">#FF3E3E3E</Color>
     <Color x:Key="IconBackColor">#FF00C5FF</Color>
-    <Color x:Key="IconReternColor">#FF00C5FF</Color>
+    <Color x:Key="IconReturnColor">#FF00C5FF</Color>
     <Color x:Key="IconGenerateColor">#000000</Color>
     <Color x:Key="IconCleanColor">#000000</Color>
     <Color x:Key="IconDecreaseColor">#FF002EFF</Color>
     <Color x:Key="IconIncreaseColor">#FF002EFF</Color>
+    <Color x:Key="IconExportColor">#000000</Color>
+    <Color x:Key="IconImportColor">#000000</Color>
     <Color x:Key="IconAxistColor">#000000</Color>
     <Color x:Key="IconDeleteColor">#000000</Color>
     <Color x:Key="IconUpDateColor">#000000</Color>
@@ -130,11 +138,13 @@
     <SolidColorBrush opt:Freeze="True" x:Key="IconSaveBrush" Color="{StaticResource IconSaveColor}"/>
     <SolidColorBrush opt:Freeze="True" x:Key="IconSaveAsBrush" Color="{StaticResource IconSaveAsColor}"/>
     <SolidColorBrush opt:Freeze="True" x:Key="IconBackBrush" Color="{StaticResource IconBackColor}"/>
-    <SolidColorBrush opt:Freeze="True" x:Key="IconReternBrush" Color="{StaticResource IconReternColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="IconReturnBrush" Color="{StaticResource IconReturnColor}"/>
     <SolidColorBrush opt:Freeze="True" x:Key="IconGenerateBrush" Color="{StaticResource IconGenerateColor}"/>
     <SolidColorBrush opt:Freeze="True" x:Key="IconCleanBrush" Color="{StaticResource IconCleanColor}"/>
     <SolidColorBrush opt:Freeze="True" x:Key="IconDecreaseBrush" Color="{StaticResource IconDecreaseColor}"/>
     <SolidColorBrush opt:Freeze="True" x:Key="IconIncreaseBrush" Color="{StaticResource IconIncreaseColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="IconExportBrush" Color="{StaticResource IconExportColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="IconImportBrush" Color="{StaticResource IconImportColor}"/>
     <SolidColorBrush opt:Freeze="True" x:Key="IconAxistBrush" Color="{StaticResource IconAxistColor}"/>
     <SolidColorBrush opt:Freeze="True" x:Key="IconDeleteBrush" Color="{StaticResource IconDeleteColor}"/>
     <SolidColorBrush opt:Freeze="True" x:Key="IconUpDateBrush" Color="{StaticResource IconUpDateColor}"/>
@@ -1179,14 +1189,14 @@
                 <WindowChrome NonClientFrameEdges="Right" ResizeBorderThickness="{x:Static SystemParameters.WindowResizeBorderThickness}" />
             </Setter.Value>
         </Setter>
-        
+
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Window}">
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
-                        
+
                         <Grid Background="Transparent">
                             <AdornerDecorator>
                                 <Border Background="Transparent" Margin="{x:Static SystemParameters.WindowNonClientFrameThickness}">
@@ -1207,7 +1217,9 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                --><!-- Custom window chrome --><!--
+                                -->
+                            <!-- Custom window chrome -->
+                            <!--
                                 <StackPanel Grid.Column="0" Orientation="Horizontal"
                             Margin="{x:Static SystemParameters.WindowResizeBorderThickness}">
                                     <Image Source="{TemplateBinding Icon}" />
@@ -1215,17 +1227,20 @@
                              TextTrimming="CharacterEllipsis"
                              VerticalAlignment="Center"
                              Margin="16,0" />
-                                    --><!--<Menu shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                                    -->
+                            <!--<Menu shell:WindowChrome.IsHitTestVisibleInChrome="True">
                                         <MenuItem Header="CustomChromeMenu">
                                             <MenuItem Header="Action" />
                                         </MenuItem>
-                                    </Menu>--><!--
+                                    </Menu>-->
+                            <!--
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="1"
                             Orientation="Horizontal"
                             HorizontalAlignment="Right">
-                                    --><!--<Button Width="45"
+                                    -->
+                            <!--<Button Width="45"
                           Height="{Binding Source={x:Static SystemParameters.WindowNonClientFrameThickness}, Path=Top}"
                           ToolTip="Minimize window"
                           ToolTipService.ShowDuration="5000"
@@ -1254,7 +1269,8 @@
                FontFamily="Segoe MDL2 Assets"
                FontSize="11"
                Text="&#xE8BB;" />
-                                    </Button>--><!--
+                                    </Button>-->
+                            <!--
                                 </StackPanel>
                             </Grid>-->
 
@@ -1264,7 +1280,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                
+
                                 <Image Grid.Column="0" Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Icon}"
                                    VerticalAlignment="Center" HorizontalAlignment="Left"
                                    Margin="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(WindowChrome.WindowChrome).ResizeBorderThickness}"
@@ -1288,14 +1304,16 @@
                                                         <Border x:Name="Border">
                                                             <Grid>
                                                                 <ContentPresenter ContentSource="Header" Margin="5" RecognizesAccessKey="True" VerticalAlignment="Center"/>
-                                                                --><!--<Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsSubmenuOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Fade">
+                                                                -->
+                                            <!--<Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsSubmenuOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Fade">
                                                                     <Border x:Name="SubmenuBorder" SnapsToDevicePixels="True" BorderThickness="2" Background="#3c3c3c">
                                                                         <Border.BorderBrush>
                                                                             <SolidColorBrush Color="#868686" />
                                                                         </Border.BorderBrush>
                                                                         <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle" />
                                                                     </Border>
-                                                                </Popup>--><!--
+                                                                </Popup>-->
+                                            <!--
                                                             </Grid>
                                                         </Border>
                                                     </ControlTemplate>
@@ -1344,7 +1362,7 @@
                             </Grid>
                         </Grid>
                     </Border>
-                    
+
                     <!--<ControlTemplate.Triggers>
                         <Trigger Property="ResizeMode" Value="CanResizeWithGrip">
                             <Setter TargetName="WindowResizeGrip" Property="Visibility" Value="Visible" />
@@ -1354,5 +1372,5 @@
             </Setter.Value>
         </Setter>
     </Style>
-   
+
 </ResourceDictionary>  

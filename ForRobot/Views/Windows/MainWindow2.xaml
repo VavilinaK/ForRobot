@@ -11,7 +11,7 @@
         Style="{StaticResource WindowStyle}">
 
     <Window.Title>
-        <MultiBinding Converter="{StaticResource StringConvert}" ConverterParameter="Интерфейс - v.{0}">
+        <MultiBinding Converter="{StaticResource StringFormatMultiConvert}" ConverterParameter="Интерфейс - v.{0}">
             <Binding Path="Version" Mode="OneWay"/>
         </MultiBinding>
     </Window.Title>

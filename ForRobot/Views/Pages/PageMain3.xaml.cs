@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using HelixToolkit.Wpf;
+
 namespace ForRobot.Views.Pages
 {
     /// <summary>
@@ -30,6 +32,8 @@ namespace ForRobot.Views.Pages
         public PageMain3()
         {
             InitializeComponent();
+
+            if (this.DataContext == null) { this.DataContext = ViewModel; }
         }
 
         private void Expander_Expanded(object sender, RoutedEventArgs e)
@@ -54,5 +58,14 @@ namespace ForRobot.Views.Pages
                 }
         }
 
+        private void UIElement_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            var viewport = sender as HelixViewport3D;
+            var firstHit = viewport?.Viewport.FindHits(e.GetPosition(viewport))?.FirstOrDefault();
+            if (firstHit != null)
+                this.ViewModel.Select(firstHit.Visual);
+            else
+                this.ViewModel.Select(null);
+        }
     }
 }

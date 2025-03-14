@@ -64,7 +64,7 @@ namespace ForRobot.Views.Controls
 
         public static readonly DependencyProperty DataFileIsHiddenProperty = DependencyProperty.Register(nameof(DataFileIsHidden), typeof(bool), typeof(NavigationTreeView));
 
-        public static readonly DependencyProperty FileCollectionProperty = DependencyProperty.Register(nameof(FileCollection), typeof(ObservableCollection<File>), typeof(NavigationTreeView), new PropertyMetadata(null));
+        public static readonly DependencyProperty FileCollectionProperty = DependencyProperty.Register(nameof(FileCollection), typeof(ObservableCollection<File>), typeof(NavigationTreeView), new PropertyMetadata(new ObservableCollection<File>()));
 
         #region Command
 

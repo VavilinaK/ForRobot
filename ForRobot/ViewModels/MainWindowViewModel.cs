@@ -31,6 +31,5 @@ namespace ForRobot.ViewModels
         }
 
         #endregion
-
     }
 }

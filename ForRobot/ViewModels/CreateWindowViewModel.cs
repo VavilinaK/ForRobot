@@ -17,7 +17,8 @@ namespace ForRobot.ViewModels
         #region Private variables
 
         private string _selectedDetalType;
-
+        private string _filePath;
+        
         private Detal _detalObject;
 
         #region Commands
@@ -72,12 +73,13 @@ namespace ForRobot.ViewModels
                         DetalObject = new PlitaTreygolnik(DetalType.Treygolnik);
                         break;
                 }
-                this.DetalObject.Change += (o, e) => { Task.Run(() => SaveDetal(o as Detal)); }; // Обределение события изменения свойств
                 RaisePropertyChanged(nameof(this.SelectedDetalType));
             }
         }
 
-        public string FilePath { get; set; }
+        public string FileName { get; set; }
+
+        public string FilePath { get => this._filePath; set => Set(ref this._filePath, value); }
 
         /// <summary>
         /// Объект детали
@@ -116,7 +118,12 @@ namespace ForRobot.ViewModels
                 return _createCommand ??
                     (_createCommand = new RelayCommand(obj =>
                     {
+                        if (string.IsNullOrEmpty(this.FilePath) || string.IsNullOrEmpty(this.FileName))
+                            return;
 
+                        this.DetalObject.Change += (o, e) => { Task.Run(() => SaveDetal(o as Detal)); }; // Обределение события изменения свойств
+                        App.Current.OpenedFiles.Add(new Model.File3D.File3D(this.DetalObject, Path.Combine(this.FilePath, this.FileName)));
+                        App.Current.CreateWindow.Close();
                     }));
             }
         }
