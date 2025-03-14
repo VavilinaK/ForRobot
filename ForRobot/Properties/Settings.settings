@@ -44,5 +44,8 @@
     <Setting Name="StatusColumnWidth" Type="System.Double" Scope="User">
       <Value Profile="(Default)">80</Value>
     </Setting>
+    <!--<Setting Name="SelectedTheme" Type="Tuple<string, Theme>" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>-->
   </Settings>
 </SettingsFile>

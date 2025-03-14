@@ -9,6 +9,7 @@
       xmlns:vm="clr-namespace:ForRobot.ViewModels"  
       xmlns:file="clr-namespace:ForRobot.Model.File3D"
       xmlns:local="clr-namespace:ForRobot.Views.Pages" 
+      xmlns:avalonDock="https://github.com/Dirkster99/AvalonDock"
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
       xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
       xmlns:behavior="clr-namespace:ForRobot.Libr.Behavior"
@@ -36,7 +37,7 @@
             <Setter Property="TextElement.Foreground" Value="{StaticResource ThemeFgP2Brush}"/>
         </Style>
 
-        <Style x:Key="MenuItemTemplate" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource TextBase}">
+        <!--<Style x:Key="MenuItemTemplate" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource TextBase}">
             <Setter Property="FontSize" Value="{StaticResource FontSizeN}"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -46,18 +47,19 @@
                     <Setter Property="Stretch" Value="Uniform"/>
                 </Style>
             </Style.Resources>
-        </Style>
+        </Style>-->
 
-        <Style TargetType="{x:Type TabControl}">
+        <!--<Style TargetType="{x:Type TabControl}">
             <Setter Property="Background" Value="{StaticResource {x:Static SystemColors.InfoBrushKey}}"/>
             <Setter Property="BorderBrush" Value="#4a4a4a"/>
             <Setter Property="BorderThickness" Value="3"/>
-        </Style>
+        </Style>-->
 
-        <Style x:Key="TabItemBase" TargetType="{x:Type TabItem}">
+        <!--<Style x:Key="TabItemBase" TargetType="{x:Type TabItem}">
             <Setter Property="FontSize" Value="15"/>
             <Setter Property="Foreground" Value="Black"/>
-            <!--<Setter Property="MinWidth" Value="90"/>-->
+            -->
+        <!--<Setter Property="MinWidth" Value="90"/>--><!--
 
             <Setter Property="Template">
                 <Setter.Value>
@@ -69,10 +71,12 @@
 
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsSelected" Value="True">
-                                <!--<Setter TargetName="Panel" Property="Background" Value="#4a4a4a"/>-->
+                                -->
+        <!--<Setter TargetName="Panel" Property="Background" Value="#4a4a4a"/>--><!--
                                 <Setter TargetName="Panel" Property="Background" Value="#4a4a4a"/>
                                 <Setter TargetName="Panel" Property="BorderBrush" Value="{StaticResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                                <!--<Setter TargetName="Panel" Property="BorderThickness"  Value="1.5"/>-->
+                                -->
+        <!--<Setter TargetName="Panel" Property="BorderThickness"  Value="1.5"/>--><!--
                                 <Setter TargetName="Panel" Property="Margin"  Value="0,-2,0,0"/>
                                 <Setter TargetName="ContentSite" Property="TextElement.Foreground" Value="#3094ff"/>
                             </Trigger>
@@ -84,11 +88,11 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-        </Style>
+        </Style>-->
 
-        <Style TargetType="{x:Type TabItem}" BasedOn="{StaticResource TabItemBase}"></Style>
+        <!--<Style TargetType="{x:Type TabItem}" BasedOn="{StaticResource TabItemBase}"></Style>-->
 
-        <Style x:Key="cbBase" TargetType="{x:Type ComboBox}">
+        <!--<Style x:Key="cbBase" TargetType="{x:Type ComboBox}">
             <Setter Property="FontSize" Value="{StaticResource FontSizeNP2}"/>
             <Setter Property="ItemContainerStyle">
                 <Setter.Value>
@@ -99,9 +103,9 @@
                     </Style>
                 </Setter.Value>
             </Setter>
-        </Style>
+        </Style>-->
 
-        <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource cbBase}"></Style>
+        <!--<Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource cbBase}"></Style>-->
 
         <!--<Style TargetType="{x:Type ComboBoxItem}">
             <Setter Property="Height" Value="45"/>
@@ -114,44 +118,12 @@
             <Setter Property="Block.BorderThickness" Value="10"/>
         </Style>-->
 
-        <ControlTemplate x:Key="RadioButtonInToggleTemplate" TargetType="{x:Type RadioButton}">
+        <!--<ControlTemplate x:Key="RadioButtonInToggleTemplate" TargetType="{x:Type RadioButton}">
             <ToggleButton IsChecked="{Binding IsChecked, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
                           Content="{Binding Content, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"/>
-        </ControlTemplate>
+        </ControlTemplate>-->
 
-        <ControlTemplate x:Key="MenuItemTemplate1" TargetType="{x:Type MenuItem}">
-            <Button Content="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}}"
-                    ToolTip="{Binding Header, RelativeSource={RelativeSource TemplatedParent}}"
-                    Command="{Binding Command, RelativeSource={RelativeSource TemplatedParent}}"
-                    CommandParameter="{Binding CommandParameter, RelativeSource={RelativeSource TemplatedParent}}"
-                    CommandTarget="{Binding CommandTarget, RelativeSource={RelativeSource TemplatedParent}}"
-                    Width="Auto" Margin="3,2" Padding="5"/>
-        </ControlTemplate>
-
-        <ControlTemplate x:Key="MenuItemTemplate2" TargetType="{x:Type MenuItem}">
-            <Border Name="Panel" BorderThickness="0" CornerRadius="5">
-                <StackPanel Orientation="Horizontal" Margin="5">
-                    <ContentPresenter x:Name="Icon" ContentSource="Icon" Height="30" Margin="5,0"/>
-                    <ContentPresenter ContentSource="Header" RecognizesAccessKey="True"
-                                      TextElement.FontSize="{StaticResource FontSizeNP3}"
-                                      TextElement.Foreground="{StaticResource ThemeFgP2Brush}"
-                                      VerticalAlignment="Center" Margin="5,0"
-                                      Style="{StaticResource TextBase}"/>
-                </StackPanel>
-            </Border>
-
-            <ControlTemplate.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter TargetName="Panel" Property="Background" Value="{StaticResource ThemeIsMouseOverMenuItemBgBrush}"/>
-                </Trigger>
-
-                <Trigger Property="IsPressed" Value="True">
-                    <Setter TargetName="Panel" Property="Background" Value="{StaticResource ThemeIsPressedMenuItemBgBrush}"/>
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-
-        <ControlTemplate x:Key="MenuToggleButtonTemplate" TargetType="{x:Type ToggleButton}">
+        <!--<ControlTemplate x:Key="MenuToggleButtonTemplate" TargetType="{x:Type ToggleButton}">
             <Border Name="Panel" BorderBrush="{StaticResource ThemeNotActiveToggleButBordBrush}" BorderThickness="0,7,0,0" Margin="5,0">
                 <ContentPresenter x:Name="Content" ContentSource="Content" Margin="15,5"/>
             </Border>
@@ -823,7 +795,7 @@
                                Padding="8 0 0 0" />
                 </StackPanel>
             </StackPanel>
-        </HierarchicalDataTemplate>
+        </HierarchicalDataTemplate>-->
     </Page.Resources>
 
     <Grid>
@@ -834,23 +806,43 @@
             <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
 
-        <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
-            <MenuItem Header="_Файл" Style="{StaticResource MenuItemTemplate}">
-                <MenuItem Header="_Создать" Style="{StaticResource MenuItemTemplate}" Command="{Binding Path=CreateNewFileCommand}">
+        <Menu Grid.Row="0">
+            <Menu.Resources>
+                <Style TargetType="{x:Type MenuItem}" BasedOn="{StaticResource TextBase}">
+                    <Setter Property="FontSize" Value="{StaticResource FontSizeN}"/>
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    <Setter Property="Padding" Value="10, 3"/>
+                    <Style.Resources>
+                        <Style TargetType="{x:Type Path}">
+                            <Setter Property="Stretch" Value="Uniform"/>
+                        </Style>
+                    </Style.Resources>
+                </Style>
+                <!--<Style TargetType="{x:Type Path}">
+                    <Setter Property="Stretch" Value="Uniform"/>
+                </Style>-->
+                <!--<Style TargetType="{x:Type MenuItem}" BasedOn="{StaticResource MenuItemTemplate}"></Style>-->
+            </Menu.Resources>
+            
+            <MenuItem Header="_Файл">
+                <MenuItem Header="_Создать"
+                          Command="{Binding Path=CreateNewFileCommand}"
+                          InputGestureText="Ctrl+Shift+N">
                     <MenuItem.Icon>
                         <Path Fill="{StaticResource IconNewFileBrush}" StrokeThickness="0"
-                          Data="{StaticResource NewFilePathGeomerty}"/>
+                              Data="{StaticResource NewFilePathGeomerty}"/>
                     </MenuItem.Icon>
                 </MenuItem>
-
-                <MenuItem Header="_Открыть" Style="{StaticResource MenuItemTemplate}" Command="{Binding Path=OpenedFileCommand}">
+                <MenuItem Header="_Открыть"
+                          Command="{Binding Path=OpenedFileCommand}"
+                          InputGestureText="Ctrl+O">
                     <MenuItem.Icon>
                         <Path Fill="{StaticResource IconOpenFileBrush}"
-                          Data="{StaticResource OpenPathGeomerty}"/>
+                              Data="{StaticResource OpenPathGeomerty}"/>
                     </MenuItem.Icon>
                 </MenuItem>
-
-                <MenuItem Style="{StaticResource MenuItemTemplate}" Command="{Binding Path=SaveFileCommand}">
+                <MenuItem Command="{Binding Path=SaveFileCommand}" InputGestureText="Ctrl+S">
                     <MenuItem.Header>
                         <MultiBinding Converter="{StaticResource StringFormatMultiConvert}" ConverterParameter="_Сохранить {0}">
                             <Binding Path="SelectedFile.Name" Mode="OneWay"/>
@@ -859,125 +851,157 @@
 
                     <MenuItem.Icon>
                         <Path Fill="{StaticResource IconSaveBrush}"
-                          Data="{StaticResource SavePathGeomerty}"/>
+                              Data="{StaticResource SavePathGeomerty}"/>
                     </MenuItem.Icon>
                 </MenuItem>
-
-                <MenuItem Style="{StaticResource MenuItemTemplate}" Command="{Binding Path=SaveAsFileCommand}">
+                <MenuItem Command="{Binding Path=SaveAsFileCommand}">
                     <MenuItem.Header>
                         <MultiBinding Converter="{StaticResource StringFormatMultiConvert}" ConverterParameter="_Сохранить {0} как">
                             <Binding Path="SelectedFile.Name" Mode="OneWay"/>
                         </MultiBinding>
                     </MenuItem.Header>
                 </MenuItem>
-
-                <MenuItem Header="_Сохранить все" Style="{StaticResource MenuItemTemplate}" Command="{Binding Path=SaveAsFileCommand}">
+                <MenuItem Header="_Сохранить все"
+                          Command="{Binding Path=SaveAsFileCommand}"
+                          InputGestureText="Ctrl+K, S">
                     <MenuItem.Icon>
                         <Path Fill="{StaticResource IconSaveAsBrush}"
-                          Data="{StaticResource SaveAsPathGeomerty}"/>
+                              Data="{StaticResource SaveAsPathGeomerty}"/>
                     </MenuItem.Icon>
-                </MenuItem>
-                <Separator/>
-                <!--<MenuItem Header="_Экспорт" Style="{StaticResource MenuItemTemplate}"/>
-                <Separator/>-->
-                <MenuItem Header="_Экспорт параметров" Style="{StaticResource MenuItemTemplate}">
+                </MenuItem>                
+                <Separator/>                                
+                <MenuItem Header="_Экспорт параметров">
                     <MenuItem.Icon>
                         <Path Fill="{StaticResource IconExportBrush}"
                               Data="{StaticResource ExportPathGeomerty}"/>
                     </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="_Импорт параметров" Style="{StaticResource MenuItemTemplate}">
+                </MenuItem>                
+                <MenuItem Header="_Импорт параметров">
                     <MenuItem.Icon>
                         <Path Fill="{StaticResource IconImportBrush}"
                               Data="{StaticResource ImportPathGeomerty}"/>
                     </MenuItem.Icon>
-                </MenuItem>
+                </MenuItem>                
                 <Separator/>
-                <MenuItem Header="_Выход" Style="{StaticResource MenuItemTemplate}"/>
+                <MenuItem Header="_Выход" InputGestureText="Alt+F4"/>
             </MenuItem>
 
-            <MenuItem Header="_Правка" Style="{StaticResource MenuItemTemplate}">
-                <MenuItem Header="_Отменить"  Style="{StaticResource MenuItemTemplate}"/>
-                <MenuItem Header="_Вернуть"  Style="{StaticResource MenuItemTemplate}"/>
-                <MenuItem Header="_Обновить"  Style="{StaticResource MenuItemTemplate}"/>
-                <MenuItem Header="_Выделить всё" Style="{StaticResource MenuItemTemplate}"/>
-                <MenuItem Header="_Выделить область" Style="{StaticResource MenuItemTemplate}"/>
-                <MenuItem Header="_Дублировать выбранное" Style="{StaticResource MenuItemTemplate}"/>
-                <MenuItem Header="_Удалить" Style="{StaticResource MenuItemTemplate}"/>
+            <MenuItem Header="_Правка">
+                <MenuItem Header="_Отменить" InputGestureText="Ctrl+Z"/>
+                <MenuItem Header="_Вернуть" InputGestureText="Ctrl+Y"/>
+                <Separator/>
+                <MenuItem Header="_Обновить"/>
+                <MenuItem Header="_Выделить всё" InputGestureText="Ctrl+A"/>
+                <MenuItem Header="_Выделить область"/>
+                <Separator/>
+                <MenuItem Header="_Вырезать" InputGestureText="Ctrl+X"/>
+                <MenuItem Header="_Копировать" InputGestureText="Ctrl+C"/>
+                <MenuItem Header="_Вставить" InputGestureText="Ctrl+V"/>
+                <MenuItem Header="_Дублировать" InputGestureText="Ctrl+D"/>
+                <MenuItem Header="_Удалить" InputGestureText="Del"/>
             </MenuItem>
 
-            <MenuItem Header="_Генерация" Style="{StaticResource MenuItemTemplate}">
-                <MenuItem Header="_Начать генерацию" Style="{StaticResource MenuItemTemplate}"/>
-                <Separator />
-                <MenuItem Header="_Настройки" Style="{StaticResource MenuItemTemplate}"/>
+            <MenuItem Header="_Генерация" >
+                <MenuItem Header="_Копировать программу на контроллер" IsCheckable="True"/>
+                <MenuItem Header="_Начать генерацию" InputGestureText="Ctrl+F5"/>
+                <!--<Separator/>
+                <MenuItem Header="_Настройки"/>-->
             </MenuItem>
 
-            <MenuItem Header="_Окно" Style="{StaticResource MenuItemTemplate}">
-                <!--<MenuItem Header="_Расположение" Style="{StaticResource MenuItemTemplate}"/>-->
+            <MenuItem Header="_Вид" >
+                <MenuItem Header="_Настройки робота/ов"/>
+                <MenuItem Header="_Окно управления работами"/>
+                <Separator/>
+                <MenuItem Header="_Свойства"/>
+                <Separator/>
+                <MenuItem Header="_Параметры детали"/>
+                <!--<MenuItem Header="_Настройки генерации"/>-->
+                <Separator/>
+                <MenuItem Header="_Окно сообщений"/>
+            </MenuItem>
+
+            <MenuItem Header="_3D View" >
                 <MenuItem Header="_Система координат" IsCheckable="True"
-                          IsChecked="{Binding Path=Settings.ShowCoordinateSystem, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                          Style="{StaticResource MenuItemTemplate}"/>
+                          IsChecked="{Binding Path=Settings.ShowCoordinateSystem, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <MenuItem Header="_Пространственный куб" IsCheckable="True"
-                          IsChecked="{Binding Path=Settings.ShowViewCube, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                          Style="{StaticResource MenuItemTemplate}"/>
+                          IsChecked="{Binding Path=Settings.ShowViewCube, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <MenuItem Header="_Кол-во полигонов" IsCheckable="True"
-                          IsChecked="{Binding Path=Settings.ShowTriangleCountInfo, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                          Style="{StaticResource MenuItemTemplate}"/>
+                          IsChecked="{Binding Path=Settings.ShowTriangleCountInfo, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                 <Separator/>
 
                 <MenuItem Header="_Ортоганальная камера" IsCheckable="True"
-                          IsChecked="{Binding Path=Settings.Orthographic, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                          Style="{StaticResource MenuItemTemplate}"/>
+                          IsChecked="{Binding Path=Settings.Orthographic, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <MenuItem Header="_Демонстрация информации о камере" IsCheckable="True"
-                          IsChecked="{Binding Path=Settings.ShowCameraInfo, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                          Style="{StaticResource MenuItemTemplate}"/>
+                          IsChecked="{Binding Path=Settings.ShowCameraInfo, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <MenuItem Header="_Демонстрация курсора камеры" IsCheckable="True"
-                          IsChecked="{Binding Path=Settings.ShowCameraTarget, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                          Style="{StaticResource MenuItemTemplate}"/>
+                          IsChecked="{Binding Path=Settings.ShowCameraTarget, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <MenuItem Header="_Поворот вокруг мыши" IsCheckable="True"
-                          IsChecked="{Binding Path=Settings.RotateAroundMouseDownPoint, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                          Style="{StaticResource MenuItemTemplate}"/>
+                          IsChecked="{Binding Path=Settings.RotateAroundMouseDownPoint, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <MenuItem Header="_Приближение около мыши" IsCheckable="True"
-                          IsChecked="{Binding Path=Settings.ZoomAroundMouseDownPoint, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                          Style="{StaticResource MenuItemTemplate}"/>
+                          IsChecked="{Binding Path=Settings.ZoomAroundMouseDownPoint, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <MenuItem Header="_Инерция" IsCheckable="True"
-                          IsChecked="{Binding Path=Settings.IsInertiaEnabled, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                          Style="{StaticResource MenuItemTemplate}"/>
+                          IsChecked="{Binding Path=Settings.IsInertiaEnabled, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <MenuItem Header="_Панорамирование" IsCheckable="True"
-                          IsChecked="{Binding Path=Settings.IsPanEnabled, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                          Style="{StaticResource MenuItemTemplate}"/>
+                          IsChecked="{Binding Path=Settings.IsPanEnabled, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <MenuItem Header="_Перемещение" IsCheckable="True"
-                          IsChecked="{Binding Path=Settings.IsMoveEnabled, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                          Style="{StaticResource MenuItemTemplate}"/>
+                          IsChecked="{Binding Path=Settings.IsMoveEnabled, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <MenuItem Header="_Вращение" IsCheckable="True"
-                          IsChecked="{Binding Path=Settings.IsRotationEnabled, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                          Style="{StaticResource MenuItemTemplate}"/>
+                          IsChecked="{Binding Path=Settings.IsRotationEnabled, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <MenuItem Header="_Маштабирование" IsCheckable="True"
-                          IsChecked="{Binding Path=Settings.IsZoomEnabled, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                          Style="{StaticResource MenuItemTemplate}"/>
+                          IsChecked="{Binding Path=Settings.IsZoomEnabled, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </MenuItem>
 
-            <MenuItem Header="_Настройки" Style="{StaticResource MenuItemTemplate}"
-                      Command="{Binding Path=PropertiesCommand}"/>
+            <MenuItem Header="_Настройки" Command="{Binding Path=PropertiesCommand}"/>
 
-            <MenuItem Header="_Справка" Style="{StaticResource MenuItemTemplate}"
-                      Command="{Binding Path=HelpCommand}"/>
+            <MenuItem Header="_Справка" Command="{Binding Path=HelpCommand}" InputGestureText="Ctrl+F1"/>
         </Menu>
 
-        <Menu Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+        <Menu Grid.Row="1">
             <Menu.Resources>
+                <ControlTemplate x:Key="MenuItemTemplate1" TargetType="{x:Type MenuItem}">
+                    <Button Content="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}}"
+                    ToolTip="{Binding Header, RelativeSource={RelativeSource TemplatedParent}}"
+                    Command="{Binding Command, RelativeSource={RelativeSource TemplatedParent}}"
+                    CommandParameter="{Binding CommandParameter, RelativeSource={RelativeSource TemplatedParent}}"
+                    CommandTarget="{Binding CommandTarget, RelativeSource={RelativeSource TemplatedParent}}"
+                    Width="Auto" Margin="3,2" Padding="5"/>
+                </ControlTemplate>
+
+                <ControlTemplate x:Key="MenuItemTemplate2" TargetType="{x:Type MenuItem}">
+                    <Border Name="Panel" BorderThickness="0" CornerRadius="5">
+                        <StackPanel Orientation="Horizontal" Margin="5">
+                            <ContentPresenter x:Name="Icon" ContentSource="Icon" Height="30" Margin="5,0"/>
+                            <ContentPresenter ContentSource="Header" RecognizesAccessKey="True"
+                                      TextElement.FontSize="{StaticResource FontSizeNP3}"
+                                      TextElement.Foreground="{StaticResource ThemeFgP2Brush}"
+                                      VerticalAlignment="Center" Margin="5,0"
+                                      Style="{StaticResource TextBase}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Panel" Property="Background" Value="{StaticResource ThemeIsMouseOverMenuItemBgBrush}"/>
+                        </Trigger>
+
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Panel" Property="Background" Value="{StaticResource ThemeIsPressedMenuItemBgBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+
                 <ControlTemplate x:Key="SeparatorTemplate" TargetType="{x:Type MenuItem}">
                     <Separator HorizontalAlignment="Right" Margin="10,2">
                         <Separator.LayoutTransform>
@@ -1058,7 +1082,7 @@
 
             <MenuItem Template="{StaticResource SeparatorTemplate}"/>
 
-            <MenuItem>
+            <!--<MenuItem>
                 <MenuItem.Template>
                     <ControlTemplate TargetType="{x:Type MenuItem}">
                         <ComboBox VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
@@ -1079,20 +1103,13 @@
                                         <DataTrigger Binding="{Binding Path=SelectedNameRobot}" Value="{x:Null}">
                                             <Setter Property="SelectedIndex" Value="0"/>
                                         </DataTrigger>
-
-                                        <!--<DataTrigger Binding="{Binding Path=Settings.AvailableTab, Source={x:Static Application.Current}, 
-                                            Converter={StaticResource CollectionsStringToBoolConvert}, ConverterParameter='Программа'}" Value="False">
-                                            <Setter Property="Visibility" Value="Hidden"/>
-                                            <Setter Property="Height" Value="0"/>
-                                            <Setter Property="Width" Value="0"/>
-                                        </DataTrigger>-->
                                     </Style.Triggers>
                                 </Style>
                             </ComboBox.Style>
                         </ComboBox>
                     </ControlTemplate>
                 </MenuItem.Template>
-            </MenuItem>
+            </MenuItem>-->
 
             <MenuItem Template="{StaticResource MenuItemTemplate2}" Header="Генерировать"
                       Style="{StaticResource MenuItemDetalNull}" Margin="10,2">
@@ -1262,7 +1279,93 @@
             </MenuItem>
         </Menu>
 
-        <Grid Grid.Row="2">
+        <!--<avalonDock:DockingManager Grid.Row="2"
+                                   Style="{StaticResource TextBase}"
+                                   FontSize="{StaticResource FontSizeNP2}"
+                                   Theme="{Binding Path=Settings.SelectedTheme, Source={x:Static Application.Current}, Mode=OneWay}"
+                                   DocumentsSource="{Binding Path=OpenedFiles, Source={x:Static Application.Current}, Mode=OneWay}">
+
+            -->
+        <!--<avalonDock:DockingManager.LayoutUpdateStrategy>
+                <avalonDock:
+            </avalonDock:DockingManager.LayoutUpdateStrategy>-->
+        <!--
+            
+            <avalonDock:LayoutRoot>
+                <avalonDock:LayoutPanel>
+                    <LayoutDocumentPane>
+
+                    </LayoutDocumentPane>
+                </avalonDock:LayoutPanel>
+
+                <avalonDock:LayoutRoot.RightSide>
+                    <avalonDock:LayoutAnchorSide>
+                        <avalonDock:LayoutAnchorGroup>
+                            <avalonDock:LayoutAnchorable Title="Роботы"
+                                                         ContentId="Robots">
+                                <TextBlock Text="Aaaaaa"/>
+                            </avalonDock:LayoutAnchorable>
+
+                            <avalonDock:LayoutAnchorable Title="Управление"
+                                                         ContentId="Control">
+                                <TextBlock Text="Bbbbbbbbbb"/>
+                            </avalonDock:LayoutAnchorable>
+                        </avalonDock:LayoutAnchorGroup>
+                    </avalonDock:LayoutAnchorSide>
+                </avalonDock:LayoutRoot.RightSide>
+            </avalonDock:LayoutRoot>
+        </avalonDock:DockingManager>-->
+
+        <avalonDock:DockingManager Grid.Row="2">
+            <avalonDock:LayoutRoot>
+                <avalonDock:LayoutPanel Orientation="Horizontal">
+                    <avalonDock:LayoutDocumentPaneGroup>
+                        <avalonDock:LayoutDocumentPane>
+                            <avalonDock:LayoutDocument Title="Document 1">
+                                <TextBox Text="This is Document 1"/>
+                            </avalonDock:LayoutDocument>
+                            
+                            <avalonDock:LayoutDocument Title="Document 2">
+                                <TextBox Text="This is Document 2"/>
+                            </avalonDock:LayoutDocument>
+                        </avalonDock:LayoutDocumentPane>
+                    </avalonDock:LayoutDocumentPaneGroup>
+                    
+                    <avalonDock:LayoutAnchorablePaneGroup DockWidth="200">
+                        <avalonDock:LayoutAnchorablePane>
+                            <avalonDock:LayoutAnchorable Title="Toolbox">
+                                <ListBox>
+                                    <ListBoxItem>Button</ListBoxItem>
+                                    <ListBoxItem>TextBox</ListBoxItem>
+                                </ListBox>
+                            </avalonDock:LayoutAnchorable>
+                            
+                            <avalonDock:LayoutAnchorable Title="Properties">
+                                <TextBox Text="Properties Panel"/>
+                            </avalonDock:LayoutAnchorable>
+                        </avalonDock:LayoutAnchorablePane>
+                    </avalonDock:LayoutAnchorablePaneGroup>
+                </avalonDock:LayoutPanel>
+
+                <avalonDock:LayoutRoot.RightSide>
+                    <avalonDock:LayoutAnchorSide>
+                        <avalonDock:LayoutAnchorGroup>
+                            <avalonDock:LayoutAnchorable Title="Роботы"
+                                                         ContentId="Robots">
+                                <TextBlock Text="Aaaaaa"/>
+                            </avalonDock:LayoutAnchorable>
+
+                            <avalonDock:LayoutAnchorable Title="Управление"
+                                                         ContentId="Control">
+                                <TextBlock Text="Bbbbbbbbbb"/>
+                            </avalonDock:LayoutAnchorable>
+                        </avalonDock:LayoutAnchorGroup>
+                    </avalonDock:LayoutAnchorSide>
+                </avalonDock:LayoutRoot.RightSide>
+            </avalonDock:LayoutRoot>
+        </avalonDock:DockingManager>
+
+        <!--<Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -1421,12 +1524,16 @@
                                     <h:SunLight/>
                                     <h:GridLinesVisual3D/>
 
-                                    <!--<h:CoordinateSystemVisual3D ArrowLengths="3"/>-->
+                                    -->
+        <!--<h:CoordinateSystemVisual3D ArrowLengths="3"/>-->
+        <!--
 
                                     <ModelVisual3D Content="{Binding CurrentModel}"/>
 
-                                    <!--<h:BillboardVisual3D Position="0,0,0"
+                                    -->
+        <!--<h:BillboardVisual3D Position="0,0,0"
                                                      Material="{h:ImageMaterial Opacity, IsEmissive=true}" />-->
+        <!--
 
                                     <h:BoundingBoxVisual3D BoundingBox="{Binding Path=DataContext.SelectedObject, Converter={StaticResource BoundsConvert}, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
                                                            Diameter="0.2"/>
@@ -1551,21 +1658,25 @@
                                         ScrollViewer.VerticalScrollBarVisibility="Auto">
                             <ContentControl.Style>
                                 <Style TargetType="{x:Type ContentControl}">
-                                    <!--<Setter Property="Template">
+                                    -->
+        <!--<Setter Property="Template">
                                         <Setter.Value>
                                             <ControlTemplate TargetType="ContentControl">
 
                                             </ControlTemplate>
                                         </Setter.Value>
                                     </Setter>-->
+        <!--
 
                                     <Setter Property="ContentTemplate">
                                         <Setter.Value>
                                             <DataTemplate>
-                                                <!--<TreeView FontSize="15" Padding="5,5,10,5"
+                                                -->
+        <!--<TreeView FontSize="15" Padding="5,5,10,5"
                                                           HorizontalContentAlignment="Center"
                                                           ItemTemplate="{StaticResource TreeView3DModel}">
-                                                    --><!--<TreeViewItem Header="Базы данных">
+                                                    -->
+        <!--<TreeViewItem Header="Базы данных">
                                                         <TreeViewItem Header="MS SQL Server" />
                                                         <TreeViewItem Header="MySQL" />
                                                     </TreeViewItem>
@@ -1576,8 +1687,10 @@
                                                         <TreeViewItem Header="Basic">
                                                             <TreeViewItem Header="Visual Basic" />
                                                         </TreeViewItem>
-                                                    </TreeViewItem>--><!--
+                                                    </TreeViewItem>-->
+        <!--
                                                 </TreeView>-->
+        <!--
                                             </DataTemplate>
                                         </Setter.Value>
                                     </Setter>
@@ -1605,8 +1718,10 @@
                                 ScrollViewer.VerticalScrollBarVisibility="Auto">
 
                         <TabItem Header="Свойства">
-                            <!--<pt:PropertyGrid Margin="4"
+                            -->
+        <!--<pt:PropertyGrid Margin="4"
                                 SelectedObject="{Binding Path=DataContext.SelectedObject, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, Mode=OneWay}"/>-->
+        <!--
                         </TabItem>
 
                         <TabItem Header="Параметры">
@@ -1620,11 +1735,15 @@
                                 </Style>
                             </TabItem.Style>
                             
-                            <!--<pt:PropertyGrid Margin="-5">
-                                --><!--<pt:PropertyGrid.ControlFactory>
+                            -->
+        <!--<pt:PropertyGrid Margin="-5">
+                                -->
+        <!--<pt:PropertyGrid.ControlFactory>
                                     <pt:CustomControlFactory/>
-                                </pt:PropertyGrid.ControlFactory>--><!--
+                                </pt:PropertyGrid.ControlFactory>-->
+        <!--
                             </pt:PropertyGrid>-->
+        <!--
 
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -1770,7 +1889,7 @@
                                     </i:Interaction.Behaviors>
                                 </TreeView>
 
-                                <!--<Border Grid.Row="1" MaxHeight="100" Width="400"
+                                --><!--<Border Grid.Row="1" MaxHeight="100" Width="400"
                                         BorderThickness="3" BorderBrush="{StaticResource ThemeInfoBorderBrush}"
                                         CornerRadius="5" Padding="5" Margin="0">
 
@@ -1791,7 +1910,8 @@
                                                         <MultiDataTrigger>
                                                             <MultiDataTrigger.Conditions>
                                                                 <Condition Binding="{Binding ElementName=treeViewProperties, Path=SelectedItem.Header, Mode=TwoWay}" Value="Общие"/>
-                                                                --><!--<Condition Binding="{Binding Path=DetalObject.ScoseType, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Value="d_rect"/>--><!--
+                                                                -->
+        <!--<Condition Binding="{Binding Path=DetalObject.ScoseType, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Value="d_rect"/>--><!--
                                                             </MultiDataTrigger.Conditions>
 
                                                             <Setter Property="Text" Value="# Верхний левый угол детали (как на чертеже) устанавливается в 0 точку сварочного комплекса, образованную торцевыми упорами на козелках."/>
@@ -1807,6 +1927,7 @@
                                         </TextBlock>
                                     </ScrollViewer>
                                 </Border>-->
+        <!--
                             </Grid>
                         </TabItem>
                     </TabControl>
@@ -1837,7 +1958,7 @@
                                  Template="{StaticResource RadioButtonInToggleTemplate}"/>
                 </Grid>
             </Grid>
-        </Grid>
+        </Grid>-->
 
         <DockPanel Grid.Row="3" Background="{StaticResource ThemeBottomMenuBarBrush}">
             

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Collections.Generic;
+
+using AvalonDock.Themes;
 
 using Newtonsoft.Json;
 
@@ -12,10 +15,16 @@ namespace ForRobot.Libr.Settings
     {
         #region Private variables
 
+        private const string _fileName = "interfaceOfRobot_settings.json";
+
+        private static string _path = Path.Combine(Path.GetTempPath(), Settings._fileName);
+
         private static readonly JsonSerializerSettings _jsonSettings = new JsonSerializerSettings()
         {
             Formatting = Formatting.Indented
         };
+
+        private Tuple<string, Theme> _selectedTheme;
 
         #endregion
 
@@ -68,6 +77,31 @@ namespace ForRobot.Libr.Settings
         #endregion
 
         #region View
+
+        [JsonIgnore]
+        public List<Tuple<string, Theme>> Themes { get; } = new List<Tuple<string, Theme>>()
+        {
+            new Tuple<string, Theme>(nameof(GenericTheme), new GenericTheme()),
+            //new Tuple<string, Theme>(nameof(AeroTheme),new AeroTheme()),
+            //new Tuple<string, Theme>(nameof(ExpressionDarkTheme),new ExpressionDarkTheme()),
+            //new Tuple<string, Theme>(nameof(ExpressionLightTheme),new ExpressionLightTheme()),
+            //new Tuple<string, Theme>(nameof(MetroTheme),new MetroTheme()),
+            //new Tuple<string, Theme>(nameof(VS2010Theme),new VS2010Theme()),
+            new Tuple<string, Theme>(nameof(Vs2013BlueTheme),new Vs2013BlueTheme()),
+            new Tuple<string, Theme>(nameof(Vs2013DarkTheme),new Vs2013DarkTheme()),
+            new Tuple<string, Theme>(nameof(Vs2013LightTheme),new Vs2013LightTheme())
+        };        
+        [JsonIgnore]
+        public Tuple<string, Theme> SelectedTheme
+        {
+            get => this._selectedTheme;
+            set
+            {
+                this._selectedTheme = value;
+                Properties.Settings.Default.SelectedTheme = this._selectedTheme.Item1;
+                Properties.Settings.Default.Save();
+            }
+        }
 
         /// <summary>
         /// Отображение рёбер
@@ -193,7 +227,13 @@ namespace ForRobot.Libr.Settings
 
         #region Constructor
 
-        public Settings() { }
+        public Settings()
+        {
+            if (string.IsNullOrEmpty(Properties.Settings.Default.SelectedTheme))
+                this.SelectedTheme = this.Themes.First();
+            else
+                this.SelectedTheme = this.Themes.Where(t => t.Item1 == Properties.Settings.Default.SelectedTheme).First();
+        }
 
         #endregion
 
@@ -214,8 +254,8 @@ namespace ForRobot.Libr.Settings
         /// <returns></returns>
         public static Settings GetSettings()
         {
-            if (File.Exists(Path.Combine(Path.GetTempPath(), "interfaceOfRobot_settings.json")))
-                return JsonConvert.DeserializeObject<Settings>(File.ReadAllText(Path.Combine(Path.GetTempPath(), "interfaceOfRobot_settings.json")), _jsonSettings);
+            if (File.Exists(_path))
+                return JsonConvert.DeserializeObject<Settings>(File.ReadAllText(_path), _jsonSettings);
             else
                 return new Settings();
         }

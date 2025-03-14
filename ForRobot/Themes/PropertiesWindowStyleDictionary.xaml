@@ -39,8 +39,8 @@
             
             <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource textBase}"></Style>
         </DataTemplate.Resources>
-        
-        <Grid Background="Transparent">
+
+        <Grid Background="Transparent" DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -61,12 +61,12 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
-                        <CheckBox Grid.Column="0" Content="Автообновление" IsChecked="{Binding Path=DataContext.Settings.AutoUpdate, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Mode=TwoWay}"/>
-                        <CheckBox Grid.Column="2" Content="Уведомлять пользователя перед обновлением" IsChecked="{Binding Path=DataContext.Settings.InformUser, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Mode=TwoWay}">
+                        <CheckBox Grid.Column="0" Content="Автообновление" IsChecked="{Binding Path=Settings.AutoUpdate, Mode=TwoWay}"/>
+                        <CheckBox Grid.Column="2" Content="Уведомлять пользователя перед обновлением" IsChecked="{Binding Path=Settings.InformUser, Mode=TwoWay}">
                             <CheckBox.Style>
                                 <Style TargetType="{x:Type CheckBox}">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=DataContext.Settings.AutoUpdate, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}" Value="{StaticResource False}">
+                                        <DataTrigger Binding="{Binding Path=Settings.AutoUpdate}" Value="{StaticResource False}">
                                             <Setter Property="IsEnabled" Value="False"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -75,11 +75,11 @@
                         </CheckBox>
                     </Grid>
 
-                    <Button Grid.Row="1" Content="Изменить путь к папке для обновлений" Padding="0, 5" Margin="0, 15, 0, 0" Command="{Binding Path=DataContext.EditPathForUpdateCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
+                    <Button Grid.Row="1" Content="Изменить путь к папке для обновлений" Padding="0, 5" Margin="0, 15, 0, 0" Command="{Binding Path=EditPathForUpdateCommand}"/>
                 </Grid>
             </GroupBox>
 
-            <Button Grid.Row="1" Content="Изменить пин-код" Margin="15" Command="{Binding Path=DataContext.EditPinCodeCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"/>
+            <Button Grid.Row="1" Content="Изменить пин-код" Margin="15" Command="{Binding Path=EditPinCodeCommand}"/>
 
             <GroupBox Grid.Row="2" Header="Делать запрос пользователю перед закрытием окна">
                 <Grid Margin="10">
@@ -89,14 +89,11 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <RadioButton Grid.Column="0" GroupName="CloseWindow" Content="Всегда" IsChecked="{Binding Path=DataContext.Settings.ModeClosingApp, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor},
-                                                                                                      Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static settings:ModeClosingApp.Ever}, Mode=TwoWay, TargetNullValue={StaticResource False}, FallbackValue={StaticResource False}}"/>
+                    <RadioButton Grid.Column="0" GroupName="CloseWindow" Content="Всегда" IsChecked="{Binding Path=Settings.ModeClosingApp, Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static settings:ModeClosingApp.Ever}, Mode=TwoWay, TargetNullValue={StaticResource False}, FallbackValue={StaticResource False}}"/>
 
-                    <RadioButton Grid.Column="1" GroupName="CloseWindow" Content="Никогда" IsChecked="{Binding Path=DataContext.Settings.ModeClosingApp, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor},
-                                                                                                      Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static settings:ModeClosingApp.Never}, Mode=TwoWay, TargetNullValue={StaticResource False}, FallbackValue={StaticResource False}}"/>
+                    <RadioButton Grid.Column="1" GroupName="CloseWindow" Content="Никогда" IsChecked="{Binding Path=Settings.ModeClosingApp, Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static settings:ModeClosingApp.Never}, Mode=TwoWay, TargetNullValue={StaticResource False}, FallbackValue={StaticResource False}}"/>
 
-                    <RadioButton Grid.Column="2" GroupName="CloseWindow" IsChecked="{Binding Path=DataContext.Settings.ModeClosingApp, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor},
-                                                                                     Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static settings:ModeClosingApp.HaveConnected}, Mode=TwoWay, TargetNullValue={StaticResource False}, FallbackValue={StaticResource False}}">
+                    <RadioButton Grid.Column="2" GroupName="CloseWindow" IsChecked="{Binding Path=Settings.ModeClosingApp, Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static settings:ModeClosingApp.HaveConnected}, Mode=TwoWay, TargetNullValue={StaticResource False}, FallbackValue={StaticResource False}}">
                         <RadioButton.Content>
                             <TextBlock Text="Если есть активное соединение" TextWrapping="Wrap"/>
                         </RadioButton.Content>
@@ -120,15 +117,15 @@
                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
             </Style>
         </DataTemplate.Resources>
-        
-        <Grid Background="Transparent">
+
+        <Grid Background="Transparent" DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <CheckBox Grid.Row="0" Content="Ограничивать время ожидания ответа от сервера"
-                      IsChecked="{Binding Path=DataContext.Settings.LimitedConnectionTimeOut, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Mode=TwoWay}"/>
+                      IsChecked="{Binding Path=Settings.LimitedConnectionTimeOut, Mode=TwoWay}"/>
 
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
@@ -138,7 +135,7 @@
 
                 <Label Grid.Column="0" Content="Время ожидания, сек."/>
 
-                <TextBox Grid.Column="1" Text="{Binding Path=DataContext.Settings.ConnectionTimeOut, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Mode=TwoWay}" Padding="5"  Margin="10">
+                <TextBox Grid.Column="1" Text="{Binding Path=Settings.ConnectionTimeOut, Mode=TwoWay}" Padding="5"  Margin="10">
                     <TextBox.Style>
                         <Style TargetType="{x:Type TextBox}">
                             <Setter Property="FontSize" Value="13"/>
@@ -146,7 +143,7 @@
                             <Setter Property="HorizontalContentAlignment" Value="Center"/>
                             
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding Path=DataContext.Settings.LimitedConnectionTimeOut, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}" Value="{StaticResource False}">
+                                <DataTrigger Binding="{Binding Path=Settings.LimitedConnectionTimeOut}" Value="{StaticResource False}">
                                     <Setter Property="IsEnabled" Value="False"/>
                                 </DataTrigger>
                             </Style.Triggers>
@@ -200,7 +197,7 @@
                 <Grid>
                     <ListBox SelectionMode="Single" FontSize="13" Padding="0" Margin="3"
                              Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0"
-                             ItemsSource="{Binding Path=DataContext.Settings.AvailableFolders, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}">
+                             ItemsSource="{Binding Path=Settings.AvailableFolders}">
 
                         <ListBox.ItemTemplate>
                             <DataTemplate>
@@ -208,11 +205,11 @@
 
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Checked">
-                                            <i:InvokeCommandAction Command="{Binding Path=DataContext.CheckBoxAvailableFolderCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}" CommandParameter="{Binding}"/>
+                                            <i:InvokeCommandAction Command="{Binding Path=CheckBoxAvailableFolderCommand}" CommandParameter="{Binding}"/>
                                         </i:EventTrigger>
 
                                         <i:EventTrigger EventName="Unchecked">
-                                            <i:InvokeCommandAction Command="{Binding Path=DataContext.CheckBoxAvailableFolderCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}" CommandParameter="{Binding}"/>
+                                            <i:InvokeCommandAction Command="{Binding Path=CheckBoxAvailableFolderCommand}" CommandParameter="{Binding}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </CheckBox>
@@ -222,8 +219,7 @@
                 </Grid>
             </GroupBox>
 
-            <CheckBox Grid.Row="1" Margin="0, 5"
-                      Content="Доступны файлы с расширением .dat" IsChecked="{Binding Path=DataContext.Settings.AccessDataFile, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Mode=TwoWay}"/>
+            <CheckBox Grid.Row="1" Margin="0, 5" Content="Доступны файлы с расширением .dat" IsChecked="{Binding Path=Settings.AccessDataFile, Mode=TwoWay}"/>
         </Grid>
     </DataTemplate>
 
@@ -257,19 +253,42 @@
             </Style>
 
             <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource textBase}"></Style>
+            <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource textBase}"></Style>
         </DataTemplate.Resources>
-        
-        <Grid>
+
+        <Grid DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Label Grid.Column="0" Content="Цветовая тема"/>
+                
+                <ComboBox Grid.Column="1" Margin="4"
+                          DisplayMemberPath="Item1"
+                          ItemsSource="{Binding Path=Settings.Themes, Mode=OneWay}"
+                          SelectedItem="{Binding Path=Settings.SelectedTheme, Mode=TwoWay}"
+                          VerticalContentAlignment="Center">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Path=Item1}" Padding="5"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </Grid>
             
-            <GroupBox Header="Видимость вкладок">
+            <GroupBox Grid.Row="1" Header="Видимость вкладок">
                 <Grid>
                     <ListBox SelectionMode="Single"
                              Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0"
-                             ItemsSource="{Binding Path=DataContext.Settings.AvailableTab, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}">
+                             ItemsSource="{Binding Path=Settings.AvailableTab, Mode=OneWay}">
 
                         <ListBox.ItemTemplate>
                             <DataTemplate>
@@ -277,11 +296,11 @@
 
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Checked">
-                                            <i:InvokeCommandAction Command="{Binding Path=DataContext.CheckBoxAvailableTabCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}" CommandParameter="{Binding}"/>
+                                            <i:InvokeCommandAction Command="{Binding Path=CheckBoxAvailableTabCommand}" CommandParameter="{Binding}"/>
                                         </i:EventTrigger>
 
                                         <i:EventTrigger EventName="Unchecked">
-                                            <i:InvokeCommandAction Command="{Binding Path=DataContext.CheckBoxAvailableTabCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}" CommandParameter="{Binding}"/>
+                                            <i:InvokeCommandAction Command="{Binding Path=CheckBoxAvailableTabCommand}" CommandParameter="{Binding}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </CheckBox>
@@ -291,7 +310,7 @@
                 </Grid>
             </GroupBox>
 
-            <CheckBox Grid.Row="1" Content="Видимость изображений детали" IsChecked="{Binding Path=DataContext.Settings.VisibilityPictures, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}, Mode=TwoWay}">
+            <CheckBox Grid.Row="2" Content="Видимость изображений детали" IsChecked="{Binding Path=Settings.VisibilityPictures, Mode=TwoWay}">
                 <!--<CheckBox.Style>
                         <Style TargetType="{x:Type CheckBox}">
                             <Style.Triggers>

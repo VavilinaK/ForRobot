@@ -17,6 +17,21 @@
     <Window.DataContext>
         <vm:PropertiesWindowViewModel/>
     </Window.DataContext>
+
+    <Window.Resources>
+        <Style x:Key="TextBase" TargetType="{x:Type FrameworkElement}">
+            <Setter Property="TextElement.FontSize" Value="{StaticResource FontSizeNP1}"/>
+            <Setter Property="TextElement.FontFamily" Value="DefaultFont"/>
+            <Setter Property="TextElement.Foreground" Value="{StaticResource ThemeFgP2Brush}"/>
+        </Style>
+
+        <Style TargetType="{x:Type TreeView}" BasedOn="{StaticResource TextBase}"></Style>
+     
+        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource TextBase}">
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Padding" Value="0, 5"/>
+        </Style>
+    </Window.Resources>
     
     <Grid Margin="15">
         <Grid.RowDefinitions>
@@ -30,7 +45,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <TreeView Grid.Row="0" Grid.Column="0" x:Name="TreeViewProperties" FontSize="13">
+        <TreeView Grid.Row="0" Grid.Column="0" x:Name="TreeViewProperties">
 
             <TreeViewItem Header="Общие" Tag="General"/>
 
@@ -84,7 +99,7 @@
             </Grid.ColumnDefinitions>
 
             <Label Grid.Row="0" Grid.Column="0" Content="{Binding Path=SelectedItem.Header, ElementName=TreeViewProperties}"
-                   FontSize="13" VerticalContentAlignment="Top"/>
+                   VerticalContentAlignment="Top" Style="{StaticResource TextBase}"/>
             
             <Separator Grid.Row="0" Grid.Column="1"/>
 
@@ -154,13 +169,6 @@
         </Grid>
 
         <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">
-            <Grid.Resources>
-                <Style TargetType="{x:Type Button}">
-                    <Setter Property="FontSize" Value="13"/>
-                    <Setter Property="Width" Value="100"/>
-                    <Setter Property="Padding" Value="0, 5"/>
-                </Style>
-            </Grid.Resources>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
