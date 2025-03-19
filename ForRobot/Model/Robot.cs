@@ -39,7 +39,7 @@ namespace ForRobot.Model
         /// Токен отмены переодического запроса: статуса процесса, тока и активной программы
         /// </summary>
         private CancellationTokenSource _periodicTaskCancelTokenSource;
-        
+
         private Task LoadFilesTask;
 
         private List<ForRobot.Model.Controls.File> FilesCollection = new List<Controls.File>();
@@ -138,7 +138,7 @@ namespace ForRobot.Model
         /// </summary>
         public string PathControllerFolder
         {
-            get=> this._pathControllerFolder;
+            get => this._pathControllerFolder;
             set
             {
                 Set(ref this._pathControllerFolder, value);
@@ -152,7 +152,7 @@ namespace ForRobot.Model
             set
             {
                 this.Connection.Host = value;
-                if (this.ConnectionTimeOutMilliseconds == 0 || this.Port == 0 || string.IsNullOrWhiteSpace(this.Connection.Host) || this.Connection.Host == "0.0.0.0")
+                if (this.Port == 0 || string.IsNullOrWhiteSpace(this.Connection.Host) || this.Connection.Host == "0.0.0.0")
                     return;
                 this.OpenConnection();
                 this.ChangeRobot?.Invoke(this, null);
@@ -165,7 +165,7 @@ namespace ForRobot.Model
             set
             {
                 this.Connection.Port = value;
-                if (this.ConnectionTimeOutMilliseconds == 0 || this.Connection.Port == 0 || string.IsNullOrWhiteSpace(this.Host) || this.Host == "0.0.0.0")
+                if (this.Connection.Port == 0 || string.IsNullOrWhiteSpace(this.Host) || this.Host == "0.0.0.0")
                     return;
                 this.OpenConnection();
                 this.ChangeRobot?.Invoke(this, null);
@@ -175,7 +175,6 @@ namespace ForRobot.Model
         /// <summary>
         /// Время ожидания ответа от сервера, сек.
         /// </summary>
-        [JsonIgnore]
         public int ConnectionTimeOutMilliseconds { get; set; } = 0;
 
         [JsonIgnore]
@@ -380,7 +379,7 @@ namespace ForRobot.Model
 
                     var task2 = PeriodicTask(() => { if (this.IsConnection) this.ConvertToTelegraf(this.Connection.InAsync().Result.ToArray()); }, new TimeSpan(0, 0, 0, 0, DelayTelegraf * 1000), this._periodicTaskCancelTokenSource.Token); // Переодический запрос тока на роботе.
 
-                    var task3 = PeriodicTask(() => {  if (this.IsConnection) this.RobotProgramName = this.Connection.Pro_NameAsync().Result.Replace("\"", ""); }, new TimeSpan(0, 0, 0, 0, DelayProgramName * 1000), this._periodicTaskCancelTokenSource.Token); // Переодический запрос имени выбранной на роботе программы
+                    var task3 = PeriodicTask(() => { if (this.IsConnection) this.RobotProgramName = this.Connection.Pro_NameAsync().Result.Replace("\"", ""); }, new TimeSpan(0, 0, 0, 0, DelayProgramName * 1000), this._periodicTaskCancelTokenSource.Token); // Переодический запрос имени выбранной на роботе программы
 
                     Task.Run(async () => await Task.WhenAll(task1, task2, task3));
                     Task.Run(async () => await this.GetFilesAsync());
@@ -408,19 +407,19 @@ namespace ForRobot.Model
                     List<ForRobot.Model.Controls.File> fileDatas = new List<ForRobot.Model.Controls.File>();
                     try
                     {
-                        var files = Task.Run<Dictionary<string, string>>(async () => await this.Connection.File_NameListAsync()).Result;                   
-                        
+                        var files = Task.Run<Dictionary<string, string>>(async () => await this.Connection.File_NameListAsync()).Result;
+
                         foreach (var file in files)
                         {
                             ForRobot.Model.Controls.File fileData = new ForRobot.Model.Controls.File(file.Key.TrimEnd(new char[] { '\\' }), file.Value.TrimStart(';').TrimEnd(';'));
                             fileDatas.Add(fileData);
                         }
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         this.LogErrorMessage(ex.Message, ex);
                     }
-                    LoadFiles(fileDatas.OrderBy(item => item.Path).ToList(), node, index);                    
+                    LoadFiles(fileDatas.OrderBy(item => item.Path).ToList(), node, index);
                 }
                 else
                 {

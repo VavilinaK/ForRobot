@@ -88,9 +88,6 @@
     <Reference Include="CommunityToolkit.Diagnostics, Version=8.4.0.0, Culture=neutral, PublicKeyToken=4aff67a105548ee2, processorArchitecture=MSIL">
       <HintPath>..\packages\CommunityToolkit.Diagnostics.8.4.0\lib\netstandard2.0\CommunityToolkit.Diagnostics.dll</HintPath>
     </Reference>
-    <Reference Include="Dragablz, Version=0.0.3.234, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dragablz.0.0.3.234\lib\net45\Dragablz.dll</HintPath>
-    </Reference>
     <Reference Include="FFImageLoading, Version=2.4.11.982, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Xamarin.FFImageLoading.2.4.11.982\lib\netstandard1.0\FFImageLoading.dll</HintPath>
     </Reference>
@@ -269,6 +266,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Libr\Behavior\CollapedLayoutAnchorableBehavior.cs" />
+    <Compile Include="Libr\Behavior\CollapedLayoutAnchorableMessage.cs" />
+    <Compile Include="Libr\Behavior\LayoutMessage.cs" />
     <Compile Include="Libr\Behavior\ZoomBehavior.cs" />
     <Compile Include="Libr\Behavior\ZoomMessage.cs" />
     <Compile Include="Libr\ConfigurationProperties\AppConfigurationSection.cs" />
@@ -288,6 +288,7 @@
     <Compile Include="Model\Detals\WeldingSchemas.cs" />
     <Compile Include="Model\File3D\File3D.cs" />
     <Compile Include="Model\File3D\VisualViewModel.cs" />
+    <Compile Include="Services\LayoutService.cs" />
     <Compile Include="ViewModels\CreateWindowViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel3.cs" />
     <Compile Include="ViewModels\PropertiesWindowViewModel.cs" />
@@ -295,10 +296,8 @@
       <DependentUpon>Breadcrumb.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Controls\CustomAttributes.cs" />
-    <Compile Include="Views\Controls\FileTabControl.xaml.cs">
-      <DependentUpon>FileTabControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Controls\Image2D.cs" />
+    <Compile Include="Views\Controls\PanesTemplateSelector.cs" />
     <Compile Include="Views\Controls\SliderButton.xaml.cs">
       <DependentUpon>SliderButton.xaml</DependentUpon>
     </Compile>
@@ -314,9 +313,6 @@
     <Compile Include="Views\Windows\MainWindow2.xaml.cs">
       <DependentUpon>MainWindow2.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Windows\NewWindow.xaml.cs">
-      <DependentUpon>NewWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Windows\PropertiesWindow.xaml.cs">
       <DependentUpon>PropertiesWindow.xaml</DependentUpon>
     </Compile>
@@ -329,10 +325,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\Breadcrumb.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Controls\FileTabControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -458,10 +450,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Windows\MainWindow2.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Windows\NewWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

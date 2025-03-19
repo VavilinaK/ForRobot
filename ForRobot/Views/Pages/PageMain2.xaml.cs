@@ -58,6 +58,11 @@ namespace ForRobot.Views.Pages
             Properties.Settings.Default.Save();
         }
 
+        private void DataGridRowHeader_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
         private void Expander_Expanded(object sender, RoutedEventArgs e)
         {
             for (var vis = sender as Visual; vis != null; vis = VisualTreeHelper.GetParent(vis) as Visual)

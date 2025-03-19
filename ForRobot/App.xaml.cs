@@ -51,7 +51,6 @@ namespace ForRobot
 
         private Views.Windows.MainWindow _mainWindow;
 
-
         #endregion
 
         #endregion
@@ -98,8 +97,6 @@ namespace ForRobot
         /// Главное окно
         /// </summary>
         public Views.Windows.MainWindow MainWindowView { get => _mainWindow ?? (_mainWindow = new Views.Windows.MainWindow()); }
-
-        //public Views.Windows.NewWindow MainWindowView { get; } = new Views.Windows.NewWindow();
 
         //private Views.Windows.MainWindow2 _mainWindow2;
 

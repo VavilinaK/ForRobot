@@ -695,7 +695,8 @@ namespace ForRobot.ViewModels
 
                             File.WriteAllText(Path.Combine(foldForGenerate, $"{this.ProgrammName}.json"), jObject.ToString());
                             if (File.Exists(Path.Combine(foldForGenerate, $"{this.ProgrammName}.json")))
-                                App.Current.Logger.Info($"Сгенерирован файл {Path.Combine(foldForGenerate, $"{this.ProgrammName}.json")}, содержащий:\n" + jObject.ToString());
+                                App.Current.Logger.Info(new Exception("Содержит:\n" + jObject.ToString()),
+                                                        $"Сгенерирован файл {Path.Combine(foldForGenerate, $"{this.ProgrammName}.json")}");
 
                             // Генерация программы.
                             Generation generationProcess = new Generation(this.ProgrammName, foldForGenerate);
@@ -1107,7 +1108,7 @@ namespace ForRobot.ViewModels
 
             robot.Log += new EventHandler<ForRobot.Libr.LogEventArgs>(this.WreteLog);
             robot.LogError += new EventHandler<ForRobot.Libr.LogErrorEventArgs>(WreteLogError);
-            Task.Run(() => robot.OpenConnection());
+
             robot.ChangeRobot += (s, e) =>
             {
                 Properties.Settings.Default.SaveRobots.Clear();

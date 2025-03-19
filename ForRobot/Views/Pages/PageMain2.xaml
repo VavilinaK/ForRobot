@@ -1783,6 +1783,8 @@
                                         </Style>
 
                                         <Style TargetType="{x:Type DataGridRowHeader}">
+                                            <!--<EventSetter Event="Click" Handler="DataGridRowHeader_Click"/>-->
+
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Path=Item.Ditails, RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}" Value="">
                                                     <Setter Property="IsEnabled" Value="False"/>

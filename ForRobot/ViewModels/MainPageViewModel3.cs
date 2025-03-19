@@ -18,9 +18,12 @@ using System.Security.Cryptography;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+using GalaSoft.MvvmLight.Messaging;
+
 using HelixToolkit.Wpf;
 
 using ForRobot.Libr;
+using ForRobot.Services;
 using ForRobot.Model;
 using ForRobot.Model.Detals;
 
@@ -29,6 +32,8 @@ namespace ForRobot.ViewModels
     public class MainPageViewModel3 : BaseClass
     {
         #region Private variables
+
+        private object _activeContent;
 
         private Model.File3D.File3D _selectedFile;
 
@@ -65,13 +70,17 @@ namespace ForRobot.ViewModels
             }
         });
 
-        public readonly Libr.Behavior.ZoomBehavior _zoomBehavior;
+        private readonly Libr.Behavior.ZoomBehavior _zoomBehavior;
+
+        private readonly LayoutService _layoutService;
 
         public IHelixViewport3D Viewport { get; set; } 
 
         private System.Windows.Controls.TreeViewItem _selectedItem;
 
         #region Commands
+
+        private RelayCommand _loadedPageCommand;
 
         private RelayCommand _createNewFileCommand;
         private RelayCommand _openedFileCommand;
@@ -82,8 +91,9 @@ namespace ForRobot.ViewModels
         private RelayCommand _returnCommand;
         private RelayCommand _standartParametrsCommand;
         private RelayCommand _zoomCommand;
+        private RelayCommand _unhideCommand;
 
-        private RelayCommand _closeFileCommand;
+        //private RelayCommand _closeFileCommand;
         private RelayCommand _addRobotCommand;
         private RelayCommand _deleteRobotCommand;
         private RelayCommand _connectedRobotCommand;
@@ -114,15 +124,15 @@ namespace ForRobot.ViewModels
 
         public Version Version { get => System.Reflection.Assembly.GetEntryAssembly().GetName().Version; }
 
-        //public Libr.Settings.Settings Settings
-        //{
-        //    get => ForRobot.App.Settings;
-        //    set
-        //    {
-        //        ForRobot.App.Settings = value;
-        //        RaisePropertyChanged(nameof(this.Settings));
-        //    }
-        //}
+        public object ActiveContent
+        {
+            get => this._activeContent;
+            set
+            {
+                this._activeContent = value;
+                this.UpdateSelectedDocument();
+            }
+        }
 
         /// <summary>
         /// Выбранный файл
@@ -176,7 +186,6 @@ namespace ForRobot.ViewModels
         //    }
         //}
 
-
         /// <summary>
         /// Коллекция типов скосов настила
         /// </summary>
@@ -223,6 +232,21 @@ namespace ForRobot.ViewModels
         #endregion
 
         #region Commands
+        
+        /// <summary>
+        /// Выгрузка макета
+        /// </summary>
+        public RelayCommand LoadedCommand
+        {
+            get
+            {
+                return _loadedPageCommand ??
+                    (_loadedPageCommand = new RelayCommand(obj =>
+                    {
+                        Messenger.Default.Send(new Libr.Behavior.LoadLayoutMessage());
+                    }));
+            }
+        }
 
         /// <summary>
         /// Создание файла
@@ -420,25 +444,40 @@ namespace ForRobot.ViewModels
         }
 
         /// <summary>
-        /// Закрытие вкладки файла
+        /// Показывает скрытые панели
         /// </summary>
-        public RelayCommand CloseFileCommand
+        public RelayCommand UnhideCommand
         {
             get
             {
-                return _closeFileCommand ??
-                    (_closeFileCommand = new RelayCommand(obj =>
+                return _unhideCommand ??
+                    (_unhideCommand = new RelayCommand(obj =>
                     {
-                        var file = obj as Model.File3D.File3D;
-
-                        if (!file.IsSaved &&
-                            System.Windows.MessageBox.Show($"Сохранить файл {file.Name}?", "Сохранение файла", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK)
-                            file.Save();
-
-                        App.Current.OpenedFiles.Remove(file);
+                        GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Behavior.CollapedLayoutAnchorableMessage((string)obj));
                     }));
             }
         }
+
+        ///// <summary>
+        ///// Закрытие вкладки файла
+        ///// </summary>
+        //public RelayCommand CloseFileCommand
+        //{
+        //    get
+        //    {
+        //        return _closeFileCommand ??
+        //            (_closeFileCommand = new RelayCommand(obj =>
+        //            {
+        //                var file = obj as Model.File3D.File3D;
+
+        //                if (!file.IsSaved &&
+        //                    System.Windows.MessageBox.Show($"Сохранить файл {file.Name}?", "Сохранение файла", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK)
+        //                    file.Save();
+
+        //                App.Current.OpenedFiles.Remove(file);
+        //            }));
+        //    }
+        //}
 
         /// <summary>
         /// Добавление робота
@@ -774,6 +813,9 @@ namespace ForRobot.ViewModels
             }
         }
 
+        /// <summary>
+        /// Команда удержания кнопки запуска
+        /// </summary>
         public IAsyncCommand RetentionRunButtonCommandAsync
         {
             get
@@ -873,9 +915,9 @@ namespace ForRobot.ViewModels
 
         #endregion
 
-        #endregion
+        #endregion Commands
 
-        #endregion
+        #endregion Public variables
 
         #region Constructor
 
@@ -904,8 +946,8 @@ namespace ForRobot.ViewModels
 
             this.SelectedRobot = this.RobotsCollection[0];
 
-            if (App.Current.OpenedFiles.Count == 0)
-                App.Current.OpenedFiles.Add(new Model.File3D.File3D());
+            //if (App.Current.OpenedFiles.Count == 0)
+            //    App.Current.OpenedFiles.Add(new Model.File3D.File3D());
 
             //App.Current.OpenedFiles.Add(new Model.File3D.File3D(new Plita(DetalType.Plita), Path.Combine(Path.GetTempPath(), "Новый.rGen")));
         }
@@ -939,8 +981,6 @@ namespace ForRobot.ViewModels
             robot.Log += new EventHandler<ForRobot.Libr.LogEventArgs>(this.WreteLog);
             robot.LogError += new EventHandler<ForRobot.Libr.LogErrorEventArgs>(WreteLogError);
 
-            Task.Run(() => robot.OpenConnection());
-
             robot.ChangeRobot += (s, e) =>
             {
                 Properties.Settings.Default.SaveRobots.Clear();
@@ -951,6 +991,15 @@ namespace ForRobot.ViewModels
                 }
             };
             return robot;
+        }
+
+        private void UpdateSelectedDocument()
+        {
+            // Фильтруем только LayoutDocument
+            if (ActiveContent is Model.File3D.File3D file)
+            {
+                this.SelectedFile = file;
+            }
         }
 
         #region Logging

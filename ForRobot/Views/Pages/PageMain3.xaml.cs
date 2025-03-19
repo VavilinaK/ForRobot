@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
+using AvalonDock.Layout.Serialization;
+using GalaSoft.MvvmLight.Messaging;
 using HelixToolkit.Wpf;
+
+using ForRobot.Libr.Behavior;
 
 namespace ForRobot.Views.Pages
 {
@@ -32,6 +29,9 @@ namespace ForRobot.Views.Pages
         public PageMain3()
         {
             InitializeComponent();
+
+            Messenger.Default.Register<SaveLayoutMessage>(this, _ => SaveLayout());
+            Messenger.Default.Register<LoadLayoutMessage>(this, _ => LoadLayout());
 
             if (this.DataContext == null) { this.DataContext = ViewModel; }
         }
@@ -66,6 +66,41 @@ namespace ForRobot.Views.Pages
                 this.ViewModel.Select(firstHit.Visual);
             else
                 this.ViewModel.Select(null);
+        }       
+
+        private void SaveLayout()
+        {
+            try
+            {
+                var serializer = new XmlLayoutSerializer(this.DockingManeger);
+                using (var writer = new StreamWriter(Path.Combine(Directory.GetCurrentDirectory(), "layout.xml")))
+                {
+                    serializer.Serialize(writer);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при загрузке макета: {ex.Message}");
+            }
+        }
+
+        private void LoadLayout()
+        {
+            try
+            {
+                if (File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "layout.xml")))
+                {
+                    var serializer = new XmlLayoutSerializer(this.DockingManeger);
+                    using (var reader = new StreamReader(Path.Combine(Directory.GetCurrentDirectory(), "layout.xml")))
+                    {
+                        serializer.Deserialize(reader);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при сохранении макета: {ex.Message}");
+            }
         }
     }
 }
