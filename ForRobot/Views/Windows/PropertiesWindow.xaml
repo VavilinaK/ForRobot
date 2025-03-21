@@ -26,6 +26,10 @@
         </Style>
 
         <Style TargetType="{x:Type TreeView}" BasedOn="{StaticResource TextBase}"></Style>
+
+        <Style TargetType="{x:Type TreeViewItem}">
+            <Setter Property="Padding" Value="0, 3"/>
+        </Style>
      
         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource TextBase}">
             <Setter Property="Width" Value="100"/>
@@ -68,6 +72,9 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>-->
             </TreeViewItem>
+
+            <TreeViewItem Header="Генерация" Tag="Generation"/>
+
 
             <!--<TreeViewItem Header="Соединение" Tag="Connection"/>-->
             
@@ -156,6 +163,16 @@
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="ContentControl">
                                                     <ContentControl ContentTemplate="{StaticResource 3DViewProperiesTemplate}"/>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                    
+                                    <DataTrigger Binding="{Binding Path=SelectedItem.Tag, ElementName=TreeViewProperties}" Value="Generation">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ContentControl">
+                                                    <ContentControl ContentTemplate="{StaticResource GenerationProperiesTemplate}"/>
                                                 </ControlTemplate>
                                             </Setter.Value>
                                         </Setter>

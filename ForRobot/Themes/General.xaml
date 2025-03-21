@@ -25,6 +25,7 @@
     <conv:NumbersForWeldingSchemaConverter x:Key="NumbersForWeldingSchemaConvert"/>
     <conv:CollectionsStringToBoolConverter x:Key="CollectionsStringToBoolConvert"/>
     <conv:DescriptionsStaticClassConverter x:Key="DescriptionsStaticClassConvert"/>
+    <conv:BindingToTagConverter x:Key="BindingToTagConvert"/>
 
     <!--Control Content property -->
     <!--M => minus  P=> plus-->

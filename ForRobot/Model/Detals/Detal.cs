@@ -47,7 +47,7 @@ namespace ForRobot.Model.Detals
         /// <summary>
         /// Ширина настила
         /// </summary>
-        public virtual decimal Wight { get; set; }
+        public virtual decimal Width { get; set; }
         
         /// <summary>
         /// Расстояние до осевой линии первого ребра сверху
@@ -196,7 +196,7 @@ namespace ForRobot.Model.Detals
                 case ForRobot.Model.Detals.DetalType.Plita:
                     this.PlitaConfig = ConfigurationManager.GetSection("plita") as ForRobot.Libr.ConfigurationProperties.PlitaConfigurationSection;
                     this.Long = PlitaConfig.Long;
-                    this.Wight = PlitaConfig.Wight;
+                    this.Width = PlitaConfig.Width;
                     this.Hight = PlitaConfig.Hight;
                     this.DistanceToFirst = PlitaConfig.DistanceToFirst;
                     this.DistanceBetween = PlitaConfig.DistanceBetween;
@@ -229,6 +229,24 @@ namespace ForRobot.Model.Detals
         #endregion
 
         #region Public functions
+
+        public static Detal GetDetal(string detalType)
+        {
+            switch (detalType)
+            {
+                case string a when a == DetalTypes.Plita:
+                    return new Plita(Detals.DetalType.Plita);
+
+                case string b when b == DetalTypes.Stringer:
+                    return new PlitaStringer(Detals.DetalType.Stringer);
+
+                case string c when c == DetalTypes.Treygolnik:
+                    return new PlitaTreygolnik(Detals.DetalType.Treygolnik);
+
+                default:
+                    return null;
+            }
+        }
 
         #endregion
     }

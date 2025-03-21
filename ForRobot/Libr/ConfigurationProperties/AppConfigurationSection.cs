@@ -14,5 +14,12 @@ namespace ForRobot.Libr.ConfigurationProperties
             get { return (string)this["PlitaGenerator"]; }
             set { this["PlitaGenerator"] = value; }
         }
+
+        [ConfigurationProperty("PlitaProgramName")]
+        public string PlitaProgramName
+        {
+            get { return (string)this["PlitaProgramName"]; }
+            set { this["PlitaProgramName"] = value; }
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Configuration;
 using System.Collections.Generic;
 
 using AvalonDock.Themes;
@@ -26,6 +27,9 @@ namespace ForRobot.Libr.Settings
 
         private Tuple<string, Theme> _selectedTheme;
 
+        private ForRobot.Libr.ConfigurationProperties.AppConfigurationSection _appConfig = ConfigurationManager.GetSection("app") as ForRobot.Libr.ConfigurationProperties.AppConfigurationSection;
+        private ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection _robotConfig = ConfigurationManager.GetSection("robot") as ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection;
+        
         #endregion
 
         #region Public variables
@@ -57,7 +61,7 @@ namespace ForRobot.Libr.Settings
         /// </summary>
         public ModeClosingApp ModeClosingApp { get; set; } = ModeClosingApp.HaveConnected;
 
-        #endregion
+        #endregion Generic
 
         #region Navigation
 
@@ -136,7 +140,7 @@ namespace ForRobot.Libr.Settings
         public bool ShowFieldOfView { get; set; } = false;
         public bool ShowFrameRate { get; set; } = false;
 
-        #endregion
+        #endregion 3DView
 
         #region Camera
 
@@ -219,11 +223,52 @@ namespace ForRobot.Libr.Settings
         /// </summary>
         public double CameraInertiaFactor { get; set; } = 0.930;
 
-        #endregion
+        #endregion Camera
+
+        #endregion View
+
+        #region Generation
+
+        /// <summary>
+        /// Имя сгенерированной программы (настил с рёбрами)
+        /// </summary>
+        public string PlitaProgramName { get; set; }
+        /// <summary>
+        /// Имя сгенерированной программы (плита со стрингерами)
+        /// </summary>
+        public string PlitaStringerProgramName { get; set; }
+        /// <summary>
+        /// Имя сгенерированной программы (плита с треугольником)
+        /// </summary>
+        public string PlitaTreugolnikProgramName { get; set; }
+
+        /// <summary>
+        /// Имя скрапта-генератора (настил с рёбрами)
+        /// </summary>
+        public string PlitaScriptName { get; set; }
+        /// <summary>
+        /// Имя скрапта-генератора (плита со стрингерами)
+        /// </summary>
+        public string PlitaStringerScriptName { get; set; }
+        /// <summary>
+        /// Имя скрапта-генератора (плита с треугольником)
+        /// </summary>
+        public string PlitaTreugolnikScriptName { get; set; }
+
+        /// <summary>
+        /// Путь к папке для генерации
+        /// </summary>
+        public string PathFolderOfGeneration { get; set; }
 
         #endregion
 
+        #region Robots
+
+        public string ControlerFolder { get; set; }
+
         #endregion
+
+        #endregion Public variables
 
         #region Constructor
 
@@ -233,6 +278,13 @@ namespace ForRobot.Libr.Settings
                 this.SelectedTheme = this.Themes.First();
             else
                 this.SelectedTheme = this.Themes.Where(t => t.Item1 == Properties.Settings.Default.SelectedTheme).First();
+
+            this.PlitaProgramName = this._appConfig.PlitaProgramName;
+            this.PlitaScriptName = this._appConfig.PlitaGenerator;
+
+            this.PathFolderOfGeneration = this._robotConfig.PathForGeneration;
+
+            this.ControlerFolder = this._robotConfig.PathControllerFolder;
         }
 
         #endregion

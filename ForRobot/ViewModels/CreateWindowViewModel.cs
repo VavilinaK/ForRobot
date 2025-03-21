@@ -18,7 +18,11 @@ namespace ForRobot.ViewModels
 
         private string _selectedDetalType;
         private string _filePath;
-        
+
+        private string _plitaProgramName = App.Current.Settings.PlitaProgramName;
+        private string _plitaStringerProgramName = App.Current.Settings.PlitaStringerProgramName;
+        private string _plitaTreugolnikProgramName = App.Current.Settings.PlitaTreugolnikProgramName;
+        private string _fileName;
         private Detal _detalObject;
 
         #region Commands
@@ -58,26 +62,49 @@ namespace ForRobot.ViewModels
             set
             {
                 this._selectedDetalType = value;
-                switch (this._selectedDetalType)
-                {
-                    case string a when a == DetalTypes.Plita:
-                        this.DetalObject = new Plita(DetalType.Plita);
-                        ((Plita)this.DetalObject).RibsCollection.ItemPropertyChanged += (o, e) => { Task.Run(() => SaveDetal(o as Detal)); };
-                        break;
-
-                    case string b when b == DetalTypes.Stringer:
-                        DetalObject = new PlitaStringer(DetalType.Stringer);
-                        break;
-
-                    case string c when c == DetalTypes.Treygolnik:
-                        DetalObject = new PlitaTreygolnik(DetalType.Treygolnik);
-                        break;
-                }
-                RaisePropertyChanged(nameof(this.SelectedDetalType));
+                this.DetalObject = Detal.GetDetal(this._selectedDetalType);
+                RaisePropertyChanged(nameof(this.SelectedDetalType), nameof(this.FileName));
             }
         }
 
-        public string FileName { get; set; }
+        public string FileName
+        {
+            get
+            {
+                switch (this.SelectedDetalType)
+                {
+                    case string a when a == DetalTypes.Plita:
+                        return this._plitaProgramName;
+
+                    case string b when b == DetalTypes.Stringer:
+                        return this._plitaStringerProgramName;
+
+                    case string c when c == DetalTypes.Treygolnik:
+                        return this._plitaTreugolnikProgramName;
+
+                    default:
+                        return string.Empty;
+                }
+            }
+            set
+            {
+                switch (this.SelectedDetalType)
+                {
+                    case string a when a == DetalTypes.Plita:
+                        this._plitaProgramName = value;
+                        break;
+
+                    case string b when b == DetalTypes.Stringer:
+                        this._plitaStringerProgramName = value;
+                        break;
+                        
+                    case string c when c == DetalTypes.Treygolnik:
+                        this._plitaTreugolnikProgramName = value;
+                        break;
+                }
+                RaisePropertyChanged(nameof(this.FileName));
+            }
+        }
 
         public string FilePath { get => this._filePath; set => Set(ref this._filePath, value); }
 
@@ -121,7 +148,6 @@ namespace ForRobot.ViewModels
                         if (string.IsNullOrEmpty(this.FilePath) || string.IsNullOrEmpty(this.FileName))
                             return;
 
-                        this.DetalObject.Change += (o, e) => { Task.Run(() => SaveDetal(o as Detal)); }; // Обределение события изменения свойств
                         App.Current.OpenedFiles.Add(new Model.File3D.File3D(this.DetalObject, Path.Combine(this.FilePath, this.FileName)));
                         App.Current.CreateWindow.Close();
                     }));
@@ -159,27 +185,27 @@ namespace ForRobot.ViewModels
 
         #region Private functions
 
-        /// <summary>
-        /// Сохранение изменений Detal
-        /// </summary>
-        private void SaveDetal(Detal detal)
-        {
-            switch (detal)
-            {
-                case Plita plita:
-                    Properties.Settings.Default.SavePlita = detal.JsonForSave;
-                    break;
+        ///// <summary>
+        ///// Сохранение изменений Detal
+        ///// </summary>
+        //private void SaveDetal(Detal detal)
+        //{
+        //    switch (detal)
+        //    {
+        //        case Plita plita:
+        //            Properties.Settings.Default.SavePlita = detal.JsonForSave;
+        //            break;
 
-                case PlitaStringer plitaStringer:
-                    Properties.Settings.Default.SavePlitaStringer = "";
-                    break;
+        //        case PlitaStringer plitaStringer:
+        //            Properties.Settings.Default.SavePlitaStringer = "";
+        //            break;
 
-                case PlitaTreygolnik plitaTreygolnik:
-                    Properties.Settings.Default.SavePlita = "";
-                    break;
-            }
-            Properties.Settings.Default.Save();
-        }
+        //        case PlitaTreygolnik plitaTreygolnik:
+        //            Properties.Settings.Default.SavePlita = "";
+        //            break;
+        //    }
+        //    Properties.Settings.Default.Save();
+        //}
 
         #endregion
     }

@@ -14,18 +14,18 @@
     <!--Общие параметры (настила с ребром)-->
     <DataTemplate x:Key="PlitaTemplateStyle" DataType="{x:Type ContentControl}">
         <DataTemplate.Resources>
-            <Style TargetType="{x:Type FrameworkElement}">
-                <Setter Property="TextElement.FontSize" Value="16"/>
+            <Style x:Key="TextBase" TargetType="{x:Type FrameworkElement}">
+                <Setter Property="TextElement.FontSize" Value="{StaticResource FontSizeNP4}"/>
+                <Setter Property="TextElement.FontFamily" Value="{StaticResource DefaultFont}"/>
+                <Setter Property="TextElement.Foreground" Value="{StaticResource ThemeFgP2Brush}"/>
             </Style>
 
-            <Style TargetType="{x:Type Label}">
-                <Setter Property="FontSize" Value="16"/>
+            <Style TargetType="{x:Type Label}" BasedOn="{StaticResource TextBase}">
                 <Setter Property="HorizontalContentAlignment" Value="Left"/>
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
             </Style>
 
-            <Style x:Key="TextBoxBase" TargetType="{x:Type TextBox}">
-                <Setter Property="FontSize" Value="16"/>
+            <Style x:Key="TextBoxBase" TargetType="{x:Type TextBox}" BasedOn="{StaticResource TextBase}">
                 <Setter Property="Padding" Value="5"/>
                 <Setter Property="Height" Value="37"/>
                 <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
@@ -34,6 +34,10 @@
             </Style>
 
             <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource TextBoxBase}"></Style>
+
+            <Style TargetType="{x:Type RadioButton}" BasedOn="{StaticResource TextBase}">
+                <Setter Property="Margin" Value="0, 4"/>
+            </Style>
         </DataTemplate.Resources>
 
         <Grid Height="Auto" DataContext="{Binding Path=DataContext.DetalObject, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}">
@@ -306,7 +310,7 @@
                                                             <DataGridTemplateColumn Header="Расстояние до следующего ребра, мм." Width="*">
                                                                 <DataGridTemplateColumn.CellTemplate>
                                                                     <DataTemplate>
-                                                                        <TextBox Text="{Binding Path=Distance, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                                                                        <TextBox Text="{Binding Path=DistanceLeft, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
                                                                     </DataTemplate>
                                                                 </DataGridTemplateColumn.CellTemplate>
                                                             </DataGridTemplateColumn>
@@ -363,7 +367,7 @@
                                                             <DataGridTemplateColumn Header="Расстояние до ребра слева, мм." Width="*">
                                                                 <DataGridTemplateColumn.CellTemplate>
                                                                     <DataTemplate>
-                                                                        <TextBox Text="{Binding Path=Distance, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                                                                        <TextBox Text="{Binding Path=DistanceLeft, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
                                                                     </DataTemplate>
                                                                 </DataGridTemplateColumn.CellTemplate>
                                                             </DataGridTemplateColumn>
@@ -394,7 +398,7 @@
                 <TextBox.Style>
                     <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxBase}">
                         <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
-                        <Setter Property="Text" Value="{Binding Path=Wight, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                        <Setter Property="Text" Value="{Binding Path=Width, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
 
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Path=ScoseType}" Value="d_rect">
@@ -732,19 +736,34 @@
     <!--Доп. параметры (настила с ребром)-->
     <DataTemplate x:Key="PlitaDopTemplateStyle" DataType="{x:Type ContentControl}">
         <DataTemplate.Resources>
-            <Style TargetType="{x:Type Label}">
-                <Setter Property="FontSize" Value="16"/>
+            <Style x:Key="TextBase" TargetType="{x:Type FrameworkElement}">
+                <Setter Property="TextElement.FontSize" Value="{StaticResource FontSizeNP4}"/>
+                <Setter Property="TextElement.FontFamily" Value="{StaticResource DefaultFont}"/>
+                <Setter Property="TextElement.Foreground" Value="{StaticResource ThemeFgP2Brush}"/>
+            </Style>
+
+            <Style TargetType="{x:Type Label}" BasedOn="{StaticResource TextBase}">
                 <Setter Property="HorizontalContentAlignment" Value="Left"/>
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
             </Style>
 
-            <Style TargetType="{x:Type TextBox}">
-                <Setter Property="FontSize" Value="16"/>
+            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource TextBase}">
                 <Setter Property="Padding" Value="5"/>
                 <Setter Property="Height" Value="37"/>
                 <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
                 <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
                 <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
+            </Style>
+
+            <Style x:Key="groupBoxBase" TargetType="{x:Type GroupBox}" BasedOn="{StaticResource TextBase}">
+                <Setter Property="Padding" Value="4"/>
+                <Setter Property="Margin" Value="0, 4"/>
+            </Style>
+
+            <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource groupBoxBase}"></Style>
+
+            <Style TargetType="{x:Type RadioButton}" BasedOn="{StaticResource TextBase}">
+                <Setter Property="Margin" Value="0, 4"/>
             </Style>
         </DataTemplate.Resources>
 
@@ -802,6 +821,190 @@
                     </Border>
                 </Popup>
             </StackPanel>
+
+            <!--<GroupBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Header="Высота ребра, мм.">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <RadioButton Grid.Row="0" Grid.Column="0" Content="Одинаковая"
+                                 IsChecked="{Binding Path=DiferentHight, Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={StaticResource False}, Mode=TwoWay, TargetNullValue={StaticResource False}}"/>
+
+                    <RadioButton Grid.Row="0" Grid.Column="1" Content="Разная"
+                                 IsChecked="{Binding Path=DiferentHight, Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={StaticResource True}, Mode=TwoWay, TargetNullValue={StaticResource False}}"/>
+
+                    <GroupBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Header="С двух сторон">
+                        <GroupBox.Style>
+                            <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource groupBoxBase}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=DiferentHight}" Value="{StaticResource False}">
+                                        <Setter Property="Height" Value="0"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </GroupBox.Style>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+
+                            <RadioButton Grid.Row="0" Grid.Column="0" Content="Одинаковая"
+                                         IsChecked="{Binding Path=DiferentHightLeftToRight, Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={StaticResource False}, Mode=TwoWay, TargetNullValue={StaticResource False}}"/>
+                            <RadioButton Grid.Row="0" Grid.Column="1" Content="Разная"
+                                         IsChecked="{Binding Path=DiferentHightLeftToRight, Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={StaticResource True}, Mode=TwoWay, TargetNullValue={StaticResource False}}"/>
+                        </Grid>
+                    </GroupBox>
+
+                    <ContentControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+                        <ContentControl.Resources>
+                            <Style TargetType="{x:Type DataGrid}">
+                                <Setter Property="Width" Value="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}, Mode=FindAncestor}}"/>
+                                <Setter Property="ItemsSource" Value="{Binding Path=RibsCollection, Mode=OneWay}"/>
+                                <Setter Property="FontSize" Value="16"/>
+                                <Setter Property="AutoGenerateColumns" Value="False"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                <Setter Property="CanUserAddRows" Value="False"/>
+                                <Setter Property="CanUserDeleteRows" Value="False"/>
+                                <Setter Property="CanUserResizeRows" Value="False"/>
+                                <Setter Property="CanUserReorderColumns" Value="False"/>
+                                <Setter Property="CanUserSortColumns" Value="False"/>
+                                <Setter Property="CanUserResizeColumns" Value="False"/>
+                                <Setter Property="EnableRowVirtualization" Value="False"/>
+                                <Setter Property="SelectionMode" Value="Single"/>
+                                <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+
+                                <Setter Property="RowHeaderTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Path=., RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={StaticResource RowNumberConvert}}"/>
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                <Setter Property="ContentTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate>
+                                            <TextBlock TextWrapping="Wrap" Text="{Binding}" TextAlignment="Center"/>
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
+                                <Setter Property="Height" Value="35"/>
+                                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                            </Style>
+
+                            <Style TargetType="{x:Type DataGridCell}">
+                                <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
+                                <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+                            </Style>
+                        </ContentControl.Resources>
+
+                        <ContentControl.Style>
+                            <Style TargetType="{x:Type ContentControl}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=DiferentHight}" Value="{StaticResource False}">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ContentControl">
+                                                    <StackPanel Orientation="Vertical">
+                                                        <TextBox Name="textBoxHieght" Text="{Binding Path=Hight, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+
+                                                        <Popup PlacementTarget="{Binding ElementName=textBoxHieght}"
+                                                               IsOpen="{Binding IsKeyboardFocused, ElementName=textBoxHieght, Mode=OneWay}"
+                                                               AllowsTransparency="True" AllowDrop="True"
+                                                               Placement="Right">
+
+                                                            <Border Background="#FF68DDFF" Height="45" Width="170" Padding="2" CornerRadius="3" Opacity="0.90">
+                                                                <TextBlock FontSize="14" FontStyle="Italic"
+                                                                           Text="Отклонение до 40 мм. можно игнорировать" TextWrapping="Wrap"
+                                                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                        </Popup>
+                                                    </StackPanel>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Path=DiferentHight}" Value="{StaticResource True}"/>
+                                            <Condition Binding="{Binding Path=DiferentHightLeftToRight}" Value="{StaticResource False}"/>
+                                        </MultiDataTrigger.Conditions>
+
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type ContentControl}">
+                                                    <DataGrid ColumnHeaderStyle="{x:Null}">
+                                                        <DataGrid.Columns>
+                                                            <DataGridTemplateColumn Width="*">
+                                                                <DataGridTemplateColumn.CellTemplate>
+                                                                    <DataTemplate>
+                                                                        <TextBox Text="{Binding Path=HightLeft, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                                                                    </DataTemplate>
+                                                                </DataGridTemplateColumn.CellTemplate>
+                                                            </DataGridTemplateColumn>
+                                                        </DataGrid.Columns>
+                                                    </DataGrid>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </MultiDataTrigger>
+
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding Path=DiferentHight}" Value="{StaticResource True}"/>
+                                            <Condition Binding="{Binding Path=DiferentHightLeftToRight}" Value="{StaticResource True}"/>
+                                        </MultiDataTrigger.Conditions>
+
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type ContentControl}">
+                                                    <DataGrid>
+                                                        <DataGrid.Columns>
+                                                            <DataGridTemplateColumn Header="Слева" Width="*">
+                                                                <DataGridTemplateColumn.CellTemplate>
+                                                                    <DataTemplate>
+                                                                        <TextBox Text="{Binding Path=HightLeft, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                                                                    </DataTemplate>
+                                                                </DataGridTemplateColumn.CellTemplate>
+                                                            </DataGridTemplateColumn>
+
+                                                            <DataGridTemplateColumn Header="Справа" Width="*">
+                                                                <DataGridTemplateColumn.CellTemplate>
+                                                                    <DataTemplate>
+                                                                        <TextBox Text="{Binding Path=HightRight, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                                                                    </DataTemplate>
+                                                                </DataGridTemplateColumn.CellTemplate>
+                                                            </DataGridTemplateColumn>
+                                                        </DataGrid.Columns>
+                                                    </DataGrid>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </MultiDataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ContentControl.Style>
+                    </ContentControl>
+                </Grid>
+            </GroupBox>-->
 
             <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Path=SearchOffsetStart, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
 
@@ -1050,7 +1253,7 @@
     <DataTemplate x:Key="PlitaSvarkaTemplate3Style">
         <DataTemplate.Resources>
             <Style TargetType="{x:Type FrameworkElement}">
-                <Setter Property="TextElement.FontSize" Value="{StaticResource FontSizeNP2}"/>
+                <Setter Property="TextElement.FontFamily" Value="{StaticResource DefaultFont}"/>
                 <Setter Property="TextElement.Foreground" Value="{StaticResource ThemeFgP2Brush}"/>
             </Style>
 
@@ -1265,6 +1468,7 @@
             </Style>
 
             <Style TargetType="{x:Type TextBox}">
+                <Setter Property="Tag" Value="{Binding Path=., RelativeSource={RelativeSource Self}, Converter={StaticResource BindingToTagConvert}}"/>
                 <Setter Property="Height" Value="37"/>
                 <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
@@ -1574,7 +1778,7 @@
             <TextBox Grid.Row="2" Grid.Column="1">
                 <TextBox.Style>
                     <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource textBoxBase}">
-                        <Setter Property="Text" Value="{Binding Path=Wight, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                        <Setter Property="Text" Value="{Binding Path=Width, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
                         
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Path=ScoseType}" Value="d_rect">
@@ -1912,21 +2116,17 @@
                         <ContentControl.Style>
                             <Style TargetType="{x:Type ContentControl}">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Path=DiferentDissolutionRight, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="{StaticResource False}">
+                                    <DataTrigger Binding="{Binding Path=DiferentDissolutionRight}" Value="{StaticResource False}">
                                         <Setter Property="Template">
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="ContentControl">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <TextBox Grid.Row="7" Grid.Column="1" Text="{Binding Path=DataContext.DetalObject.DissolutionEnd, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
-                                                                    Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
-                                                                 Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}" Padding="5"/>
-                                                    </StackPanel>
+                                                    <TextBox Text="{Binding Path=DissolutionEnd, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
                                                 </ControlTemplate>
                                             </Setter.Value>
                                         </Setter>
                                     </DataTrigger>
 
-                                    <DataTrigger Binding="{Binding Path=DataContext.DetalObject.DiferentDissolutionRight, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="{StaticResource True}">
+                                    <DataTrigger Binding="{Binding Path=DiferentDissolutionRight}" Value="{StaticResource True}">
                                         <Setter Property="Template">
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="{x:Type ContentControl}">

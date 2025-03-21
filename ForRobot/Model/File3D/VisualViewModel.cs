@@ -8,9 +8,19 @@ using HelixToolkit.Wpf;
 
 namespace ForRobot.Model.File3D
 {
-    public sealed class VisualViewModel
+    public sealed class VisualViewModel : BaseClass
     {
+        #region Private variables
+
+        private bool _isVisible = true;
+
         private DependencyObject _element;
+
+        private static readonly Material TransparentMaterial = new DiffuseMaterial(Brushes.Transparent);
+
+        #endregion Private variables
+
+        #region Public variables
 
         public IEnumerable<VisualViewModel> Children
         {
@@ -49,7 +59,7 @@ namespace ForRobot.Model.File3D
             }
         }
 
-        public bool Visibility { get; set; }
+        public bool IsVisible { get => this.IsVisible; set => Set(ref this._isVisible, value); }
 
         public string Name { get => this._element.GetName(); }
 
@@ -80,9 +90,29 @@ namespace ForRobot.Model.File3D
             }
         }
 
+        #endregion
+
         public VisualViewModel(DependencyObject e)
         {
             this._element = e;
+        }
+
+        private void UpdateVisibility()
+        {
+            //switch (SceneObject)
+            //{
+            //    case GeometryModel3D geometryModel:
+            //        if (_originalMaterial == null)
+            //            _originalMaterial = geometryModel.Material;
+
+            //        geometryModel.Material = _isVisible ? _originalMaterial : TransparentMaterial;
+            //        break;
+
+            //    case GroupModel3D group:
+            //        foreach (var child in Children)
+            //            child.IsVisible = _isVisible;
+            //        break;
+            //}
         }
 
         public override string ToString() => this._element.GetType().ToString();

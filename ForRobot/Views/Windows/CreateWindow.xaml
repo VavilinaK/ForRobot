@@ -220,7 +220,7 @@
                     <TextBox Grid.Row="1" Grid.Column="1">
                         <TextBox.Style>
                             <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxBase}">
-                                <Setter Property="Text" Value="{Binding Path=Wight, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                                <Setter Property="Text" Value="{Binding Path=Width, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
 
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Path=ScoseType}" Value="d_rect">
@@ -290,7 +290,7 @@
             <TextBlock Grid.Row="0" Grid.Column="0" Text="Имя"/>
             <TextBlock Grid.Row="1" Grid.Column="0" Text="Расположение"/>
 
-            <TextBox Grid.Row="0" Grid.Column="1"  Text="{Binding Path=FileName, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Grid.Row="0" Grid.Column="1"  Text="{Binding Path=FileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=FilePath, Mode=TwoWay}"/>
 
             <Button Grid.Row="1" Grid.Column="2" Content="_Обзор" 

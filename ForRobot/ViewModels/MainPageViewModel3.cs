@@ -35,6 +35,48 @@ namespace ForRobot.ViewModels
 
         private object _activeContent;
 
+        private string _programName
+        {
+            get
+            {
+                switch (this.SelectedFile.Detal)
+                {
+                    case Plita plita:
+                        return App.Current.Settings.PlitaProgramName;
+
+                    case PlitaStringer plitaStringer:
+                        return App.Current.Settings.PlitaStringerProgramName;
+
+                    case PlitaTreygolnik plitaTreygolnik:
+                        return App.Current.Settings.PlitaTreugolnikProgramName;
+
+                    default:
+                        return string.Empty;
+                }
+            }
+        }
+
+        private string _scriptName
+        {
+            get
+            {
+                switch (this.SelectedFile.Detal)
+                {
+                    case Plita plita:
+                        return App.Current.Settings.PlitaScriptName;
+
+                    case PlitaStringer plitaStringer:
+                        return App.Current.Settings.PlitaStringerScriptName;
+
+                    case PlitaTreygolnik plitaTreygolnik:
+                        return App.Current.Settings.PlitaTreugolnikScriptName;
+
+                    default:
+                        return string.Empty;
+                }
+            }
+        }
+
         private Model.File3D.File3D _selectedFile;
 
         private object selectedObject;
@@ -43,7 +85,7 @@ namespace ForRobot.ViewModels
 
         private ObservableCollection<Robot> _robotsCollection = new ObservableCollection<Robot>();
 
-        private ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection RobotConfig { get; set; } = ConfigurationManager.GetSection("robot") as ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection;
+        //private ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection RobotConfig { get; set; } = ConfigurationManager.GetSection("robot") as ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection;
 
         private ObservableCollection<AppMessage> _messagesCollection = new ObservableCollection<AppMessage>();
 
@@ -70,9 +112,8 @@ namespace ForRobot.ViewModels
             }
         });
 
-        private readonly Libr.Behavior.ZoomBehavior _zoomBehavior;
-
-        private readonly LayoutService _layoutService;
+        //private readonly Libr.Behavior.ZoomBehavior _zoomBehavior;
+        //private readonly LayoutService _layoutService;
 
         public IHelixViewport3D Viewport { get; set; } 
 
@@ -91,7 +132,7 @@ namespace ForRobot.ViewModels
         private RelayCommand _returnCommand;
         private RelayCommand _standartParametrsCommand;
         private RelayCommand _zoomCommand;
-        private RelayCommand _unhideCommand;
+        private RelayCommand _сollapedCommand;
 
         //private RelayCommand _closeFileCommand;
         private RelayCommand _addRobotCommand;
@@ -410,6 +451,16 @@ namespace ForRobot.ViewModels
                                     DiferentDissolutionLeft = ((Plita)detal).DiferentDissolutionLeft,
                                     DiferentDissolutionRight = ((Plita)detal).DiferentDissolutionRight
                                 };
+                                this.SelectedFile.Detal.Change += (s, o) =>
+                                {
+                                    //Task.Run(() => { this.CurrentModel = Plita.GetModel3D((Plita)s); });
+                                    this.SelectedFile.CurrentModel = Plita.GetModel3D((Plita)s);
+                                };
+                                ((Plita)this.SelectedFile.Detal).RibsCollection.ItemPropertyChanged += (s, o) =>
+                                {
+                                    this.SelectedFile.CurrentModel = Plita.GetModel3D((Plita)s);
+                                };
+                                this.SelectedFile.CurrentModel = Plita.GetModel3D((Plita)this.SelectedFile.Detal);
                                 break;
 
                             case string b when b == DetalTypes.Stringer:
@@ -446,39 +497,18 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Показывает скрытые панели
         /// </summary>
-        public RelayCommand UnhideCommand
+        public RelayCommand CollapedCommand
         {
             get
             {
-                return _unhideCommand ??
-                    (_unhideCommand = new RelayCommand(obj =>
+                return _сollapedCommand ??
+                    (_сollapedCommand = new RelayCommand(obj =>
                     {
                         GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Behavior.CollapedLayoutAnchorableMessage((string)obj));
                     }));
             }
         }
-
-        ///// <summary>
-        ///// Закрытие вкладки файла
-        ///// </summary>
-        //public RelayCommand CloseFileCommand
-        //{
-        //    get
-        //    {
-        //        return _closeFileCommand ??
-        //            (_closeFileCommand = new RelayCommand(obj =>
-        //            {
-        //                var file = obj as Model.File3D.File3D;
-
-        //                if (!file.IsSaved &&
-        //                    System.Windows.MessageBox.Show($"Сохранить файл {file.Name}?", "Сохранение файла", MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK)
-        //                    file.Save();
-
-        //                App.Current.OpenedFiles.Remove(file);
-        //            }));
-        //    }
-        //}
-
+        
         /// <summary>
         /// Добавление робота
         /// </summary>
@@ -718,9 +748,65 @@ namespace ForRobot.ViewModels
                         var sch = WeldingSchemas.GetSchema(this.SelectedFile.Detal.WeldingSchema);
                         jObject.Add("welding_sequence", JToken.FromObject(sch)); // Запись в json-строку схему сварки детали.
 
-                        //File.WriteAllText(Path.Combine(foldForGenerate, $"{this.ProgrammName}.json"), jObject.ToString());
-                        //if (File.Exists(Path.Combine(foldForGenerate, $"{this.ProgrammName}.json")))
-                        //    App.Current.Logger.Info($"Сгенерирован файл {Path.Combine(foldForGenerate, $"{this.ProgrammName}.json")}, содержащий:\n" + jObject.ToString());
+                        File.WriteAllText(Path.Combine(foldForGenerate, $"{this._programName}.json"), jObject.ToString());
+                        if (File.Exists(Path.Combine(foldForGenerate, $"{this._programName}.json")))
+                            App.Current.Logger.Info(new Exception($"Содержание файла {Path.Combine(foldForGenerate, $"{ this._programName }.json")}:\n" + jObject.ToString()),
+                                                    $"Сгенерирован файл {Path.Combine(foldForGenerate, $"{this._programName}.json")}");
+
+                        // Генерация программы.
+                        switch (this.SelectedFile.Detal)
+                        {
+                            case Plita plita:
+                                App.Current.Logger.Info("Начат процесс генерации программы для плиты с рёбрами . . .");
+                                break;
+
+                            case PlitaStringer plitaStringer:
+                                App.Current.Logger.Info("Начат процесс генерации программы для плиты со стрингером . . .");
+                                break;
+
+                            case PlitaTreygolnik plitaTreygolnik:
+                                App.Current.Logger.Info("Начат процесс генерации программы для плиты треугольником . . .");
+                                break;
+                        }
+
+                        new GenerationService(foldForGenerate, this._programName, this._scriptName).Start(this.SelectedFile.Detal);
+
+                        // Проверка успеха генерации
+                        if (this.SelectedRobotsName == "Все")
+                        {
+                            for (int i = 0; i < this.RobotsCollection.Count(); i++)
+                            {
+                                string robotPath = this.RobotsCollection[i].PathProgramm;
+
+                                if (File.Exists(Path.Combine(robotPath, string.Join("", this._programName, ".src"))))
+                                    App.Current.Logger.Info($"Файл {string.Join("", this._programName, ".src")} сгенерирован в {robotPath}");
+                                else
+                                    App.Current.Logger.Error($"Файл {Path.Combine(robotPath, string.Join("", this._programName, ".src"))} не найден");
+                            }
+                        }
+                        else
+                        {
+                            if (!File.Exists(Path.Combine(this.RobotsCollection.Where(item => item.Name == this.SelectedRobotsName).First().PathProgramm, string.Join("", this._programName, ".src"))))
+                                return;
+                        }
+
+                        if (System.Windows.MessageBox.Show("Отправить сгенерированные файлы на робота/ов?\nВсе файлы в папке назначения будут удалены.", "Генерация", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) != MessageBoxResult.OK)
+                            return;
+
+                        if (this.RobotsCollection.Count > 0 && string.IsNullOrWhiteSpace(this.RobotsCollection[0].PathProgramm))
+                            throw new Exception("Отказ в передачи файлов: не выбрана папка программы.");
+
+                        if (this.SelectedRobotsName == "Все")
+                        {
+                            foreach(var robot in this.RobotsCollection)
+                            {
+                                await this.CopyFileOnRobot(robot);
+                            }
+                        }
+                        else
+                        {
+                            await this.CopyFileOnRobot(this.RobotsCollection.Where(p => p.Name == this.SelectedRobotsName).Select(item => item).ToList<Robot>().First());
+                        }
                     }, _exceptionCallback));
             }
         }
@@ -949,7 +1035,8 @@ namespace ForRobot.ViewModels
             //if (App.Current.OpenedFiles.Count == 0)
             //    App.Current.OpenedFiles.Add(new Model.File3D.File3D());
 
-            //App.Current.OpenedFiles.Add(new Model.File3D.File3D(new Plita(DetalType.Plita), Path.Combine(Path.GetTempPath(), "Новый.rGen")));
+            App.Current.OpenedFiles.Add(new Model.File3D.File3D(Detal.GetDetal(DetalTypes.Plita),
+                                        Path.Combine(Path.GetTempPath(), App.Current.Settings.PlitaProgramName)));
         }
 
         #endregion
@@ -969,8 +1056,8 @@ namespace ForRobot.ViewModels
                 {
                     PathProgramm = (this.RobotsCollection.Count > 0) ?
                             Path.Combine(Directory.GetParent(this.RobotsCollection.Last().PathProgramm).ToString(), $"R{this.RobotsCollection.Count + 1}")
-                            : Path.Combine(this.RobotConfig.PathForGeneration, $"R{this.RobotsCollection.Count + 1}"),
-                    PathControllerFolder = this.RobotConfig.PathControllerFolder,
+                            : Path.Combine(App.Current.Settings.PathFolderOfGeneration, $"R{this.RobotsCollection.Count + 1}"),
+                    PathControllerFolder = App.Current.Settings.ControlerFolder,
                     ConnectionTimeOutMilliseconds = Convert.ToInt32(App.Current.Settings.ConnectionTimeOut) * 1000
                 };
             }
@@ -1000,6 +1087,38 @@ namespace ForRobot.ViewModels
             {
                 this.SelectedFile = file;
             }
+        }
+
+        private async Task CopyFileOnRobot(Robot robot)
+        {
+            if (!robot.IsConnection)
+                App.Current.Logger.Error($"{robot.Host}:{robot.Port}\tОтказ в передачи файлов: отсутствует соединение");
+
+            await Task.Run<bool>(() => robot.DeleteFileOnPC());
+
+            if (!await Task.Run<bool>(() => robot.CopyToPC(string.Join("", this._programName, ".src"))))
+                return;
+
+            await robot.GetFilesAsync();
+
+            for (int i = 0; i < robot.Files.Count; i++)
+            {
+                var item = robot.Files[i];
+                var folder = item.Search(this.RobotsCollection[i].PathControllerFolder.Split(new char[] { '\\' }).Last());
+
+                if (folder == null)
+                    continue;
+
+                foreach (var child in folder.Children.Where(f => f.Type == Model.Controls.FileTypes.DataList || f.Type == Model.Controls.FileTypes.Program))
+                {
+                    await Task.Run(() => this.RobotsCollection[i].DeleteFile(Path.Combine(ForRobot.Libr.Client.JsonRpcConnection.DefaulRoot, child.Path)));
+                }
+            }
+
+            if (!await Task.Run<bool>(() => robot.Copy(this._programName)))
+                return;
+
+            await Task.Run(() => robot.SelectProgramByName(string.Join("", this._programName, ".src")));
         }
 
         #region Logging

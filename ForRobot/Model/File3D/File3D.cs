@@ -15,14 +15,25 @@ using CommunityToolkit.Diagnostics;
 //using CommunityToolkit.
 //using CommunityToolkit.Mvvm.Input;
 
+using ForRobot.Model.Detals;
+
 namespace ForRobot.Model.File3D
 {
     public class File3D : BaseClass
     {
+        #region Private variables
+
         //MeshElement3D _object3D;
 
         //private readonly IHelixViewport3D viewport;
+        private bool _isSaved = false;
+        private Model3DGroup _currentModel;
+        private Detal _detal;
+
         private readonly Dispatcher dispatcher;
+        private static readonly string[] ExtensionsFilter = new string[] { ".3ds", ".obj", ".objz", ".off", ".lwo", ".stl", ".ply" };
+
+        #endregion Private variables
 
         #region Public variables
 
@@ -34,11 +45,15 @@ namespace ForRobot.Model.File3D
         /// Файл был создан
         /// </summary>
         public bool IsCreated { get; private set; } = false;
+
         /// <summary>
         /// Сохранены ли последнии изменения
         /// </summary>
-        public bool IsSaved { get; private set; } = false;
+        public bool IsSaved { get; private set; }
 
+        /// <summary>
+        /// Путь к файлу
+        /// </summary>
         public string Path { get; private set; } = string.Empty;
         /// <summary>
         /// Имя с расширением
@@ -50,7 +65,6 @@ namespace ForRobot.Model.File3D
         public string NameWithoutExtension { get => System.IO.Path.GetFileNameWithoutExtension(this.Path); }
 
         //Model3DGroup Group3D { get; set; }
-
         //public MeshElement3D Object3D
         //{
         //    get => this._object3D ?? (this._object3D = new CubeVisual3D()
@@ -65,43 +79,44 @@ namespace ForRobot.Model.File3D
         //    }
         //}
 
-        public Model3DGroup CurrentModel { get; set; } = new Model3DGroup();
+        public Model3DGroup CurrentModel { get => this._currentModel; set => Set(ref this._currentModel, value); }
 
-        //public ObservableCollection<Visual3D> CurrentModel { get; set; }
-
-        private Detals.Detal _detal;
-        public Detals.Detal Detal
-        {
-            //get; set;
-            get => this._detal; set => Set(ref this._detal, value);
-        }
+        public Detal Detal { get => this._detal; set => Set(ref this._detal, value); }
 
         public static readonly string FilterForFileDialog = "3D model files (*.3ds;*.obj;*.off;*.lwo;*.stl;*.ply;)|*.3ds;*.obj;*.objz;*.off;*.lwo;*.stl;*.ply;";
 
-        private static string[] ExtensionsFilter = new string[] { ".3ds", ".obj", ".objz", ".off", ".lwo", ".stl", ".ply" };
-        
         #endregion
 
         #region Constructor
 
-        public File3D()
-        {
-            this.dispatcher = Dispatcher.CurrentDispatcher;
+        public File3D() => this.dispatcher = Dispatcher.CurrentDispatcher;
 
-            //this.CurrentModel.Children.Add(new GeometryModel3D
-            //{
-            //    Geometry = new MeshGeometry3D
-            //    {
-            //        Positions = new Point3DCollection { new Point3D(0, 0, 0), new Point3D(1, 0, 0), new Point3D(0, 1, 0) },
-            //        TriangleIndices = new Int32Collection { 0, 1, 2 }
-            //    },
-            //    Material = MaterialHelper.CreateMaterial(Colors.Blue)
-            //});
-        }
-
-        public File3D(Detals.Detal detal, string path) : this()
+        public File3D(Detal detal, string path) : this()
         {
             this.Detal = detal;
+
+            switch (this.Detal.DetalType)
+            {
+                case string a when a == DetalTypes.Plita:
+                    this.CurrentModel = Plita.GetModel3D((Plita)this.Detal);
+                    this.Detal.Change += (s, o) =>
+                    {
+                        //Task.Run(() => { this.CurrentModel = Plita.GetModel3D((Plita)s); });
+                        this.CurrentModel = Plita.GetModel3D((Plita)s);
+                    };
+                    ((Plita)this.Detal).RibsCollection.ItemPropertyChanged += (s, o) =>
+                    {
+                        this.CurrentModel = Plita.GetModel3D((Plita)s);
+                    };
+                    break;
+
+                case string b when b == DetalTypes.Stringer:
+                    break;
+
+                case string c when c == DetalTypes.Treygolnik:
+                    break;
+            }
+
             this.Path = path;
             this.IsCreated = true;
         }
@@ -165,8 +180,16 @@ namespace ForRobot.Model.File3D
         /// </summary>
         public void Save()
         {
+            if (string.IsNullOrEmpty(this.Path))
+            {
 
+            }
         }
+
+        //public void S(EventHandler eventHandler)
+        //{
+        //    this.Detal.Change = eventHandler.;
+        //}
 
         #endregion
     }

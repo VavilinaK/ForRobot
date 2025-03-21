@@ -419,6 +419,8 @@ namespace ForRobot.ViewModels
                                     ParalleleRibs = ((Plita)this.DetalObject).ParalleleRibs,
                                     DiferentDissolutionLeft = ((Plita)this.DetalObject).DiferentDissolutionLeft,
                                     DiferentDissolutionRight = ((Plita)this.DetalObject).DiferentDissolutionRight
+                                    //DiferentHight = ((Plita)this.DetalObject).DiferentHight,
+                                    //DiferentHightLeftToRight = ((Plita)this.DetalObject).DiferentHightLeftToRight
                                 };
                                 ((Plita)this.DetalObject).RibsCollection.ItemPropertyChanged += (o, e) => this.SaveDetal();
                                 break;
@@ -722,10 +724,10 @@ namespace ForRobot.ViewModels
                             Exception ex;
                             if (this.RobotsCollection.Count > 0 && string.IsNullOrWhiteSpace(this.RobotsCollection[0].PathProgramm))
                             {
-                                ex = new Exception($"{DateTime.Now.ToString("HH:mm:ss")} Отказ в передачи файлов: не выбрана папка программы.\n");
-                                WreteLogError(this, new LogErrorEventArgs(ex.Message, ex));
-                                System.Windows.MessageBox.Show(String.Format("{0}", ex.Message), "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                                return;
+                                throw new Exception("Отказ в передачи файлов: не выбрана папка программы.");
+                                //WreteLogError(this, new LogErrorEventArgs(ex.Message, ex));
+                                //System.Windows.MessageBox.Show(String.Format("{0}", ex.Message), "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                                //return;
                             }
 
                             if (this.SelectedNameRobot == "Все")

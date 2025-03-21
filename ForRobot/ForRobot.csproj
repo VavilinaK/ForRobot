@@ -273,6 +273,7 @@
     <Compile Include="Libr\Behavior\ZoomMessage.cs" />
     <Compile Include="Libr\ConfigurationProperties\AppConfigurationSection.cs" />
     <Compile Include="Libr\Converters\ArrayMultiValueConverter.cs" />
+    <Compile Include="Libr\Converters\BindingToTagConverter.cs" />
     <Compile Include="Libr\Converters\BoundsConverter.cs" />
     <Compile Include="Libr\Converters\CollectionsStringToBoolConverter.cs" />
     <Compile Include="Libr\Converters\DescriptionsStaticClassConverter.cs" />
@@ -288,7 +289,7 @@
     <Compile Include="Model\Detals\WeldingSchemas.cs" />
     <Compile Include="Model\File3D\File3D.cs" />
     <Compile Include="Model\File3D\VisualViewModel.cs" />
-    <Compile Include="Services\LayoutService.cs" />
+    <Compile Include="Services\GenerationService.cs" />
     <Compile Include="ViewModels\CreateWindowViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel3.cs" />
     <Compile Include="ViewModels\PropertiesWindowViewModel.cs" />
@@ -468,14 +469,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Resource Include="Themes\Images\back_view.png" />
-    <Resource Include="Themes\Images\bottom_view.png" />
-    <Resource Include="Themes\Images\front_view.png" />
-    <Resource Include="Themes\Images\isometric_view.png" />
-    <Resource Include="Themes\Images\left_side_view.png" />
-    <Resource Include="Themes\Images\right_side_view.png" />
-    <Resource Include="Themes\Images\top_view.png" />
-    <Resource Include="Themes\Images\front_view.svg" />
     <EmbeddedResource Include="Scripts\coord_templates.py">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -485,6 +478,14 @@
     <EmbeddedResource Include="Scripts\weld_gen.py">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
+    <Resource Include="Themes\Images\back_view.png" />
+    <Resource Include="Themes\Images\bottom_view.png" />
+    <Resource Include="Themes\Images\front_view.png" />
+    <Resource Include="Themes\Images\isometric_view.png" />
+    <Resource Include="Themes\Images\left_side_view.png" />
+    <Resource Include="Themes\Images\right_side_view.png" />
+    <Resource Include="Themes\Images\top_view.png" />
+    <Resource Include="Themes\Images\front_view.svg" />
     <EmbeddedResource Include="Scripts\__pycache__\coord_templates.cpython-312.pyc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>

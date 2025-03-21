@@ -22,11 +22,11 @@ namespace ForRobot.Libr.ConfigurationProperties
             set { this["Long"] = value; }
         }
 
-        [ConfigurationProperty("Wight")]
-        public decimal Wight
+        [ConfigurationProperty("Width")]
+        public decimal Width
         {
-            get { return (decimal)this["Wight"]; }
-            set { this["Wight"] = value; }
+            get { return (decimal)this["Width"]; }
+            set { this["Width"] = value; }
         }
 
         [ConfigurationProperty("Hight")]

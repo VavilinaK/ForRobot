@@ -490,4 +490,9 @@
             </GroupBox>
         </Grid>
     </DataTemplate>
+
+    <!--Вкладка "Генерация"-->
+    <DataTemplate x:Key="GenerationProperiesTemplate" DataType="{x:Type ContentControl}">
+        
+    </DataTemplate>
 </ResourceDictionary>

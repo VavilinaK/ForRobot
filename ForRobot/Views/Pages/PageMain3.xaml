@@ -912,19 +912,19 @@
 
             <MenuItem Header="_Вид" >
                 <MenuItem Header="_Настройки робота/ов"
-                          Command="{Binding Path=UnhideCommand}" CommandParameter="Robots"/>
+                          Command="{Binding Path=CollapedCommand}" CommandParameter="Robots"/>
                 <MenuItem Header="_Окно управления работами"
-                          Command="{Binding Path=UnhideCommand}" CommandParameter="Control"/>
+                          Command="{Binding Path=CollapedCommand}" CommandParameter="Control"/>
                 <Separator/>
                 <MenuItem Header="_Свойства"
-                          Command="{Binding Path=UnhideCommand}" CommandParameter="Properties"/>
+                          Command="{Binding Path=CollapedCommand}" CommandParameter="Properties"/>
                 <Separator/>
                 <MenuItem Header="_Параметры детали"
-                          Command="{Binding Path=UnhideCommand}" CommandParameter="Parametrs"/>
+                          Command="{Binding Path=CollapedCommand}" CommandParameter="Parametrs"/>
                 <!--<MenuItem Header="_Настройки генерации"/>-->
                 <Separator/>
                 <MenuItem Header="_Окно сообщений"
-                          Command="{Binding Path=UnhideCommand}" CommandParameter="Messages"/>
+                          Command="{Binding Path=CollapedCommand}" CommandParameter="Messages"/>
             </MenuItem>
 
             <MenuItem Header="_3D View" >
@@ -1090,13 +1090,13 @@
 
             <MenuItem Template="{StaticResource SeparatorTemplate}"/>
 
-            <!--<MenuItem>
+            <MenuItem>
                 <MenuItem.Template>
                     <ControlTemplate TargetType="{x:Type MenuItem}">
                         <ComboBox VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
                                   FontSize="{StaticResource FontSizeNP4}" Width="Auto" MinWidth="200" Margin="4"
                                   ItemsSource="{Binding Path=RobotNamesCollection, Mode=OneWay}"
-                                  SelectedItem="{Binding Path=SelectedNameRobot, Mode=TwoWay}"
+                                  SelectedItem="{Binding Path=SelectedRobotsName, Mode=TwoWay}"
                                   SelectedIndex="0">
 
                             <ComboBox.Style>
@@ -1117,7 +1117,7 @@
                         </ComboBox>
                     </ControlTemplate>
                 </MenuItem.Template>
-            </MenuItem>-->
+            </MenuItem>
 
             <MenuItem Template="{StaticResource MenuItemTemplate2}" Header="Генерировать"
                       Style="{StaticResource MenuItemDetalNull}" Margin="10,2">
@@ -1358,15 +1358,16 @@
                                     <MouseBinding Command="{x:Static h:CameraController.PanCommand}" Gesture="LeftClick" />
                                 </h:HelixViewport3D.InputBindings>
 
+                                <!--<h:DefaultLights/>-->
                                 <h:SunLight/>
                                 <h:GridLinesVisual3D/>
-                                <ModelVisual3D Content="{Binding Path=CurrentModel}"/>
+                                <ModelVisual3D Content="{Binding Path=CurrentModel, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                                 <!--<h:BillboardVisual3D Position="0,0,0"
                                                      Material="{h:ImageMaterial Opacity, IsEmissive=true}" />-->
 
                                 <h:BoundingBoxVisual3D BoundingBox="{Binding Path=DataContext.SelectedObject, Converter={StaticResource BoundsConvert}, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
-                                                       Diameter="0.1"/>
+                                                       Diameter="1"/>
 
                                 <i:Interaction.Behaviors>
                                     <behavior:ZoomBehavior/>
@@ -1474,10 +1475,17 @@
                         <avalonDock:LayoutAnchorablePaneGroup>
                             <avalonDock:LayoutAnchorablePane>
                                 <avalonDock:LayoutAnchorable Title="Состав" ContentId="Components">
-                                    <ListBox>
-                                        <ListBoxItem>Button</ListBoxItem>
-                                        <ListBoxItem>TextBox</ListBoxItem>
-                                    </ListBox>
+                                    <TreeView FontSize="{StaticResource FontSizeNP2}">
+                                        <TreeView.Resources>
+                                            <!--<HierarchicalDataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <CheckBox IsChecked="{Binding IsVisible}" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                                    <TextBlock Text="{Binding Name}"/>
+                                                </StackPanel>
+                                            </HierarchicalDataTemplate>-->
+                                        </TreeView.Resources>
+
+                                    </TreeView>
                                 </avalonDock:LayoutAnchorable>
                             </avalonDock:LayoutAnchorablePane>
                         </avalonDock:LayoutAnchorablePaneGroup>
@@ -1496,7 +1504,7 @@
                                         <TreeView.Style>
                                             <Style TargetType="{x:Type TreeView}">
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Path=SelectedFile.Detal, Converter={StaticResource NullBooleanConvert}}" Value="{StaticResource True}">
+                                                    <DataTrigger Binding="{Binding Path=SelectedFile.Detal, Converter={StaticResource NullBooleanConvert}}" Value="{StaticResource False}">
                                                         <Setter Property="IsEnabled" Value="False"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>

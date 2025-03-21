@@ -2,15 +2,18 @@
 using System.Linq;
 using System.Drawing;
 using System.Windows;
+//using System.Windows.Media;
+using System.Windows.Media.Media3D;
 using System.Windows.Media.Imaging;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-
 using System.Configuration;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
+
+using HelixToolkit.Wpf;
 
 using ForRobot.Libr;
 using ForRobot.Libr.Json;
@@ -29,7 +32,9 @@ namespace ForRobot.Model.Detals
         private bool _paralleleRibs = true;
         private bool _diferentDissolutionLeft = false;
         private bool _diferentDissolutionRight = false;
-        
+        //private bool _diferentHight = false;
+        //private bool _diferentHightLeftToRight = false;
+
         private decimal _bevelToLeft;
         private decimal _bevelToRight;
         private decimal _distanceForSearch;
@@ -109,6 +114,7 @@ namespace ForRobot.Model.Detals
             get => this._diferentDistance;
             set
             {
+                Set(ref this._diferentDistance, value);
                 if (!value && this.RibsCollection?.Count > 0)
                 {
                     for (int i = 0; i < this.RibsCollection.Count; i++)
@@ -118,14 +124,12 @@ namespace ForRobot.Model.Detals
 
                         if (i == 0)
                         {
-                            this.RibsCollection[i].Distance = this.DistanceToFirst;
+                            this.RibsCollection[i].DistanceLeft = this.DistanceToFirst;
                             continue;
                         }
-                        this.RibsCollection[i].Distance = this.DistanceBetween;
+                        this.RibsCollection[i].DistanceLeft = this.DistanceBetween;
                     }
                 }
-
-                Set(ref this._diferentDistance, value);
                 this.Change?.Invoke(this, null);
             }
         }
@@ -196,6 +200,51 @@ namespace ForRobot.Model.Detals
             }
         }
 
+        //[JsonIgnore]
+        //[SaveAttribute]
+        //[JsonConverter(typeof(JsonCommentConverter), "Разная ли высота рёбер")]
+        ///// <summary>
+        ///// Разная ли высота рёбер
+        ///// </summary>
+        //public bool DiferentHight
+        //{
+        //    get => this._diferentHight;
+        //    set
+        //    {
+        //        Set(ref this._diferentHight, value);
+        //        if (!value && this.RibsCollection?.Count > 0)
+        //        {
+        //            for (int i = 0; i < this.RibsCollection.Count; i++)
+        //            {
+        //                this.RibsCollection[i].HightLeft = this.Hight;
+        //                this.RibsCollection[i].HightRight = this.Hight;
+        //            }
+        //        }
+        //        this.Change?.Invoke(this, null);
+        //    }
+        //}
+
+        //[JsonIgnore]
+        //[SaveAttribute]
+        //[JsonConverter(typeof(JsonCommentConverter), "Разная ли высота рёбер с 2-х сторон")]
+        ///// <summary>
+        ///// Разная ли высота рёбер с 2-х сторон
+        ///// </summary>
+        //public bool DiferentHightLeftToRight
+        //{
+        //    get => this._diferentHightLeftToRight;
+        //    set
+        //    {
+        //        Set(ref this._diferentHightLeftToRight, value);
+        //        if (!value && this.RibsCollection?.Count > 0)
+        //            foreach (var rib in this.RibsCollection)
+        //            {
+        //                rib.OnChangeHightEvent(rib, null);
+        //            }
+        //        this.Change?.Invoke(this, null);
+        //    }
+        //}
+
         [JsonIgnore]
         [SaveAttribute]
         /// <inheritdoc cref="Detal.DetalType"/>
@@ -212,7 +261,7 @@ namespace ForRobot.Model.Detals
             set
             {
                 Set(ref this._scoseType, value);
-                RaisePropertyChanged(nameof(this.DiferentDistance), nameof(this.Wight), nameof(this.BevelToLeft), nameof(this.BevelToRight), nameof(this.GenericImage), nameof(this.RebraImage));
+                RaisePropertyChanged(nameof(this.DiferentDistance), nameof(this.Width), nameof(this.BevelToLeft), nameof(this.BevelToRight), nameof(this.GenericImage), nameof(this.RebraImage));
                 this.Change?.Invoke(this, null);
             }
         }
@@ -238,16 +287,16 @@ namespace ForRobot.Model.Detals
         /// <summary>
         /// Ширина настила
         /// </summary>
-        public override decimal Wight
+        public override decimal Width
         {
-            get => base.Wight;
+            get => base.Width;
             set
             {
-                base.Wight = value;
+                base.Width = value;
                 this.Change?.Invoke(this, null);
             }
         }
-
+        
         [JsonProperty("h")]
         [JsonConverter(typeof(JsonCommentConverter), "Высота ребра")]
         /// <summary>
@@ -259,6 +308,14 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.Hight = value;
+                //if (this.RibsCollection?.Count > 0)
+                //{
+                //    for (int i = 0; i < this.RibsCollection.Count; i++)
+                //    {
+                //        this.RibsCollection[i].HightLeft = base.Hight;
+                //        this.RibsCollection[i].HightRight = base.Hight;
+                //    }
+                //}
                 RaisePropertyChanged(nameof(this.RebraImage));
                 this.Change?.Invoke(this, null);
             }
@@ -278,7 +335,7 @@ namespace ForRobot.Model.Detals
                 base.DistanceToFirst = value;
                 if (this.RibsCollection?.Count > 0)
                 {
-                    this.RibsCollection[0].Distance = base.DistanceToFirst;
+                    this.RibsCollection[0].DistanceLeft = base.DistanceToFirst;
                     this.RibsCollection[0].DistanceRight = base.DistanceToFirst;
                 }
                 RaisePropertyChanged(nameof(this.GenericImage));
@@ -301,7 +358,7 @@ namespace ForRobot.Model.Detals
                 if (this.RibsCollection?.Count > 0)
                     for(int i = 1; i < this.RibsCollection.Count; i++)
                     {
-                        this.RibsCollection[i].Distance = base.DistanceBetween;
+                        this.RibsCollection[i].DistanceLeft = base.DistanceBetween;
                         this.RibsCollection[i].DistanceRight = base.DistanceBetween;
                     }
                 RaisePropertyChanged(nameof(this.RebraImage), nameof(this.GenericImage));
@@ -681,11 +738,18 @@ namespace ForRobot.Model.Detals
                 Set(ref this._ribsCollection, value);
 
                 foreach(var rib in this._ribsCollection)
+                {
                     rib.ChangeDistance += (s, e) =>
                     {
                         if (this.ParalleleRibs)
-                            (s as Rib).DistanceRight = (s as Rib).Distance;
+                            (s as Rib).DistanceRight = (s as Rib).DistanceLeft;
                     };
+                    //rib.ChangeHight += (s, e) =>
+                    //{
+                    //    if (!this.DiferentHightLeftToRight)
+                    //        (s as Rib).HightRight = (s as Rib).HightLeft;
+                    //};
+                }
             }
         }
 
@@ -788,7 +852,7 @@ namespace ForRobot.Model.Detals
 
         public Plita(DetalType type) : base(type)
         {
-            this.Wight = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).Wight;
+            this.Width = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).Width;
             this.BevelToLeft = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).BevelToStart;
             this.BevelToRight = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).BevelToEnd;
             this.DistanceForWelding = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).DistanceForWelding;
@@ -824,24 +888,20 @@ namespace ForRobot.Model.Detals
                     IdentToRight = this.IdentToRight,
                     DissolutionLeft = this.DissolutionStart,
                     DissolutionRight = this.DissolutionEnd
+                    //HightLeft = this.Hight,
+                    //HightRight = this.Hight
                 };
 
                 if (i == 0)
                 {
-                    rib.Distance = this.DistanceToFirst;
+                    rib.DistanceLeft = this.DistanceToFirst;
                     rib.DistanceRight = this.DistanceToFirst;
                 }
                 else
                 {
-                    rib.Distance = this.DistanceBetween;
+                    rib.DistanceLeft = this.DistanceBetween;
                     rib.DistanceRight = this.DistanceBetween;
                 }
-                //rib.ChangeDistance += (s, e) => 
-                //{
-                //    if (this.ParalleleRibs)
-                //        (s as Rib).DistanceRight = (s as Rib).Distance;
-                //};
-                
                 ribs.Add(rib);
             }
 
@@ -1338,8 +1398,8 @@ namespace ForRobot.Model.Detals
                                         new PointF(420, 440),
                                         stringFormat2);
 
-                    //graphics.DrawString(Wight.ToString(),
-                    //                    FontLibr.FindFont(graphics, Wight.ToString(), new System.Drawing.Size(100, 30), font),
+                    //graphics.DrawString(Width.ToString(),
+                    //                    FontLibr.FindFont(graphics, Width.ToString(), new System.Drawing.Size(100, 30), font),
                     //                    new SolidBrush(Color.Black), 
                     //                    new PointF(840, bitmap.Height/2),
                     //                    stringFormat1);
@@ -1810,6 +1870,135 @@ namespace ForRobot.Model.Detals
 
         #endregion
 
-        #endregion
+        #endregion Private functions
+
+        #region Private functions
+
+        public static Model3DGroup GetModel3D(Plita plita)
+        {
+            Model3DGroup model = new Model3DGroup();
+            //model.Children.Add(new GeometryModel3D()
+            //{
+            //    Geometry = new MeshGeometry3D
+            //    {
+            //        Positions = new Point3DCollection { new Point3D(0, 0, 0), new Point3D(1, 0, 0), new Point3D(1, 1, 0) },
+
+            //        TriangleIndices = new System.Windows.Media.Int32Collection { 0, 1, 2 }
+            //    },
+            //    Material = MaterialHelper.CreateMaterial(System.Windows.Media.Colors.Blue)
+            //});
+
+            var brush = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#2eb9ff");
+            //brush.Opacity = 0.85;
+
+            var plateMesh = CreateCuboid(plita.Width, plita.ThicknessPlita, plita.Long);
+            var plateModel = new GeometryModel3D(plateMesh, new DiffuseMaterial(brush));
+            model.Children.Add(plateModel);
+
+            //// Создание рёбер
+            //decimal ribSpacing = plita.Long / (plita.SumReber + 1);
+            //for (int i = 1; i <= plita.SumReber; i++)
+            //{
+            //    decimal ribPosition = i * ribSpacing - plita.Long / 2;
+            //    var ribMesh = CreateCuboid(plita.ThicknessRebro, plita.Hight, plita.Width);
+            //    var ribModel = new GeometryModel3D(ribMesh, new DiffuseMaterial(System.Windows.Media.Brushes.Silver));
+            //    ribModel.Transform = new TranslateTransform3D((double)ribPosition, (double)plita.ThicknessPlita / 2, 0);
+            //    model.Children.Add(ribModel);
+            //}
+
+            return model;
+        }
+
+        // Метод для создания параллелепипеда (кубоида)
+        private static MeshGeometry3D CreateCuboid(decimal width, decimal height, decimal length)
+        {
+            var mesh = new MeshGeometry3D();
+
+            // Вершины
+            double halfWidth = (double)width / 2;
+            double halfHeight = (double)height / 2;
+            double halfLength = (double)length / 2;
+
+            mesh.Positions = new Point3DCollection(new[]
+            {
+            new Point3D(-halfWidth, -halfHeight, -halfLength),
+            new Point3D(halfWidth, -halfHeight, -halfLength),
+            new Point3D(halfWidth, halfHeight, -halfLength),
+            new Point3D(-halfWidth, halfHeight, -halfLength),
+            new Point3D(-halfWidth, -halfHeight, halfLength),
+            new Point3D(halfWidth, -halfHeight, halfLength),
+            new Point3D(halfWidth, halfHeight, halfLength),
+            new Point3D(-halfWidth, halfHeight, halfLength)
+            });
+
+            // Индексы треугольников
+            mesh.TriangleIndices = new System.Windows.Media.Int32Collection(new[]
+            {
+            0, 1, 2, 2, 3, 0, // Передняя грань
+            4, 5, 6, 6, 7, 4, // Задняя грань
+            0, 1, 5, 5, 4, 0, // Нижняя грань
+            2, 3, 7, 7, 6, 2, // Верхняя грань
+            0, 3, 7, 7, 4, 0, // Левая грань
+            1, 2, 6, 6, 5, 1  // Правая грань
+            });
+
+            return mesh;
+        }
+
+        //private GeometryModel3D CreateTextLabel(string text, Point3D position, double fontSize = 2)
+        //{
+        //    var textGeometry = new System.Windows.Media.FormattedText(
+        //        text,
+        //        System.Globalization.CultureInfo.CurrentCulture,
+        //        FlowDirection.LeftToRight,
+        //        new System.Windows.Media.Typeface("Arial"),
+        //        fontSize,
+        //        System.Windows.Media.Brushes.Black);
+
+        //    var geometry = textGeometry.BuildGeometry(new System.Windows.Point(0, 0));
+        //    var mesh = new MeshGeometry3D();
+
+        //    foreach (var figure in geometry.Figures)
+        //    {
+        //        foreach (var segment in figure.Segments)
+        //        {
+        //            if (segment is LineSegment lineSegment)
+        //            {
+        //                mesh.Positions.Add(new Point3D(lineSegment.Point.X, lineSegment.Point.Y, 0));
+        //            }
+        //        }
+        //    }
+
+        //    var textModel = new GeometryModel3D(mesh, new DiffuseMaterial(Brushes.Black));
+        //    textModel.Transform = new TranslateTransform3D(position);
+        //    return textModel;
+        //}
+
+        private GeometryModel3D CreateArrow(Point3D start, Point3D end, double thickness = 0.5)
+        {
+            var direction = end - start;
+            var length = direction.Length;
+            direction.Normalize();
+
+            var arrowMesh = new MeshGeometry3D();
+            // Создание линии (основная часть стрелки).
+            arrowMesh.Positions.Add(start);
+            arrowMesh.Positions.Add(end);
+
+            // Создание наконечника стрелки (треугольник).
+            var perpendicular = new Vector3D(-direction.Y, direction.X, 0);
+            var arrowTip1 = end - direction * thickness * 2 + perpendicular * thickness;
+            var arrowTip2 = end - direction * thickness * 2 - perpendicular * thickness;
+
+            arrowMesh.Positions.Add(arrowTip1);
+            arrowMesh.Positions.Add(arrowTip2);
+
+            arrowMesh.TriangleIndices = new System.Windows.Media.Int32Collection(new[] { 0, 1, 2, 1, 2, 3 });
+
+            var arrowModel = new GeometryModel3D(arrowMesh, new DiffuseMaterial(System.Windows.Media.Brushes.Red));
+            return arrowModel;
+        }
+
+        #endregion Private functions
     }
 }
