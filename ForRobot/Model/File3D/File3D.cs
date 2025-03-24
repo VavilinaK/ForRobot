@@ -27,7 +27,7 @@ namespace ForRobot.Model.File3D
 
         //private readonly IHelixViewport3D viewport;
         private bool _isSaved = false;
-        private Model3DGroup _currentModel;
+        private Model3DGroup _currentModel = new Model3DGroup();
         private Detal _detal;
 
         private readonly Dispatcher dispatcher;
@@ -79,9 +79,33 @@ namespace ForRobot.Model.File3D
         //    }
         //}
 
-        public Model3DGroup CurrentModel { get => this._currentModel; set => Set(ref this._currentModel, value); }
+        public Model3DGroup CurrentModel
+        {
+            get => this._currentModel;
+            set
+            {
+                Set(ref this._currentModel, value);
+                this.SceneUpdate();
+            }
+        }
 
         public Detal Detal { get => this._detal; set => Set(ref this._detal, value); }
+
+        //public ObservableCollection<SceneItem> SceneObjects
+        //{
+        //    get => this._sceneObjects;
+        //    set => Set(ref this._sceneObjects, value);
+        //}
+
+        //private ObservableCollection<SceneItem> _sceneObjects = new ObservableCollection<SceneItem>();
+        private ObservableCollection<Visual3D> _sceneObjects = new ObservableCollection<Visual3D>();
+
+
+        public ObservableCollection<Visual3D> SceneObjects
+        {
+            get => this._sceneObjects;
+            set => Set(ref this._sceneObjects, value);
+        }
 
         public static readonly string FilterForFileDialog = "3D model files (*.3ds;*.obj;*.off;*.lwo;*.stl;*.ply;)|*.3ds;*.obj;*.objz;*.off;*.lwo;*.stl;*.ply;";
 
@@ -149,10 +173,24 @@ namespace ForRobot.Model.File3D
             });
         }
 
+        private void SceneUpdate()
+        {
+            GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Behavior.HelixSceneTrackerMessage());
+        }
+        //{
+        //    this.SceneObjects = new ObservableCollection<SceneItem>();
+        //    this.SceneObjects.Add(new SceneItem()
+        //    {
+        //        Name = "Scene"
+        //    });
+        //    //this.CurrentModel.Children.Add(new SunLight());
+        //    SceneItem.AddChildren(this.SceneObjects.First(), this.CurrentModel);
+        //}
+
         #endregion
 
         #region Public functions
-        
+
         public static File3D Open()
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog() {
@@ -171,6 +209,7 @@ namespace ForRobot.Model.File3D
         public void Load(string sPath)
         {
             this.CurrentModel.Children.Add(new ModelImporter().Load(sPath));
+            this.SceneUpdate();
             this.IsOpened = true;
             this.IsSaved = true;
         }
