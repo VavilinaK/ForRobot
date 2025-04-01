@@ -54,6 +54,8 @@
             <PathGeometry x:Key="RunProgramPathGeomerty1">M810.666667 896H213.333333c-46.933333 0-85.333333-38.4-85.333333-85.333333V213.333333c0-46.933333 38.4-85.333333 85.333333-85.333333h597.333334c46.933333 0 85.333333 38.4 85.333333 85.333333v597.333334c0 46.933333-38.4 85.333333-85.333333 85.333333z</PathGeometry>
             <PathGeometry x:Key="RunProgramPathGeomerty2">M661.333333 512l-234.666666-170.666667v341.333334z</PathGeometry>
 
+            <Geometry x:Key="RunTrianglePathGeomerty">M8,5.14V19.14L19,12.14L8,5.14Z</Geometry>
+
             <PathGeometry x:Key="RestartProgramPathGeomerty1">M36 32a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4h28a4 4 0 0 1 4 4v28z</PathGeometry>
             <PathGeometry x:Key="RestartProgramPathGeomerty2">M30.2 10L23 4v4h-8C9.477 8 5 12.477 5 18c0 1.414.297 2.758.827 3.978l3.3-2.75A6 6 0 0 1 15 12h8v4l7.2-6zm-.026 4.023l-3.301 2.75A6 6 0 0 1 21 24h-8v-4l-7.2 6l7.2 6v-4h8c5.522 0 10-4.478 10-10a9.965 9.965 0 0 0-.826-3.977z</PathGeometry>
 

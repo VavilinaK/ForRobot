@@ -12,14 +12,14 @@ namespace ForRobot.ViewModels.Controls
         public int RootNr
         {
             get { return rootNr; }
-            set { Set(ref rootNr, value, "RootNr"); }
+            set { Set(ref rootNr, value, true, "RootNr"); }
         }
 
         private ObservableCollection<IFile> rootChildren = new ObservableCollection<IFile> { };
         public ObservableCollection<IFile> RootChildren
         {
             get { return rootChildren; }
-            set { Set(ref rootChildren, value, "RootChildren"); }
+            set { Set(ref rootChildren, value, true, "RootChildren"); }
         }
 
         public NavigationTreeViewVM() : this(0) { }

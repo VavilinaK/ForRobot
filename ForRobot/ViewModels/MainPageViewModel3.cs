@@ -33,6 +33,9 @@ namespace ForRobot.ViewModels
     {
         #region Private variables
 
+        private readonly IModelExporter _modelExporter = new ExporterService();
+        private readonly IFileDialogService _fileDialogService = new FileDialogService();
+
         private object _activeContent;
 
         private string _programName
@@ -79,7 +82,7 @@ namespace ForRobot.ViewModels
 
         private Model.File3D.File3D _selectedFile;
 
-        private object selectedObject;
+        private object _selectedObject;
 
         private Robot _selectedRobot;
 
@@ -115,7 +118,7 @@ namespace ForRobot.ViewModels
         //private readonly Libr.Behavior.ZoomBehavior _zoomBehavior;
         //private readonly LayoutService _layoutService;
 
-        public IHelixViewport3D Viewport { get; set; } 
+        //public HelixViewport3D Viewport { get; set; }
 
         private System.Windows.Controls.TreeViewItem _selectedItem;
 
@@ -128,8 +131,8 @@ namespace ForRobot.ViewModels
         private RelayCommand _saveFileCommand;
         private RelayCommand _saveAsFileCommand;
         private RelayCommand _saveAllFilesCommand;
-        private RelayCommand _backCommand;
-        private RelayCommand _returnCommand;
+        private RelayCommand _undoCommand;
+        private RelayCommand _redoCommand;
         private RelayCommand _standartParametrsCommand;
         private RelayCommand _zoomCommand;
         private RelayCommand _сollapedCommand;
@@ -163,7 +166,23 @@ namespace ForRobot.ViewModels
 
         #region Public variables
 
+        //public IHelixViewport3D Viewport { get; set; }
+
         public Version Version { get => System.Reflection.Assembly.GetEntryAssembly().GetName().Version; }
+
+        /// <summary>
+        /// Отправляются ли сгенерированные файлы на робота/ов
+        /// </summary>
+        public bool SendingGeneratedFiles
+        {
+            get => Properties.Settings.Default.SendingGeneratedFiles;
+            set
+            {
+                Properties.Settings.Default.SendingGeneratedFiles = value;
+                Properties.Settings.Default.Save();
+                RaisePropertyChanged(nameof(this.SendingGeneratedFiles));
+            }
+        }
 
         public object ActiveContent
         {
@@ -193,39 +212,23 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Выбранный 3D объект
         /// </summary>
-        public object SelectedObject { get => this.selectedObject; set => Set(ref this.selectedObject, value); }
+        public object SelectedObject
+        {
+            get => this._selectedObject;
+            set
+            {
+                if (value is HelixToolkit.Wpf.GridLinesVisual3D)
+                    return;
+
+                Set(ref this._selectedObject, value);
+            }
+        }
 
         public System.Windows.Controls.TreeViewItem SelectedItem {
             get => this._selectedItem;
             set => Set(ref this._selectedItem, value); }
 
         #region Collections
-
-        ///// <summary>
-        ///// Коллекция типов детали
-        ///// </summary>
-        //public ObservableCollection<string> DetalTypesCollection
-        //{
-        //    get
-        //    {
-        //        var Descriptions = typeof(ForRobot.Model.Detals.ScoseTypes).GetFields().Select(field => field.GetCustomAttributes(typeof(System.ComponentModel.DescriptionAttribute), false).SingleOrDefault() as System.ComponentModel.DescriptionAttribute);
-        //        List<string> DescriptionList = Descriptions.Where(item => item != null).Select(item => item.Description).ToList<string>();
-        //        return new ObservableCollection<string>(DescriptionList);
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Коллекция типов скосов настила
-        ///// </summary>
-        //public ObservableCollection<string> ScoseTypesCollection
-        //{
-        //    get
-        //    {
-        //        var Descriptions = typeof(ForRobot.Model.Detals.ScoseTypes).GetFields().Select(field => field.GetCustomAttributes(typeof(System.ComponentModel.DescriptionAttribute), false).SingleOrDefault() as System.ComponentModel.DescriptionAttribute);
-        //        List<string> DescriptionList = Descriptions.Where(item => item != null).Select(item => item.Description).ToList<string>();
-        //        return new ObservableCollection<string>(DescriptionList);
-        //    }
-        //}
 
         /// <summary>
         /// Коллекция типов скосов настила
@@ -358,20 +361,35 @@ namespace ForRobot.ViewModels
                 return _saveAsFileCommand ??
                     (_saveAsFileCommand = new RelayCommand(obj =>
                     {
-                        using(SaveFileDialog sfd = new SaveFileDialog()
+                        try
                         {
-                            CheckPathExists = true,
-                            Filter = HelixToolkit.Wpf.Exporters.Filter,
-                            DefaultExt = HelixToolkit.Wpf.Exporters.DefaultExtension
-                        })
+                            ForRobot.Model.File3D.File3D file = obj as ForRobot.Model.File3D.File3D;
+                            string filePath = this._fileDialogService.SaveFileDialog(null, file.Path, Exporters.Filter);
+                            if (filePath != null)
+                            {
+                                _modelExporter.Export(file.CurrentModel, filePath);
+                            }
+                        }
+                        catch (Exception ex)
                         {
-                            if (sfd.ShowDialog() == DialogResult.Cancel && string.IsNullOrEmpty(sfd.FileName))
-                                return;
+                            App.Current.Logger.Error(ex);
+                        }
 
-                            this.Viewport.Export(sfd.FileName);
 
-                            //HelixToolkit.Wpf.ObjExporter.
-                        } 
+                        //using(SaveFileDialog sfd = new SaveFileDialog()
+                        //{
+                        //    CheckPathExists = true,
+                        //    Filter = HelixToolkit.Wpf.Exporters.Filter,
+                        //    DefaultExt = HelixToolkit.Wpf.Exporters.DefaultExtension
+                        //})
+                        //{
+                        //    if (sfd.ShowDialog() == DialogResult.Cancel && string.IsNullOrEmpty(sfd.FileName))
+                        //        return;
+
+                        //    //this.Viewport.Export(sfd.FileName);
+
+                        //    //HelixToolkit.Wpf.ObjExporter.
+                        //} 
                     }));
             }
         }
@@ -402,32 +420,32 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Отмена действий
         /// </summary>
-        public RelayCommand BackCommand
-        {
-            get
-            {
-                return _backCommand ??
-                    (_backCommand = new RelayCommand(obj =>
-                    {
+        //public RelayCommand UndoCommand
+        //{
+        //    get
+        //    {
+        //        return _undoCommand ??
+        //            (_undoCommand = new RelayCommand(obj =>
+        //            {
 
-                    }));
-            }
-        }
+        //            }));
+        //    }
+        //}
 
         /// <summary>
         /// Возврат действий
         /// </summary>
-        public RelayCommand ReturnCommand
-        {
-            get
-            {
-                return _returnCommand ??
-                    (_returnCommand = new RelayCommand(obj =>
-                    {
+        //public RelayCommand RedoCommand
+        //{
+        //    get
+        //    {
+        //        return _redoCommand ??
+        //            (_redoCommand = new RelayCommand(obj =>
+        //            {
 
-                    }));
-            }
-        }
+        //            }));
+        //    }
+        //}
 
         /// <summary>
         /// Сброс параметров детали до стандартных
@@ -439,11 +457,13 @@ namespace ForRobot.ViewModels
                 return _standartParametrsCommand ??
                     (_standartParametrsCommand = new RelayCommand(obj =>
                     {
-                        var detal = this.SelectedFile.Detal;
+                        ForRobot.Model.File3D.File3D file = obj as ForRobot.Model.File3D.File3D;
+                        Detal detal = file.Detal;
+
                         switch (detal.DetalType)
                         {
                             case string a when a == DetalTypes.Plita:
-                                this.SelectedFile.Detal = new Plita(DetalType.Plita)
+                                file.Detal = new Plita(DetalType.Plita)
                                 {
                                     ScoseType = ((Plita)detal).ScoseType,
                                     DiferentDistance = ((Plita)detal).DiferentDistance,
@@ -451,24 +471,29 @@ namespace ForRobot.ViewModels
                                     DiferentDissolutionLeft = ((Plita)detal).DiferentDissolutionLeft,
                                     DiferentDissolutionRight = ((Plita)detal).DiferentDissolutionRight
                                 };
-                                this.SelectedFile.Detal.Change += (s, o) =>
-                                {
-                                    //Task.Run(() => { this.CurrentModel = Plita.GetModel3D((Plita)s); });
-                                    this.SelectedFile.CurrentModel = Plita.GetModel3D((Plita)s);
-                                };
-                                ((Plita)this.SelectedFile.Detal).RibsCollection.ItemPropertyChanged += (s, o) =>
-                                {
-                                    this.SelectedFile.CurrentModel = Plita.GetModel3D((Plita)s);
-                                };
-                                this.SelectedFile.CurrentModel = Plita.GetModel3D((Plita)this.SelectedFile.Detal);
+
+                                file.CurrentModel.Children.Add(Plita.GetModel3D((Plita)file.Detal));
+                                file.ModelChangedEvent += (s, o) => file.CurrentModel.Children.Add(Plita.GetModel3D((s as ForRobot.Model.File3D.File3D).Detal as Plita));
+
+
+                                //this.SelectedFile.Detal.ChangeProperty += (s, o) =>
+                                //{
+                                //    //Task.Run(() => { this.CurrentModel = Plita.GetModel3D((Plita)s); });
+                                //    this.SelectedFile.CurrentModel = Plita.GetModel3D((Plita)s);
+                                //};
+                                //((Plita)this.SelectedFile.Detal).RibsCollection.ItemPropertyChanged += (s, o) =>
+                                //{
+                                //    this.SelectedFile.CurrentModel = Plita.GetModel3D((Plita)s);
+                                //};
+                                //this.SelectedFile.CurrentModel = Plita.GetModel3D((Plita)this.SelectedFile.Detal);
                                 break;
 
                             case string b when b == DetalTypes.Stringer:
-                                this.SelectedFile.Detal = new PlitaStringer(DetalType.Stringer);
+                                file.Detal = new PlitaStringer(DetalType.Stringer);
                                 break;
 
                             case string c when c == DetalTypes.Treygolnik:
-                                this.SelectedFile.Detal = new PlitaTreygolnik(DetalType.Treygolnik);
+                                file.Detal = new PlitaTreygolnik(DetalType.Treygolnik);
                                 break;
                         }
                         RaisePropertyChanged(nameof(this.SelectedFile.Detal));
@@ -1032,11 +1057,11 @@ namespace ForRobot.ViewModels
 
             this.SelectedRobot = this.RobotsCollection[0];
 
-            //if (App.Current.OpenedFiles.Count == 0)
-            //    App.Current.OpenedFiles.Add(new Model.File3D.File3D());
-
-            App.Current.OpenedFiles.Add(new Model.File3D.File3D(Detal.GetDetal(DetalTypes.Plita),
-                                        Path.Combine(Path.GetTempPath(), App.Current.Settings.PlitaProgramName)));
+            if (App.Current.OpenedFiles.Count == 0)
+            {
+                App.Current.OpenedFiles.Add(new Model.File3D.File3D(Detal.GetDetal(DetalTypes.Plita),
+                                                                    Path.Combine(Path.GetTempPath(), App.Current.Settings.PlitaProgramName)));
+            }
         }
 
         #endregion
@@ -1080,12 +1105,16 @@ namespace ForRobot.ViewModels
             return robot;
         }
 
+        /// <summary>
+        /// Обновление выбранного LayoutDocumentPane.
+        /// </summary>
         private void UpdateSelectedDocument()
         {
             // Фильтруем только LayoutDocument
             if (ActiveContent is Model.File3D.File3D file)
             {
                 this.SelectedFile = file;
+                this.SelectedObject = null; // Снимает выделение с объекта HelixViewport3D.
             }
         }
 

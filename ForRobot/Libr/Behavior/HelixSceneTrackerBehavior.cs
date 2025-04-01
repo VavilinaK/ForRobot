@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media.Media3D;
 using System.Windows.Interactivity;
@@ -7,7 +8,7 @@ using System.Collections.Specialized;
 using GalaSoft.MvvmLight.Messaging;
 using HelixToolkit.Wpf;
 
-//using ForRobot.Model.File3D;
+using ForRobot.Model.File3D;
 
 namespace ForRobot.Libr.Behavior
 {
@@ -28,13 +29,19 @@ namespace ForRobot.Libr.Behavior
         private HelixViewport3D _helixViewport = null;
 
         public static readonly DependencyProperty SceneItemsProperty =  DependencyProperty.Register(nameof(SceneItems), 
-                                                                                                    typeof(ObservableCollection<Visual3D>), 
+                                                                                                    typeof(SceneItem), 
                                                                                                     typeof(HelixSceneTrackerBehavior),
                                                                                                     new PropertyMetadata(null));
 
-        public ObservableCollection<Visual3D> SceneItems
+        //public ObservableCollection<SceneItem> SceneItems
+        //{
+        //    get => (ObservableCollection<SceneItem>)GetValue(SceneItemsProperty);
+        //    set => SetValue(SceneItemsProperty, value);
+        //}
+
+        public SceneItem SceneItems
         {
-            get => (ObservableCollection<Visual3D>)GetValue(SceneItemsProperty);
+            get => (SceneItem)GetValue(SceneItemsProperty);
             set => SetValue(SceneItemsProperty, value);
         }
 
@@ -42,14 +49,15 @@ namespace ForRobot.Libr.Behavior
         {
             base.OnAttached();
             this._helixViewport = base.AssociatedObject;
-            Messenger.Default.Register<HelixSceneTrackerMessage>(this, message => 
-            {
-                this.SceneItems = new ObservableCollection<Visual3D>();
-                foreach (var visual3D in this._helixViewport.Children)
-                {
-                    this.SceneItems.Add(visual3D);
-                }
-            });
+            //Messenger.Default.Register<HelixSceneTrackerMessage>(this, message =>
+            //{
+            //    this.SceneItems = new SceneItem();
+            //    ForRobot.Model.File3D.SceneItem.AddChildren(this.SceneItems, this._helixViewport);
+            //    //foreach (var visual3D in this._helixViewport.Children)
+            //    //{
+            //    //    this.SceneItems.Add(visual3D);
+            //    //}
+            //});
 
             //this._helixViewport.DataContextChanged += ChildrenChanged;
             //((INotifyCollectionChanged)base.AssociatedObject.Children).CollectionChanged += ChildrenChanged;

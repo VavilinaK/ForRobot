@@ -57,7 +57,7 @@ namespace ForRobot.Views.Windows
             {
                 GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Behavior.SaveLayoutMessage());
 
-                if (!((System.Windows.Controls.Page)this.MainFrame.Content is Pages.PageMain2))
+                if (!((System.Windows.Controls.Page)this.MainFrame?.Content is Pages.PageMain2))
                 {
                     e.Cancel = false;
                     return;

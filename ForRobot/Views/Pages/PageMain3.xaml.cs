@@ -73,13 +73,11 @@ namespace ForRobot.Views.Pages
             try
             {
                 var serializer = new XmlLayoutSerializer(this.DockingManeger);
-                using (var writer = new StreamWriter(Path.Combine(Directory.GetCurrentDirectory(), "layout.xml")))
-                {
-                    serializer.Serialize(writer);
-                }
+                serializer.Serialize(@".\AvalonDock.config");
             }
             catch (Exception ex)
             {
+                App.Current.Logger.Error(ex, ex.Message);
                 MessageBox.Show($"Ошибка при загрузке макета: {ex.Message}");
             }
         }
@@ -88,17 +86,15 @@ namespace ForRobot.Views.Pages
         {
             try
             {
-                if (File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "layout.xml")))
+                if (File.Exists(@".\AvalonDock.config"))
                 {
                     var serializer = new XmlLayoutSerializer(this.DockingManeger);
-                    using (var reader = new StreamReader(Path.Combine(Directory.GetCurrentDirectory(), "layout.xml")))
-                    {
-                        serializer.Deserialize(reader);
-                    }
+                    serializer.Deserialize(@".\AvalonDock.config");
                 }
             }
             catch (Exception ex)
             {
+                App.Current.Logger.Error(ex, ex.Message);
                 MessageBox.Show($"Ошибка при сохранении макета: {ex.Message}");
             }
         }

@@ -25,6 +25,8 @@ namespace ForRobot.Model.Detals
         /// <summary>
         /// Плита треугольником
         /// </summary>
-        Treygolnik = 3
+        Treygolnik = 3,
+
+        All = Plita | Stringer | Treygolnik
     }
 }

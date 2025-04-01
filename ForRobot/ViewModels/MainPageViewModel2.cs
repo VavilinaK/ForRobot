@@ -212,7 +212,7 @@ namespace ForRobot.ViewModels
                         DetalObject = GetSavePlitaTreygolnik();
                         break;
                 }
-                this.DetalObject.Change += (s, o) => { SaveDetal(); }; // Обределение события изменения свойств
+                this.DetalObject.ChangePropertyEvent += (s, o) => { SaveDetal(); }; // Обределение события изменения свойств
                 //foreach (var item in this.DetalObject.WeldingSchema) item.Change += (s, o) => { SaveDetal(); };
                 RaisePropertyChanged(nameof(this.SelectedDetalType), nameof(this.ProgrammName));
             }
@@ -433,7 +433,7 @@ namespace ForRobot.ViewModels
                                 this.DetalObject = new PlitaTreygolnik(DetalType.Treygolnik);
                                 break;
                         }
-                        this.DetalObject.Change += (s, o) => { this.SaveDetal(); }; // Обределение события изменения свойств
+                        this.DetalObject.ChangePropertyEvent += (s, o) => { this.SaveDetal(); }; // Обределение события изменения свойств
                         this.SaveDetal();
                     }));
             }

@@ -201,5 +201,17 @@ namespace ForRobot.Properties {
                 this["SelectedTheme"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool SendingGeneratedFiles {
+            get {
+                return ((bool)(this["SendingGeneratedFiles"]));
+            }
+            set {
+                this["SendingGeneratedFiles"] = value;
+            }
+        }
     }
 }

@@ -1,0 +1,36 @@
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+
+namespace ForRobot
+{
+    /// <summary>Базовый класс с реализацией <see cref="INotifyPropertyChanged"/>.</summary>
+    public abstract class BaseClass : INotifyPropertyChanged
+    {
+        /// <inheritdoc cref="INotifyPropertyChanged"/>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void RaisePropertyChanged([CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        protected void RaisePropertyChanged(params string[] propertyNames)
+        {
+            foreach (var prop in propertyNames)
+            {
+                this.RaisePropertyChanged(prop);
+            }
+        }
+
+        protected void Set<T>(ref T propertyFiled, T newValue, [CallerMemberName] string propertyName = null)
+        {
+            if (!object.Equals(propertyFiled, newValue))
+            {
+                T oldValue = propertyFiled;
+                propertyFiled = newValue;
+                RaisePropertyChanged(propertyName);
+
+                OnPropertyChanged(propertyName, oldValue, newValue);
+            }
+        }
+
+        protected virtual void OnPropertyChanged(string propertyName, object oldValue, object newValue) { }
+    }
+}

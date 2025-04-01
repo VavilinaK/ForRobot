@@ -17,8 +17,8 @@ namespace ForRobot.Model.Detals
         private decimal _identToRight;
         private decimal _dissolutionLeft;
         private decimal _dissolutionRight;
-        private decimal _hightLeft;
-        private decimal _hightRight;
+        //private decimal _hightLeft;
+        //private decimal _hightRight;
 
         [JsonProperty("d_dis1")]
         /// <summary>

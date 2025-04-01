@@ -1,11 +1,64 @@
-﻿using System.ComponentModel;
+﻿using System.Windows.Input;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
+
+using Newtonsoft.Json;
 
 namespace ForRobot
 {
     /// <summary>Базовый класс с реализацией <see cref="INotifyPropertyChanged"/>.</summary>
     public abstract class BaseClass : INotifyPropertyChanged
     {
+        #region Private variables
+
+        private readonly Stack<IUndoableCommand> _undoStack = App.Current.UndoStack;
+        private readonly Stack<IUndoableCommand> _redoStack = App.Current.RedoStack;
+
+        private bool CanUndo() => _undoStack.Count > 0;
+        private bool CanRedo() => _redoStack.Count > 0;
+
+        #endregion Private variables
+
+        #region Public variables
+
+        [JsonIgnore]
+        public ICommand UndoCommand { get; }
+        [JsonIgnore]
+        public ICommand RedoCommand { get; }
+
+        #endregion Public variables
+
+        #region Constructor
+
+        public BaseClass()
+        {
+            this.UndoCommand = new RelayCommand(_ => Undo(), _ => CanUndo());
+            this.RedoCommand = new RelayCommand(_ => Redo(), _ => CanRedo());
+        }
+
+        #endregion
+
+        #region Private functions
+
+        private void Undo()
+        {
+            var command = _undoStack.Pop();
+            command.Undo();
+            _redoStack.Push(command);
+            CommandManager.InvalidateRequerySuggested();
+        }
+
+        private void Redo()
+        {
+            var command = _redoStack.Pop();
+            command.Execute();
+            _undoStack.Push(command);
+            CommandManager.InvalidateRequerySuggested();
+        }
+
+        #endregion Private functions
+
         /// <inheritdoc cref="INotifyPropertyChanged"/>
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -30,6 +83,7 @@ namespace ForRobot
         /// <typeparam name="T">Тип поля и присваиваемого значения.</typeparam>
         /// <param name="propertyFiled">Ссылка на поле.</param>
         /// <param name="newValue">Присваиваемое значение.</param>
+        /// <param name="trackUndo">
         /// <param name="propertyName">Имя изменившегося свойства. 
         /// Если значение не задано, то используется имя метода в котором был вызов.</param>
         /// <remarks>Метод предназначен для использования в сеттере свойства.<br/>
@@ -39,16 +93,33 @@ namespace ForRobot
         /// метода <see cref="RaisePropertyChanged(string)"/>
         /// с передачей ему параметра <paramref name="propertyName"/>.<br/>
         /// После создания события вызывается метод <see cref="OnPropertyChanged(string, object, object)"/>.</remarks>
-        protected void Set<T>(ref T propertyFiled, T newValue, [CallerMemberName] string propertyName = null)
+        protected void Set<T>(ref T propertyFiled, T newValue, bool trackUndo = true, [CallerMemberName] string propertyName = null)
         {
-            if (!object.Equals(propertyFiled, newValue))
-            {
-                T oldValue = propertyFiled;
-                propertyFiled = newValue;
-                RaisePropertyChanged(propertyName);
+            if (EqualityComparer<T>.Default.Equals(propertyFiled, newValue))
+                return;
 
-                OnPropertyChanged(propertyName, oldValue, newValue);
+            T oldValue = propertyFiled;
+            propertyFiled = newValue;
+            RaisePropertyChanged(propertyName);
+
+            if (trackUndo)
+            {
+                var command = new PropertyChangeCommand<T>(this, propertyName, oldValue, newValue);
+                _undoStack.Push(command);
+                _redoStack.Clear();
+                CommandManager.InvalidateRequerySuggested();
             }
+
+            OnPropertyChanged(propertyName, oldValue, newValue);
+
+            //if (!object.Equals(propertyFiled, newValue))
+            //{
+            //    T oldValue = propertyFiled;
+            //    propertyFiled = newValue;
+            //    RaisePropertyChanged(propertyName);
+
+            //    OnPropertyChanged(propertyName, oldValue, newValue);
+            //}
         }
 
         /// <summary>Защищённый виртуальный метод вызывается после присвоения значения
@@ -61,5 +132,30 @@ namespace ForRobot
         /// Рекомендуется в переопределённом методе первым оператором вызывать базовый метод.<br/>
         /// Если в переопределённом методе не будет вызова базового, то возможно нежелательное изменение логики базового класса.</remarks>
         protected virtual void OnPropertyChanged(string propertyName, object oldValue, object newValue) { }
+    }
+
+    public class PropertyChangeCommand<T> : IUndoableCommand
+    {
+        private readonly BaseClass _target;
+        private readonly string _propertyName;
+        private readonly T _oldValue;
+        private readonly T _newValue;
+
+        public PropertyChangeCommand(BaseClass target, string propertyName, T oldValue, T newValue)
+        {
+            _target = target;
+            _propertyName = propertyName;
+            _oldValue = oldValue;
+            _newValue = newValue;
+        }
+
+        public void Execute() => SetValue(_newValue);
+        public void Undo() => SetValue(_oldValue);
+
+        private void SetValue(T value)
+        {
+            var property = _target.GetType().GetProperty(_propertyName);
+            property?.SetValue(_target, value);
+        }
     }
 }

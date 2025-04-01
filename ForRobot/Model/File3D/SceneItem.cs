@@ -29,6 +29,7 @@ namespace ForRobot.Model.File3D
         //public string Name { get => this._element.GetName(); }
 
         public object SceneObject { get => this._element; set => Set(ref this._element, value); }
+
         public string Name { get; set; }
         public string TypeName { get => this._element.GetType().Name; }
 
@@ -44,30 +45,30 @@ namespace ForRobot.Model.File3D
         //    }
         //}
 
-        public Brush Brush
-        {
-            get
-            {
-                var elementType = this._element.GetType();
+        //public Brush Brush
+        //{
+        //    get
+        //    {
+        //        var elementType = this._element.GetType();
 
-                if (elementType == typeof(ModelVisual3D))
-                    return Brushes.Orange;
+        //        if (elementType == typeof(ModelVisual3D))
+        //            return Brushes.Orange;
 
-                if (elementType == typeof(GeometryModel3D))
-                    return Brushes.Green;
+        //        if (elementType == typeof(GeometryModel3D))
+        //            return Brushes.Green;
 
-                if (elementType == typeof(Model3DGroup))
-                    return Brushes.Blue;
+        //        if (elementType == typeof(Model3DGroup))
+        //            return Brushes.Blue;
 
-                if (elementType == typeof(Visual3D))
-                    return Brushes.Gray;
+        //        if (elementType == typeof(Visual3D))
+        //            return Brushes.Gray;
 
-                if (elementType == typeof(Model3D))
-                    return Brushes.Black;
+        //        if (elementType == typeof(Model3D))
+        //            return Brushes.Black;
 
-                return null;
-            }
-        }
+        //        return null;
+        //    }
+        //}
 
         public SceneItem this[int index] { get => this.Children[index]; set => this.Children[index] = value; }
         

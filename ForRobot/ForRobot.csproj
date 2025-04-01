@@ -268,6 +268,7 @@
     </ApplicationDefinition>
     <Compile Include="Libr\Behavior\CollapedLayoutAnchorableBehavior.cs" />
     <Compile Include="Libr\Behavior\CollapedLayoutAnchorableMessage.cs" />
+    <Compile Include="Libr\Behavior\HelixAnnotationsBehavior.cs" />
     <Compile Include="Libr\Behavior\HelixSceneTrackerBehavior.cs" />
     <Compile Include="Libr\Behavior\LayoutMessage.cs" />
     <Compile Include="Libr\Behavior\ZoomBehavior.cs" />
@@ -278,8 +279,10 @@
     <Compile Include="Libr\Converters\BoundsConverter.cs" />
     <Compile Include="Libr\Converters\CollectionsStringToBoolConverter.cs" />
     <Compile Include="Libr\Converters\DescriptionsStaticClassConverter.cs" />
+    <Compile Include="Libr\Converters\EmptyCollectionToColorConverter.cs" />
     <Compile Include="Libr\Converters\NumbersForWeldingSchemaConverter.cs" />
     <Compile Include="Libr\Converters\VisibilityFolderOnRobot.cs" />
+    <Compile Include="Libr\DocumentPaneHelper.cs" />
     <Compile Include="Libr\Json\PlitaWithRibsAttributesResolver.cs" />
     <Compile Include="Libr\Logger.cs" />
     <Compile Include="Libr\Settings\ModeClosingApp.cs" />
@@ -288,8 +291,12 @@
     <Compile Include="Model\AppMessage.cs" />
     <Compile Include="Model\Controls\FileFlags.cs" />
     <Compile Include="Model\Detals\WeldingSchemas.cs" />
+    <Compile Include="Model\File3D\Annotation.cs" />
     <Compile Include="Model\File3D\File3D.cs" />
     <Compile Include="Model\File3D\SceneItem.cs" />
+    <Compile Include="IUndoableCommand.cs" />
+    <Compile Include="Services\ExporterService.cs" />
+    <Compile Include="Services\FileDialogService.cs" />
     <Compile Include="Services\GenerationService.cs" />
     <Compile Include="ViewModels\CreateWindowViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel3.cs" />

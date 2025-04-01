@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Threading;
 using System.Threading.Tasks;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -74,9 +75,16 @@ namespace ForRobot.Model
         /// </summary>
         public event EventHandler<LogErrorEventArgs> LogError;
 
+        //public event EventHandler<object> ChangePropertyEvent;
+        //public event PropertyChangedEventHandler PropertyChanged;
+
+        //public virtual void OnChangeProperty(string propertyName = null) => this.ChangePropertyEvent?.Invoke(this, propertyName);
+
         #endregion
 
         #region Public variables
+
+        #region Constants
 
         [JsonIgnore]
         public const string PathOfTempFolder = @"C:\Windows\Temp";
@@ -100,6 +108,7 @@ namespace ForRobot.Model
         /// </summary>
         public const int DelayProgramName = 3;
 
+        #endregion Constants
 
         /// <summary>
         /// Наименование робота
@@ -109,7 +118,9 @@ namespace ForRobot.Model
             get => this._name;
             set
             {
-                Set(ref this._name, value);
+                //Set(ref this._name, value);
+                //this._name = value;
+                //this.OnChangeProperty(nameof(this.Name));
                 this.ChangeRobot?.Invoke(this, null);
             }
         }

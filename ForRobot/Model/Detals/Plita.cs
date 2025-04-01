@@ -99,7 +99,7 @@ namespace ForRobot.Model.Detals
                     this.WeldingSchema = this.FillWeldingSchema();
 
                 RaisePropertyChanged(nameof(this.SelectedWeldingSchema), nameof(this.WeldingSchema));
-                Change?.Invoke(this, null);
+                this.OnChangeProperty();
             }
         }
 
@@ -130,7 +130,7 @@ namespace ForRobot.Model.Detals
                         this.RibsCollection[i].DistanceLeft = this.DistanceBetween;
                     }
                 }
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty();
             }
         }
 
@@ -153,7 +153,7 @@ namespace ForRobot.Model.Detals
                         rib.OnChangeDistanceEvent(rib, null);
                     }
 
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty();
             }
         }
 
@@ -171,10 +171,10 @@ namespace ForRobot.Model.Detals
                 if (!value && this.RibsCollection?.Count > 0)
                     for (int i = 0; i < this.RibsCollection.Count; i++)
                     {
-                        this.RibsCollection[i].DissolutionLeft = this.DissolutionStart;
+                        this.RibsCollection[i].DissolutionLeft = this.DissolutionLeft;
                     }
                 Set(ref this._diferentDissolutionLeft, value);
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty();
             }
         }
 
@@ -192,11 +192,11 @@ namespace ForRobot.Model.Detals
                 if (!value && this.RibsCollection?.Count > 0)
                     for (int i = 0; i < this.RibsCollection.Count; i++)
                     {
-                        this.RibsCollection[i].DissolutionRight = this.DissolutionEnd;
+                        this.RibsCollection[i].DissolutionRight = this.DissolutionRight;
                     }
 
                 Set(ref this._diferentDissolutionRight, value);
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty();
             }
         }
 
@@ -216,11 +216,11 @@ namespace ForRobot.Model.Detals
         //        {
         //            for (int i = 0; i < this.RibsCollection.Count; i++)
         //            {
-        //                this.RibsCollection[i].HightLeft = this.Hight;
-        //                this.RibsCollection[i].HightRight = this.Hight;
+        //                this.RibsCollection[i].HightLeft = this.RibHeight;
+        //                this.RibsCollection[i].HightRight = this.RibHeight;
         //            }
         //        }
-        //        this.Change?.Invoke(this, null);
+        //        this.OnChangeProperty();
         //    }
         //}
 
@@ -241,7 +241,7 @@ namespace ForRobot.Model.Detals
         //            {
         //                rib.OnChangeHightEvent(rib, null);
         //            }
-        //        this.Change?.Invoke(this, null);
+        //        this.OnChangeProperty();
         //    }
         //}
 
@@ -261,8 +261,8 @@ namespace ForRobot.Model.Detals
             set
             {
                 Set(ref this._scoseType, value);
-                RaisePropertyChanged(nameof(this.DiferentDistance), nameof(this.Width), nameof(this.BevelToLeft), nameof(this.BevelToRight), nameof(this.GenericImage), nameof(this.RebraImage));
-                this.Change?.Invoke(this, null);
+                RaisePropertyChanged(nameof(this.DiferentDistance), nameof(this.PlateWidth), nameof(this.BevelToLeft), nameof(this.BevelToRight), nameof(this.GenericImage), nameof(this.RebraImage));
+                this.OnChangeProperty();
             }
         }
 
@@ -271,14 +271,14 @@ namespace ForRobot.Model.Detals
         /// <summary>
         /// Длина настила
         /// </summary>
-        public override decimal Long
+        public override decimal PlateLength
         {
-            get => base.Long;
+            get => base.PlateLength;
             set
             {
-                base.Long = value;
+                base.PlateLength = value;
                 RaisePropertyChanged(nameof(this.RebraImage), nameof(this.GenericImage));
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty(nameof(this.PlateLength));
             }
         }
 
@@ -287,37 +287,53 @@ namespace ForRobot.Model.Detals
         /// <summary>
         /// Ширина настила
         /// </summary>
-        public override decimal Width
+        public override decimal PlateWidth
         {
-            get => base.Width;
+            get => base.PlateWidth;
             set
             {
-                base.Width = value;
-                this.Change?.Invoke(this, null);
+                base.PlateWidth = value;
+                this.OnChangeProperty(nameof(this.PlateWidth));
             }
         }
-        
+
+        [JsonProperty("t_p")]
+        [JsonConverter(typeof(JsonCommentConverter), "Толщина настила")]
+        /// <summary>
+        /// Толщина настила
+        /// </summary>
+        public override decimal PlateThickness
+        {
+            get => base.PlateThickness;
+            set
+            {
+                base.PlateThickness = value;
+                RaisePropertyChanged(nameof(this.RebraImage));
+                this.OnChangeProperty(nameof(this.PlateThickness));
+            }
+        }
+
         [JsonProperty("h")]
         [JsonConverter(typeof(JsonCommentConverter), "Высота ребра")]
         /// <summary>
         /// Высота ребра
         /// </summary>
-        public override decimal Hight
+        public override decimal RibHeight
         {
-            get => base.Hight;
+            get => base.RibHeight;
             set
             {
-                base.Hight = value;
+                base.RibHeight = value;
                 //if (this.RibsCollection?.Count > 0)
                 //{
                 //    for (int i = 0; i < this.RibsCollection.Count; i++)
                 //    {
-                //        this.RibsCollection[i].HightLeft = base.Hight;
-                //        this.RibsCollection[i].HightRight = base.Hight;
+                //        this.RibsCollection[i].HightLeft = base.RibHeight;
+                //        this.RibsCollection[i].HightRight = base.RibHeight;
                 //    }
                 //}
                 RaisePropertyChanged(nameof(this.RebraImage));
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty(nameof(this.RibHeight));
             }
         }
 
@@ -339,7 +355,7 @@ namespace ForRobot.Model.Detals
                     this.RibsCollection[0].DistanceRight = base.DistanceToFirst;
                 }
                 RaisePropertyChanged(nameof(this.GenericImage));
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty();
             }
         }
 
@@ -356,13 +372,13 @@ namespace ForRobot.Model.Detals
             {
                 base.DistanceBetween = value;
                 if (this.RibsCollection?.Count > 0)
-                    for(int i = 1; i < this.RibsCollection.Count; i++)
+                    for (int i = 1; i < this.RibsCollection.Count; i++)
                     {
                         this.RibsCollection[i].DistanceLeft = base.DistanceBetween;
                         this.RibsCollection[i].DistanceRight = base.DistanceBetween;
                     }
                 RaisePropertyChanged(nameof(this.RebraImage), nameof(this.GenericImage));
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty();
             }
         }
 
@@ -384,7 +400,7 @@ namespace ForRobot.Model.Detals
                         this.RibsCollection[i].IdentToLeft = base.IdentToLeft;
                     }
                 RaisePropertyChanged(nameof(this.GenericImage));
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty();
             }
         }
 
@@ -406,67 +422,51 @@ namespace ForRobot.Model.Detals
                         this.RibsCollection[i].IdentToRight = base.IdentToRight;
                     }
                 RaisePropertyChanged(nameof(this.GenericImage));
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty();
             }
         }
 
         [JsonIgnore]
         [JsonProperty("l_r1"), SaveAttribute]
-        [JsonConverter(typeof(JsonCommentConverter), "Роспуск в начале")]
+        [JsonConverter(typeof(JsonCommentConverter), "Роспуск слева")]
         /// <summary>
         /// Роспуск в начале
         /// </summary>
-        public override decimal DissolutionStart
+        public override decimal DissolutionLeft
         {
-            get => base.DissolutionStart;
+            get => base.DissolutionLeft;
             set
             {
-                base.DissolutionStart = value;
+                base.DissolutionLeft = value;
                 if (this.RibsCollection?.Count > 0)
                     for (int i = 0; i < this.RibsCollection.Count; i++)
                     {
-                        this.RibsCollection[i].DissolutionLeft = base.DissolutionStart;
+                        this.RibsCollection[i].DissolutionLeft = base.DissolutionLeft;
                     }
                 RaisePropertyChanged(nameof(this.GenericImage));
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty();
             }
         }
 
         [JsonIgnore]
         [JsonProperty("l_r2"), SaveAttribute]
-        [JsonConverter(typeof(JsonCommentConverter), "Роспуск в конце")]
+        [JsonConverter(typeof(JsonCommentConverter), "Роспуск справа")]
         /// <summary>
         /// Роспуск в конце
         /// </summary>
-        public override decimal DissolutionEnd
+        public override decimal DissolutionRight
         {
-            get => base.DissolutionEnd;
+            get => base.DissolutionRight;
             set
             {
-                base.DissolutionEnd = value;
+                base.DissolutionRight = value;
                 if (this.RibsCollection?.Count > 0)
                     for (int i = 0; i < this.RibsCollection.Count; i++)
                     {
-                        this.RibsCollection[i].DissolutionRight = base.DissolutionEnd;
+                        this.RibsCollection[i].DissolutionRight = base.DissolutionRight;
                     }
                 RaisePropertyChanged(nameof(this.GenericImage));
-                this.Change?.Invoke(this, null);
-            }
-        }
-
-        [JsonProperty("t_p")]
-        [JsonConverter(typeof(JsonCommentConverter), "Толщина настила")]
-        /// <summary>
-        /// Толщина настила
-        /// </summary>
-        public override decimal ThicknessPlita
-        {
-            get => base.ThicknessPlita;
-            set
-            {
-                base.ThicknessPlita = value;
-                RaisePropertyChanged(nameof(this.RebraImage));
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty();
             }
         }
 
@@ -475,14 +475,14 @@ namespace ForRobot.Model.Detals
         /// <summary>
         /// Толщина ребра
         /// </summary>
-        public override decimal ThicknessRebro
+        public override decimal RibThickness
         {
-            get => base.ThicknessRebro;
+            get => base.RibThickness;
             set
             {
-                base.ThicknessRebro = value;
+                base.RibThickness = value;
                 RaisePropertyChanged(nameof(this.GenericImage));
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty(nameof(this.RibThickness));
             }
         }
 
@@ -498,7 +498,7 @@ namespace ForRobot.Model.Detals
             {
                 base.SearchOffsetStart = value;
                 RaisePropertyChanged(nameof(this.RebraImage));
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty(nameof(this.SearchOffsetStart));
             }
         }
 
@@ -514,7 +514,7 @@ namespace ForRobot.Model.Detals
             {
                 base.SearchOffsetEnd = value;
                 RaisePropertyChanged(nameof(this.RebraImage));
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty(nameof(this.SearchOffsetEnd));
             }
         }
 
@@ -529,7 +529,7 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.SeamsOverlap = value;
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty(nameof(this.SeamsOverlap));
             }
         }
 
@@ -544,7 +544,7 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.TechOffsetSeamStart = value;
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty(nameof(this.TechOffsetSeamStart));
             }
         }
 
@@ -559,7 +559,7 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.TechOffsetSeamEnd = value;
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty(nameof(this.TechOffsetSeamEnd));
             }
         }
 
@@ -575,7 +575,7 @@ namespace ForRobot.Model.Detals
             {
                 this._bevelToLeft = value;
                 RaisePropertyChanged(nameof(this.GenericImage));
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty(nameof(this.BevelToLeft));
             }
         }
 
@@ -591,7 +591,7 @@ namespace ForRobot.Model.Detals
             {
                 this._bevelToRight = value;
                 RaisePropertyChanged(nameof(this.GenericImage));
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty(nameof(this.BevelToRight));
             }
         }
 
@@ -606,7 +606,7 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.WildingSpead = value;
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty();
             }
         }
 
@@ -621,7 +621,7 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.ProgramNom = value;
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty();
             }
         }
 
@@ -636,7 +636,7 @@ namespace ForRobot.Model.Detals
             set
             {
                 this._distanceForWelding = value;
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty(nameof(this.DistanceForWelding));
             }
         }
 
@@ -651,7 +651,7 @@ namespace ForRobot.Model.Detals
             set
             {
                 this._distanceForSearch = value;
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty(nameof(this.DistanceForSearch));
             }
         }
 
@@ -665,7 +665,7 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.XYZOffset = value;
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty();
             }
         }
 
@@ -679,7 +679,7 @@ namespace ForRobot.Model.Detals
             set
             {
                 this.XYZOffset[0] = value;
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty(nameof(this.XOffset));
             }
         }
 
@@ -693,7 +693,7 @@ namespace ForRobot.Model.Detals
             set
             {
                 this.XYZOffset[1] = value;
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty(nameof(this.YOffset));
             }
         }
 
@@ -707,7 +707,7 @@ namespace ForRobot.Model.Detals
             set
             {
                 this.XYZOffset[2] = value;
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty(nameof(this.ZOffset));
             }
         }
 
@@ -722,7 +722,7 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.ReverseDeflection = value;
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty();
             }
         }
 
@@ -737,7 +737,7 @@ namespace ForRobot.Model.Detals
             {
                 Set(ref this._ribsCollection, value);
 
-                foreach(var rib in this._ribsCollection)
+                foreach (var rib in this._ribsCollection)
                 {
                     rib.ChangeDistance += (s, e) =>
                     {
@@ -762,7 +762,7 @@ namespace ForRobot.Model.Detals
             {
                 base.WeldingSchema = value;
                 RaisePropertyChanged(nameof(this.WeldingSchema));
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty();
             }
         }
 
@@ -771,12 +771,12 @@ namespace ForRobot.Model.Detals
         /// <summary>
         /// Количество ребер
         /// </summary>
-        public override int SumReber
+        public override int RibCount
         {
-            get => base.SumReber;
+            get => base.RibCount;
             set
             {
-                base.SumReber = value;
+                base.RibCount = value;
 
                 if (this.RibsCollection == null || this.WeldingSchema == null)
                 {
@@ -788,21 +788,21 @@ namespace ForRobot.Model.Detals
                 }
                 else
                 {
-                    if (this.SumReber <= this.RibsCollection.Count)
+                    if (this.RibCount <= this.RibsCollection.Count)
                     {
-                        this.RibsCollection = new FullyObservableCollection<Rib>(this.RibsCollection.Take(this.SumReber).ToList<Rib>());
-                        //this.WeldingSchema = new FullyObservableCollection<WeldingSchemas.SchemaRib>(this.WeldingSchema.Take(this.SumReber).ToList<WeldingSchemas.SchemaRib>());
+                        this.RibsCollection = new FullyObservableCollection<Rib>(this.RibsCollection.Take(this.RibCount).ToList<Rib>());
+                        //this.WeldingSchema = new FullyObservableCollection<WeldingSchemas.SchemaRib>(this.WeldingSchema.Take(this.RibCount).ToList<WeldingSchemas.SchemaRib>());
                         if (this.SelectedWeldingSchema != ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit))
                             this.WeldingSchema = this.FillWeldingSchema();
                         else
                         {
-                            this.WeldingSchema = new FullyObservableCollection<WeldingSchemas.SchemaRib>(this.WeldingSchema.Take(this.SumReber).ToList<WeldingSchemas.SchemaRib>());
+                            this.WeldingSchema = new FullyObservableCollection<WeldingSchemas.SchemaRib>(this.WeldingSchema.Take(this.RibCount).ToList<WeldingSchemas.SchemaRib>());
                             //this.WeldingSchema = ForRobot.Model.Detals.WeldingSchemas.EmptyRib(this.WeldingSchema);
                         }
                     }
                     else
                     {
-                        for (int i = this.RibsCollection.Count; i < this.SumReber; i++)
+                        for (int i = this.RibsCollection.Count; i < this.RibCount; i++)
                         {
                             this.RibsCollection.Add(this.RibsCollection.Last<Rib>().Clone() as Rib);
                         }
@@ -815,7 +815,7 @@ namespace ForRobot.Model.Detals
                 }
 
                 RaisePropertyChanged(nameof(this.RebraImage), nameof(this.GenericImage));
-                this.Change?.Invoke(this, null);
+                this.OnChangeProperty();
             }
         }
 
@@ -839,10 +839,10 @@ namespace ForRobot.Model.Detals
 
         #region Events
 
-        /// <summary>
-        /// Событие изменения свойства класса
-        /// </summary>
-        public override event EventHandler Change;
+        ///// <summary>
+        ///// Событие изменения свойства класса
+        ///// </summary>
+        //public override event EventHandler Change;
 
         #endregion
 
@@ -852,7 +852,7 @@ namespace ForRobot.Model.Detals
 
         public Plita(DetalType type) : base(type)
         {
-            this.Width = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).Width;
+            this.PlateWidth = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).Width;
             this.BevelToLeft = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).BevelToStart;
             this.BevelToRight = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).BevelToEnd;
             this.DistanceForWelding = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).DistanceForWelding;
@@ -880,16 +880,16 @@ namespace ForRobot.Model.Detals
             Rib rib;
             List<Rib> ribs = new List<Rib>();
 
-            for (int i = 0; i < this.SumReber; i++)
+            for (int i = 0; i < this.RibCount; i++)
             {
                 rib = new Rib()
                 {
                     IdentToLeft = this.IdentToLeft,
                     IdentToRight = this.IdentToRight,
-                    DissolutionLeft = this.DissolutionStart,
-                    DissolutionRight = this.DissolutionEnd
-                    //HightLeft = this.Hight,
-                    //HightRight = this.Hight
+                    DissolutionLeft = this.DissolutionLeft,
+                    DissolutionRight = this.DissolutionRight
+                    //HightLeft = this.RibHeight,
+                    //HightRight = this.RibHeight
                 };
 
                 if (i == 0)
@@ -910,13 +910,13 @@ namespace ForRobot.Model.Detals
 
         private FullyObservableCollection<WeldingSchemas.SchemaRib> FillWeldingSchema()
         {
-            FullyObservableCollection<WeldingSchemas.SchemaRib> schema = ForRobot.Model.Detals.WeldingSchemas.BuildingSchema(ForRobot.Model.Detals.WeldingSchemas.GetSchemaType(this.SelectedWeldingSchema), base.SumReber);
+            FullyObservableCollection<WeldingSchemas.SchemaRib> schema = ForRobot.Model.Detals.WeldingSchemas.BuildingSchema(ForRobot.Model.Detals.WeldingSchemas.GetSchemaType(this.SelectedWeldingSchema), base.RibCount);
             foreach(var rib in schema)
             {
                 rib.Change += (o, e) => {
                     if (this.SelectedWeldingSchema != ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit))
                         this.SelectedWeldingSchema = ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit);
-                    this.Change?.Invoke(this, null);
+                    this.OnChangeProperty();
                 };
             }
             return schema;
@@ -970,10 +970,10 @@ namespace ForRobot.Model.Detals
                 graphics.DrawEllipse(new Pen(Color.Black, 3), 284, 180, 17, 6);
 
                 //// Текст
-                //Font font = new Font("Lucida Console", image.Width / 14, System.Drawing.FontStyle.Regular);
+                //Font font = new Font("Lucida Console", image.PlateWidth / 14, System.Drawing.FontStyle.Regular);
                 //StringFormat stringFormat = new StringFormat(StringFormatFlags.DirectionVertical);
                 //graphics.DrawString(IndentionStart.ToString(), font, new SolidBrush(Color.Black), 206, 29);
-                //graphics.DrawString(Hight.ToString(), font, new SolidBrush(Color.Black), new PointF(102, 126 - Hight.ToString().Length * (font.Size - 8)), stringFormat);
+                //graphics.DrawString(RibHeight.ToString(), font, new SolidBrush(Color.Black), new PointF(102, 126 - RibHeight.ToString().Length * (font.Size - 8)), stringFormat);
             }
             return image;
         }
@@ -1024,7 +1024,7 @@ namespace ForRobot.Model.Detals
                 graphics.FillRectangle(new SolidBrush(Color.FromArgb(135, 135, 135)), new Rectangle(0, 184, 300, 5));
 
                 //// Верхняя стрелка
-                //if (SumReber == 1)
+                //if (RibCount == 1)
                 //{
                 //    graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(0, 58, 301, 3));
 
@@ -1046,7 +1046,7 @@ namespace ForRobot.Model.Detals
                 //graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(257, 254, 17, 11));
                 //graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(251, 251, 6, 17));
 
-                //if (SumReber == 1)
+                //if (RibCount == 1)
                 //{
                 //    // Нижняя стрелка в начале
                 //    graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(149, 258, 151, 3));
@@ -1066,9 +1066,9 @@ namespace ForRobot.Model.Detals
                 graphics.DrawLine(new Pen(Color.FromArgb(27, 214, 242), 4), 309, 192, 442, 192);
 
                 //// Текст
-                //Font font = new Font("Lucida Console", image.Width / 22, System.Drawing.FontStyle.Regular);
+                //Font font = new Font("Lucida Console", image.PlateWidth / 22, System.Drawing.FontStyle.Regular);
                 //graphics.DrawString(IndentionEnd.ToString(), font, new SolidBrush(Color.Black), 205, 15);
-                //graphics.DrawString(ThicknessPlita.ToString(), font, new SolidBrush(Color.Black), 334, 156);
+                //graphics.DrawString(PlateThickness.ToString(), font, new SolidBrush(Color.Black), 334, 156);
             }
             return image;
         }
@@ -1098,9 +1098,9 @@ namespace ForRobot.Model.Detals
             //    graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(115, 54, 4, 13));
 
             //    // Текст
-            //    Font font = new Font("Lucida Console", image.Width / 8, System.Drawing.FontStyle.Regular);
+            //    Font font = new Font("Lucida Console", image.PlateWidth / 8, System.Drawing.FontStyle.Regular);
             //    graphics.DrawString(DistanceBetween.ToString(), font, new SolidBrush(Color.Black), 51, 33);
-            //    graphics.DrawString(Long.ToString(), font, new SolidBrush(Color.Black), 33, 234);
+            //    graphics.DrawString(PlateLength.ToString(), font, new SolidBrush(Color.Black), 33, 234);
             //}
             return image;
         }
@@ -1144,26 +1144,26 @@ namespace ForRobot.Model.Detals
 
                 point = new PointF[]
 {
-                    new PointF(300 + 150 * (SumReber - 2) + 256, 251),
-                    new PointF(300 + 150 * (SumReber - 2) + 256, 266),
-                    new PointF(300 + 150 * (SumReber - 2) + 262, 266),
-                    new PointF(300 + 150 * (SumReber - 2) + 262, 264),
-                    new PointF(300 + 150 * (SumReber - 2) + 275, 264),
-                    new PointF(300 + 150 * (SumReber - 2) + 275, 261),
-                    new PointF(300 + 150 * (SumReber - 2) + 293, 261),
-                    new PointF(300 + 150 * (SumReber - 2) + 293, 259),
-                    new PointF(300 + 150 * (SumReber - 2) + 299, 259),
-                    new PointF(300 + 150 * (SumReber - 2) + 299, 258),
-                    new PointF(300 + 150 * (SumReber - 2) + 293, 258),
-                    new PointF(300 + 150 * (SumReber - 2) + 293, 256),
-                    new PointF(300 + 150 * (SumReber - 2) + 275, 256),
-                    new PointF(300 + 150 * (SumReber - 2) + 275, 253),
-                    new PointF(300 + 150 * (SumReber - 2) + 263, 253),
-                    new PointF(300 + 150 * (SumReber - 2) + 263, 251),
+                    new PointF(300 + 150 * (RibCount - 2) + 256, 251),
+                    new PointF(300 + 150 * (RibCount - 2) + 256, 266),
+                    new PointF(300 + 150 * (RibCount - 2) + 262, 266),
+                    new PointF(300 + 150 * (RibCount - 2) + 262, 264),
+                    new PointF(300 + 150 * (RibCount - 2) + 275, 264),
+                    new PointF(300 + 150 * (RibCount - 2) + 275, 261),
+                    new PointF(300 + 150 * (RibCount - 2) + 293, 261),
+                    new PointF(300 + 150 * (RibCount - 2) + 293, 259),
+                    new PointF(300 + 150 * (RibCount - 2) + 299, 259),
+                    new PointF(300 + 150 * (RibCount - 2) + 299, 258),
+                    new PointF(300 + 150 * (RibCount - 2) + 293, 258),
+                    new PointF(300 + 150 * (RibCount - 2) + 293, 256),
+                    new PointF(300 + 150 * (RibCount - 2) + 275, 256),
+                    new PointF(300 + 150 * (RibCount - 2) + 275, 253),
+                    new PointF(300 + 150 * (RibCount - 2) + 263, 253),
+                    new PointF(300 + 150 * (RibCount - 2) + 263, 251),
 };
                 graphics.FillPolygon(new SolidBrush(Color.Black), point);
 
-                if (SumReber == 1)
+                if (RibCount == 1)
                 {
                     pen.Width = 3;
                     graphics.DrawLine(pen, new PointF(149, 59), new PointF(304, 59));
@@ -1196,50 +1196,50 @@ namespace ForRobot.Model.Detals
 
                 #region Расстояние между рёбрами
 
-                if (SumReber > 1)
+                if (RibCount > 1)
                 {
                     pen.Width = 3;
                     graphics.DrawLine(pen, new PointF(bitmap.Width - 300, 59), new PointF(bitmap.Width - 450, 59));
 
                     point = new PointF[]
                     {
-                            new PointF(300 + 150 * (SumReber - 2) + 1, 59),
-                            new PointF(300 + 150 * (SumReber - 2) + 1, 61),
-                            new PointF(300 + 150 * (SumReber - 2) + 5, 61),
-                            new PointF(300 + 150 * (SumReber - 2) + 5, 63),
-                            new PointF(300 + 150 * (SumReber - 2) + 9, 63),
-                            new PointF(300 + 150 * (SumReber - 2) + 9, 65),
-                            new PointF(300 + 150 * (SumReber - 2) + 13, 65),
-                            new PointF(300 + 150 * (SumReber - 2) + 13, 67),
-                            new PointF(300 + 150 * (SumReber - 2) + 16, 67),
-                            new PointF(300 + 150 * (SumReber - 2) + 16, 54),
-                            new PointF(300 + 150 * (SumReber - 2) + 13, 54),
-                            new PointF(300 + 150 * (SumReber - 2) + 13, 55),
-                            new PointF(300 + 150 * (SumReber - 2) + 9, 55),
-                            new PointF(300 + 150 * (SumReber - 2) + 9, 57),
-                            new PointF(300 + 150 * (SumReber - 2) + 5, 57),
-                            new PointF(300 + 150 * (SumReber - 2) + 5, 58)
+                            new PointF(300 + 150 * (RibCount - 2) + 1, 59),
+                            new PointF(300 + 150 * (RibCount - 2) + 1, 61),
+                            new PointF(300 + 150 * (RibCount - 2) + 5, 61),
+                            new PointF(300 + 150 * (RibCount - 2) + 5, 63),
+                            new PointF(300 + 150 * (RibCount - 2) + 9, 63),
+                            new PointF(300 + 150 * (RibCount - 2) + 9, 65),
+                            new PointF(300 + 150 * (RibCount - 2) + 13, 65),
+                            new PointF(300 + 150 * (RibCount - 2) + 13, 67),
+                            new PointF(300 + 150 * (RibCount - 2) + 16, 67),
+                            new PointF(300 + 150 * (RibCount - 2) + 16, 54),
+                            new PointF(300 + 150 * (RibCount - 2) + 13, 54),
+                            new PointF(300 + 150 * (RibCount - 2) + 13, 55),
+                            new PointF(300 + 150 * (RibCount - 2) + 9, 55),
+                            new PointF(300 + 150 * (RibCount - 2) + 9, 57),
+                            new PointF(300 + 150 * (RibCount - 2) + 5, 57),
+                            new PointF(300 + 150 * (RibCount - 2) + 5, 58)
                     };
                     graphics.FillPolygon(new SolidBrush(Color.Black), point);
 
                     point = new PointF[]
                     {
-                            new PointF(300 + 150 * (SumReber - 2) + 149, 59),
-                            new PointF(300 + 150 * (SumReber - 2) + 149, 61),
-                            new PointF(300 + 150 * (SumReber - 2) + 145, 61),
-                            new PointF(300 + 150 * (SumReber - 2) + 145, 63),
-                            new PointF(300 + 150 * (SumReber - 2) + 141, 63),
-                            new PointF(300 + 150 * (SumReber - 2) + 141, 65),
-                            new PointF(300 + 150 * (SumReber - 2) + 137, 65),
-                            new PointF(300 + 150 * (SumReber - 2) + 137, 67),
-                            new PointF(300 + 150 * (SumReber - 2) + 134, 67),
-                            new PointF(300 + 150 * (SumReber - 2) + 134, 54),
-                            new PointF(300 + 150 * (SumReber - 2) + 137, 54),
-                            new PointF(300 + 150 * (SumReber - 2) + 137, 55),
-                            new PointF(300 + 150 * (SumReber - 2) + 141, 55),
-                            new PointF(300 + 150 * (SumReber - 2) + 141, 57),
-                            new PointF(300 + 150 * (SumReber - 2) + 145, 57),
-                            new PointF(300 + 150 * (SumReber - 2) + 145, 58)
+                            new PointF(300 + 150 * (RibCount - 2) + 149, 59),
+                            new PointF(300 + 150 * (RibCount - 2) + 149, 61),
+                            new PointF(300 + 150 * (RibCount - 2) + 145, 61),
+                            new PointF(300 + 150 * (RibCount - 2) + 145, 63),
+                            new PointF(300 + 150 * (RibCount - 2) + 141, 63),
+                            new PointF(300 + 150 * (RibCount - 2) + 141, 65),
+                            new PointF(300 + 150 * (RibCount - 2) + 137, 65),
+                            new PointF(300 + 150 * (RibCount - 2) + 137, 67),
+                            new PointF(300 + 150 * (RibCount - 2) + 134, 67),
+                            new PointF(300 + 150 * (RibCount - 2) + 134, 54),
+                            new PointF(300 + 150 * (RibCount - 2) + 137, 54),
+                            new PointF(300 + 150 * (RibCount - 2) + 137, 55),
+                            new PointF(300 + 150 * (RibCount - 2) + 141, 55),
+                            new PointF(300 + 150 * (RibCount - 2) + 141, 57),
+                            new PointF(300 + 150 * (RibCount - 2) + 145, 57),
+                            new PointF(300 + 150 * (RibCount - 2) + 145, 58)
                     };
                     graphics.FillPolygon(new SolidBrush(Color.Black), point);
                 }
@@ -1274,8 +1274,8 @@ namespace ForRobot.Model.Detals
                 {
                     graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
-                    graphics.DrawString(Hight.ToString(),
-                                        FontLibr.FindFont(graphics, Hight.ToString(), new System.Drawing.Size(80, 30), font),
+                    graphics.DrawString(RibHeight.ToString(),
+                                        FontLibr.FindFont(graphics, RibHeight.ToString(), new System.Drawing.Size(80, 30), font),
                                         new SolidBrush(Color.Black),
                                         new PointF(120, 126),
                                         stringFormat1);
@@ -1283,16 +1283,16 @@ namespace ForRobot.Model.Detals
                     graphics.DrawString(DistanceToFirst.ToString(),
                                         FontLibr.FindFont(graphics, DistanceToFirst.ToString(), new System.Drawing.Size(60, 25), font),
                                         new SolidBrush(Color.Black),
-                                        new PointF(300 + 150 * (SumReber - 2) + 205, 40),
+                                        new PointF(300 + 150 * (RibCount - 2) + 205, 40),
                                         stringFormat2);
 
-                    graphics.DrawString(ThicknessPlita.ToString(),
-                                        FontLibr.FindFont(graphics, ThicknessPlita.ToString(), new System.Drawing.Size(60, 25), font),
+                    graphics.DrawString(PlateThickness.ToString(),
+                                        FontLibr.FindFont(graphics, PlateThickness.ToString(), new System.Drawing.Size(60, 25), font),
                                         new SolidBrush(Color.Black),
-                                        new PointF(300 + 150 * (SumReber - 2) + 360, 180),
+                                        new PointF(300 + 150 * (RibCount - 2) + 360, 180),
                                         stringFormat2);
 
-                    if (SumReber > 1)
+                    if (RibCount > 1)
                         graphics.DrawString(DistanceBetween.ToString(),
                                             FontLibr.FindFont(graphics, DistanceBetween.ToString(), new System.Drawing.Size(90, 25), font),
                                             new SolidBrush(Color.Black),
@@ -1313,20 +1313,20 @@ namespace ForRobot.Model.Detals
         private BitmapImage JoinRebra(Bitmap png1, Bitmap png2, Bitmap png3)
         {
             BitmapImage imageSource = new BitmapImage();
-            using (Bitmap result = new Bitmap(png1.Width + png2.Width * (SumReber - 2) + png3.Width, 310))
+            using (Bitmap result = new Bitmap(png1.Width + png2.Width * (this.RibCount - 2) + png3.Width, 310))
             {
                 using (Graphics g = Graphics.FromImage(result))
                 {
                     g.DrawImage(png1, 0, 0);
 
-                    for (int i = 1; i < SumReber; i++)
+                    for (int i = 1; i < RibCount; i++)
                     {
                         if (i == 1)
                             g.DrawImage(png2, 300, 0);
                         else
                             g.DrawImage(png2, i * 150, 0);
                     }
-                    g.DrawImage(png3, (SumReber - 2) * 150 + 300, 0);
+                    g.DrawImage(png3, (RibCount - 2) * 150 + 300, 0);
                 }
                 imageSource = ForRobot.Libr.Converters.ImageConverter.BitmapToBitmapImage(GetTextPlita(GetArrowsPlita(result)));
             }
@@ -1392,32 +1392,32 @@ namespace ForRobot.Model.Detals
                 {
                     graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
-                    graphics.DrawString(Long.ToString(),
-                                        FontLibr.FindFont(graphics, Long.ToString(), new System.Drawing.Size(100, 30), font),
+                    graphics.DrawString(PlateLength.ToString(),
+                                        FontLibr.FindFont(graphics, PlateLength.ToString(), new System.Drawing.Size(100, 30), font),
                                         new SolidBrush(Color.Black),
                                         new PointF(420, 440),
                                         stringFormat2);
 
-                    //graphics.DrawString(Width.ToString(),
-                    //                    FontLibr.FindFont(graphics, Width.ToString(), new System.Drawing.Size(100, 30), font),
+                    //graphics.DrawString(PlateWidth.ToString(),
+                    //                    FontLibr.FindFont(graphics, PlateWidth.ToString(), new System.Drawing.Size(100, 30), font),
                     //                    new SolidBrush(Color.Black), 
                     //                    new PointF(840, bitmap.Height/2),
                     //                    stringFormat1);
 
-                    graphics.DrawString(DissolutionStart.ToString(),
-                                        FontLibr.FindFont(graphics, DissolutionStart.ToString(), new System.Drawing.Size(48, 22), font),
+                    graphics.DrawString(DissolutionLeft.ToString(),
+                                        FontLibr.FindFont(graphics, DissolutionLeft.ToString(), new System.Drawing.Size(48, 22), font),
                                         new SolidBrush(Color.Black),
                                         new PointF(95, 430),
                                         stringFormat2);
 
-                    graphics.DrawString(DissolutionEnd.ToString(),
-                                        FontLibr.FindFont(graphics, DissolutionEnd.ToString(), new System.Drawing.Size(48, 22), font),
+                    graphics.DrawString(DissolutionRight.ToString(),
+                                        FontLibr.FindFont(graphics, DissolutionRight.ToString(), new System.Drawing.Size(48, 22), font),
                                         new SolidBrush(Color.Black),
                                         new PointF(710, 430),
                                         stringFormat2);
 
-                    graphics.DrawString(ThicknessRebro.ToString(),
-                                        FontLibr.FindFont(graphics, ThicknessRebro.ToString(), new System.Drawing.Size(40, 25), font),
+                    graphics.DrawString(RibThickness.ToString(),
+                                        FontLibr.FindFont(graphics, RibThickness.ToString(), new System.Drawing.Size(40, 25), font),
                                         new SolidBrush(Color.Black),
                                         new PointF(795, 140),
                                         stringFormat1);
@@ -1451,8 +1451,8 @@ namespace ForRobot.Model.Detals
                 {
                     graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
-                    graphics.DrawString(Long.ToString(),
-                        FontLibr.FindFont(graphics, Long.ToString(), new System.Drawing.Size(250, 30), font),
+                    graphics.DrawString(PlateLength.ToString(),
+                        FontLibr.FindFont(graphics, PlateLength.ToString(), new System.Drawing.Size(250, 30), font),
                         new SolidBrush(Color.Black),
                         new PointF(550, 70),
                         stringFormatHorizont);
@@ -1493,14 +1493,14 @@ namespace ForRobot.Model.Detals
                         new PointF(1080, 600),
                         stringFormatHorizont);
 
-                    graphics.DrawString(DissolutionStart.ToString(),
-                        FontLibr.FindFont(graphics, DissolutionStart.ToString(), new System.Drawing.Size(80, 30), font),
+                    graphics.DrawString(DissolutionLeft.ToString(),
+                        FontLibr.FindFont(graphics, DissolutionLeft.ToString(), new System.Drawing.Size(80, 30), font),
                         new SolidBrush(Color.Black),
                         new PointF(320, 600),
                         stringFormatHorizont);
 
-                    graphics.DrawString(DissolutionEnd.ToString(),
-                        FontLibr.FindFont(graphics, DissolutionEnd.ToString(), new System.Drawing.Size(50, 30), font),
+                    graphics.DrawString(DissolutionRight.ToString(),
+                        FontLibr.FindFont(graphics, DissolutionRight.ToString(), new System.Drawing.Size(50, 30), font),
                         new SolidBrush(Color.Black),
                         new PointF(995, 600),
                         stringFormatHorizont);
@@ -1534,8 +1534,8 @@ namespace ForRobot.Model.Detals
                 {
                     graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
-                    graphics.DrawString(Long.ToString(),
-                        FontLibr.FindFont(graphics, Long.ToString(), new System.Drawing.Size(250, 30), font),
+                    graphics.DrawString(PlateLength.ToString(),
+                        FontLibr.FindFont(graphics, PlateLength.ToString(), new System.Drawing.Size(250, 30), font),
                         new SolidBrush(Color.Black),
                         new PointF(700, 60),
                         stringFormatHorizont);
@@ -1576,14 +1576,14 @@ namespace ForRobot.Model.Detals
                         new PointF(1105, 600),
                         stringFormatHorizont);
 
-                    graphics.DrawString(DissolutionStart.ToString(),
-                        FontLibr.FindFont(graphics, DissolutionStart.ToString(), new System.Drawing.Size(43, 30), font),
+                    graphics.DrawString(DissolutionLeft.ToString(),
+                        FontLibr.FindFont(graphics, DissolutionLeft.ToString(), new System.Drawing.Size(43, 30), font),
                         new SolidBrush(Color.Black),
                         new PointF(322, 600),
                         stringFormatHorizont);
 
-                    graphics.DrawString(DissolutionEnd.ToString(),
-                        FontLibr.FindFont(graphics, DissolutionEnd.ToString(), new System.Drawing.Size(140, 30), font),
+                    graphics.DrawString(DissolutionRight.ToString(),
+                        FontLibr.FindFont(graphics, DissolutionRight.ToString(), new System.Drawing.Size(140, 30), font),
                         new SolidBrush(Color.Black),
                         new PointF(965, 600),
                         stringFormatHorizont);
@@ -1617,8 +1617,8 @@ namespace ForRobot.Model.Detals
                 {
                     graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
-                    graphics.DrawString(Long.ToString(),
-                        FontLibr.FindFont(graphics, Long.ToString(), new System.Drawing.Size(250, 30), font),
+                    graphics.DrawString(PlateLength.ToString(),
+                        FontLibr.FindFont(graphics, PlateLength.ToString(), new System.Drawing.Size(250, 30), font),
                         new SolidBrush(Color.Black),
                         new PointF(600, 60),
                         stringFormatHorizont);
@@ -1659,14 +1659,14 @@ namespace ForRobot.Model.Detals
                         new PointF(1060, 620),
                         stringFormatHorizont);
 
-                    graphics.DrawString(DissolutionStart.ToString(),
-                        FontLibr.FindFont(graphics, DissolutionStart.ToString(), new System.Drawing.Size(50, 30), font),
+                    graphics.DrawString(DissolutionLeft.ToString(),
+                        FontLibr.FindFont(graphics, DissolutionLeft.ToString(), new System.Drawing.Size(50, 30), font),
                         new SolidBrush(Color.Black),
                         new PointF(295, 620),
                         stringFormatHorizont);
 
-                    graphics.DrawString(DissolutionEnd.ToString(),
-                        FontLibr.FindFont(graphics, DissolutionEnd.ToString(), new System.Drawing.Size(80, 30), font),
+                    graphics.DrawString(DissolutionRight.ToString(),
+                        FontLibr.FindFont(graphics, DissolutionRight.ToString(), new System.Drawing.Size(80, 30), font),
                         new SolidBrush(Color.Black),
                         new PointF(940, 620),
                         stringFormatHorizont);
@@ -1700,8 +1700,8 @@ namespace ForRobot.Model.Detals
                 {
                     graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
-                    graphics.DrawString(Long.ToString(),
-                        FontLibr.FindFont(graphics, Long.ToString(), new System.Drawing.Size(250, 30), font),
+                    graphics.DrawString(PlateLength.ToString(),
+                        FontLibr.FindFont(graphics, PlateLength.ToString(), new System.Drawing.Size(250, 30), font),
                         new SolidBrush(Color.Black),
                         new PointF(600, 60),
                         stringFormatHorizont);
@@ -1742,14 +1742,14 @@ namespace ForRobot.Model.Detals
                         new PointF(1055, 640),
                         stringFormatHorizont);
 
-                    graphics.DrawString(DissolutionStart.ToString(),
-                        FontLibr.FindFont(graphics, DissolutionStart.ToString(), new System.Drawing.Size(45, 30), font),
+                    graphics.DrawString(DissolutionLeft.ToString(),
+                        FontLibr.FindFont(graphics, DissolutionLeft.ToString(), new System.Drawing.Size(45, 30), font),
                         new SolidBrush(Color.Black),
                         new PointF(343, 640),
                         stringFormatHorizont);
 
-                    graphics.DrawString(DissolutionEnd.ToString(),
-                        FontLibr.FindFont(graphics, DissolutionEnd.ToString(), new System.Drawing.Size(80, 30), font),
+                    graphics.DrawString(DissolutionRight.ToString(),
+                        FontLibr.FindFont(graphics, DissolutionRight.ToString(), new System.Drawing.Size(80, 30), font),
                         new SolidBrush(Color.Black),
                         new PointF(955, 640),
                         stringFormatHorizont);
@@ -1849,9 +1849,9 @@ namespace ForRobot.Model.Detals
                         else
                             g.DrawImage(png2, 0, (i - 1) * 88 + 150);
 
-                        //    else if (SumReber % 2 == 0 && i == (SumReber / 2) + 1)
+                        //    else if (RibCount % 2 == 0 && i == (RibCount / 2) + 1)
                         //        g.DrawImage(PaintDistanceBetween_And_WightImage(png2), i * 150, 0);
-                        //    else if (SumReber % 2 == 1 && i == Math.Ceiling((decimal)SumReber / 2))
+                        //    else if (RibCount % 2 == 1 && i == Math.Ceiling((decimal)RibCount / 2))
                         //        g.DrawImage(PaintDistanceBetween_And_WightImage(png2), i * 150, 0);
                         //    else
                         //        g.DrawImage(png2, i * 150, 0);
@@ -1861,7 +1861,7 @@ namespace ForRobot.Model.Detals
 
                     //Font font = new Font("Lucida Console", 18, System.Drawing.FontStyle.Regular);
                     //StringFormat stringFormat = new StringFormat(StringFormatFlags.DirectionVertical);
-                    //g.DrawString(Long.ToString(), font, new SolidBrush(Color.Black), new PointF(835, result.Height/2 - Long.ToString().Length * (font.Size - 8)), stringFormat);
+                    //g.DrawString(PlateLength.ToString(), font, new SolidBrush(Color.Black), new PointF(835, result.Height/2 - PlateLength.ToString().Length * (font.Size - 8)), stringFormat);
                 }
                 imageSource = ForRobot.Libr.Converters.ImageConverter.BitmapToBitmapImage(GetText(GetArrows(result)));
             }
@@ -1872,78 +1872,224 @@ namespace ForRobot.Model.Detals
 
         #endregion Private functions
 
-        #region Private functions
+        #region Public functions
 
-        public static Model3DGroup GetModel3D(Plita plita)
-        {
-            Model3DGroup model = new Model3DGroup();
-            //model.Children.Add(new GeometryModel3D()
-            //{
-            //    Geometry = new MeshGeometry3D
-            //    {
-            //        Positions = new Point3DCollection { new Point3D(0, 0, 0), new Point3D(1, 0, 0), new Point3D(1, 1, 0) },
+        // Масштабный коэффициент: 1 единица модели = 250 мм реальных размеров
+        private const decimal ScaleFactor = 1.00M / 250.00M;
 
-            //        TriangleIndices = new System.Windows.Media.Int32Collection { 0, 1, 2 }
-            //    },
-            //    Material = MaterialHelper.CreateMaterial(System.Windows.Media.Colors.Blue)
-            //});
+        //public static Model3D GetModel3D(Plita plita)
+        //{
+        //    var modelGroup = new Model3DGroup();
 
-            var brush = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#2eb9ff");
-            //brush.Opacity = 0.85;
+        //    // Преобразование реальных размеров в модельные (делим на 250)
+        //    decimal modelWidth = plita.PlateWidth * ScaleFactor;    // 1000 мм / 250 = 4 модели
+        //    decimal modelHeight = plita.PlateThickness * ScaleFactor; // 250 мм / 250 = 1 модель
+        //    decimal modelLength = plita.PlateLength * ScaleFactor; // 2000 мм / 250 = 8 моделей
 
-            var plateMesh = CreateCuboid(plita.Width, plita.ThicknessPlita, plita.Long);
-            var plateModel = new GeometryModel3D(plateMesh, new DiffuseMaterial(brush));
-            model.Children.Add(plateModel);
+        //    // Создание плиты
+        //    var plateMesh = CreateCuboid(modelWidth, modelHeight, modelLength);
+        //    var plateModel = new GeometryModel3D(plateMesh, new DiffuseMaterial(Plita.PlateBrush));
+        //    modelGroup.Children.Add(plateModel);
 
-            //// Создание рёбер
-            //decimal ribSpacing = plita.Long / (plita.SumReber + 1);
-            //for (int i = 1; i <= plita.SumReber; i++)
-            //{
-            //    decimal ribPosition = i * ribSpacing - plita.Long / 2;
-            //    var ribMesh = CreateCuboid(plita.ThicknessRebro, plita.Hight, plita.Width);
-            //    var ribModel = new GeometryModel3D(ribMesh, new DiffuseMaterial(System.Windows.Media.Brushes.Silver));
-            //    ribModel.Transform = new TranslateTransform3D((double)ribPosition, (double)plita.ThicknessPlita / 2, 0);
-            //    model.Children.Add(ribModel);
-            //}
+        //    // Добавление рёбер плиты (линии граней)
+        //    var plateEdges = CreatePlateEdges(modelWidth, modelHeight, modelLength);
+        //    modelGroup.Children.Add(plateEdges.Content);
 
-            return model;
-        }
+        //    // Создание рёбер (вертикальных элементов)
+        //    decimal ribSpacing = modelLength / (plita.RibCount + 1); // Расстояние между рёбрами в модельных единицах
+        //    for (int i = 1; i <= plita.RibCount; i++)
+        //    {
+        //        // Позиция ребра вдоль длины плиты 
+        //        // (i * ribSpacing - modelLength/2 центрирует рёбра относительно центра плиты)
+        //        decimal ribX = i * ribSpacing - modelLength / 2;
 
-        // Метод для создания параллелепипеда (кубоида)
+        //        // Преобразование реальных размеров ребра в модельные
+        //        decimal ribThicknessModel = plita.RibThickness * ScaleFactor; // 50 мм / 250 = 0.2 модели
+        //        decimal ribHeightModel = plita.RibHeight * ScaleFactor;       // 300 мм / 250 = 1.2 модели
+
+        //        // Создание меша ребра
+        //        var ribMesh = CreateCuboid(ribThicknessModel, ribHeightModel, modelWidth);
+        //        var ribModel = new GeometryModel3D(ribMesh, new DiffuseMaterial(Plita.RibBrush));
+
+        //        // Позиционирование ребра:
+        //        // X - вдоль длины плиты, Y - смещение вверх на половину высоты плиты
+        //        ribModel.Transform = new TranslateTransform3D((double)ribX, (double)modelHeight / 2, 0);
+        //        modelGroup.Children.Add(ribModel);
+        //    }
+
+        //    return modelGroup;
+        //}
+
+        //Метод создания параллелепипеда(кубоида)
+
         private static MeshGeometry3D CreateCuboid(decimal width, decimal height, decimal length)
         {
             var mesh = new MeshGeometry3D();
 
-            // Вершины
+            // Вычисление полуразмеров для центрирования модели
             double halfWidth = (double)width / 2;
             double halfHeight = (double)height / 2;
             double halfLength = (double)length / 2;
 
+            // Вершины кубоида (8 точек)
             mesh.Positions = new Point3DCollection(new[]
             {
-            new Point3D(-halfWidth, -halfHeight, -halfLength),
-            new Point3D(halfWidth, -halfHeight, -halfLength),
-            new Point3D(halfWidth, halfHeight, -halfLength),
-            new Point3D(-halfWidth, halfHeight, -halfLength),
-            new Point3D(-halfWidth, -halfHeight, halfLength),
-            new Point3D(halfWidth, -halfHeight, halfLength),
-            new Point3D(halfWidth, halfHeight, halfLength),
-            new Point3D(-halfWidth, halfHeight, halfLength)
-            });
+            // Передняя грань (Z = -halfLength)
+            new Point3D(-halfWidth, -halfHeight, -halfLength), // 0: левый нижний угол
+            new Point3D(halfWidth, -halfHeight, -halfLength),  // 1: правый нижний
+            new Point3D(halfWidth, halfHeight, -halfLength),   // 2: правый верхний
+            new Point3D(-halfWidth, halfHeight, -halfLength),  // 3: левый верхний
 
-            // Индексы треугольников
+            // Задняя грань (Z = halfLength)
+            new Point3D(-halfWidth, -halfHeight, halfLength),  // 4: левый нижний
+            new Point3D(halfWidth, -halfHeight, halfLength),   // 5: правый нижний
+            new Point3D(halfWidth, halfHeight, halfLength),    // 6: правый верхний
+            new Point3D(-halfWidth, halfHeight, halfLength)    // 7: левый верхний
+        });
+
+            // Индексы треугольников для всех граней
             mesh.TriangleIndices = new System.Windows.Media.Int32Collection(new[]
             {
-            0, 1, 2, 2, 3, 0, // Передняя грань
-            4, 5, 6, 6, 7, 4, // Задняя грань
-            0, 1, 5, 5, 4, 0, // Нижняя грань
-            2, 3, 7, 7, 6, 2, // Верхняя грань
-            0, 3, 7, 7, 4, 0, // Левая грань
-            1, 2, 6, 6, 5, 1  // Правая грань
-            });
+            // Передняя грань (Z = -halfLength)
+            0, 1, 2, 2, 3, 0,
+
+            // Задняя грань (Z = halfLength)
+            4, 5, 6, 6, 7, 4,
+
+            // Нижняя грань (Y = -halfHeight)
+            0, 1, 5, 5, 4, 0,
+
+            // Верхняя грань (Y = halfHeight)
+            2, 3, 7, 7, 6, 2,
+
+            // Левая грань (X = -halfWidth)
+            0, 3, 7, 7, 4, 0,
+
+            // Правая грань (X = halfWidth)
+            1, 2, 6, 6, 5, 1
+        });
 
             return mesh;
         }
+
+        // Создание рёбер плиты с помощью LinesVisual3D
+        private static LinesVisual3D CreatePlateEdges(decimal width, decimal height, decimal length)
+        {
+            var lines = new LinesVisual3D
+            {
+                Color = System.Windows.Media.Colors.Black,
+                Thickness = 1 // Толщина линий в пикселях (не зависит от масштаба)
+            };
+
+            // Вычисление полуразмеров
+            double halfWidth = (double)width / 2;
+            double halfHeight = (double)height / 2;
+            double halfLength = (double)length / 2;
+
+            // Вершины кубоида (те же, что и в CreateCuboid)
+            var points = new[]
+            {
+            new Point3D(-halfWidth, -halfHeight, -halfLength), // 0
+            new Point3D(halfWidth, -halfHeight, -halfLength),  // 1
+            new Point3D(halfWidth, halfHeight, -halfLength),   // 2
+            new Point3D(-halfWidth, halfHeight, -halfLength),  // 3
+            new Point3D(-halfWidth, -halfHeight, halfLength),  // 4
+            new Point3D(halfWidth, -halfHeight, halfLength),   // 5
+            new Point3D(halfWidth, halfHeight, halfLength),    // 6
+            new Point3D(-halfWidth, halfHeight, halfLength)    // 7
+        };
+
+            lines.Points = new Point3DCollection(points);
+
+            // Соединение вершин линиями (рёбра)
+            //lines.Indices = new System.Windows.Media.Int32Collection(new[]
+            //{
+            //0, 1, 1, 2, 2, 3, 3, 0, // Передняя грань
+            //4, 5, 5, 6, 6, 7, 7, 4, // Задняя грань
+            //0, 4, 1, 5, 2, 6, 3, 7  // Боковые рёбра
+            //});
+
+            return lines;
+        }
+
+
+        //public override void OnChangeProperty()
+        //{
+        //    base.OnChangeProperty();
+
+        //    this.Mo
+        //}
+
+        //public static Model3D GetModel3D(Plita plita)
+        //{
+        //    Model3DGroup model = new Model3DGroup();
+        //    model.Children.Add(new GeometryModel3D()
+        //    {
+        //        Geometry = new MeshGeometry3D
+        //        {
+        //            Positions = new Point3DCollection { new Point3D(0, 0, 0), new Point3D(1, 0, 0), new Point3D(1, 1, 0) },
+
+        //            TriangleIndices = new System.Windows.Media.Int32Collection { 0, 1, 2 }
+        //        },
+        //        Material = MaterialHelper.CreateMaterial(System.Windows.Media.Colors.Blue)
+        //    });
+
+        //    var brush = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#2eb9ff");
+        //    //brush.Opacity = 0.85;
+
+        //    var plateMesh = CreateCuboid(plita.PlateWidth, plita.PlateThickness, plita.PlateLength);
+        //    var plateModel = new GeometryModel3D(plateMesh, new DiffuseMaterial(brush));
+        //    model.Children.Add(plateModel);
+
+        //    // Создание рёбер
+        //    decimal ribSpacing = plita.PlateLength / (plita.RibCount + 1);
+        //    for (int i = 1; i <= plita.RibCount; i++)
+        //    {
+        //        decimal ribPosition = i * ribSpacing - plita.PlateLength / 2;
+        //        var ribMesh = CreateCuboid(plita.RibThickness, plita.RibHeight, plita.PlateWidth);
+        //        var ribModel = new GeometryModel3D(ribMesh, new DiffuseMaterial(System.Windows.Media.Brushes.Silver));
+        //        ribModel.Transform = new TranslateTransform3D((double)ribPosition, (double)plita.PlateThickness / 2, 0);
+        //        model.Children.Add(ribModel);
+        //    }
+
+        //    return model;
+        //}
+
+        //// Метод для создания параллелепипеда (кубоида)
+        //private static MeshGeometry3D CreateCuboid(decimal width, decimal height, decimal length)
+        //{
+        //    var mesh = new MeshGeometry3D();
+
+        //    // Вершины
+        //    double halfWidth = (double)width / 250;
+        //    double halfHeight = (double)height / 250;
+        //    double halfLength = (double)length / 250;
+
+        //    mesh.Positions = new Point3DCollection(new[]
+        //    {
+        //    new Point3D(-halfWidth, -halfHeight, -halfLength),
+        //    new Point3D(halfWidth, -halfHeight, -halfLength),
+        //    new Point3D(halfWidth, halfHeight, -halfLength),
+        //    new Point3D(-halfWidth, halfHeight, -halfLength),
+        //    new Point3D(-halfWidth, -halfHeight, halfLength),
+        //    new Point3D(halfWidth, -halfHeight, halfLength),
+        //    new Point3D(halfWidth, halfHeight, halfLength),
+        //    new Point3D(-halfWidth, halfHeight, halfLength)
+        //    });
+
+        //    // Индексы треугольников
+        //    mesh.TriangleIndices = new System.Windows.Media.Int32Collection(new[]
+        //    {
+        //    0, 1, 2, 2, 3, 0, // Передняя грань
+        //    4, 5, 6, 6, 7, 4, // Задняя грань
+        //    0, 1, 5, 5, 4, 0, // Нижняя грань
+        //    2, 3, 7, 7, 6, 2, // Верхняя грань
+        //    0, 3, 7, 7, 4, 0, // Левая грань
+        //    1, 2, 6, 6, 5, 1  // Правая грань
+        //    });
+
+        //    return mesh;
+        //}
 
         //private GeometryModel3D CreateTextLabel(string text, Point3D position, double fontSize = 2)
         //{
@@ -1974,31 +2120,31 @@ namespace ForRobot.Model.Detals
         //    return textModel;
         //}
 
-        private GeometryModel3D CreateArrow(Point3D start, Point3D end, double thickness = 0.5)
-        {
-            var direction = end - start;
-            var length = direction.Length;
-            direction.Normalize();
+        //private GeometryModel3D CreateArrow(Point3D start, Point3D end, double thickness = 0.5)
+        //{
+        //    var direction = end - start;
+        //    var length = direction.Length;
+        //    direction.Normalize();
 
-            var arrowMesh = new MeshGeometry3D();
-            // Создание линии (основная часть стрелки).
-            arrowMesh.Positions.Add(start);
-            arrowMesh.Positions.Add(end);
+        //    var arrowMesh = new MeshGeometry3D();
+        //    // Создание линии (основная часть стрелки).
+        //    arrowMesh.Positions.Add(start);
+        //    arrowMesh.Positions.Add(end);
 
-            // Создание наконечника стрелки (треугольник).
-            var perpendicular = new Vector3D(-direction.Y, direction.X, 0);
-            var arrowTip1 = end - direction * thickness * 2 + perpendicular * thickness;
-            var arrowTip2 = end - direction * thickness * 2 - perpendicular * thickness;
+        //    // Создание наконечника стрелки (треугольник).
+        //    var perpendicular = new Vector3D(-direction.Y, direction.X, 0);
+        //    var arrowTip1 = end - direction * thickness * 2 + perpendicular * thickness;
+        //    var arrowTip2 = end - direction * thickness * 2 - perpendicular * thickness;
 
-            arrowMesh.Positions.Add(arrowTip1);
-            arrowMesh.Positions.Add(arrowTip2);
+        //    arrowMesh.Positions.Add(arrowTip1);
+        //    arrowMesh.Positions.Add(arrowTip2);
 
-            arrowMesh.TriangleIndices = new System.Windows.Media.Int32Collection(new[] { 0, 1, 2, 1, 2, 3 });
+        //    arrowMesh.TriangleIndices = new System.Windows.Media.Int32Collection(new[] { 0, 1, 2, 1, 2, 3 });
 
-            var arrowModel = new GeometryModel3D(arrowMesh, new DiffuseMaterial(System.Windows.Media.Brushes.Red));
-            return arrowModel;
-        }
+        //    var arrowModel = new GeometryModel3D(arrowMesh, new DiffuseMaterial(System.Windows.Media.Brushes.Red));
+        //    return arrowModel;
+        //}
 
-        #endregion Private functions
+        #endregion Public functions
     }
 }
