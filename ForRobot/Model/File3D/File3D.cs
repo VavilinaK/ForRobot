@@ -84,7 +84,8 @@ namespace ForRobot.Model.File3D
             get => this._detal;
             set
             {
-                Set(ref this._detal, value);
+                this._detal = value;
+                //Set(ref this._detal, value);
                 this._detal.ChangePropertyEvent += (s, o) =>
                 {
                     this.OnModelChanged();

@@ -75,11 +75,6 @@ namespace ForRobot.Model
         /// </summary>
         public event EventHandler<LogErrorEventArgs> LogError;
 
-        //public event EventHandler<object> ChangePropertyEvent;
-        //public event PropertyChangedEventHandler PropertyChanged;
-
-        //public virtual void OnChangeProperty(string propertyName = null) => this.ChangePropertyEvent?.Invoke(this, propertyName);
-
         #endregion
 
         #region Public variables
@@ -119,8 +114,8 @@ namespace ForRobot.Model
             set
             {
                 //Set(ref this._name, value);
-                //this._name = value;
-                //this.OnChangeProperty(nameof(this.Name));
+                this._name = value;
+                this.RaisePropertyChanged(nameof(this.Name));
                 this.ChangeRobot?.Invoke(this, null);
             }
         }
@@ -139,7 +134,9 @@ namespace ForRobot.Model
             get => this._pathProgram;
             set
             {
-                Set(ref this._pathProgram, value);
+                //Set(ref this._pathProgram, value);
+                this._pathProgram = value;
+                this.RaisePropertyChanged(nameof(this.PathProgramm));
                 this.ChangeRobot?.Invoke(this, null);
             }
         }
@@ -152,7 +149,9 @@ namespace ForRobot.Model
             get => this._pathControllerFolder;
             set
             {
-                Set(ref this._pathControllerFolder, value);
+                //Set(ref this._pathControllerFolder, value);
+                this._pathControllerFolder = value;
+                this.RaisePropertyChanged(nameof(this.PathControllerFolder));
                 this.ChangeRobot?.Invoke(this, null);
             }
         }
@@ -197,8 +196,11 @@ namespace ForRobot.Model
             get => this._connection ?? (this._connection = new JsonRpcConnection());
             set
             {
-                Set(ref this._connection, value);
-                RaisePropertyChanged(nameof(this.IsConnection));
+                this._connection = value;
+                this.RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection));
+
+                //Set(ref this._connection, value);
+                //RaisePropertyChanged(nameof(this.IsConnection));
             }
         }
 
@@ -247,7 +249,7 @@ namespace ForRobot.Model
             set
             {
                 this._pro_state = value;
-                RaisePropertyChanged(nameof(this.Pro_State), nameof(this.RobotProgramName));
+                this.RaisePropertyChanged(nameof(this.Pro_State), nameof(this.RobotProgramName));
             }
         }
 
@@ -255,10 +257,26 @@ namespace ForRobot.Model
         /// <summary>
         /// Название программы, выбранной на роботе
         /// </summary>
-        public string RobotProgramName { get => this._programName; set { Set(ref this._programName, value); } }
+        public string RobotProgramName
+        {
+            get => this._programName;
+            set
+            {
+                this._programName = value;
+                this.RaisePropertyChanged(nameof(this.RobotProgramName));
+            }
+        }
 
         [JsonIgnore]
-        public decimal Voltage { get => this._voltage; set => Set(ref this._voltage, value); }
+        public decimal Voltage
+        {
+            get => this._voltage;
+            set
+            {
+                this._voltage = value;
+                this.RaisePropertyChanged(nameof(this.Voltage));
+            }
+        }
 
         [JsonIgnore]
         /// <summary>
@@ -269,7 +287,9 @@ namespace ForRobot.Model
             get => this._current;
             set
             {
-                Set(ref this._current, value);
+                this._current = value;
+                this.RaisePropertyChanged(nameof(this.Current));
+                //Set(ref this._current, value);
                 //this.CurrentArray.Append(this._current);
             }
         }
@@ -283,7 +303,9 @@ namespace ForRobot.Model
             get => this._wire_feed;
             set
             {
-                Set(ref this._wire_feed, value);
+                this._wire_feed = value;
+                this.RaisePropertyChanged(nameof(this.WireFeed));
+                //Set(ref this._wire_feed, value);
                 //this.WireFeedArray.Append(this._wire_feed);
             }
         }
@@ -370,11 +392,11 @@ namespace ForRobot.Model
                 this.Connection = new JsonRpcConnection(this.Host, this.Port);
                 this.Connection.Log += this.Log;
                 this.Connection.LogError += this.LogError;
-                this.Connection.Connected += (sender, e) => RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
+                this.Connection.Connected += (sender, e) => this.RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
                 this.Connection.Aborted += (sender, e) =>
                 {
                     this.LogMessage("Соединение разорвано со стороны сервера");
-                    RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
+                    this.RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
                 };
                 this.Connection.Disconnected += (sender, e) => this.CloseConnection();
 
@@ -516,7 +538,7 @@ namespace ForRobot.Model
                     this.Connection.Dispose();
                 }
             }
-            RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
+            this.RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection), nameof(this.Pro_State));
         }
 
         /// <summary>

@@ -12,6 +12,9 @@ namespace ForRobot
     {
         #region Private variables
 
+        //private readonly Stack<IUndoableCommand> _undoStack = new Stack<IUndoableCommand>();
+        //private readonly Stack<IUndoableCommand> _redoStack = new Stack<IUndoableCommand>();
+
         private readonly Stack<IUndoableCommand> _undoStack = App.Current.UndoStack;
         private readonly Stack<IUndoableCommand> _redoStack = App.Current.RedoStack;
 
@@ -95,6 +98,23 @@ namespace ForRobot
         /// После создания события вызывается метод <see cref="OnPropertyChanged(string, object, object)"/>.</remarks>
         protected void Set<T>(ref T propertyFiled, T newValue, bool trackUndo = true, [CallerMemberName] string propertyName = null)
         {
+            //if (EqualityComparer<T>.Default.Equals(propertyFiled, newValue))
+            //    return;
+
+            //T oldValue = propertyFiled;
+            //propertyFiled = newValue;
+            //RaisePropertyChanged(propertyName);
+
+            //if (trackUndo)
+            //{
+            //    var command = new PropertyChangeCommand<T>(this, propertyName, oldValue, newValue);
+            //    _undoStack.Push(command);
+            //    _redoStack.Clear();
+            //    CommandManager.InvalidateRequerySuggested();
+            //}
+
+            //OnPropertyChanged(propertyName, oldValue, newValue);
+
             if (EqualityComparer<T>.Default.Equals(propertyFiled, newValue))
                 return;
 
@@ -102,24 +122,7 @@ namespace ForRobot
             propertyFiled = newValue;
             RaisePropertyChanged(propertyName);
 
-            if (trackUndo)
-            {
-                var command = new PropertyChangeCommand<T>(this, propertyName, oldValue, newValue);
-                _undoStack.Push(command);
-                _redoStack.Clear();
-                CommandManager.InvalidateRequerySuggested();
-            }
-
             OnPropertyChanged(propertyName, oldValue, newValue);
-
-            //if (!object.Equals(propertyFiled, newValue))
-            //{
-            //    T oldValue = propertyFiled;
-            //    propertyFiled = newValue;
-            //    RaisePropertyChanged(propertyName);
-
-            //    OnPropertyChanged(propertyName, oldValue, newValue);
-            //}
         }
 
         /// <summary>Защищённый виртуальный метод вызывается после присвоения значения

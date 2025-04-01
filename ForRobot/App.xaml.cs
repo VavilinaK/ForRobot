@@ -281,8 +281,6 @@ namespace ForRobot
             }
         }
 
-
-
         private void SendArgumentsToExistingInstance(string[] args)
         {
             try
@@ -337,11 +335,19 @@ namespace ForRobot
             }
             Dispatcher.Invoke(() =>
             {
-                App.Current.MainWindow.Activate();
-                App.Current.MainWindow.WindowState = System.Windows.WindowState.Normal;
-                App.Current.MainWindow.Topmost = true;
-                App.Current.MainWindow.Focus();
+                this.SelectAppMainWindow();
             });
+        }
+
+        /// <summary>
+        /// Вывод и вокусировка главного окна приложения
+        /// </summary>
+        private void SelectAppMainWindow()
+        {
+            App.Current.MainWindow.Activate();
+            App.Current.MainWindow.WindowState = System.Windows.WindowState.Normal;
+            App.Current.MainWindow.Topmost = true;
+            App.Current.MainWindow.Focus();
         }
 
         #endregion
