@@ -125,6 +125,7 @@ namespace ForRobot.ViewModels
         #region Commands
 
         private RelayCommand _loadedPageCommand;
+        private RelayCommand _lostFocusCommand;
 
         private RelayCommand _createNewFileCommand;
         private RelayCommand _openedFileCommand;
@@ -200,13 +201,13 @@ namespace ForRobot.ViewModels
         public Model.File3D.File3D SelectedFile
         {
             get => this._selectedFile;
-            set => Set(ref this._selectedFile, value);
+            set => Set(ref this._selectedFile, value, false);
         }
 
         /// <summary>
         /// Выбранный робот
         /// </summary>
-        public Robot SelectedRobot { get => this._selectedRobot; set => Set(ref this._selectedRobot, value); }
+        public Robot SelectedRobot { get => this._selectedRobot; set => Set(ref this._selectedRobot, value, false); }
 
         /// <summary>
         /// Имя выбранного робота для генерации
@@ -221,10 +222,17 @@ namespace ForRobot.ViewModels
             get => this._selectedObject;
             set
             {
-                if (value is HelixToolkit.Wpf.GridLinesVisual3D)
-                    return;
-
                 Set(ref this._selectedObject, value);
+
+                switch (this.SelectedObject)
+                {
+                    case HelixToolkit.Wpf.GridLinesVisual3D gridLinesVisual3D:
+                        return;
+
+                    case ForRobot.Model.File3D.Annotation annotation:
+                        GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Behavior.FindElementByTagMessage((value as Model.File3D.Annotation).PropertyName));
+                        break;
+                }
             }
         }
 
@@ -280,7 +288,7 @@ namespace ForRobot.ViewModels
         #endregion
 
         #region Commands
-        
+
         /// <summary>
         /// Выгрузка макета
         /// </summary>
@@ -292,6 +300,21 @@ namespace ForRobot.ViewModels
                     (_loadedPageCommand = new RelayCommand(obj =>
                     {
                         Messenger.Default.Send(new Libr.Behavior.LoadLayoutMessage());
+                    }));
+            }
+        }
+
+        /// <summary>
+        /// Сброс фокуса
+        /// </summary>
+        public RelayCommand LostFocusCommand
+        {
+            get
+            {
+                return _lostFocusCommand ??
+                    (_lostFocusCommand = new RelayCommand(obj =>
+                    {
+                        this.LostFocus(obj as FrameworkElement);
                     }));
             }
         }
@@ -754,33 +777,12 @@ namespace ForRobot.ViewModels
                     (_generateProgramCommandAsync = new AsyncRelayCommand(async obj =>
                     {
                         // Сброс фокуса перед генерацией.
-                        System.Windows.Input.Keyboard.ClearFocus();
-                        System.Windows.Input.FocusManager.SetFocusedElement(System.Windows.Input.FocusManager.GetFocusScope(obj as FrameworkElement), null);
+                        this.LostFocus(obj as FrameworkElement);
 
                         string foldForGenerate = Directory.GetParent(this.RobotsCollection.First().PathProgramm).ToString(); // Путь для генерации скриптом.
-                        
+
                         // Запись Json-файла
-                        JObject jObject = JObject.Parse(this.SelectedFile.Detal.Json);
-                        int[] sumRobots;
-                        if (this.SelectedRobotsName == "Все")
-                        {
-                            sumRobots = new int[this.RobotsCollection.Count];
-                            for (int i = 0; i < this.RobotsCollection.Count(); i++)
-                            {
-                                sumRobots[i] = i + 1;
-                            }
-                        }
-                        else
-                            sumRobots = new int[1] { this.RobotsCollection.IndexOf(this.RobotsCollection.Where(p => p.Name == this.SelectedRobotsName).ToArray()[0]) + 1 };
-                        jObject.Add("robots", JToken.FromObject(sumRobots)); // Запись в json-строку выбранных для генерации роботов (не зависит от подключения).
-
-                        var sch = WeldingSchemas.GetSchema(this.SelectedFile.Detal.WeldingSchema);
-                        jObject.Add("welding_sequence", JToken.FromObject(sch)); // Запись в json-строку схему сварки детали.
-
-                        File.WriteAllText(Path.Combine(foldForGenerate, $"{this._programName}.json"), jObject.ToString());
-                        if (File.Exists(Path.Combine(foldForGenerate, $"{this._programName}.json")))
-                            App.Current.Logger.Info(new Exception($"Содержание файла {Path.Combine(foldForGenerate, $"{ this._programName }.json")}:\n" + jObject.ToString()),
-                                                    $"Сгенерирован файл {Path.Combine(foldForGenerate, $"{this._programName}.json")}");
+                        this.WriteJsonFile(this.SelectedFile.Detal, Path.Combine(foldForGenerate, $"{this._programName}.json"));
 
                         // Генерация программы.
                         switch (this.SelectedFile.Detal)
@@ -1071,7 +1073,7 @@ namespace ForRobot.ViewModels
         #endregion
 
         #region Private functions
-
+        
         /// <summary>
         /// Возврат робота с инициализированными собитиями и открытым соединением
         /// </summary>
@@ -1112,7 +1114,7 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Обновление выбранного LayoutDocumentPane.
         /// </summary>
-        private void UpdateSelectedDocument()
+        private void UpdateSelectedDocument ()
         {
             // Фильтруем только LayoutDocument
             if (ActiveContent is Model.File3D.File3D file)
@@ -1120,6 +1122,53 @@ namespace ForRobot.ViewModels
                 this.SelectedFile = file;
                 this.SelectedObject = null; // Снимает выделение с объекта HelixViewport3D.
             }
+        }
+
+        /// <summary>
+        /// Сброс фокуса на заданный элемент
+        /// </summary>
+        /// <param name="frameworkElement"></param>
+        private void LostFocus(FrameworkElement frameworkElement)
+        {
+            System.Windows.Input.Keyboard.ClearFocus();
+            System.Windows.Input.FocusManager.SetFocusedElement(System.Windows.Input.FocusManager.GetFocusScope(frameworkElement), null);
+        }
+
+        /// <summary>
+        /// Запись детали в json файла
+        /// </summary>
+        /// <param name="detal"></param>
+        /// <param name="path"></param>
+        private void WriteJsonFile(Detal detal, string path)
+        {
+            JObject jObject = JObject.Parse(detal.Json);
+            int[] sumRobots;
+            if (this.SelectedRobotsName == "Все")
+            {
+                sumRobots = new int[this.RobotsCollection.Count];
+                for (int i = 0; i < this.RobotsCollection.Count(); i++)
+                {
+                    sumRobots[i] = i + 1;
+                }
+            }
+            else
+                sumRobots = new int[1] { this.RobotsCollection.IndexOf(this.RobotsCollection.Where(p => p.Name == this.SelectedRobotsName).ToArray()[0]) + 1 };
+            jObject.Add("robots", JToken.FromObject(sumRobots)); // Запись в json-строку выбранных для генерации роботов (не зависит от подключения).
+
+            switch (detal)
+            {
+                case Plita p:
+                    var plita = (Plita)detal;
+                    var sch = WeldingSchemas.GetSchema(plita.WeldingSchema);
+                    jObject.Add("welding_sequence", JToken.FromObject(sch)); // Запись в json-строку схему сварки настила.
+                    break;
+            }
+
+            File.WriteAllText(path, jObject.ToString());
+
+            if (File.Exists(path))
+                App.Current.Logger.Info(new Exception($"Содержание файла {path}:\n" + jObject.ToString()),
+                                        $"Сгенерирован файл {path}");
         }
 
         private async Task CopyFileOnRobot(Robot robot)

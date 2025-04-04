@@ -13,7 +13,7 @@ using ForRobot.Libr.Json;
 
 namespace ForRobot.Model.Detals
 {
-    public class Detal : BaseClass
+    public class Detal : BaseClass, ICloneable
     {
         #region Private variables
 
@@ -157,16 +157,6 @@ namespace ForRobot.Model.Detals
         public virtual int ProgramNom { get; set; }
 
         /// <summary>
-        /// Выбранная схема сварки рёбер
-        /// </summary>
-        public virtual string SelectedWeldingSchema { get; set; } = WeldingSchemas.GetDescription(WeldingSchemas.SchemasTypes.LeftEvenOdd_RightEvenOdd);
-
-        /// <summary>
-        /// Схема сварки рёбер
-        /// </summary>
-        public virtual FullyObservableCollection<WeldingSchemas.SchemaRib> WeldingSchema { get; set; }
-
-        /// <summary>
         /// Количество ребер
         /// </summary>
         public virtual int RibCount { get; set; }
@@ -242,9 +232,6 @@ namespace ForRobot.Model.Detals
                     this.RibCount = PlitaConfig.SumReber;
                     break;
             }
-
-            if (this.WeldingSchema == null)
-                this.WeldingSchema = ForRobot.Model.Detals.WeldingSchemas.BuildingSchema(WeldingSchemas.GetSchemaType(this.SelectedWeldingSchema), this.RibCount);
         }
 
         #endregion
@@ -372,6 +359,8 @@ namespace ForRobot.Model.Detals
         #endregion
 
         #region Public functions
+
+        public object Clone() => (Detal)this.MemberwiseClone();
 
         public static Detal GetDetal(string detalType)
         {

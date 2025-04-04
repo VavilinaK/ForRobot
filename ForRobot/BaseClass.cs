@@ -98,29 +98,14 @@ namespace ForRobot
         /// После создания события вызывается метод <see cref="OnPropertyChanged(string, object, object)"/>.</remarks>
         protected void Set<T>(ref T propertyFiled, T newValue, bool trackUndo = true, [CallerMemberName] string propertyName = null)
         {
-            //if (EqualityComparer<T>.Default.Equals(propertyFiled, newValue))
-            //    return;
-
-            //T oldValue = propertyFiled;
-            //propertyFiled = newValue;
-            //RaisePropertyChanged(propertyName);
-
-            //if (trackUndo)
-            //{
-            //    var command = new PropertyChangeCommand<T>(this, propertyName, oldValue, newValue);
-            //    _undoStack.Push(command);
-            //    _redoStack.Clear();
-            //    CommandManager.InvalidateRequerySuggested();
-            //}
-
-            //OnPropertyChanged(propertyName, oldValue, newValue);
-
             if (EqualityComparer<T>.Default.Equals(propertyFiled, newValue))
                 return;
 
             T oldValue = propertyFiled;
             propertyFiled = newValue;
             RaisePropertyChanged(propertyName);
+
+            if (trackUndo) TrackUndo(oldValue, newValue, propertyName);
 
             OnPropertyChanged(propertyName, oldValue, newValue);
         }
@@ -135,30 +120,13 @@ namespace ForRobot
         /// Рекомендуется в переопределённом методе первым оператором вызывать базовый метод.<br/>
         /// Если в переопределённом методе не будет вызова базового, то возможно нежелательное изменение логики базового класса.</remarks>
         protected virtual void OnPropertyChanged(string propertyName, object oldValue, object newValue) { }
-    }
 
-    public class PropertyChangeCommand<T> : IUndoableCommand
-    {
-        private readonly BaseClass _target;
-        private readonly string _propertyName;
-        private readonly T _oldValue;
-        private readonly T _newValue;
-
-        public PropertyChangeCommand(BaseClass target, string propertyName, T oldValue, T newValue)
+        protected void TrackUndo<T>(T oldValue, T newValue, [CallerMemberName] string propertyName = null)
         {
-            _target = target;
-            _propertyName = propertyName;
-            _oldValue = oldValue;
-            _newValue = newValue;
-        }
-
-        public void Execute() => SetValue(_newValue);
-        public void Undo() => SetValue(_oldValue);
-
-        private void SetValue(T value)
-        {
-            var property = _target.GetType().GetProperty(_propertyName);
-            property?.SetValue(_target, value);
+            var command = new PropertyChangeCommand<T>(this, propertyName, oldValue, newValue);
+            _undoStack.Push(command);
+            _redoStack.Clear();
+            CommandManager.InvalidateRequerySuggested();
         }
     }
 }

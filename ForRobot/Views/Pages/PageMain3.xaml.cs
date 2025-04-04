@@ -5,7 +5,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Media3D;
+using System.Collections.Generic;
 
+using AvalonDock;
+using AvalonDock.Layout;
 using AvalonDock.Layout.Serialization;
 using GalaSoft.MvvmLight.Messaging;
 using HelixToolkit.Wpf;
@@ -30,6 +34,38 @@ namespace ForRobot.Views.Pages
         {
             InitializeComponent();
 
+            Messenger.Default.Register<FindElementByTagMessage>(this, message => 
+            {
+                DockingManager dockingManager = FindChild<DockingManager>(this);
+
+                LayoutAnchorable anchorable = FindLayoutAnchorable(dockingManager, "Параметры");
+                anchorable?.Show();
+
+                var content = anchorable.Content as FrameworkElement;
+                if (content == null) return;
+
+                TreeView treeView = FindChild<TreeView>(content);
+                if (treeView == null) return;
+
+                ExpandAllTreeViewItems(treeView);
+
+                Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new Action(() =>
+                {
+                    var targetTemplate = this.Resources["PlitaDopTemplate3Style"] as DataTemplate;
+                    var presenter = FindChild<ContentPresenter>(this);
+
+                    if (presenter.ContentTemplate == targetTemplate)
+                    {
+                        TextBox textBox = FindElementByTag<TextBox>(presenter, message.TagProperty);
+                        if (textBox != null && !textBox.IsKeyboardFocusWithin)
+                        {
+                            textBox.Focus();
+                            Keyboard.Focus(textBox);
+                            textBox.SelectAll();
+                        }
+                    }
+                }));
+            });
             Messenger.Default.Register<SaveLayoutMessage>(this, _ => SaveLayout());
             Messenger.Default.Register<LoadLayoutMessage>(this, _ => LoadLayout());
 
@@ -68,6 +104,9 @@ namespace ForRobot.Views.Pages
                 this.ViewModel.Select(null);
         }       
 
+        /// <summary>
+        /// Сохранение макета AvalonDock
+        /// </summary>
         private void SaveLayout()
         {
             try
@@ -82,6 +121,9 @@ namespace ForRobot.Views.Pages
             }
         }
 
+        /// <summary>
+        /// Выгрузка макета AvalonDock
+        /// </summary>
         private void LoadLayout()
         {
             try
@@ -96,6 +138,82 @@ namespace ForRobot.Views.Pages
             {
                 App.Current.Logger.Error(ex, ex.Message);
                 MessageBox.Show($"Ошибка при сохранении макета: {ex.Message}");
+            }
+        }
+       
+        /// <summary>
+        /// Поиск LayoutAnchorable по заголовку
+        /// </summary>
+        /// <param name="dockingManager"></param>
+        /// <param name="title"></param>
+        /// <returns></returns>
+        private static LayoutAnchorable FindLayoutAnchorable(DockingManager dockingManager, string title) => dockingManager?.Layout.Descendents().OfType<LayoutAnchorable>().FirstOrDefault(a => a.Title == title);
+
+        private static T FindChild<T>(DependencyObject parent, Func<T, bool> predicate = null) where T : DependencyObject
+        {
+            if (parent == null) return null;
+
+            if (parent is T parentAsT && (predicate?.Invoke(parentAsT) ?? true))
+                return parentAsT;
+
+            // Если элемент визуальный, проверяем визуальное дерево
+            if (parent is Visual || parent is Visual3D)
+            {
+                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+                {
+                    var child = VisualTreeHelper.GetChild(parent, i);
+                    var result = FindChild(child, predicate);
+                    if (result != null) return result;
+                }
+            }
+
+
+            //for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            //{
+            //    var child = VisualTreeHelper.GetChild(parent, i);
+
+            //    if (child is T result && (predicate?.Invoke(result) ?? true))
+            //        return result;
+
+            //    var descendant = FindVisualChild(child, predicate);
+            //    if (descendant != null)
+            //        return descendant;
+            //}
+            return null;
+        }
+
+        public static T FindElementByTag<T>(DependencyObject parent, object tagValue) where T : FrameworkElement
+        {
+            if (parent == null) return null;
+
+            int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < childrenCount; i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+
+                if (child is T element && Equals(element.Tag, tagValue))
+                    return element;
+
+                var result = FindElementByTag<T>(child, tagValue);
+                if (result != null)
+                    return result;
+            }
+            return null;
+        }
+        
+        private static void ExpandAllTreeViewItems(ItemsControl parent)
+        {
+            if (parent == null) return;
+
+            foreach (var item in parent.Items)
+            {
+                TreeViewItem container = parent.ItemContainerGenerator.ContainerFromItem(item) as TreeViewItem;
+
+                if (container != null)
+                {
+                    container.IsExpanded = true;
+                    ExpandAllTreeViewItems(container);
+                }
             }
         }
     }

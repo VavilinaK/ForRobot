@@ -28,9 +28,15 @@ namespace ForRobot.Model.File3D
         //private readonly IHelixViewport3D viewport;
         //private bool _isSaved = false;
         private Model3DGroup _currentModel = new Model3DGroup();
+
         private Detal _detal;
+        private Detal _detalCopy; // Копия для возврата.
+
 
         private readonly Dispatcher dispatcher;
+        /// <summary>
+        /// Фильтр импортируемых файлов
+        /// </summary>
         private static readonly string[] ExtensionsFilter = new string[] { ".3ds", ".obj", ".objz", ".off", ".lwo", ".stl", ".ply" };
 
         #endregion Private variables
@@ -45,7 +51,6 @@ namespace ForRobot.Model.File3D
         /// Файл был создан
         /// </summary>
         public bool IsCreated { get; private set; } = false;
-
         /// <summary>
         /// Сохранены ли последнии изменения
         /// </summary>
@@ -79,28 +84,45 @@ namespace ForRobot.Model.File3D
             }
         }
 
+        private void CloneDetal()
+        {
+            this._detalCopy = (Detal)this.Detal.Clone();
+            //switch (this._detalCopy)
+            //{
+            //    case Plita plita:
+            //        ((Plita)this._detalCopy).SetRibsCollection(((Plita)this.Detal).RibsCollection);
+            //        break;
+            //}
+        }
+
         public Detal Detal
         {
             get => this._detal;
             set
             {
-                this._detal = value;
-                //Set(ref this._detal, value);
+                Set(ref this._detal, value, false);
+                this.OnModelChanged();
                 this._detal.ChangePropertyEvent += (s, o) =>
                 {
                     this.OnModelChanged();
                     this.ChangePropertyAnnotations(s as Detal, o as string);
+                    this.TrackUndo(this._detalCopy, (Detal)this._detal.Clone());
+                    this.CloneDetal();
                 };
                 switch (this._detal.DetalType)
                 {
                     case string a when a == DetalTypes.Plita:
-                        ((Plita)this._detal).RibsCollection.ItemPropertyChanged += (s, o) =>
+                        var plita = (Plita)this._detal;
+                        plita.RibsCollection.ItemPropertyChanged += (s, o) =>
                         {
                             this.OnModelChanged();
+                            //this.TrackUndo(this._detalCopy, plita.Clone());
+                            //this.CloneDetal();
                             //this.ChangePropertyAnnotations(s as Detal, o as string);
                         };
                         break;
                 }
+                this.CloneDetal();
             }
         }
 

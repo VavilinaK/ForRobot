@@ -1277,6 +1277,7 @@
                 <Setter Property="Margin" Value="10,5,0,5"/>
                 <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
                 <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
+                <Setter Property="Tag" Value="{Binding Path=., RelativeSource={RelativeSource Self}, Converter={StaticResource BindingToTagConvert}}"/>
             </Style>
 
             <Style TargetType="{x:Type GroupBox}">
@@ -1468,7 +1469,7 @@
             </Style>
 
             <Style TargetType="{x:Type TextBox}">
-                <!--<Setter Property="Tag" Value="{Binding Path=., RelativeSource={RelativeSource Self}, Converter={StaticResource BindingToTagConvert}}"/>-->
+                <Setter Property="Tag" Value="{Binding Path=., RelativeSource={RelativeSource Self}, Converter={StaticResource BindingToTagConvert}}"/>
                 <Setter Property="Height" Value="37"/>
                 <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
@@ -1583,6 +1584,7 @@
                 <Setter Property="Margin" Value="10,5,0,5"/>
                 <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
                 <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
+                <Setter Property="Tag" Value="{Binding Path=., RelativeSource={RelativeSource Self}, Converter={StaticResource BindingToTagConvert}}"/>
             </Style>
 
             <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource textBoxBase}"></Style>

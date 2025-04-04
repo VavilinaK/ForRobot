@@ -27,6 +27,7 @@ namespace ForRobot.Model.Detals
         #region Private variables
 
         private string _scoseType;
+        private string _selectedWeldingSchema = WeldingSchemas.GetDescription(WeldingSchemas.SchemasTypes.LeftEvenOdd_RightEvenOdd);
 
         private bool _diferentDistance = false;
         private bool _paralleleRibs = true;
@@ -42,11 +43,6 @@ namespace ForRobot.Model.Detals
 
         private BitmapImage _rebraImage;
         private BitmapImage _plitaImage;
-
-        /// <summary>
-        /// Коллекция рёбер
-        /// </summary>
-        private FullyObservableCollection<Rib> _ribsCollection;
 
         private readonly JsonSerializerSettings _jsonSettings = new JsonSerializerSettings()
         {
@@ -85,20 +81,41 @@ namespace ForRobot.Model.Detals
 
         [JsonIgnore]
         [SaveAttribute]
+        /// <inheritdoc cref="Detal.DetalType"/>
+        public override string DetalType { get => DetalTypes.Plita; }
+
+        [JsonProperty("d_type")]
+        [JsonConverter(typeof(JsonCommentConverter), "Тип скоса")]
+        /// <summary>
+        /// Тип скоса
+        /// </summary>
+        public string ScoseType
+        {
+            get => this._scoseType ?? (this._scoseType = ScoseTypes.Rect);
+            set
+            {
+                Set(ref this._scoseType, value, false);
+                RaisePropertyChanged(nameof(this.DiferentDistance), nameof(this.PlateWidth), nameof(this.BevelToLeft), nameof(this.BevelToRight), nameof(this.GenericImage), nameof(this.RebraImage));
+                this.OnChangeProperty();
+            }
+        }
+
+        [JsonIgnore]
+        [SaveAttribute]
         /// <summary>
         /// Выбранная схема сварки рёбер
         /// </summary>
-        public override string SelectedWeldingSchema
+        public string SelectedWeldingSchema
         {
-            get => base.SelectedWeldingSchema;
+            get => this._selectedWeldingSchema;
             set
             {
-                base.SelectedWeldingSchema = value;
+                Set(ref this._selectedWeldingSchema, value, false);
 
-                if (base.SelectedWeldingSchema != ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit))
+                if (this._selectedWeldingSchema != ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit))
                     this.WeldingSchema = this.FillWeldingSchema();
 
-                RaisePropertyChanged(nameof(this.SelectedWeldingSchema), nameof(this.WeldingSchema));
+                RaisePropertyChanged(nameof(this.WeldingSchema));
                 this.OnChangeProperty();
             }
         }
@@ -114,8 +131,9 @@ namespace ForRobot.Model.Detals
             get => this._diferentDistance;
             set
             {
-                Set(ref this._diferentDistance, value);
-                if (!value && this.RibsCollection?.Count > 0)
+                Set(ref this._diferentDistance, value, false);
+
+                if (!this._diferentDistance && this.RibsCollection?.Count > 0)
                 {
                     for (int i = 0; i < this.RibsCollection.Count; i++)
                     {
@@ -130,6 +148,10 @@ namespace ForRobot.Model.Detals
                         this.RibsCollection[i].DistanceLeft = this.DistanceBetween;
                     }
                 }
+                //else
+                //    foreach(var rib in this.RibsCollection)
+                //        rib.IsSave = true;
+                        
                 this.OnChangeProperty();
             }
         }
@@ -145,14 +167,15 @@ namespace ForRobot.Model.Detals
             get => this.DiferentDistance ? this._paralleleRibs : true;
             set
             {
-                Set(ref this._paralleleRibs, value);
+                Set(ref this._paralleleRibs, value, false);
 
-                if (this.RibsCollection != null && this._paralleleRibs) // Изменение расстояния для параллельных рёбер.
-                    foreach (var rib in this.RibsCollection)
+                if (this._paralleleRibs && this.RibsCollection?.Count > 0) // Изменение расстояния для параллельных рёбер.
+                    for (int i = 0; i < this.RibsCollection.Count; i++)
                     {
-                        rib.OnChangeDistanceEvent(rib, null);
+                        //rib.IsSave = false;
+                        this.RibsCollection[i].OnChangeDistanceEvent(this.RibsCollection[i], null);
+                        //rib.IsSave = true;
                     }
-
                 this.OnChangeProperty();
             }
         }
@@ -173,7 +196,7 @@ namespace ForRobot.Model.Detals
                     {
                         this.RibsCollection[i].DissolutionLeft = this.DissolutionLeft;
                     }
-                Set(ref this._diferentDissolutionLeft, value);
+                Set(ref this._diferentDissolutionLeft, value, false);
                 this.OnChangeProperty();
             }
         }
@@ -195,7 +218,7 @@ namespace ForRobot.Model.Detals
                         this.RibsCollection[i].DissolutionRight = this.DissolutionRight;
                     }
 
-                Set(ref this._diferentDissolutionRight, value);
+                Set(ref this._diferentDissolutionRight, value, false);
                 this.OnChangeProperty();
             }
         }
@@ -244,27 +267,6 @@ namespace ForRobot.Model.Detals
         //        this.OnChangeProperty();
         //    }
         //}
-
-        [JsonIgnore]
-        [SaveAttribute]
-        /// <inheritdoc cref="Detal.DetalType"/>
-        public override string DetalType { get => DetalTypes.Plita; }
-
-        [JsonProperty("d_type")]
-        [JsonConverter(typeof(JsonCommentConverter), "Тип скоса")]
-        /// <summary>
-        /// Тип скоса
-        /// </summary>
-        public string ScoseType
-        {
-            get => this._scoseType ?? (this._scoseType = ScoseTypes.Rect);
-            set
-            {
-                Set(ref this._scoseType, value);
-                RaisePropertyChanged(nameof(this.DiferentDistance), nameof(this.PlateWidth), nameof(this.BevelToLeft), nameof(this.BevelToRight), nameof(this.GenericImage), nameof(this.RebraImage));
-                this.OnChangeProperty();
-            }
-        }
 
         [JsonProperty("l")]
         [JsonConverter(typeof(JsonCommentConverter), "Длина настила")]
@@ -726,46 +728,6 @@ namespace ForRobot.Model.Detals
             }
         }
 
-        [JsonProperty("d_W2")]
-        /// <summary>
-        /// Коллекция рёбер
-        /// </summary>
-        public FullyObservableCollection<Rib> RibsCollection
-        {
-            get => _ribsCollection;
-            set
-            {
-                Set(ref this._ribsCollection, value);
-
-                foreach (var rib in this._ribsCollection)
-                {
-                    rib.ChangeDistance += (s, e) =>
-                    {
-                        if (this.ParalleleRibs)
-                            (s as Rib).DistanceRight = (s as Rib).DistanceLeft;
-                    };
-                    //rib.ChangeHight += (s, e) =>
-                    //{
-                    //    if (!this.DiferentHightLeftToRight)
-                    //        (s as Rib).HightRight = (s as Rib).HightLeft;
-                    //};
-                }
-            }
-        }
-
-        [JsonIgnore]
-        [SaveAttribute]
-        public override FullyObservableCollection<WeldingSchemas.SchemaRib> WeldingSchema
-        {
-            get => base.WeldingSchema;
-            set
-            {
-                base.WeldingSchema = value;
-                RaisePropertyChanged(nameof(this.WeldingSchema));
-                this.OnChangeProperty();
-            }
-        }
-
         [JsonProperty("edge_count")]
         [JsonConverter(typeof(JsonCommentConverter), "Кол-во рёбер")]
         /// <summary>
@@ -778,46 +740,26 @@ namespace ForRobot.Model.Detals
             {
                 base.RibCount = value;
 
-                if (this.RibsCollection == null || this.WeldingSchema == null)
-                {
-                    if (this.RibsCollection == null)
-                        this.RibsCollection = this.FillRibsCollection();
+                if (this.RibsCollection != null)
+                    this.ChangeRibCollection(this.RibsCollection, RibCount);
 
-                    if (this.WeldingSchema == null)
-                        this.WeldingSchema = this.FillWeldingSchema();
-                }
-                else
-                {
-                    if (this.RibCount <= this.RibsCollection.Count)
-                    {
-                        this.RibsCollection = new FullyObservableCollection<Rib>(this.RibsCollection.Take(this.RibCount).ToList<Rib>());
-                        //this.WeldingSchema = new FullyObservableCollection<WeldingSchemas.SchemaRib>(this.WeldingSchema.Take(this.RibCount).ToList<WeldingSchemas.SchemaRib>());
-                        if (this.SelectedWeldingSchema != ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit))
-                            this.WeldingSchema = this.FillWeldingSchema();
-                        else
-                        {
-                            this.WeldingSchema = new FullyObservableCollection<WeldingSchemas.SchemaRib>(this.WeldingSchema.Take(this.RibCount).ToList<WeldingSchemas.SchemaRib>());
-                            //this.WeldingSchema = ForRobot.Model.Detals.WeldingSchemas.EmptyRib(this.WeldingSchema);
-                        }
-                    }
-                    else
-                    {
-                        for (int i = this.RibsCollection.Count; i < this.RibCount; i++)
-                        {
-                            this.RibsCollection.Add(this.RibsCollection.Last<Rib>().Clone() as Rib);
-                        }
+                if (this.WeldingSchema != null)
+                    this.ChangeWeldingSchema(this.WeldingSchema, this.SelectedWeldingSchema, RibCount);
 
-                        if (this.SelectedWeldingSchema != ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit))
-                            this.WeldingSchema = this.FillWeldingSchema();
-                        else
-                            this.WeldingSchema.Add(new WeldingSchemas.SchemaRib());
-                    }
-                }
-
-                RaisePropertyChanged(nameof(this.RebraImage), nameof(this.GenericImage));
+                this.RaisePropertyChanged(nameof(this.RebraImage), nameof(this.GenericImage));
                 this.OnChangeProperty();
             }
         }
+
+        [JsonProperty("d_W2")]
+        /// <summary>
+        /// Коллекция рёбер
+        /// </summary>
+        public FullyObservableCollection<Rib> RibsCollection { get; private set; }
+
+        [JsonIgnore]
+        [SaveAttribute]
+        public FullyObservableCollection<WeldingSchemas.SchemaRib> WeldingSchema { get; private set; }
 
         [JsonIgnore]
         /// <summary>
@@ -826,29 +768,20 @@ namespace ForRobot.Model.Detals
         public override sealed BitmapImage RebraImage
         {
             get => Equals(this.ScoseType, "d_rect") ? (this._rebraImage = JoinRebra(GetStartRebraImage(), GetBodyRebraImage(), GetEndRebraImage())) : null;
-            set => Set(ref this._rebraImage, value);
+            set => Set(ref this._rebraImage, value, false);
         }
 
         [JsonIgnore]
         /// <summary>
         /// Общее изображение плиты
         /// </summary>
-        public override sealed BitmapImage GenericImage { get => this.GetGenericImage(); set => Set(ref this._plitaImage, value); }
-
-        #endregion
-
-        #region Events
-
-        ///// <summary>
-        ///// Событие изменения свойства класса
-        ///// </summary>
-        //public override event EventHandler Change;
+        public override sealed BitmapImage GenericImage { get => this.GetGenericImage(); set => Set(ref this._plitaImage, value, false); }
 
         #endregion
 
         #region Constructors
 
-        public Plita() { }
+        //public Plita() { }
 
         public Plita(DetalType type) : base(type)
         {
@@ -857,6 +790,9 @@ namespace ForRobot.Model.Detals
             this.BevelToRight = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).BevelToEnd;
             this.DistanceForWelding = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).DistanceForWelding;
             this.DistanceForSearch = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).DistanceForSearch;
+
+            this.RibsCollection = this.FillRibsCollection();
+            this.WeldingSchema = this.FillWeldingSchema();
         }
 
         #endregion
@@ -902,6 +838,13 @@ namespace ForRobot.Model.Detals
                     rib.DistanceLeft = this.DistanceBetween;
                     rib.DistanceRight = this.DistanceBetween;
                 }
+
+                rib.ChangeDistance += (s, e) =>
+                {
+                    if (this.ParalleleRibs)
+                        (s as Rib).DistanceRight = (s as Rib).DistanceLeft;
+                };
+
                 ribs.Add(rib);
             }
 
@@ -910,8 +853,12 @@ namespace ForRobot.Model.Detals
 
         private FullyObservableCollection<WeldingSchemas.SchemaRib> FillWeldingSchema()
         {
+            if (string.IsNullOrEmpty(this.SelectedWeldingSchema))
+                return null;
+
             FullyObservableCollection<WeldingSchemas.SchemaRib> schema = ForRobot.Model.Detals.WeldingSchemas.BuildingSchema(ForRobot.Model.Detals.WeldingSchemas.GetSchemaType(this.SelectedWeldingSchema), base.RibCount);
-            foreach(var rib in schema)
+
+            foreach (var rib in schema)
             {
                 rib.Change += (o, e) => {
                     if (this.SelectedWeldingSchema != ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit))
@@ -920,6 +867,34 @@ namespace ForRobot.Model.Detals
                 };
             }
             return schema;
+        }
+
+        private void ChangeRibCollection(FullyObservableCollection<Rib> collection, int ribCount)
+        {
+            if (ribCount > collection.Count)
+                for (int i = collection.Count; i < ribCount; i++)
+                {
+                    collection.Add(collection.Last<Rib>().Clone() as Rib);
+                }
+            else
+            {
+                for(int i = collection.Count - 1; i >= ribCount; i--)
+                    collection.RemoveAt(i);
+            }
+        }
+
+        private void ChangeWeldingSchema(FullyObservableCollection<WeldingSchemas.SchemaRib> collection, string selectedWeldingSchema, int ribCount)
+        {
+            if (ribCount > collection.Count)
+                for (int i = collection.Count; i < ribCount; i++)
+                    collection.Add(new WeldingSchemas.SchemaRib());
+            else
+            {
+                for (int i = collection.Count - 1; i >= ribCount; i--)
+                    collection.RemoveAt(i);
+            }
+
+            this.SelectedWeldingSchema = selectedWeldingSchema;
         }
 
         #region Рёбра
@@ -1874,6 +1849,8 @@ namespace ForRobot.Model.Detals
 
         #region Public functions
 
+        public FullyObservableCollection<Rib> SetRibsCollection(FullyObservableCollection<Rib> collection) => this.RibsCollection = collection;
+
         // Масштабный коэффициент: 1 единица модели = 250 мм реальных размеров
         private const decimal ScaleFactor = 1.00M / 250.00M;
 
@@ -2011,14 +1988,7 @@ namespace ForRobot.Model.Detals
 
             return lines;
         }
-
-
-        //public override void OnChangeProperty()
-        //{
-        //    base.OnChangeProperty();
-
-        //    this.Mo
-        //}
+        
 
         //public static Model3D GetModel3D(Plita plita)
         //{

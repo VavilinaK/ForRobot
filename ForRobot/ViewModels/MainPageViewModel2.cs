@@ -677,28 +677,29 @@ namespace ForRobot.ViewModels
                             string foldForGenerate = Directory.GetParent(this.RobotsCollection.First().PathProgramm).ToString(); // Путь для генерации скриптом.
 
                             // Запись Json-файла
-                            JObject jObject = JObject.Parse(this.DetalObject.Json);
+                            this.WriteJsonFile(this.DetalObject, Path.Combine(foldForGenerate, $"{this.ProgrammName}.json"));
+                            //JObject jObject = JObject.Parse(this.DetalObject.Json);
 
-                            int[] sumRobots;
-                            if (this.SelectedNameRobot == "Все")
-                            { 
-                                sumRobots = new int[this.RobotsCollection.Count];
-                                for (int i=0; i<this.RobotsCollection.Count(); i++)
-                                {
-                                    sumRobots[i] = i + 1;
-                                }
-                            }
-                            else
-                                sumRobots = new int[1] { this.RobotsCollection.IndexOf(this.RobotsCollection.Where(p => p.Name == this.SelectedNameRobot).ToArray()[0]) + 1 };
-                            jObject.Add("robots", JToken.FromObject(sumRobots)); // Запись в json-строку выбранных для генерации роботов (не зависит от подключения).
+                            //int[] sumRobots;
+                            //if (this.SelectedNameRobot == "Все")
+                            //{ 
+                            //    sumRobots = new int[this.RobotsCollection.Count];
+                            //    for (int i=0; i<this.RobotsCollection.Count(); i++)
+                            //    {
+                            //        sumRobots[i] = i + 1;
+                            //    }
+                            //}
+                            //else
+                            //    sumRobots = new int[1] { this.RobotsCollection.IndexOf(this.RobotsCollection.Where(p => p.Name == this.SelectedNameRobot).ToArray()[0]) + 1 };
+                            //jObject.Add("robots", JToken.FromObject(sumRobots)); // Запись в json-строку выбранных для генерации роботов (не зависит от подключения).
 
-                            var sch = WeldingSchemas.GetSchema(this.DetalObject.WeldingSchema);
-                            jObject.Add("welding_sequence", JToken.FromObject(sch));
+                            //var sch = WeldingSchemas.GetSchema(this.DetalObject.WeldingSchema);
+                            //jObject.Add("welding_sequence", JToken.FromObject(sch));
 
-                            File.WriteAllText(Path.Combine(foldForGenerate, $"{this.ProgrammName}.json"), jObject.ToString());
-                            if (File.Exists(Path.Combine(foldForGenerate, $"{this.ProgrammName}.json")))
-                                App.Current.Logger.Info(new Exception("Содержит:\n" + jObject.ToString()),
-                                                        $"Сгенерирован файл {Path.Combine(foldForGenerate, $"{this.ProgrammName}.json")}");
+                            //File.WriteAllText(Path.Combine(foldForGenerate, $"{this.ProgrammName}.json"), jObject.ToString());
+                            //if (File.Exists(Path.Combine(foldForGenerate, $"{this.ProgrammName}.json")))
+                            //    App.Current.Logger.Info(new Exception("Содержит:\n" + jObject.ToString()),
+                            //                            $"Сгенерирован файл {Path.Combine(foldForGenerate, $"{this.ProgrammName}.json")}");
 
                             // Генерация программы.
                             Generation generationProcess = new Generation(this.ProgrammName, foldForGenerate);
@@ -1143,6 +1144,43 @@ namespace ForRobot.ViewModels
                     break;
             }
             Properties.Settings.Default.Save();
+        }
+
+        /// <summary>
+        /// Запись детали в json файла
+        /// </summary>
+        /// <param name="detal"></param>
+        /// <param name="path"></param>
+        private void WriteJsonFile(Detal detal, string path)
+        {
+            JObject jObject = JObject.Parse(detal.Json);
+            int[] sumRobots;
+            if (this.SelectedNameRobot == "Все")
+            {
+                sumRobots = new int[this.RobotsCollection.Count];
+                for (int i = 0; i < this.RobotsCollection.Count(); i++)
+                {
+                    sumRobots[i] = i + 1;
+                }
+            }
+            else
+                sumRobots = new int[1] { this.RobotsCollection.IndexOf(this.RobotsCollection.Where(p => p.Name == this.SelectedNameRobot).ToArray()[0]) + 1 };
+            jObject.Add("robots", JToken.FromObject(sumRobots)); // Запись в json-строку выбранных для генерации роботов (не зависит от подключения).
+
+            switch (detal)
+            {
+                case Plita p:
+                    var plita = (Plita)detal;
+                    var sch = WeldingSchemas.GetSchema(plita.WeldingSchema);
+                    jObject.Add("welding_sequence", JToken.FromObject(sch)); // Запись в json-строку схему сварки настила.
+                    break;
+            }
+
+            File.WriteAllText(path, jObject.ToString());
+
+            if (File.Exists(path))
+                App.Current.Logger.Info(new Exception($"Содержание файла {path}:\n" + jObject.ToString()),
+                                        $"Сгенерирован файл {path}");
         }
 
         #region Logging

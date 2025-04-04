@@ -268,6 +268,7 @@
     </ApplicationDefinition>
     <Compile Include="Libr\Behavior\CollapedLayoutAnchorableBehavior.cs" />
     <Compile Include="Libr\Behavior\CollapedLayoutAnchorableMessage.cs" />
+    <Compile Include="Libr\Behavior\FindElementByTagMessage.cs" />
     <Compile Include="Libr\Behavior\HelixAnnotationsBehavior.cs" />
     <Compile Include="Libr\Behavior\HelixSceneTrackerBehavior.cs" />
     <Compile Include="Libr\Behavior\LayoutMessage.cs" />
@@ -295,6 +296,7 @@
     <Compile Include="Model\File3D\File3D.cs" />
     <Compile Include="Model\File3D\SceneItem.cs" />
     <Compile Include="IUndoableCommand.cs" />
+    <Compile Include="PropertyChangeCommand.cs" />
     <Compile Include="Services\ExporterService.cs" />
     <Compile Include="Services\FileDialogService.cs" />
     <Compile Include="Services\GenerationService.cs" />

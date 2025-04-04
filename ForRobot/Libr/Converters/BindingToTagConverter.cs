@@ -9,13 +9,13 @@ namespace ForRobot.Libr.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null || parameter == null)
+            if (value == null)
                 throw new FormatException("to use this converter, value shall inherit from System.Windows.Controls");
 
             switch (value)
             {
                 case TextBox textBox:
-                    return ((TextBox)value).GetBindingExpression(TextBox.TextProperty).ParentBinding.Path.Path;
+                    return ((TextBox)value).GetBindingExpression(TextBox.TextProperty)?.ParentBinding.Path.Path;
 
                 default:
                     return string.Empty;

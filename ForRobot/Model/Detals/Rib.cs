@@ -20,6 +20,9 @@ namespace ForRobot.Model.Detals
         //private decimal _hightLeft;
         //private decimal _hightRight;
 
+        //[JsonIgnore]
+        //public bool IsSave { get; set; } = false;
+
         [JsonProperty("d_dis1")]
         /// <summary>
         /// Расстояние до следующего ребра (общее или по левому краю)
@@ -29,7 +32,7 @@ namespace ForRobot.Model.Detals
             get => this._distanceLeft;
             set
             {
-                Set(ref this._distanceLeft, value);
+                Set(ref this._distanceLeft, value, false);
                 this.ChangeDistance?.Invoke(this, null);
             }
         }
@@ -38,31 +41,31 @@ namespace ForRobot.Model.Detals
         /// <summary>
         /// Расстояние до ребра по правому краю
         /// </summary>
-        public decimal DistanceRight { get => this._distanceRight; set => Set(ref this._distanceRight, value); }
+        public decimal DistanceRight { get => this._distanceRight; set => Set(ref this._distanceRight, value, false); }
 
         [JsonProperty("d_l1")]
         /// <summary>
         /// Отступ слева
         /// </summary>
-        public decimal IdentToLeft { get => this._identToLeft; set => Set(ref this._identToLeft, value); }
+        public decimal IdentToLeft { get => this._identToLeft; set => Set(ref this._identToLeft, value, false); }
 
         [JsonProperty("d_l2")]
         /// <summary>
         /// Отступ справа
         /// </summary>
-        public decimal IdentToRight { get => this._identToRight; set => Set(ref this._identToRight, value); }
+        public decimal IdentToRight { get => this._identToRight; set => Set(ref this._identToRight, value, false); }
 
         [JsonProperty("l_r1")]
         /// <summary>
         /// Роспуск слева
         /// </summary>
-        public decimal DissolutionLeft { get => this._dissolutionLeft; set => Set(ref this._dissolutionLeft, value); }
+        public decimal DissolutionLeft { get => this._dissolutionLeft; set => Set(ref this._dissolutionLeft, value, false); }
 
         [JsonProperty("l_r2")]
         /// <summary>
         /// Роспуск справа
         /// </summary>
-        public decimal DissolutionRight { get => this._dissolutionRight; set => Set(ref this._dissolutionRight, value); }
+        public decimal DissolutionRight { get => this._dissolutionRight; set => Set(ref this._dissolutionRight, value, false); }
 
         //[JsonProperty("h1")]
         ///// <summary>
