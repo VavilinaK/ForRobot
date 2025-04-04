@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 
 //using HelixToolkit;
 using HelixToolkit.Wpf;
+//using HelixToolkit.
 
 using CommunityToolkit.Diagnostics;
 //using CommunityToolkit.
@@ -106,6 +107,10 @@ namespace ForRobot.Model.File3D
                 {
                     this.OnModelChanged();
                     this.ChangePropertyAnnotations(s as Detal, o as string);
+
+                    if (this._detal.NotSaveProperties.Contains(o as string))
+                        return;
+
                     this.TrackUndo(this._detalCopy, (Detal)this._detal.Clone());
                     this.CloneDetal();
                 };
@@ -385,6 +390,14 @@ namespace ForRobot.Model.File3D
 
                 return new File3D(openFileDialog.FileName);
             }
+        }
+
+        public void LoadStpFile(string sPath)
+        {
+            //this.CurrentModel = new HelixToolkit.Wpf.A
+            this.SceneUpdate();
+            this.IsOpened = true;
+            this.IsSaved = true;
         }
 
         public void Load(string sPath)

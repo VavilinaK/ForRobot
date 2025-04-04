@@ -47,6 +47,12 @@ namespace ForRobot.Model.Detals
 
         #region Virtual
 
+        [JsonIgnore]
+        /// <summary>
+        /// Игнорируемы для Undo/Redo свойства
+        /// </summary>
+        public virtual string[] NotSaveProperties { get; }
+
         public virtual string Json { get; }
         
         public virtual string JsonForSave { get; }

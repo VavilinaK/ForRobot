@@ -7,6 +7,9 @@ using System.Configuration;
 using System.ComponentModel;
 using System.Security.Cryptography;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+
+using ForRobot.Model.Detals;
 
 namespace ForRobot.ViewModels
 {
@@ -14,12 +17,16 @@ namespace ForRobot.ViewModels
     {
         #region Private variables
 
+        private ForRobot.Libr.Settings.Settings _settings = ForRobot.Libr.Settings.Settings.GetSettings();
         private System.Windows.Controls.TreeViewItem _selectedItem;
+        private string _selectedDetalTypeName;
+        private string _selectedDetalTypeScript;
 
         #region Commands
 
         private RelayCommand _selectClosedTabCommand;
         private RelayCommand _selectedMainTreeViewItem;        
+        private RelayCommand _standartSettingsCommand;
         private RelayCommand _saveCommand;
         private RelayCommand _cancelCommand;        
         private RelayCommand _editPathForUpdateCommand;
@@ -32,9 +39,121 @@ namespace ForRobot.ViewModels
 
         #region Public variables
 
-        public ForRobot.Libr.Settings.Settings Settings { get; set; } = ForRobot.Libr.Settings.Settings.GetSettings();
+        public ForRobot.Libr.Settings.Settings Settings { get => this._settings; set => Set(ref this._settings, value); }
 
         public System.Windows.Controls.TreeViewItem SelectedItem { get => this._selectedItem; set => Set(ref this._selectedItem, value); }
+
+        public string SelectedDetalTypeName
+        {
+            get => this._selectedDetalTypeName ?? (this._selectedDetalTypeName = ForRobot.Model.Detals.DetalTypes.Plita);
+            set
+            {
+                Set(ref this._selectedDetalTypeName, value);
+                this.RaisePropertyChanged(nameof(this.StandartNameFile));
+            }
+        }
+
+        public string SelectedDetalTypeScript
+        {
+            get => this._selectedDetalTypeScript ?? (this._selectedDetalTypeScript = ForRobot.Model.Detals.DetalTypes.Plita);
+            set
+            {
+                Set(ref this._selectedDetalTypeScript, value);
+                this.RaisePropertyChanged(nameof(this.ScriptName));
+            }
+        }
+
+        public string StandartNameFile
+        {
+            get
+            {
+                switch (this.SelectedDetalTypeName)
+                {
+                    case string a when a == DetalTypes.Plita:
+                        return this.Settings.PlitaProgramName;
+
+                    case string b when b == DetalTypes.Plita:
+                        return this.Settings.PlitaStringerProgramName;
+
+                    case string c when c == DetalTypes.Plita:
+                        return this.Settings.PlitaTreugolnikProgramName;
+
+                    default:
+                        return string.Empty;
+                }
+            }
+            set
+            {
+                switch (this.SelectedDetalTypeName)
+                {
+                    case string a when a == DetalTypes.Plita:
+                        this.Settings.PlitaProgramName = value;
+                        break;
+
+                    case string b when b == DetalTypes.Plita:
+                        this.Settings.PlitaStringerProgramName = value;
+                        break;
+
+                    case string c when c == DetalTypes.Plita:
+                        this.Settings.PlitaTreugolnikProgramName = value;
+                        break;
+                }
+            }
+        }
+
+        public string ScriptName
+        {
+            get
+            {
+                switch (this.SelectedDetalTypeScript)
+                {
+                    case string a when a == DetalTypes.Plita:
+                        return this.Settings.PlitaScriptName;
+
+                    case string b when b == DetalTypes.Plita:
+                        return this.Settings.PlitaStringerScriptName;
+
+                    case string c when c == DetalTypes.Plita:
+                        return this.Settings.PlitaTreugolnikScriptName;
+
+                    default:
+                        return string.Empty;
+                }
+            }
+            set
+            {
+                switch (this.SelectedDetalTypeScript)
+                {
+                    case string a when a == DetalTypes.Plita:
+                        this.Settings.PlitaScriptName = value;
+                        break;
+
+                    case string b when b == DetalTypes.Plita:
+                        this.Settings.PlitaStringerScriptName = value;
+                        break;
+
+                    case string c when c == DetalTypes.Plita:
+                        this.Settings.PlitaTreugolnikScriptName = value;
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Коллекция видов деталей
+        /// </summary>
+        public ObservableCollection<string> DetalTypesCollection
+        {
+            get
+            {
+                List<string> detalTypesList = new List<string>();
+                foreach (var f in typeof(ForRobot.Model.Detals.DetalTypes).GetFields())
+                {
+                    detalTypesList.Add(f.GetValue(null).ToString());
+                }
+                return new ObservableCollection<string>(detalTypesList);
+            }
+        }
 
         #region Commands
 
@@ -106,6 +225,21 @@ namespace ForRobot.ViewModels
                         control.IsSelected = false;
                         (control.Items[0] as System.Windows.Controls.TreeViewItem).IsSelected = true;
                         this.SelectedItem = control.Items[0] as System.Windows.Controls.TreeViewItem;
+                    }));
+            }
+        }
+
+        /// <summary>
+        /// Возвращение к стандартным настройкам
+        /// </summary>
+        public RelayCommand StandartSettingsCommand
+        {
+            get
+            {
+                return _standartSettingsCommand ??
+                    (_standartSettingsCommand = new RelayCommand(obj =>
+                    {
+                        this.Settings = new Libr.Settings.Settings();
                     }));
             }
         }

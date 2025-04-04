@@ -1162,7 +1162,6 @@
                                         <DataTemplate>
                                             <Label VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
                                                 <TextBlock TextAlignment="Center">
-                                                    <!--Text="{Binding Path=.}"-->
                                                     <TextBlock.Text>
                                                         <MultiBinding Converter="{StaticResource StringFormatMultiConvert}" ConverterParameter="({0})">
                                                             <Binding Path="." Mode="OneWay"/>
@@ -1257,13 +1256,15 @@
                 <Setter Property="TextElement.Foreground" Value="{StaticResource ThemeFgP2Brush}"/>
             </Style>
 
-            <Style TargetType="{x:Type TextBlock}">
+            <Style x:Key="TextBlockBase" TargetType="{x:Type TextBlock}">
                 <Setter Property="FontSize" Value="{StaticResource FontSizeNP2}"/>
                 <Setter Property="MaxWidth" Value="160"/>
                 <Setter Property="TextWrapping" Value="Wrap"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
             </Style>
+
+            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBlockBase}"></Style>
 
             <Style TargetType="{x:Type TextBox}">
                 <Setter Property="FontSize" Value="{StaticResource FontSizeNP2}"/>
@@ -1300,14 +1301,6 @@
                 <Setter Property="EnableRowVirtualization" Value="False"/>
                 <Setter Property="SelectionMode" Value="Single"/>
                 <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
-
-                <Setter Property="RowHeaderTemplate">
-                    <Setter.Value>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Path=., RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={StaticResource RowNumberConvert}}"/>
-                        </DataTemplate>
-                    </Setter.Value>
-                </Setter>
             </Style>
 
             <Style TargetType="DataGridColumnHeader">
@@ -1330,6 +1323,16 @@
                 <Setter Property="Height" Value="40"/>
                 <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
                 <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type DataGridCell}">
+                            <Grid Background="{TemplateBinding Background}">
+                                <ContentPresenter VerticalAlignment="Stretch" />
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
             </Style>
         </DataTemplate.Resources>
 
@@ -1385,46 +1388,22 @@
                             <Style TargetType="{x:Type ComboBox}">
                                 <Setter Property="MaxDropDownHeight" Value="150"/>
                                 <Setter Property="ItemsSource" Value="{Binding Path=., RelativeSource={RelativeSource AncestorType=DataGrid, Mode=FindAncestor}, Converter={StaticResource NumbersForWeldingSchemaConvert}}"/>
+                                <Setter Property="VerticalAlignment" Value="Stretch"/>
                                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
 
                                 <Setter Property="ItemTemplate">
                                     <Setter.Value>
                                         <DataTemplate>
                                             <Label VerticalAlignment="Stretch" HorizontalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
-                                                <TextBlock Text="{Binding Path=.}" TextAlignment="Center"/>
+                                                <TextBlock TextAlignment="Center">
+                                                    <TextBlock.Text>
+                                                        <MultiBinding Converter="{StaticResource StringFormatMultiConvert}" ConverterParameter="({0})">
+                                                            <Binding Path="." Mode="OneWay"/>
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
                                             </Label>
                                         </DataTemplate>
-                                    </Setter.Value>
-                                </Setter>
-
-                                <Setter Property="ItemContainerStyle">
-                                    <Setter.Value>
-                                        <Style TargetType="{x:Type ComboBoxItem}">
-                                            <Setter Property="Template">
-                                                <Setter.Value>
-                                                    <ControlTemplate TargetType="{x:Type ComboBoxItem}">
-                                                        <Grid ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Auto">
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="*"/>
-                                                            </Grid.ColumnDefinitions>
-
-                                                            <Border Name="ItemPanel" BorderBrush="Black" BorderThickness="0, 0.1" Background="{Binding Background}">
-                                                                <ContentPresenter x:Name="ContentSite"
-                                                                                  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                                                                                  ContentSource="Content" Margin="0, 3"/>
-                                                            </Border>
-                                                        </Grid>
-
-                                                        <ControlTemplate.Triggers>
-                                                            <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter TargetName="ItemPanel" Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
-                                                                <Setter TargetName="ItemPanel" Property="Background" Value="{DynamicResource {x:Static SystemColors.MenuHighlightBrushKey}}"/>
-                                                            </Trigger>
-                                                        </ControlTemplate.Triggers>
-                                                    </ControlTemplate>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </Style>
                                     </Setter.Value>
                                 </Setter>
                             </Style>
@@ -1438,6 +1417,9 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
+
+                            <DataGridTextColumn Header="№ ребра"
+                                                Binding="{Binding Path=., Mode=OneWay, RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={StaticResource RowNumberConvert}}"/>
 
                             <DataGridTemplateColumn Header="Справа" Width="*">
                                 <DataGridTemplateColumn.CellTemplate>

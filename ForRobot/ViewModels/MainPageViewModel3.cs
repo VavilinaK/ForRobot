@@ -132,8 +132,6 @@ namespace ForRobot.ViewModels
         private RelayCommand _saveFileCommand;
         private RelayCommand _saveAsFileCommand;
         private RelayCommand _saveAllFilesCommand;
-        private RelayCommand _undoCommand;
-        private RelayCommand _redoCommand;
         private RelayCommand _standartParametrsCommand;
         private RelayCommand _zoomCommand;
         private RelayCommand _сollapedCommand;
@@ -300,6 +298,11 @@ namespace ForRobot.ViewModels
                     (_loadedPageCommand = new RelayCommand(obj =>
                     {
                         Messenger.Default.Send(new Libr.Behavior.LoadLayoutMessage());
+
+                        //if (App.Current.OpenedFiles.Count == 0)
+                        //{
+                        //    this.CreateNewFileCommand.Execute(null);
+                        //}
                     }));
             }
         }
@@ -350,7 +353,12 @@ namespace ForRobot.ViewModels
                 return _openedFileCommand ??
                     (_openedFileCommand = new RelayCommand(obj =>
                     {
-                        var file = Model.File3D.File3D.Open();
+                        string filePath = this._fileDialogService.OpenFileDialog(null, null, Model.File3D.File3D.FilterForFileDialog, string.Empty);
+
+                        if (string.IsNullOrEmpty(filePath))
+                            return;
+
+                        var file = new Model.File3D.File3D(filePath);
                         App.Current.OpenedFiles.Add(file);
                         this.SelectedFile = file;
                     }));
@@ -401,22 +409,6 @@ namespace ForRobot.ViewModels
                         {
                             App.Current.Logger.Error(ex);
                         }
-
-
-                        //using(SaveFileDialog sfd = new SaveFileDialog()
-                        //{
-                        //    CheckPathExists = true,
-                        //    Filter = HelixToolkit.Wpf.Exporters.Filter,
-                        //    DefaultExt = HelixToolkit.Wpf.Exporters.DefaultExtension
-                        //})
-                        //{
-                        //    if (sfd.ShowDialog() == DialogResult.Cancel && string.IsNullOrEmpty(sfd.FileName))
-                        //        return;
-
-                        //    //this.Viewport.Export(sfd.FileName);
-
-                        //    //HelixToolkit.Wpf.ObjExporter.
-                        //} 
                     }));
             }
         }
@@ -443,37 +435,7 @@ namespace ForRobot.ViewModels
                     }));
             }
         }
-
-        /// <summary>
-        /// Отмена действий
-        /// </summary>
-        //public RelayCommand UndoCommand
-        //{
-        //    get
-        //    {
-        //        return _undoCommand ??
-        //            (_undoCommand = new RelayCommand(obj =>
-        //            {
-
-        //            }));
-        //    }
-        //}
-
-        /// <summary>
-        /// Возврат действий
-        /// </summary>
-        //public RelayCommand RedoCommand
-        //{
-        //    get
-        //    {
-        //        return _redoCommand ??
-        //            (_redoCommand = new RelayCommand(obj =>
-        //            {
-
-        //            }));
-        //    }
-        //}
-
+        
         /// <summary>
         /// Сброс параметров детали до стандартных
         /// </summary>

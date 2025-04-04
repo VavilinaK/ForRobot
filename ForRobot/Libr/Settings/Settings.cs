@@ -280,7 +280,12 @@ namespace ForRobot.Libr.Settings
                 this.SelectedTheme = this.Themes.Where(t => t.Item1 == Properties.Settings.Default.SelectedTheme).First();
 
             this.PlitaProgramName = this._appConfig.PlitaProgramName;
+            this.PlitaStringerProgramName = this._appConfig.PlitaStringerProgramName;
+            this.PlitaTreugolnikProgramName = this._appConfig.PlitaTreugolnikProgramName;
+
             this.PlitaScriptName = this._appConfig.PlitaGenerator;
+            this.PlitaStringerScriptName = this._appConfig.PlitaStringerGenerator;
+            this.PlitaTreugolnikScriptName = this._appConfig.PlitaTreugolnikGenerator;
 
             this.PathFolderOfGeneration = this._robotConfig.PathForGeneration;
 

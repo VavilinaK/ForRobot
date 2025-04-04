@@ -597,13 +597,6 @@
                                    IsVirtualizingAnchorable="True"
                                    IsVirtualizingDocument="True">
 
-            <!--<avalonDock:DockingManager.Resources>
-                <ControlTemplate TargetType="{x:Type avalonDock:LayoutDocumentTabItem}">
-                    <Grid/>
-
-                </ControlTemplate>
-            </avalonDock:DockingManager.Resources>-->
-
             <avalonDock:DockingManager.DocumentPaneMenuItemHeaderTemplate>
                 <DataTemplate>
                     <Grid>
@@ -724,15 +717,15 @@
                             <avalonDock:LayoutAnchorablePane>
                                 <avalonDock:LayoutAnchorable Title="Сообщения" ContentId="Messages">
                                     <DataGrid ItemsSource="{Binding Path=MessagesCollection, Mode=OneWay}"
-                                          SelectionMode="Single"
-                                          AutoGenerateColumns="False"
-                                          EnableRowVirtualization="False"
-                                          CanUserAddRows="False"
-                                          CanUserSortColumns="False"
-                                          ScrollViewer.CanContentScroll="True"
-                                          ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                          ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                          lib:ScrollViewerAttachedPropertiesDataGrid.ScrollOnLoadingRow="True">
+                                              SelectionMode="Single"
+                                              AutoGenerateColumns="False"
+                                              EnableRowVirtualization="False"
+                                              CanUserAddRows="False"
+                                              CanUserSortColumns="False"
+                                              ScrollViewer.CanContentScroll="True"
+                                              ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                              lib:ScrollViewerAttachedPropertiesDataGrid.ScrollOnLoadingRow="True">
 
                                         <DataGrid.Resources>
                                             <Style x:Key="dgCellBase" TargetType="{x:Type DataGridCell}">
@@ -802,6 +795,10 @@
                                                 <TextBlock Text="{Binding Ditails}" Focusable="False" IsEnabled="False" Padding="5,10"/>
                                             </DataTemplate>
                                         </DataGrid.RowDetailsTemplate>
+
+                                        <!--<i:Interaction.Behaviors>
+                                            <behavior:DataGridStretchLastColumn/>
+                                        </i:Interaction.Behaviors>-->
                                     </DataGrid>
                                 </avalonDock:LayoutAnchorable>
                             </avalonDock:LayoutAnchorablePane>
@@ -836,7 +833,6 @@
                                         </TreeView.Resources>
 
                                     </TreeView>-->
-
                                     <ContentControl ContentTemplate="{StaticResource OtherTemplateStyle}"/>
                                 </avalonDock:LayoutAnchorable>
                             </avalonDock:LayoutAnchorablePane>

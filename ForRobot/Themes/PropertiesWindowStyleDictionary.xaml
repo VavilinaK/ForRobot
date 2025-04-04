@@ -186,7 +186,7 @@
             <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource textBase}"></Style>
         </DataTemplate.Resources>
 
-        <Grid Background="Transparent">
+        <Grid Background="Transparent" DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -374,7 +374,7 @@
             <Style TargetType="{x:Type RadioButton}" BasedOn="{StaticResource textBase}"></Style>
         </DataTemplate.Resources>
 
-        <Grid DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}" Margin="5">
+        <Grid Background="Transparent" DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -493,6 +493,87 @@
 
     <!--Вкладка "Генерация"-->
     <DataTemplate x:Key="GenerationProperiesTemplate" DataType="{x:Type ContentControl}">
-        
+        <DataTemplate.Resources>
+            <Style x:Key="textBase" TargetType="{x:Type FrameworkElement}">
+                <Setter Property="TextElement.FontSize" Value="{StaticResource FontSizeNP1}"/>
+                <Setter Property="TextElement.FontFamily" Value="{StaticResource DefaultFont}"/>
+                <Setter Property="TextElement.FontWeight" Value="Normal"/>
+            </Style>
+
+            <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource textBase}">
+                <Setter Property="TextElement.FontWeight" Value="Bold"/>
+                <Setter Property="Padding" Value="5"/>
+            </Style>
+
+            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource textBase}">
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Background" Value="Transparent"/>
+            </Style>
+
+            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource textBase}">
+                <Setter Property="Padding" Value="4, 0"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            </Style>
+
+            <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource textBase}">
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            </Style>
+        </DataTemplate.Resources>
+
+        <Grid Background="Transparent" DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <GroupBox Grid.Row="0" Header="Стандартное наименование файла для типа детали:">
+                <Grid TextElement.FontWeight="Normal" Margin="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+
+                    <ComboBox Grid.Column="0"
+                              ItemsSource="{Binding Path=DetalTypesCollection, Mode=OneWay}"
+                              SelectedItem="{Binding Path=SelectedDetalTypeName, Mode=TwoWay}"
+                              SelectedIndex="0">
+
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" Padding="5"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+                    <TextBox Grid.Column="1" Text="{Binding StandartNameFile, Mode=TwoWay}"/>
+                </Grid>
+            </GroupBox>
+            
+            <GroupBox Grid.Row="1" Header="Стандартное наименование скрипта-генератора для типа детали:">
+                <Grid TextElement.FontWeight="Normal" Margin="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+
+                    <ComboBox Grid.Column="0"
+                              ItemsSource="{Binding Path=DetalTypesCollection, Mode=OneWay}"
+                              SelectedItem="{Binding Path=SelectedDetalTypeScript, Mode=TwoWay}"
+                              SelectedIndex="0">
+
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" Padding="5"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+                    <TextBox Grid.Column="1" Text="{Binding ScriptName, Mode=TwoWay}"/>
+                </Grid>
+            </GroupBox>
+        </Grid>
     </DataTemplate>
 </ResourceDictionary>

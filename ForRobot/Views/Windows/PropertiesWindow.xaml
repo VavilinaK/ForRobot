@@ -32,8 +32,8 @@
         </Style>
      
         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource TextBase}">
-            <Setter Property="Width" Value="100"/>
-            <Setter Property="Padding" Value="0, 5"/>
+            <!--<Setter Property="Width" Value="100"/>-->
+            <Setter Property="Padding" Value="20, 5"/>
         </Style>
     </Window.Resources>
     
@@ -57,7 +57,7 @@
 
             <TreeViewItem Header="Вид" Tag="View" IsExpanded="False">
                 <TreeViewItem Header="Интерфейс" Tag="Interface"/>
-                <TreeViewItem Header="3D сцена" Tag="3DView" IsSelected="True"/>
+                <TreeViewItem Header="3D сцена" Tag="3DView"/>
 
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Selected">
@@ -73,7 +73,7 @@
                 </i:Interaction.Triggers>-->
             </TreeViewItem>
 
-            <TreeViewItem Header="Генерация" Tag="Generation"/>
+            <TreeViewItem Header="Генерация" Tag="Generation" IsSelected="True"/>
 
 
             <!--<TreeViewItem Header="Соединение" Tag="Connection"/>-->
@@ -187,14 +187,16 @@
 
         <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="15"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="1" Content="_OK" IsDefault="True" Command="{Binding Path=SaveCommand}"/>
-            <Button Grid.Column="3" Content="_Отмена" IsCancel="True" Command="{Binding Path=CancelCommand}"/>
+            <Button Grid.Column="0" Content="_Настройки по-умолчанию" IsDefault="True" Command="{Binding Path=StandartSettingsCommand}"/>
+            <Button Grid.Column="2" Content="_OK" Width="100" IsDefault="True" Command="{Binding Path=SaveCommand}"/>
+            <Button Grid.Column="4" Content="_Отмена" Width="100" IsCancel="True" Command="{Binding Path=CancelCommand}"/>
         </Grid>
     </Grid>
 </Window>

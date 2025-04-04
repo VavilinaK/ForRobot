@@ -53,6 +53,12 @@ namespace ForRobot.Model.Detals
 
         #region Public variables
 
+        [JsonIgnore]
+        /// <summary>
+        /// Игнорируемы для Undo/Redo свойства
+        /// </summary>
+        public override string[] NotSaveProperties { get; } = new string[] { nameof(SelectedWeldingSchema) };
+
         /// <summary>
         /// Json-строка для передачи
         /// </summary>
@@ -96,7 +102,7 @@ namespace ForRobot.Model.Detals
             {
                 Set(ref this._scoseType, value, false);
                 RaisePropertyChanged(nameof(this.DiferentDistance), nameof(this.PlateWidth), nameof(this.BevelToLeft), nameof(this.BevelToRight), nameof(this.GenericImage), nameof(this.RebraImage));
-                this.OnChangeProperty();
+                this.OnChangeProperty(nameof(this.ScoseType));
             }
         }
 
@@ -116,7 +122,7 @@ namespace ForRobot.Model.Detals
                     this.WeldingSchema = this.FillWeldingSchema();
 
                 RaisePropertyChanged(nameof(this.WeldingSchema));
-                this.OnChangeProperty();
+                this.OnChangeProperty(nameof(this.SelectedWeldingSchema));
             }
         }
 
@@ -152,7 +158,7 @@ namespace ForRobot.Model.Detals
                 //    foreach(var rib in this.RibsCollection)
                 //        rib.IsSave = true;
                         
-                this.OnChangeProperty();
+                this.OnChangeProperty(nameof(this.DiferentDistance));
             }
         }
 
@@ -176,7 +182,7 @@ namespace ForRobot.Model.Detals
                         this.RibsCollection[i].OnChangeDistanceEvent(this.RibsCollection[i], null);
                         //rib.IsSave = true;
                     }
-                this.OnChangeProperty();
+                this.OnChangeProperty(nameof(this.ParalleleRibs));
             }
         }
 
@@ -197,7 +203,7 @@ namespace ForRobot.Model.Detals
                         this.RibsCollection[i].DissolutionLeft = this.DissolutionLeft;
                     }
                 Set(ref this._diferentDissolutionLeft, value, false);
-                this.OnChangeProperty();
+                this.OnChangeProperty(nameof(this.DiferentDissolutionLeft));
             }
         }
 
@@ -219,7 +225,7 @@ namespace ForRobot.Model.Detals
                     }
 
                 Set(ref this._diferentDissolutionRight, value, false);
-                this.OnChangeProperty();
+                this.OnChangeProperty(nameof(this.DiferentDissolutionRight));
             }
         }
 
@@ -608,7 +614,7 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.WildingSpead = value;
-                this.OnChangeProperty();
+                this.OnChangeProperty(nameof(this.WildingSpead));
             }
         }
 
@@ -623,7 +629,7 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.ProgramNom = value;
-                this.OnChangeProperty();
+                this.OnChangeProperty(nameof(this.ProgramNom));
             }
         }
 
@@ -724,7 +730,7 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.ReverseDeflection = value;
-                this.OnChangeProperty();
+                this.OnChangeProperty(nameof(this.ReverseDeflection));
             }
         }
 
@@ -747,7 +753,7 @@ namespace ForRobot.Model.Detals
                     this.ChangeWeldingSchema(this.WeldingSchema, this.SelectedWeldingSchema, RibCount);
 
                 this.RaisePropertyChanged(nameof(this.RebraImage), nameof(this.GenericImage));
-                this.OnChangeProperty();
+                this.OnChangeProperty(nameof(this.RibCount));
             }
         }
 
