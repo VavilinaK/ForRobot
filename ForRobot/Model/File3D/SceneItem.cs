@@ -1,6 +1,7 @@
-﻿using System.Windows.Media.Media3D;
+﻿using System;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Media3D;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -17,10 +18,11 @@ namespace ForRobot.Model.File3D
 
         //private DependencyObject _element;
 
-        private object _element;
+        private DependencyObject _element;
+        //private object _element;
+        //private MeshGeometry3D _element;
 
         private Material _originalMaterial;
-        private static readonly Material TransparentMaterial = new DiffuseMaterial(Brushes.Transparent);
 
         #endregion Private variables
 
@@ -28,22 +30,29 @@ namespace ForRobot.Model.File3D
 
         //public string Name { get => this._element.GetName(); }
 
-        public object SceneObject { get => this._element; set => Set(ref this._element, value); }
+        public DependencyObject SceneObject { get => this._element; set => Set(ref this._element, value); }
+        //public object SceneObject { get => this._element; set => Set(ref this._element, value); }
+        //public MeshGeometry3D SceneObject { get => this._element; set => Set(ref this._element, value); }
+        public static readonly Material TransparentMaterial = new DiffuseMaterial(Brushes.Transparent);
 
         public string Name { get; set; }
-        public string TypeName { get => this._element.GetType().Name; }
+        public string TypeName { get => this.SceneObject.GetType().Name; }
 
-        //public bool IsVisible
-        //{
-        //    get => this.IsVisible;
-        //    set
-        //    {
-        //        //if(this._isVisible != value)
-        //        //    this.UpdateVisibility(this._isVisible);
+        public bool IsVisible
+        {
+            get => this._isVisible;
+            set
+            {
+                Set(ref this._isVisible, value);
 
-        //        Set(ref this._isVisible, value);
-        //    }
-        //}
+                if(this._isVisible)
+                    this.VisibleEvent?.Invoke(this, null);
+                else
+                    this.HiddenEvent?.Invoke(this, null);
+
+                //this.UpdateVisibility(this._isVisible);
+            }
+        }
 
         //public Brush Brush
         //{
@@ -110,11 +119,44 @@ namespace ForRobot.Model.File3D
             //}
         } = new ObservableCollection<SceneItem>();
 
+        public event EventHandler VisibleEvent;
+        public event EventHandler HiddenEvent;
+
+        //public IEnumerable<MeshGeometry3D> Meshes
+        //{
+        //    get
+        //    {
+        //        ObservableCollection<MeshGeometry3D> meshes = new ObservableCollection<MeshGeometry3D>();
+        //        switch (this.SceneObject)
+        //        {
+        //            case Model3DGroup subGroup:
+        //                foreach (var a in ExtractMeshes(subGroup))
+        //                {
+        //                    meshes.Add(a);
+        //                }
+        //                break;
+
+        //            case GeometryModel3D geomModel:
+        //                if (geomModel.Geometry is MeshGeometry3D mesh)
+        //                    meshes.Add(mesh);
+        //                break;
+
+        //            default:
+        //                break;
+        //        }
+        //        return meshes;
+        //    }
+        //}
+
         #endregion
 
-        public SceneItem()
+        public SceneItem() { }
+
+        public SceneItem(DependencyObject visual3D)
         {
-            //this._element = e;
+            this.SceneObject = visual3D;
+            this.Name = this.SceneObject.GetType().Name;
+            this.AddChildren(this.SceneObject);
         }
 
         private void UpdateVisibility(bool isVisible)
@@ -140,21 +182,68 @@ namespace ForRobot.Model.File3D
             }
         }
 
-        public static void AddChildren(SceneItem parent, object element)
+        private void AddChildren(object element)
         {
-            var item = new SceneItem()
+            switch (element)
             {
-                Name = element.GetType().Name,
-                SceneObject = element
-            };
+                case System.Windows.Media.Media3D.ModelVisual3D modelVisual3D:
+                    foreach (var item in modelVisual3D.Children)
+                    {
+                        this.Children.Add(new SceneItem(item));
+                    }
+                    break;
 
-            parent.Children.Add(item);
+                case Model3DGroup model3DGroup:
+                    foreach (var item in model3DGroup.Children)
+                    {
+                        this.Children.Add(new SceneItem(item));
+                    }
+                    break;
 
-            if (element is Model3DGroup group)
-                foreach (var child in group.Children)
-                    AddChildren(item, child);
+                case GeometryModel3D geometryModel3D:
+                    break;
+
+                default:
+                    foreach (DependencyObject item in LogicalTreeHelper.GetChildren(this.SceneObject))
+                    {
+                        this.Children.Add(new SceneItem(item));
+                    }
+                    break;
+            }
         }
 
-        //public override string ToString() => this._element.GetType().ToString();
+        //public static void AddChildren(SceneItem parent, MeshGeometry3D element)
+        //{
+        //    var item = new SceneItem()
+        //    {
+        //        Name = element.GetType().Name,
+        //        SceneObject = element
+        //    };
+
+        //    parent.Children.Add(item);
+
+        //    if (element is Model3DGroup group)
+        //        foreach (var child in group.Children)
+        //            AddChildren(item, child);
+        //}
+
+        public override string ToString() => this._element.GetType().ToString();
+
+        //public static IEnumerable<MeshGeometry3D> ExtractMeshes(Model3DGroup group)
+        //{
+        //    foreach (var model in group.Children)
+        //    {
+        //        if (model is Model3DGroup subGroup)
+        //        {
+        //            foreach (var mesh in ExtractMeshes(subGroup))
+        //                yield return mesh;
+        //        }
+        //        else if (model is GeometryModel3D geomModel)
+        //        {
+        //            if (geomModel.Geometry is MeshGeometry3D mesh)
+        //                yield return mesh;
+        //        }
+        //    }
+        //}
     }
 }

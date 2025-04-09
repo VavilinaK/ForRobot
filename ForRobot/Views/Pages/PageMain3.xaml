@@ -698,7 +698,7 @@
                                 <i:Interaction.Behaviors>
                                     <behavior:ZoomBehavior/>
                                     <behavior:HelixAnnotationsBehavior Annotations="{Binding Path=Annotations}"/>
-                                    <!--<behavior:HelixSceneTrackerBehavior SceneItems="{Binding Path=SelectedFile.SceneObjects, Mode=OneWayToSource}"/>-->
+                                    <behavior:HelixSceneTrackerBehavior SceneItems="{Binding Path=DataContext.SceneItemsCollection, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>
                                 </i:Interaction.Behaviors>
                             </h:HelixViewport3D>
                         </DataTemplate>
@@ -809,31 +809,32 @@
                         <avalonDock:LayoutAnchorablePaneGroup>
                             <avalonDock:LayoutAnchorablePane>
                                 <avalonDock:LayoutAnchorable Title="Состав" ContentId="Components">
-                                    <!--<TreeView FontSize="{StaticResource FontSizeNP2}"
-                                              ItemsSource="{Binding Path=SelectedFile.SceneObjects, Mode=OneWay}">
+                                    <TreeView FontSize="{StaticResource FontSizeNP2}"
+                                              Style="{StaticResource TextBase}"
+                                              ItemsSource="{Binding Path=SceneItemsCollection, Mode=OneWay}">
                                      
                                         <TreeView.Resources>
                                             <HierarchicalDataTemplate DataType="{x:Type file:SceneItem}"
                                                                       ItemsSource="{Binding Path=Children, Mode=OneWay, NotifyOnSourceUpdated=True}">
                                               
                                                 <StackPanel Orientation="Horizontal">
-                                                    <ToggleButton IsChecked="{Binding IsVisible, Mode=TwoWay, TargetNullValue={StaticResource True}}">
+                                                    <!--<ToggleButton IsChecked="{Binding IsVisible, Mode=TwoWay, TargetNullValue={StaticResource True}}">
                                                         <ToggleButton.Template>
                                                             <ControlTemplate TargetType="{x:Type ToggleButton}">
                                                                 
                                                             </ControlTemplate>
                                                         </ToggleButton.Template>
-                                                    </ToggleButton>
-                                                    -->
-                                    <!--<CheckBox IsChecked="{Binding IsVisible, Mode=TwoWay}" VerticalAlignment="Center" Margin="0,0,5,0"/>-->
-                                    <!--
+                                                    </ToggleButton>-->
+                                                    
+                                                    <CheckBox IsChecked="{Binding IsVisible, Mode=TwoWay}" VerticalAlignment="Center" Margin="0,0,5,0"/>                                    
                                                     <TextBlock Text="{Binding Name}"/>
                                                 </StackPanel>
                                             </HierarchicalDataTemplate>
                                         </TreeView.Resources>
 
-                                    </TreeView>-->
-                                    <ContentControl ContentTemplate="{StaticResource OtherTemplateStyle}"/>
+                                    </TreeView>
+                                    
+                                    <!--<ContentControl ContentTemplate="{StaticResource OtherTemplateStyle}"/>-->
                                 </avalonDock:LayoutAnchorable>
                             </avalonDock:LayoutAnchorablePane>
                         </avalonDock:LayoutAnchorablePaneGroup>

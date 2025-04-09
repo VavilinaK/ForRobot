@@ -15,7 +15,8 @@ namespace ForRobot.Libr.Converters
             switch (value)
             {
                 case TextBox textBox:
-                    return ((TextBox)value).GetBindingExpression(TextBox.TextProperty)?.ParentBinding.Path.Path;
+                    string tag = ((TextBox)value).GetBindingExpression(TextBox.TextProperty)?.ParentBinding.Path.Path;
+                    return tag;
 
                 default:
                     return string.Empty;

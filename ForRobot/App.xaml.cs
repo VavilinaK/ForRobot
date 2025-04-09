@@ -32,8 +32,8 @@ namespace ForRobot
 
         private Mutex _mutex;
         private bool _isNewInstance;
-        private const string MutexName = "YourUniqueAppMutex";
-        private const string PipeName = "YourUniqueAppPipe";
+        private const string _mutexName = "UniqueAppMutex";
+        private const string _pipeName = "UniqueAppPipe";
 
         //private static Mutex mutex = null;
 
@@ -54,34 +54,20 @@ namespace ForRobot
         /// </summary>
         private ForRobot.Libr.ConfigurationProperties.AppConfigurationSection AppConfig { get; set; } = (ConfigurationManager.GetSection("app") as ForRobot.Libr.ConfigurationProperties.AppConfigurationSection);
 
-        private static ForRobot.Libr.Settings.Settings _settings;       
-
-        #region Widows
+        private static ForRobot.Libr.Settings.Settings _settings;
 
         private Views.Windows.MainWindow _mainWindow;
 
         #endregion
 
-        #endregion
-
         #region Public variables
-
-        //public string LoggerString
-        //{
-        //    get => this._log;
-        //    set
-        //    {
-        //        this._log = value;
-        //        this.Log(this, null);
-        //    }
-        //}
 
         public static new App Current => Application.Current as App;
 
         public readonly Stack<IUndoableCommand> UndoStack = new Stack<IUndoableCommand>();
         public readonly Stack<IUndoableCommand> RedoStack = new Stack<IUndoableCommand>();
 
-        public Libr.Logger Logger { set; get; } = new Libr.Logger();
+        public Libr.Logger Logger { get; } = new Libr.Logger();
 
         /// <summary>
         /// Настройки приложения
@@ -97,11 +83,11 @@ namespace ForRobot
             }
         }
 
+        //"D:\Git\HelixToolkit\Models\stl\cube.stl"
         /// <summary>
         /// Открытые файлы
         /// </summary>
         public System.Collections.ObjectModel.ObservableCollection<Model.File3D.File3D> OpenedFiles { get; set; } = new System.Collections.ObjectModel.ObservableCollection<Model.File3D.File3D>();
-        //public FullyObservableCollection<Model.File3D.File3D> OpenedFiles { get; set; } = new FullyObservableCollection<Model.File3D.File3D>();
 
         #region Windows
 
@@ -140,11 +126,10 @@ namespace ForRobot
         {
             try
             {
-                _mutex = new Mutex(true, MutexName, out _isNewInstance);
+                _mutex = new Mutex(true, _mutexName, out _isNewInstance);
 
                 if (!_isNewInstance)
                 {
-                    // Передаём аргументы существующему экземпляру и закрываемся
                     SendArgumentsToExistingInstance(e.Args);
                     Application.Current.Shutdown(0);
                     return;
@@ -152,12 +137,9 @@ namespace ForRobot
 
                 foreach (var i in e.Args) // Исп. для открытия файла модели "с помощью"
                     this.OpenedFiles.Add(new Model.File3D.File3D(i));
-
-                //"D:\Git\HelixToolkit\Models\stl\cube.stl"
-                //this.OpenedFiles.Add(new Model.File3D.File3D(new Model.Detals.Plita(Model.Detals.DetalType.Plita), ""));
                                
                 RunApp(e.Args);
-                await Task.Run(() => StartPipeServer());  // Запускаем сервер для прослушивания аргументов.
+                await Task.Run(() => StartPipeServer());
 
                 GC.KeepAlive(_mutex);
             }
@@ -281,11 +263,15 @@ namespace ForRobot
             }
         }
 
+        /// <summary>
+        /// Передача аргументов уже существующему экземпляру приложения
+        /// </summary>
+        /// <param name="args"></param>
         private void SendArgumentsToExistingInstance(string[] args)
         {
             try
             {
-                using (var client = new NamedPipeClientStream(".", PipeName, PipeDirection.Out))
+                using (var client = new NamedPipeClientStream(".", _pipeName, PipeDirection.Out))
                 {
                     client.Connect(2000); // Таймаут 2 секунды
                     using (var writer = new StreamWriter(client))
@@ -303,11 +289,14 @@ namespace ForRobot
             }
         }
 
+        /// <summary>
+        /// Запуск сервера для перехвата аргументов
+        /// </summary>
         private void StartPipeServer()
         {
             while (true)
             {
-                using (var server = new NamedPipeServerStream(PipeName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous))
+                using (var server = new NamedPipeServerStream(_pipeName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous))
                 {
                     server.WaitForConnection();
                     using (var reader = new StreamReader(server))

@@ -38,7 +38,7 @@ namespace ForRobot.Views.Pages
             {
                 DockingManager dockingManager = FindChild<DockingManager>(this);
 
-                LayoutAnchorable anchorable = FindLayoutAnchorable(dockingManager, "Параметры");
+                LayoutAnchorable anchorable = FindLayoutAnchorable(dockingManager, "Параметры детали");
                 anchorable?.Show();
 
                 var content = anchorable.Content as FrameworkElement;

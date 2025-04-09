@@ -4,6 +4,7 @@ using System.Text;
 using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Input;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
@@ -90,6 +91,7 @@ namespace ForRobot.ViewModels
 
         //private ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection RobotConfig { get; set; } = ConfigurationManager.GetSection("robot") as ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection;
 
+        private ObservableCollection<Model.File3D.SceneItem> _sceneItemsCollection = new ObservableCollection<Model.File3D.SceneItem>();
         private ObservableCollection<AppMessage> _messagesCollection = new ObservableCollection<AppMessage>();
 
         /// <summary>
@@ -115,19 +117,11 @@ namespace ForRobot.ViewModels
             }
         });
 
-        //private readonly Libr.Behavior.ZoomBehavior _zoomBehavior;
-        //private readonly LayoutService _layoutService;
-
-        //public HelixViewport3D Viewport { get; set; }
-
         private System.Windows.Controls.TreeViewItem _selectedItem;
 
         #region Commands
-
-        private RelayCommand _loadedPageCommand;
-        private RelayCommand _lostFocusCommand;
-
-        private RelayCommand _createNewFileCommand;
+        
+        //private RelayCommand _createNewFileCommand;
         private RelayCommand _openedFileCommand;
         private RelayCommand _saveFileCommand;
         private RelayCommand _saveAsFileCommand;
@@ -220,15 +214,17 @@ namespace ForRobot.ViewModels
             get => this._selectedObject;
             set
             {
-                Set(ref this._selectedObject, value);
-
-                switch (this.SelectedObject)
+                switch (value)
                 {
                     case HelixToolkit.Wpf.GridLinesVisual3D gridLinesVisual3D:
                         return;
 
                     case ForRobot.Model.File3D.Annotation annotation:
                         GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Behavior.FindElementByTagMessage((value as Model.File3D.Annotation).PropertyName));
+                        break;
+
+                    default:
+                        Set(ref this._selectedObject, value);
                         break;
                 }
             }
@@ -281,6 +277,11 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Коллекция сообщений
         /// </summary>
+        public ObservableCollection<Model.File3D.SceneItem> SceneItemsCollection { get => this._sceneItemsCollection; set => Set(ref this._sceneItemsCollection, value); }
+
+        /// <summary>
+        /// Коллекция сообщений
+        /// </summary>
         public ObservableCollection<AppMessage> MessagesCollection { get => this._messagesCollection; set => Set(ref this._messagesCollection, value); }
 
         #endregion
@@ -290,205 +291,91 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Выгрузка макета
         /// </summary>
-        public RelayCommand LoadedCommand
-        {
-            get
-            {
-                return _loadedPageCommand ??
-                    (_loadedPageCommand = new RelayCommand(obj =>
-                    {
-                        Messenger.Default.Send(new Libr.Behavior.LoadLayoutMessage());
-
-                        //if (App.Current.OpenedFiles.Count == 0)
-                        //{
-                        //    this.CreateNewFileCommand.Execute(null);
-                        //}
-                    }));
-            }
-        }
-
+        public ICommand LoadedCommand { get; } = new RelayCommand(_ => Messenger.Default.Send(new Libr.Behavior.LoadLayoutMessage()));
+        
         /// <summary>
         /// Сброс фокуса
         /// </summary>
-        public RelayCommand LostFocusCommand
-        {
-            get
-            {
-                return _lostFocusCommand ??
-                    (_lostFocusCommand = new RelayCommand(obj =>
-                    {
-                        this.LostFocus(obj as FrameworkElement);
-                    }));
-            }
-        }
+        public ICommand LostFocusCommand { get; } = new RelayCommand(obj => LostFocus(obj as FrameworkElement));
 
         /// <summary>
         /// Создание файла
         /// </summary>
-        public RelayCommand CreateNewFileCommand
-        {
-            get
-            {
-                return _createNewFileCommand ??
-                    (_createNewFileCommand = new RelayCommand(obj =>
-                    {
-                        if (object.Equals(App.Current.CreateWindow, null))
-                        {
-                            App.Current.CreateWindow = new Views.Windows.CreateWindow();
-                            App.Current.CreateWindow.Closed += (a, b) => App.Current.CreateWindow = null;
-                            App.Current.CreateWindow.Owner = App.Current.MainWindowView;
-                            App.Current.CreateWindow.Show();
-                        }
-                    }));
-            }
-        }
+        public ICommand CreateNewFileCommand { get; } = new RelayCommand(_ => OpenCreateFileWindow());
 
         /// <summary>
         /// Открытие файла программы
         /// </summary>
-        public RelayCommand OpenedFileCommand
-        {
-            get
-            {
-                return _openedFileCommand ??
-                    (_openedFileCommand = new RelayCommand(obj =>
-                    {
-                        string filePath = this._fileDialogService.OpenFileDialog(null, null, Model.File3D.File3D.FilterForFileDialog, string.Empty);
-
-                        if (string.IsNullOrEmpty(filePath))
-                            return;
-
-                        var file = new Model.File3D.File3D(filePath);
-                        App.Current.OpenedFiles.Add(file);
-                        this.SelectedFile = file;
-                    }));
-            }
-        }
+        public ICommand OpenedFileCommand { get => _openedFileCommand ?? (_openedFileCommand = new RelayCommand(_ => Open3DFile())); }
 
         /// <summary>
         /// Сохранение файла программы
         /// </summary>
-        public RelayCommand SaveFileCommand
-        {
-            get
-            {
-                return _saveFileCommand ??
-                    (_saveFileCommand = new RelayCommand(obj =>
-                    {
-                        if (obj == null)
-                            return;
-
-                        var file = (Model.File3D.File3D)obj;
-
-                        if (!file.IsSaved)
-                            file.Save();
-                    }));
-            }
-        }
+        public ICommand SaveFileCommand { get; } = new RelayCommand(obj => SaveFile(obj as Model.File3D.File3D));
 
         /// <summary>
         /// Сохранение файла программы как
         /// </summary>
-        public RelayCommand SaveAsFileCommand
-        {
-            get
-            {
-                return _saveAsFileCommand ??
-                    (_saveAsFileCommand = new RelayCommand(obj =>
-                    {
-                        try
-                        {
-                            ForRobot.Model.File3D.File3D file = obj as ForRobot.Model.File3D.File3D;
-                            string filePath = this._fileDialogService.SaveFileDialog(null, file.Path, Exporters.Filter);
-                            if (filePath != null)
-                            {
-                                _modelExporter.Export(file.CurrentModel, filePath);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            App.Current.Logger.Error(ex);
-                        }
-                    }));
-            }
-        }
+        public ICommand SaveAsFileCommand { get => _saveAsFileCommand ?? (_saveAsFileCommand = new RelayCommand(obj => SaveFileAs(obj as Model.File3D.File3D))); }
 
         /// <summary>
         /// Сохранение всех файлов
         /// </summary>
-        public RelayCommand SaveAllFilesCommand
-        {
-            get
-            {
-                return _saveAllFilesCommand ??
-                    (_saveAllFilesCommand = new RelayCommand(obj =>
-                    {
-                        if (obj == null)
-                            return;
+        public ICommand SaveAllFilesCommand { get; } = new RelayCommand(obj => SaveAllFile(obj as ObservableCollection<Model.File3D.File3D>));
 
-                        var files = (ObservableCollection<Model.File3D.File3D>)obj;
-
-                        foreach (var file in files.Where(item => !item.IsSaved))
-                        {
-                            file.Save();
-                        }
-                    }));
-            }
-        }
-        
         /// <summary>
         /// Сброс параметров детали до стандартных
         /// </summary>
-        public RelayCommand StandartParametrsCommand
-        {
-            get
-            {
-                return _standartParametrsCommand ??
-                    (_standartParametrsCommand = new RelayCommand(obj =>
-                    {
-                        ForRobot.Model.File3D.File3D file = obj as ForRobot.Model.File3D.File3D;
-                        Detal detal = file.Detal;
+        public ICommand StandartParametrsCommand { get; } = new RelayCommand(obj => GetStandartParametrs(obj as Model.File3D.File3D));
+        //{
+        //    get
+        //    {
+        //        return _standartParametrsCommand ??
+        //            (_standartParametrsCommand = new RelayCommand(obj =>
+        //            {
+        //                ForRobot.Model.File3D.File3D file = obj as ForRobot.Model.File3D.File3D;
+        //                Detal detal = file.Detal;
 
-                        switch (detal.DetalType)
-                        {
-                            case string a when a == DetalTypes.Plita:
-                                file.Detal = new Plita(DetalType.Plita)
-                                {
-                                    ScoseType = ((Plita)detal).ScoseType,
-                                    DiferentDistance = ((Plita)detal).DiferentDistance,
-                                    ParalleleRibs = ((Plita)detal).ParalleleRibs,
-                                    DiferentDissolutionLeft = ((Plita)detal).DiferentDissolutionLeft,
-                                    DiferentDissolutionRight = ((Plita)detal).DiferentDissolutionRight
-                                };
+        //                switch (detal.DetalType)
+        //                {
+        //                    case string a when a == DetalTypes.Plita:
+        //                        file.Detal = new Plita(DetalType.Plita)
+        //                        {
+        //                            ScoseType = ((Plita)detal).ScoseType,
+        //                            DiferentDistance = ((Plita)detal).DiferentDistance,
+        //                            ParalleleRibs = ((Plita)detal).ParalleleRibs,
+        //                            DiferentDissolutionLeft = ((Plita)detal).DiferentDissolutionLeft,
+        //                            DiferentDissolutionRight = ((Plita)detal).DiferentDissolutionRight
+        //                        };
 
-                                file.CurrentModel.Children.Add(Plita.GetModel3D((Plita)file.Detal));
-                                file.ModelChangedEvent += (s, o) => file.CurrentModel.Children.Add(Plita.GetModel3D((s as ForRobot.Model.File3D.File3D).Detal as Plita));
+        //                        file.CurrentModel.Children.Add(Model.File3D.File3D.GetModel3D((Plita)file.Detal));
+        //                        file.ModelChangedEvent += (s, o) => file.CurrentModel.Children.Add(Model.File3D.File3D.GetModel3D((s as ForRobot.Model.File3D.File3D).Detal as Plita));
 
 
-                                //this.SelectedFile.Detal.ChangeProperty += (s, o) =>
-                                //{
-                                //    //Task.Run(() => { this.CurrentModel = Plita.GetModel3D((Plita)s); });
-                                //    this.SelectedFile.CurrentModel = Plita.GetModel3D((Plita)s);
-                                //};
-                                //((Plita)this.SelectedFile.Detal).RibsCollection.ItemPropertyChanged += (s, o) =>
-                                //{
-                                //    this.SelectedFile.CurrentModel = Plita.GetModel3D((Plita)s);
-                                //};
-                                //this.SelectedFile.CurrentModel = Plita.GetModel3D((Plita)this.SelectedFile.Detal);
-                                break;
+        //                        //this.SelectedFile.Detal.ChangeProperty += (s, o) =>
+        //                        //{
+        //                        //    //Task.Run(() => { this.CurrentModel = Plita.GetModel3D((Plita)s); });
+        //                        //    this.SelectedFile.CurrentModel = Plita.GetModel3D((Plita)s);
+        //                        //};
+        //                        //((Plita)this.SelectedFile.Detal).RibsCollection.ItemPropertyChanged += (s, o) =>
+        //                        //{
+        //                        //    this.SelectedFile.CurrentModel = Plita.GetModel3D((Plita)s);
+        //                        //};
+        //                        //this.SelectedFile.CurrentModel = Plita.GetModel3D((Plita)this.SelectedFile.Detal);
+        //                        break;
 
-                            case string b when b == DetalTypes.Stringer:
-                                file.Detal = new PlitaStringer(DetalType.Stringer);
-                                break;
+        //                    case string b when b == DetalTypes.Stringer:
+        //                        file.Detal = new PlitaStringer(DetalType.Stringer);
+        //                        break;
 
-                            case string c when c == DetalTypes.Treygolnik:
-                                file.Detal = new PlitaTreygolnik(DetalType.Treygolnik);
-                                break;
-                        }
-                        RaisePropertyChanged(nameof(this.SelectedFile.Detal));
-                    }));
-            }
-        }
+        //                    case string c when c == DetalTypes.Treygolnik:
+        //                        file.Detal = new PlitaTreygolnik(DetalType.Treygolnik);
+        //                        break;
+        //                }
+        //                RaisePropertyChanged(nameof(this.SelectedFile.Detal));
+        //            }));
+        //    }
+        //}
 
         /// <summary>
         /// Маштабирование модели
@@ -739,7 +626,7 @@ namespace ForRobot.ViewModels
                     (_generateProgramCommandAsync = new AsyncRelayCommand(async obj =>
                     {
                         // Сброс фокуса перед генерацией.
-                        this.LostFocus(obj as FrameworkElement);
+                        LostFocus(obj as FrameworkElement);
 
                         string foldForGenerate = Directory.GetParent(this.RobotsCollection.First().PathProgramm).ToString(); // Путь для генерации скриптом.
 
@@ -1035,7 +922,147 @@ namespace ForRobot.ViewModels
         #endregion
 
         #region Private functions
-        
+
+        /// <summary>
+        /// Сброс фокуса на заданный элемент
+        /// </summary>
+        /// <param name="frameworkElement"></param>
+        private static void LostFocus(FrameworkElement frameworkElement)
+        {
+            System.Windows.Input.Keyboard.ClearFocus();
+            System.Windows.Input.FocusManager.SetFocusedElement(System.Windows.Input.FocusManager.GetFocusScope(frameworkElement), null);
+        }
+
+        private static void OpenCreateFileWindow()
+        {
+            if (object.Equals(App.Current.CreateWindow, null))
+            {
+                App.Current.CreateWindow = new Views.Windows.CreateWindow();
+                App.Current.CreateWindow.Closed += (a, b) => App.Current.CreateWindow = null;
+                App.Current.CreateWindow.Owner = App.Current.MainWindowView;
+                App.Current.CreateWindow.Show();
+            }
+        }
+
+        private static void SaveFile(Model.File3D.File3D file)
+        {
+            if (file == null)
+                return;
+
+            if (!file.IsSaved)
+                file.Save();
+        }
+
+        private static void SaveAllFile(IEnumerable<Model.File3D.File3D> files)
+        {
+            if (files == null)
+                return;
+
+            foreach (var file in files.Where(item => !item.IsSaved))
+            {
+                file.Save();
+            }
+        }
+
+        private void SaveFileAs(Model.File3D.File3D file)
+        {
+            try
+            {
+                string filePath = this._fileDialogService.SaveFileDialog(null, file.Path, Exporters.Filter);
+                if (filePath != null)
+                {
+                    _modelExporter.Export(file.CurrentModel, filePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Current.Logger.Error(ex);
+            }
+        }
+
+        /// <summary>
+        /// Открытие уже существующего файла
+        /// </summary>
+        private void Open3DFile()
+        {
+            string filePath = this._fileDialogService.OpenFileDialog(null, null, Model.File3D.File3D.FilterForFileDialog + "|All Files|*.*", string.Empty);
+
+            if (string.IsNullOrEmpty(filePath))
+                return;
+
+            var file = new Model.File3D.File3D(filePath);
+            App.Current.OpenedFiles.Add(file);
+            this.SelectedFile = file;
+        }
+
+        private static void GetStandartParametrs(Model.File3D.File3D file)
+        {
+            Detal detal = file.Detal;
+
+            switch (detal.DetalType)
+            {
+                case string a when a == DetalTypes.Plita:
+                    file.Detal = new Plita(DetalType.Plita)
+                    {
+                        ScoseType = ((Plita)detal).ScoseType,
+                        DiferentDistance = ((Plita)detal).DiferentDistance,
+                        ParalleleRibs = ((Plita)detal).ParalleleRibs,
+                        DiferentDissolutionLeft = ((Plita)detal).DiferentDissolutionLeft,
+                        DiferentDissolutionRight = ((Plita)detal).DiferentDissolutionRight
+                    };
+
+                    file.CurrentModel.Children.Add(Model.File3D.File3D.GetModel3D((Plita)file.Detal));
+                    file.ModelChangedEvent += (s, o) => file.CurrentModel.Children.Add(Model.File3D.File3D.GetModel3D((s as ForRobot.Model.File3D.File3D).Detal as Plita));
+                    break;
+
+                case string b when b == DetalTypes.Stringer:
+                    file.Detal = new PlitaStringer(DetalType.Stringer);
+                    break;
+
+                case string c when c == DetalTypes.Treygolnik:
+                    file.Detal = new PlitaTreygolnik(DetalType.Treygolnik);
+                    break;
+            }
+
+
+            //switch (detal.DetalType)
+            //{
+            //    case string a when a == DetalTypes.Plita:
+            //        file.Detal = new Plita(DetalType.Plita)
+            //        {
+            //            ScoseType = ((Plita)detal).ScoseType,
+            //            DiferentDistance = ((Plita)detal).DiferentDistance,
+            //            ParalleleRibs = ((Plita)detal).ParalleleRibs,
+            //            DiferentDissolutionLeft = ((Plita)detal).DiferentDissolutionLeft,
+            //            DiferentDissolutionRight = ((Plita)detal).DiferentDissolutionRight
+            //        };
+
+            //        file.CurrentModel.Children.Add(Model.File3D.File3D.GetModel3D((Plita)file.Detal));
+            //        file.ModelChangedEvent += (s, o) => file.CurrentModel.Children.Add(Model.File3D.File3D.GetModel3D((s as ForRobot.Model.File3D.File3D).Detal as Plita));
+
+
+            //        //this.SelectedFile.Detal.ChangeProperty += (s, o) =>
+            //        //{
+            //        //    //Task.Run(() => { this.CurrentModel = Plita.GetModel3D((Plita)s); });
+            //        //    this.SelectedFile.CurrentModel = Plita.GetModel3D((Plita)s);
+            //        //};
+            //        //((Plita)this.SelectedFile.Detal).RibsCollection.ItemPropertyChanged += (s, o) =>
+            //        //{
+            //        //    this.SelectedFile.CurrentModel = Plita.GetModel3D((Plita)s);
+            //        //};
+            //        //this.SelectedFile.CurrentModel = Plita.GetModel3D((Plita)this.SelectedFile.Detal);
+            //        break;
+
+            //    case string b when b == DetalTypes.Stringer:
+            //        file.Detal = new PlitaStringer(DetalType.Stringer);
+            //        break;
+
+            //    case string c when c == DetalTypes.Treygolnik:
+            //        file.Detal = new PlitaTreygolnik(DetalType.Treygolnik);
+            //        break;
+            //}
+        }
+
         /// <summary>
         /// Возврат робота с инициализированными собитиями и открытым соединением
         /// </summary>
@@ -1084,16 +1111,6 @@ namespace ForRobot.ViewModels
                 this.SelectedFile = file;
                 this.SelectedObject = null; // Снимает выделение с объекта HelixViewport3D.
             }
-        }
-
-        /// <summary>
-        /// Сброс фокуса на заданный элемент
-        /// </summary>
-        /// <param name="frameworkElement"></param>
-        private void LostFocus(FrameworkElement frameworkElement)
-        {
-            System.Windows.Input.Keyboard.ClearFocus();
-            System.Windows.Input.FocusManager.SetFocusedElement(System.Windows.Input.FocusManager.GetFocusScope(frameworkElement), null);
         }
 
         /// <summary>

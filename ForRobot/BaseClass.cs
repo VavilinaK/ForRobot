@@ -11,10 +11,7 @@ namespace ForRobot
     public abstract class BaseClass : INotifyPropertyChanged
     {
         #region Private variables
-
-        //private readonly Stack<IUndoableCommand> _undoStack = new Stack<IUndoableCommand>();
-        //private readonly Stack<IUndoableCommand> _redoStack = new Stack<IUndoableCommand>();
-
+        
         private readonly Stack<IUndoableCommand> _undoStack = App.Current.UndoStack;
         private readonly Stack<IUndoableCommand> _redoStack = App.Current.RedoStack;
 
@@ -26,8 +23,14 @@ namespace ForRobot
         #region Public variables
 
         [JsonIgnore]
+        /// <summary>
+        /// Комманда возврата действия
+        /// </summary>
         public ICommand UndoCommand { get; }
         [JsonIgnore]
+        /// <summary>
+        /// Комманда повтора действия
+        /// </summary>
         public ICommand RedoCommand { get; }
 
         #endregion Public variables
@@ -121,6 +124,13 @@ namespace ForRobot
         /// Если в переопределённом методе не будет вызова базового, то возможно нежелательное изменение логики базового класса.</remarks>
         protected virtual void OnPropertyChanged(string propertyName, object oldValue, object newValue) { }
 
+        /// <summary>
+        /// ОТслеживание изменения свойства
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="oldValue"></param>
+        /// <param name="newValue"></param>
+        /// <param name="propertyName"></param>
         protected void TrackUndo<T>(T oldValue, T newValue, [CallerMemberName] string propertyName = null)
         {
             var command = new PropertyChangeCommand<T>(this, propertyName, oldValue, newValue);

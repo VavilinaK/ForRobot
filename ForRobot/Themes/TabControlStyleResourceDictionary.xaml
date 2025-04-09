@@ -1249,6 +1249,7 @@
     
     
     <!--v3-->
+    <!--Параметры сварки (настила с ребром)-->
     <DataTemplate x:Key="PlitaSvarkaTemplate3Style">
         <DataTemplate.Resources>
             <Style TargetType="{x:Type FrameworkElement}">
@@ -1274,7 +1275,7 @@
                 <Setter Property="HorizontalAlignment" Value="Stretch"/>
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                <Setter Property="Padding" Value="40,3"/>
+                <Setter Property="Padding" Value="20,3"/>
                 <Setter Property="Margin" Value="10,5,0,5"/>
                 <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
                 <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
@@ -1320,15 +1321,13 @@
             </Style>
 
             <Style TargetType="{x:Type DataGridCell}">
-                <Setter Property="Height" Value="40"/>
-                <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
                 <Setter Property="TextBlock.TextAlignment" Value="Center"/>
 
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type DataGridCell}">
                             <Grid Background="{TemplateBinding Background}">
-                                <ContentPresenter VerticalAlignment="Stretch" />
+                                <ContentPresenter VerticalAlignment="Center" />
                             </Grid>
                         </ControlTemplate>
                     </Setter.Value>
@@ -1367,12 +1366,13 @@
 
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Path=.}" Padding="10, 6"/>
+                                <TextBlock Text="{Binding}" TextWrapping="Wrap" VerticalAlignment="Center" Padding="0, 6" Margin="6, 0"/>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
 
                         <ComboBox.ItemContainerStyle>
                             <Style TargetType="{x:Type ComboBoxItem}">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                                 <Setter Property="TextBlock.Padding" Value="10,6"/>
                                 <Setter Property="TextBlock.TextAlignment" Value="Center"/>
                                 <Setter Property="TextBlock.VerticalAlignment" Value="Center"/>
@@ -1435,6 +1435,7 @@
         </Grid>
     </DataTemplate>
 
+    <!--Доп. параметры (настила с ребром)-->
     <DataTemplate x:Key="PlitaDopTemplate3Style" DataType="{x:Type ContentControl}">
         <DataTemplate.Resources>
             <Style TargetType="{x:Type FrameworkElement}">
@@ -1458,7 +1459,7 @@
                 <Setter Property="HorizontalAlignment" Value="Stretch"/>
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                <Setter Property="Padding" Value="45,3"/>
+                <Setter Property="Padding" Value="20,3"/>
                 <Setter Property="Margin" Value="10,5,0,5"/>
                 <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
                 <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
@@ -1529,6 +1530,7 @@
         </Grid>
     </DataTemplate>
 
+    <!--Общие параметры (настила с ребром)-->
     <DataTemplate x:Key="PlitaTemplate3Style" DataType="{x:Type ContentControl}">
         <DataTemplate.Resources>            
             <Style TargetType="{x:Type FrameworkElement}">
