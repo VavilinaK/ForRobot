@@ -7,6 +7,7 @@
       xmlns:control="clr-namespace:ForRobot.Views.Controls"
       xmlns:lib="clr-namespace:ForRobot.Libr"
       xmlns:vm="clr-namespace:ForRobot.ViewModels"  
+      xmlns:model="clr-namespace:ForRobot.Model"
       xmlns:file="clr-namespace:ForRobot.Model.File3D"
       xmlns:local="clr-namespace:ForRobot.Views.Pages" 
       xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
@@ -74,7 +75,7 @@
             <Setter Property="TextElement.Foreground" Value="{StaticResource ThemeFgP2Brush}"/>
         </Style>
 
-        <Style x:Key="cbBase" TargetType="{x:Type ComboBox}">
+        <Style x:Key="cbBase" TargetType="{x:Type ComboBox}" BasedOn="{StaticResource TextBase}">
             <Setter Property="FontSize" Value="{StaticResource FontSizeNP2}"/>
             <Setter Property="ItemContainerStyle">
                 <Setter.Value>
@@ -458,7 +459,9 @@
 
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Click">
-                        <i:InvokeCommandAction Command="{Binding Path=GenerateProgramCommandAsync}" CommandParameter="{Binding Path=., RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>
+                        <i:InvokeCommandAction Command="{Binding Path=LostFocusCommand}"
+                                               CommandParameter="{Binding Path=., RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>
+                        <i:InvokeCommandAction Command="{Binding Path=GenerateProgramCommandAsync}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
             </MenuItem>
@@ -645,7 +648,15 @@
                                                MinimumFieldOfView="10.0" MaximumFieldOfView="120.0">
 
                                 <h:HelixViewport3D.DefaultCamera>
-                                    <PerspectiveCamera x:Name="CameraControler" Position="100,100,100"
+                                    <!--<PerspectiveCamera x:Name="CameraControler" 
+                                                       Position="0,0,100"
+                                                       LookDirection="0,0,-1"
+                                                       UpDirection="0,1,0"
+                                                       FieldOfView="45"
+                                                       NearPlaneDistance="0.001"/>-->
+
+                                    <PerspectiveCamera x:Name="CameraControler" 
+                                                       Position="100,100,100"
                                                        LookDirection="-100,-100,-100"
                                                        UpDirection="0,0,1"
                                                        FieldOfView="10"
@@ -675,13 +686,13 @@
                                 <!--<h:SunLight/>-->
                                 <h:DefaultLights/>
                                 <!-- Дополнительный источник света -->
-                                <ModelVisual3D>
+                                <!--<ModelVisual3D>
                                     <ModelVisual3D.Content>
                                         <Model3DGroup>
-                                            <DirectionalLight  Color="White" Direction="-1,-1, -1" />
+                                            <DirectionalLight Color="White" Direction="-1,-1, -1" />
                                         </Model3DGroup>
                                     </ModelVisual3D.Content>
-                                </ModelVisual3D>
+                                </ModelVisual3D>-->
 
                                 <h:GridLinesVisual3D/>
 
@@ -690,14 +701,15 @@
                                 <!--<h:BillboardVisual3D Position="0,0,0"
                                                      Material="{h:ImageMaterial Opacity, IsEmissive=true}" />-->
 
-                                <!--<h:CoordinateSystemVisual3D ArrowLengths="3"/>-->
+                                <h:CoordinateSystemVisual3D ArrowLengths="3"/>
 
                                 <h:BoundingBoxVisual3D BoundingBox="{Binding Path=DataContext.SelectedObject, Converter={StaticResource BoundsConvert}, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
                                                        Diameter="0.1"/>
 
                                 <i:Interaction.Behaviors>
                                     <behavior:ZoomBehavior/>
-                                    <behavior:HelixAnnotationsBehavior Annotations="{Binding Path=Annotations}"/>
+                                    <behavior:HelixWeldsBehavior Welds="{Binding Path=WeldsCollection}"/>
+                                    <!--<behavior:HelixAnnotationsBehavior Annotations="{Binding Path=Annotations}"/>-->
                                     <behavior:HelixSceneTrackerBehavior SceneItems="{Binding Path=DataContext.SceneItemsCollection, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>
                                 </i:Interaction.Behaviors>
                             </h:HelixViewport3D>
@@ -1024,10 +1036,33 @@
                                     <Grid.Resources>
                                         <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource cbBase}"></Style>
 
-                                        <Style TargetType="{x:Type Button}">
-                                            <Setter Property="Height" Value="35"/>
+                                        <Style x:Key="buttonBaseStyle" TargetType="{x:Type Button}">
+                                            <Setter Property="Height" Value="40"/>
                                             <Setter Property="Width" Value="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"/>
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="{x:Type Button}">
+                                                        <Border Name="Panel" BorderThickness="1" BorderBrush="{DynamicResource NotActiveBorderBrush}" Background="Transparent">
+                                                            <ContentPresenter x:Name="Content" VerticalAlignment="Center" HorizontalAlignment="Center" ContentSource="Content" Margin="3"/>
+                                                        </Border>
+
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="Panel" Property="Background" Value="{DynamicResource ActiveBackround}"/>
+                                                                <Setter TargetName="Panel" Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                                                            </Trigger>
+
+                                                            <Trigger Property="IsPressed" Value="True">
+                                                                <Setter TargetName="Panel" Property="Background" Value="{DynamicResource ActiveBackround}"/>
+                                                                <Setter TargetName="Panel" Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
                                         </Style>
+
+                                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource buttonBaseStyle}"></Style>
 
                                         <Style TargetType="{x:Type Grid}">
                                             <Setter Property="Margin" Value="0,0,0,10"/>
@@ -1082,13 +1117,11 @@
 
                                             <Button.Style>
                                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource buttonBaseStyle}">
-                                                    <Setter Property="Height" Value="0"/>
-                                                    <Setter Property="Width" Value="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"/>
-
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Path=SelectedRobot.IsConnection}" Value="False">
-                                                            <Setter Property="Height" Value="35"/>
-                                                            <Setter Property="Margin" Value="0,0,5,0"/>
+                                                        <DataTrigger Binding="{Binding Path=SelectedRobot.IsConnection}" Value="True">
+                                                            <Setter Property="Height" Value="0"/>
+                                                            <Setter Property="Visibility" Value="Hidden"/>
+                                                            <Setter Property="Margin" Value="0"/>
                                                         </DataTrigger>
 
                                                         <DataTrigger Binding="{Binding Path=Visibility, RelativeSource={RelativeSource Self}}" Value="Visible">
@@ -1105,7 +1138,7 @@
                                             </Button.Style>
 
                                             <Path Fill="{StaticResource IconUpDateBrush}"
-                                  Data="{StaticResource UpDatePathGeomerty}"/>
+                                                  Data="{StaticResource UpDatePathGeomerty}"/>
                                         </Button>
 
                                         <Button Grid.Column="3" ToolTip="Закрыть соединение"
@@ -1114,13 +1147,11 @@
 
                                             <Button.Style>
                                                 <Style TargetType="{x:Type Button}" BasedOn="{StaticResource buttonBaseStyle}">
-                                                    <Setter Property="Height" Value="0"/>
-                                                    <Setter Property="Width" Value="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"/>
-
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Path=SelectedRobot.IsConnection}" Value="True">
-                                                            <Setter Property="Height" Value="35"/>
-                                                            <Setter Property="Margin" Value="0,0,5,0"/>
+                                                        <DataTrigger Binding="{Binding Path=SelectedRobot.IsConnection}" Value="False">
+                                                            <Setter Property="Height" Value="0"/>
+                                                            <Setter Property="Margin" Value="0"/>
+                                                            <Setter Property="Visibility" Value="Hidden"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
@@ -1161,8 +1192,8 @@
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <TextBox Grid.Column="0" Text="{Binding Path=SelectedRobot.Host, Mode=TwoWay, FallbackValue='0.0.0.0', TargetNullValue='0.0.0.0', UpdateSourceTrigger=LostFocus}"/>
-                                        <TextBox Grid.Column="2" Text="{Binding Path=SelectedRobot.Port, Mode=TwoWay, FallbackValue=0000, TargetNullValue=0000, UpdateSourceTrigger=LostFocus}"/>
+                                        <TextBox Grid.Column="0" Height="40" Text="{Binding Path=SelectedRobot.Host, Mode=TwoWay, FallbackValue='0.0.0.0', TargetNullValue='0.0.0.0', UpdateSourceTrigger=LostFocus}"/>
+                                        <TextBox Grid.Column="2" Height="40" Text="{Binding Path=SelectedRobot.Port, Mode=TwoWay, FallbackValue=0000, TargetNullValue=0000, UpdateSourceTrigger=LostFocus}"/>
                                     </Grid>
 
                                     <Grid Grid.Row="2">
@@ -1187,43 +1218,16 @@
                                     </Grid>
 
                                     <control:Breadcrumb Grid.Row="3" FontSize="{StaticResource FontSizeNP2}"
-                                                        Root="{x:Static client:JsonRpcConnection.DefaulRoot}"
-                                                        Directory="{Binding Path=SelectedRobot.PathControllerFolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                        ItemsSource="{Binding Path=SelectedRobot.Files, Mode=OneWay}"
-                                                        UpDateCommand="{Binding Path=UpDateFilesCommand, Mode=OneWay}"
-                                                        IsProgress="{Binding Path=SelectedRobot.IsLoadFiles, Mode=OneWay}"
-                                                        IsEnabled="{Binding Path=SelectedRobot.IsConnection, Mode=OneWay}"
-                                                        SelectFilesCommand="{Binding Path=DropFilesCommandAsync}"
-                                                        DeleteFilesCommand="{Binding Path=DeleteFileCommandAsync}"/>
+                                                        Robot="{Binding Path=SelectedRobot, Mode=TwoWay}"
+                                                        Root="{x:Static client:JsonRpcConnection.DefaulRoot}"/>
 
-                                    <control:NavigationTreeView Grid.Row="5" FontSize="{StaticResource FontSizeNP2}" Margin="0"
-                                                IsEnabled="{Binding Path=SelectedRobot.IsConnection, Mode=OneWay}"
-                                                DataFileIsHidden="{Binding Path=Settings.AccessDataFile, Source={x:Static Application.Current}, Mode=TwoWay}"
-                                                SelectedFile="{Binding Path=SelectedRobot.RobotProgramName, Mode=TwoWay}"
-                                                SelectItemCommand="{Binding Path=SelectFileCommandAsync}"
-                                                SelectFolderCommand="{Binding Path=SelectFolderCommand}"
-                                                DeleteNodeCommand="{Binding Path=DeleteFileCommandAsync}"
-                                                Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type RowDefinition}, Mode=FindAncestor}}"
-                                                ScrollViewer.CanContentScroll="False"
-                                                ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                    <control:NavigationTreeView Grid.Row="5" FontSize="{StaticResource FontSizeNP2}"
+                                                                Robot="{Binding Path=SelectedRobot, Mode=TwoWay}"
+                                                                DataFileIsHidden="{Binding Path=Settings.AccessDataFile, Source={x:Static Application.Current}}"
+                                                                BlockedFolder="{Binding Path=Settings.AvailableFolders, Source={x:Static Application.Current}}"
+                                                                Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type RowDefinition}, Mode=FindAncestor}}"
+                                                                ScrollViewer.CanContentScroll="False" ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
 
-                                        <control:NavigationTreeView.FileCollection>
-                                            <MultiBinding Converter="{StaticResource VisibilityFolderOnRobot}">
-                                                <Binding Path="DataContext.SelectedRobot.Files" RelativeSource="{RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}"/>
-                                                <Binding Path="Settings.AvailableFolders" Source="{x:Static Application.Current}"/>
-                                            </MultiBinding>
-                                        </control:NavigationTreeView.FileCollection>
-
-                                        <control:NavigationTreeView.Style>
-                                            <Style TargetType="{x:Type control:NavigationTreeView}">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Path=SelectedRobot.IsLoadFiles, Mode=OneWay}" Value="True">
-                                                        <Setter Property="IsEnabled" Value="False"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </control:NavigationTreeView.Style>
-                                    </control:NavigationTreeView>
                                 </Grid>
                             </avalonDock:LayoutAnchorable>
 
@@ -1436,7 +1440,7 @@
                                                                         </Setter>
 
                                                                         <Style.Triggers>
-                                                                            <DataTrigger Binding="{Binding Path=Pro_State}" Value="#P_END">
+                                                                            <DataTrigger Binding="{Binding Path=Pro_State}" Value="{x:Static model:ProcessStatuses.End}">
                                                                                 <Setter Property="Fill" Value="{StaticResource IconRestartProgramBrush}"/>
                                                                                 <Setter Property="Data">
                                                                                     <Setter.Value>
@@ -1458,11 +1462,11 @@
                                                                 <Setter Property="Header" Value="Пуск"/>
 
                                                                 <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding Path=Pro_State}" Value="#P_STOP">
+                                                                    <DataTrigger Binding="{Binding Path=Pro_State}" Value="{x:Static model:ProcessStatuses.Stop}">
                                                                         <Setter Property="Header" Value="Продолжить"/>
                                                                     </DataTrigger>
 
-                                                                    <DataTrigger Binding="{Binding Path=Pro_State}" Value="#P_END">
+                                                                    <DataTrigger Binding="{Binding Path=Pro_State}" Value="{x:Static model:ProcessStatuses.End}">
                                                                         <Setter Property="Header" Value="Перезапустить"/>
                                                                     </DataTrigger>
                                                                 </Style.Triggers>
@@ -1483,8 +1487,8 @@
                                                     </MenuItem>
 
                                                     <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Остановить" ToolTip="Аннулировать программу"
-                                          Command="{Binding Path=DataContext.PauseProgramCommandAsync, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
-                                          CommandParameter="{Binding}">
+                                                              Command="{Binding Path=DataContext.PauseProgramCommandAsync, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
+                                                              CommandParameter="{Binding}">
                                                         <MenuItem.Icon>
                                                             <Path Stretch="Fill" Fill="{StaticResource IconStopProgramBrush}" Height="30" Width="30">
                                                                 <Path.Data>
@@ -1498,8 +1502,8 @@
                                                     </MenuItem>
 
                                                     <MenuItem Template="{StaticResource MenuItemTemplate}" Header="Анулировать" ToolTip="Аннулировать программу"
-                                          Command="{Binding Path=DataContext.CancelProgramCommandAsync, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
-                                          CommandParameter="{Binding}">
+                                                              Command="{Binding Path=DataContext.CancelProgramCommandAsync, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
+                                                              CommandParameter="{Binding}">
                                                         <MenuItem.Icon>
                                                             <Path Fill="{StaticResource IconCancelProgramBrush}" StrokeThickness="0">
                                                                 <Path.Data>
@@ -1522,13 +1526,13 @@
                                                     </Grid.ColumnDefinitions>
 
                                                     <Ellipse Grid.Column="0"
-                                         Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"
-                                         Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}">
+                                                             Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource Self}}"
+                                                             Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}">
 
                                                         <Ellipse.Style>
                                                             <Style TargetType="{x:Type Ellipse}">
                                                                 <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding Path=Pro_State}" Value="#P_ACTIVE">
+                                                                    <DataTrigger Binding="{Binding Path=Pro_State}" Value="{x:Static model:ProcessStatuses.Active}">
                                                                         <DataTrigger.EnterActions>
                                                                             <BeginStoryboard x:Name="blinkAnimation">
                                                                                 <Storyboard>
@@ -1554,8 +1558,8 @@
                                                     </Ellipse>
 
                                                     <TextBlock Grid.Column="1" x:Name="statusString" FontWeight="Bold" FontSize="{StaticResource FontSizeNP4}" 
-                                           HorizontalAlignment="Left" TextAlignment="Left" Margin="5,0"
-                                           Foreground="{Binding Path=Text, RelativeSource={RelativeSource Self}, Converter={StaticResource StatusColorConvert}}">
+                                                               HorizontalAlignment="Left" TextAlignment="Left" Margin="5,0"
+                                                               Foreground="{Binding Path=Text, RelativeSource={RelativeSource Self}, Converter={StaticResource StatusColorConvert}}">
 
                                                         <TextBlock.Style>
                                                             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource LvTextBase}">
@@ -1563,11 +1567,11 @@
                                                                 <Setter Property="TextWrapping" Value="Wrap"/>
 
                                                                 <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding Path=Pro_State}" Value="#P_FREE">
+                                                                    <DataTrigger Binding="{Binding Path=Pro_State}" Value="{x:Static model:ProcessStatuses.Free}">
                                                                         <Setter Property="Text" Value="Программа не выбрана"/>
                                                                     </DataTrigger>
 
-                                                                    <DataTrigger Binding="{Binding Path=Pro_State}" Value="#P_RESET">
+                                                                    <DataTrigger Binding="{Binding Path=Pro_State}" Value="{x:Static model:ProcessStatuses.Reset}">
                                                                         <Setter Property="Text">
                                                                             <Setter.Value>
                                                                                 <MultiBinding Converter="{StaticResource StringFormatMultiConvert}" ConverterParameter="Выбрана программа {0}">
@@ -1577,7 +1581,7 @@
                                                                         </Setter>
                                                                     </DataTrigger>
 
-                                                                    <DataTrigger Binding="{Binding Path=Pro_State}" Value="#P_ACTIVE">
+                                                                    <DataTrigger Binding="{Binding Path=Pro_State}" Value="{x:Static model:ProcessStatuses.Active}">
                                                                         <Setter Property="Text">
                                                                             <Setter.Value>
                                                                                 <MultiBinding Converter="{StaticResource StringFormatMultiConvert}" ConverterParameter="Запущена программа {0}">
@@ -1587,7 +1591,7 @@
                                                                         </Setter>
                                                                     </DataTrigger>
 
-                                                                    <DataTrigger Binding="{Binding Path=Pro_State}" Value="#P_STOP">
+                                                                    <DataTrigger Binding="{Binding Path=Pro_State}" Value="{x:Static model:ProcessStatuses.Stop}">
                                                                         <Setter Property="Text">
                                                                             <Setter.Value>
                                                                                 <MultiBinding Converter="{StaticResource StringFormatMultiConvert}" ConverterParameter="Программа {0} остановлена">
@@ -1597,7 +1601,7 @@
                                                                         </Setter>
                                                                     </DataTrigger>
 
-                                                                    <DataTrigger Binding="{Binding Path=Pro_State}" Value="#P_END">
+                                                                    <DataTrigger Binding="{Binding Path=Pro_State}" Value="{x:Static model:ProcessStatuses.End}">
                                                                         <Setter Property="Text">
                                                                             <Setter.Value>
                                                                                 <MultiBinding Converter="{StaticResource StringFormatMultiConvert}" ConverterParameter="Программа {0} завершена">

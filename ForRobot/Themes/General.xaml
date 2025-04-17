@@ -20,7 +20,6 @@
     <conv:ThicknessConverter x:Key="ThicknessConvert"/>
     <conv:SelectProgramConverter x:Key="SelectProgramConvert"/>
     <conv:ArrayMultiValueConverter x:Key="ArrayMultiValueConvert"/>
-    <conv:VisibilityFolderOnRobot x:Key="VisibilityFolderOnRobot"/>
     <conv:NullBooleanConverter x:Key="NullBooleanConvert"/>
     <conv:NumbersForWeldingSchemaConverter x:Key="NumbersForWeldingSchemaConvert"/>
     <conv:CollectionsStringToBoolConverter x:Key="CollectionsStringToBoolConvert"/>

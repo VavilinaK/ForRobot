@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 
 namespace ForRobot.Model.Controls
 {
-    public class File : BaseClass, IFile
+    public class File : BaseClass, IFile, ICloneable
     {
         #region Private variables
 
@@ -77,7 +77,7 @@ namespace ForRobot.Model.Controls
         public File(string path)
         {
             this.Path = path;
-            this.Name = System.IO.Path.GetFileName(path);
+            this.Name = path == Libr.Client.JsonRpcConnection.DefaulRoot ? path : System.IO.Path.GetFileName(path);
         }
 
         public File(string path, string inf) : this(path)
@@ -118,7 +118,9 @@ namespace ForRobot.Model.Controls
 
         #region Prublic function
 
-        public File Search(string nameToSearchFor)
+        public object Clone() => (File)this.MemberwiseClone();
+
+        public IFile Search(string nameToSearchFor)
         {
             Queue<File> Q = new Queue<File>();
             HashSet<File> S = new HashSet<File>();
@@ -140,6 +142,27 @@ namespace ForRobot.Model.Controls
                 }
             }
             return null;
+
+            //Queue<IFile> Q = new Queue<IFile>();
+            //HashSet<IFile> S = new HashSet<IFile>();
+            //Q.Enqueue(this);
+            //S.Add(this);
+
+            //while (Q.Count > 0)
+            //{
+            //    IFile e = Q.Dequeue();
+            //    if (e.Name == nameToSearchFor)
+            //        return e;
+            //    foreach (IFile friend in e.Children)
+            //    {
+            //        if (!S.Contains(friend))
+            //        {
+            //            Q.Enqueue(friend);
+            //            S.Add(friend);
+            //        }
+            //    }
+            //}
+            //return null;
         }
 
         #endregion

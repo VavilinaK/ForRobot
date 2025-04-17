@@ -22,7 +22,6 @@ namespace ForRobot.ViewModels
         private string _plitaProgramName = App.Current.Settings.PlitaProgramName;
         private string _plitaStringerProgramName = App.Current.Settings.PlitaStringerProgramName;
         private string _plitaTreugolnikProgramName = App.Current.Settings.PlitaTreugolnikProgramName;
-        private string _fileName;
         private Detal _detalObject;
 
         #region Commands

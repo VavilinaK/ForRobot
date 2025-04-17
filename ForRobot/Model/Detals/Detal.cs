@@ -175,7 +175,7 @@ namespace ForRobot.Model.Detals
         /// Поперечная привязка
         /// </summary>
         public virtual Privyazka TransversePrivyazka { get; set; } = Privyazka.FromLeftToRight;
-
+       
         #endregion
 
         #endregion

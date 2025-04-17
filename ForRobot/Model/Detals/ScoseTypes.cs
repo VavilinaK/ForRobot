@@ -13,31 +13,31 @@ namespace ForRobot.Model.Detals
         /// <summary>
         /// Прямоугольная форма
         /// </summary>
-        public static readonly string Rect = "d_rect";
+        public const string Rect = "d_rect";
 
         [Description("С наклоном влево")]
         /// <summary>
         /// Наклон влево
         /// </summary>
-        public static readonly string SlopeLeft = "d_slope_left";
+        public const string SlopeLeft = "d_slope_left";
 
         [Description("С наклоном вправо")]
         /// <summary>
         /// Наклон вправо
         /// </summary>
-        public static readonly string SlopeRight = "d_slope_right";
+        public const string SlopeRight = "d_slope_right";
 
         [Description("Трапеция")]
         /// <summary>
         /// Трапеция
         /// </summary>
-        public static readonly string TrapezoidTop = "d_trapezoid_top";
+        public const string TrapezoidTop = "d_trapezoid_top";
 
         [Description("Перевёрнутая трапеция")]
         /// <summary>
         /// Перевёрнутая трапеция
         /// </summary>
-        public static readonly string TrapezoidBottom = "d_trapezoid_bottom";
+        public const string TrapezoidBottom = "d_trapezoid_bottom";
 
         public static string[] Descriptions
         {

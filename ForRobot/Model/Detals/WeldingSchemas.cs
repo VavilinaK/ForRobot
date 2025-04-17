@@ -99,11 +99,6 @@ namespace ForRobot.Model.Detals
             }
         }
 
-        //public static FullyObservableCollection<SchemaRib> EmptyRib(ObservableCollection<SchemaRib> schema)
-        //{
-        //    return new FullyObservableCollection<SchemaRib>(schema.ToList<SchemaRib>());
-        //}
-
         /// <summary>
         /// Вывод схемы для передачи
         /// </summary>
@@ -115,7 +110,10 @@ namespace ForRobot.Model.Detals
             object[,] finishSchema = new object[schema.Count * 2, 2];
             for (int i = 1; i <= (schema.Count * 2); i++)
             {
-                SchemaRib rib = schema.Where(item => item.LeftSide == i.ToString() || item.RightSide == i.ToString()).First();
+                SchemaRib rib = schema.Where(item => item.LeftSide == i.ToString() || item.RightSide == i.ToString())?.Count() == 0 ? null
+                                : schema.Where(item => item.LeftSide == i.ToString() || item.RightSide == i.ToString())?.First();
+                if (rib == null)
+                    throw new Exception(string.Format("При составлении схемы сварки не найдена очерёдность №{0}", i));
                 finishSchema[i - 1, 0] = schema.IndexOf(rib) + 1;
                 finishSchema[i - 1, 1] = (rib.LeftSide == i.ToString()) ? "left_side" : "right_side";
             }

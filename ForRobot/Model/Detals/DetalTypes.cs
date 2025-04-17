@@ -10,16 +10,16 @@ namespace ForRobot.Model.Detals
         /// <summary>
         /// Плита
         /// </summary>
-        public static readonly string Plita = "Настил с ребром";
+        public const string Plita = "Настил с ребром";
 
         /// <summary>
         /// Плита со стрингером
         /// </summary>
-        public static readonly string Stringer = "Настил со стрингером";
+        public const string Stringer = "Настил со стрингером";
 
         /// <summary>
         /// Плита треугольником
         /// </summary>
-        public static readonly string Treygolnik = "Настил треугольником";
+        public const string Treygolnik = "Настил треугольником";
     }
 }

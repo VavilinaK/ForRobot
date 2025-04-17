@@ -773,7 +773,7 @@ namespace ForRobot.Model.Detals
         /// </summary>
         public override sealed BitmapImage RebraImage
         {
-            get => Equals(this.ScoseType, "d_rect") ? (this._rebraImage = JoinRebra(GetStartRebraImage(), GetBodyRebraImage(), GetEndRebraImage())) : null;
+            get => Equals(this.ScoseType, ScoseTypes.Rect) ? (this._rebraImage = JoinRebra(GetStartRebraImage(), GetBodyRebraImage(), GetEndRebraImage())) : null;
             set => Set(ref this._rebraImage, value, false);
         }
 
@@ -877,6 +877,9 @@ namespace ForRobot.Model.Detals
 
         private void ChangeRibCollection(FullyObservableCollection<Rib> collection, int ribCount)
         {
+            if (collection.Count == 0)
+                return;
+
             if (ribCount > collection.Count)
                 for (int i = collection.Count; i < ribCount; i++)
                 {
@@ -891,6 +894,9 @@ namespace ForRobot.Model.Detals
 
         private void ChangeWeldingSchema(FullyObservableCollection<WeldingSchemas.SchemaRib> collection, string selectedWeldingSchema, int ribCount)
         {
+            if (collection?.Count == 0)
+                return;
+
             if (ribCount > collection.Count)
                 for (int i = collection.Count; i < ribCount; i++)
                     collection.Add(new WeldingSchemas.SchemaRib());
@@ -1326,21 +1332,21 @@ namespace ForRobot.Model.Detals
         {
             switch (this.ScoseType)
             {
-                case "d_rect":
+                case ScoseTypes.Rect:
                     return JoinPlita(new Bitmap(ForRobot.Libr.Converters.ImageConverter.BitmapImagetoBitmap((BitmapImage)Application.Current.TryFindResource("ImagePlitaStart"))),
                                      new Bitmap(ForRobot.Libr.Converters.ImageConverter.BitmapImagetoBitmap((BitmapImage)Application.Current.TryFindResource("ImagePlitaBody"))),
                                      new Bitmap(ForRobot.Libr.Converters.ImageConverter.BitmapImagetoBitmap((BitmapImage)Application.Current.TryFindResource("ImagePlitaEnd"))));
 
-                case "d_slope_left":
+                case ScoseTypes.SlopeLeft:
                     return ForRobot.Libr.Converters.ImageConverter.BitmapToBitmapImage(GetTextSlopeLeft(new Bitmap(ForRobot.Libr.Converters.ImageConverter.BitmapImagetoBitmap((BitmapImage)Application.Current.TryFindResource("ImageSlopeLeft")), new System.Drawing.Size(1280, 720))));
 
-                case "d_slope_right":
+                case ScoseTypes.SlopeRight:
                     return ForRobot.Libr.Converters.ImageConverter.BitmapToBitmapImage(GetTextSlopeRight(new Bitmap(ForRobot.Libr.Converters.ImageConverter.BitmapImagetoBitmap((BitmapImage)Application.Current.TryFindResource("ImageSlopeRight")), new System.Drawing.Size(1280, 720))));
 
-                case "d_trapezoid_top":
+                case ScoseTypes.TrapezoidTop:
                     return ForRobot.Libr.Converters.ImageConverter.BitmapToBitmapImage(GetTextTrapezoidTop(new Bitmap(ForRobot.Libr.Converters.ImageConverter.BitmapImagetoBitmap((BitmapImage)Application.Current.TryFindResource("ImageTrapezoidTopParam")), new System.Drawing.Size(1280, 720))));
 
-                case "d_trapezoid_bottom":
+                case ScoseTypes.TrapezoidBottom:
                     return ForRobot.Libr.Converters.ImageConverter.BitmapToBitmapImage(GetTextTrapezoidBottom(new Bitmap(ForRobot.Libr.Converters.ImageConverter.BitmapImagetoBitmap((BitmapImage)Application.Current.TryFindResource("ImageTrapezoidBottomParam")), new System.Drawing.Size(1280, 720))));
 
                 default:
@@ -1856,271 +1862,7 @@ namespace ForRobot.Model.Detals
         #region Public functions
 
         public FullyObservableCollection<Rib> SetRibsCollection(FullyObservableCollection<Rib> collection) => this.RibsCollection = collection;
-
-        // Масштабный коэффициент: 1 единица модели = 250 мм реальных размеров
-        private const decimal ScaleFactor = 1.00M / 250.00M;
-
-        //public static Model3D GetModel3D(Plita plita)
-        //{
-        //    var modelGroup = new Model3DGroup();
-
-        //    // Преобразование реальных размеров в модельные (делим на 250)
-        //    decimal modelWidth = plita.PlateWidth * ScaleFactor;    // 1000 мм / 250 = 4 модели
-        //    decimal modelHeight = plita.PlateThickness * ScaleFactor; // 250 мм / 250 = 1 модель
-        //    decimal modelLength = plita.PlateLength * ScaleFactor; // 2000 мм / 250 = 8 моделей
-
-        //    // Создание плиты
-        //    var plateMesh = CreateCuboid(modelWidth, modelHeight, modelLength);
-        //    var plateModel = new GeometryModel3D(plateMesh, new DiffuseMaterial(Plita.PlateBrush));
-        //    modelGroup.Children.Add(plateModel);
-
-        //    // Добавление рёбер плиты (линии граней)
-        //    var plateEdges = CreatePlateEdges(modelWidth, modelHeight, modelLength);
-        //    modelGroup.Children.Add(plateEdges.Content);
-
-        //    // Создание рёбер (вертикальных элементов)
-        //    decimal ribSpacing = modelLength / (plita.RibCount + 1); // Расстояние между рёбрами в модельных единицах
-        //    for (int i = 1; i <= plita.RibCount; i++)
-        //    {
-        //        // Позиция ребра вдоль длины плиты 
-        //        // (i * ribSpacing - modelLength/2 центрирует рёбра относительно центра плиты)
-        //        decimal ribX = i * ribSpacing - modelLength / 2;
-
-        //        // Преобразование реальных размеров ребра в модельные
-        //        decimal ribThicknessModel = plita.RibThickness * ScaleFactor; // 50 мм / 250 = 0.2 модели
-        //        decimal ribHeightModel = plita.RibHeight * ScaleFactor;       // 300 мм / 250 = 1.2 модели
-
-        //        // Создание меша ребра
-        //        var ribMesh = CreateCuboid(ribThicknessModel, ribHeightModel, modelWidth);
-        //        var ribModel = new GeometryModel3D(ribMesh, new DiffuseMaterial(Plita.RibBrush));
-
-        //        // Позиционирование ребра:
-        //        // X - вдоль длины плиты, Y - смещение вверх на половину высоты плиты
-        //        ribModel.Transform = new TranslateTransform3D((double)ribX, (double)modelHeight / 2, 0);
-        //        modelGroup.Children.Add(ribModel);
-        //    }
-
-        //    return modelGroup;
-        //}
-
-        //Метод создания параллелепипеда(кубоида)
-
-        private static MeshGeometry3D CreateCuboid(decimal width, decimal height, decimal length)
-        {
-            var mesh = new MeshGeometry3D();
-
-            // Вычисление полуразмеров для центрирования модели
-            double halfWidth = (double)width / 2;
-            double halfHeight = (double)height / 2;
-            double halfLength = (double)length / 2;
-
-            // Вершины кубоида (8 точек)
-            mesh.Positions = new Point3DCollection(new[]
-            {
-            // Передняя грань (Z = -halfLength)
-            new Point3D(-halfWidth, -halfHeight, -halfLength), // 0: левый нижний угол
-            new Point3D(halfWidth, -halfHeight, -halfLength),  // 1: правый нижний
-            new Point3D(halfWidth, halfHeight, -halfLength),   // 2: правый верхний
-            new Point3D(-halfWidth, halfHeight, -halfLength),  // 3: левый верхний
-
-            // Задняя грань (Z = halfLength)
-            new Point3D(-halfWidth, -halfHeight, halfLength),  // 4: левый нижний
-            new Point3D(halfWidth, -halfHeight, halfLength),   // 5: правый нижний
-            new Point3D(halfWidth, halfHeight, halfLength),    // 6: правый верхний
-            new Point3D(-halfWidth, halfHeight, halfLength)    // 7: левый верхний
-        });
-
-            // Индексы треугольников для всех граней
-            mesh.TriangleIndices = new System.Windows.Media.Int32Collection(new[]
-            {
-            // Передняя грань (Z = -halfLength)
-            0, 1, 2, 2, 3, 0,
-
-            // Задняя грань (Z = halfLength)
-            4, 5, 6, 6, 7, 4,
-
-            // Нижняя грань (Y = -halfHeight)
-            0, 1, 5, 5, 4, 0,
-
-            // Верхняя грань (Y = halfHeight)
-            2, 3, 7, 7, 6, 2,
-
-            // Левая грань (X = -halfWidth)
-            0, 3, 7, 7, 4, 0,
-
-            // Правая грань (X = halfWidth)
-            1, 2, 6, 6, 5, 1
-        });
-
-            return mesh;
-        }
-
-        // Создание рёбер плиты с помощью LinesVisual3D
-        private static LinesVisual3D CreatePlateEdges(decimal width, decimal height, decimal length)
-        {
-            var lines = new LinesVisual3D
-            {
-                Color = System.Windows.Media.Colors.Black,
-                Thickness = 1 // Толщина линий в пикселях (не зависит от масштаба)
-            };
-
-            // Вычисление полуразмеров
-            double halfWidth = (double)width / 2;
-            double halfHeight = (double)height / 2;
-            double halfLength = (double)length / 2;
-
-            // Вершины кубоида (те же, что и в CreateCuboid)
-            var points = new[]
-            {
-            new Point3D(-halfWidth, -halfHeight, -halfLength), // 0
-            new Point3D(halfWidth, -halfHeight, -halfLength),  // 1
-            new Point3D(halfWidth, halfHeight, -halfLength),   // 2
-            new Point3D(-halfWidth, halfHeight, -halfLength),  // 3
-            new Point3D(-halfWidth, -halfHeight, halfLength),  // 4
-            new Point3D(halfWidth, -halfHeight, halfLength),   // 5
-            new Point3D(halfWidth, halfHeight, halfLength),    // 6
-            new Point3D(-halfWidth, halfHeight, halfLength)    // 7
-        };
-
-            lines.Points = new Point3DCollection(points);
-
-            // Соединение вершин линиями (рёбра)
-            //lines.Indices = new System.Windows.Media.Int32Collection(new[]
-            //{
-            //0, 1, 1, 2, 2, 3, 3, 0, // Передняя грань
-            //4, 5, 5, 6, 6, 7, 7, 4, // Задняя грань
-            //0, 4, 1, 5, 2, 6, 3, 7  // Боковые рёбра
-            //});
-
-            return lines;
-        }
         
-
-        //public static Model3D GetModel3D(Plita plita)
-        //{
-        //    Model3DGroup model = new Model3DGroup();
-        //    model.Children.Add(new GeometryModel3D()
-        //    {
-        //        Geometry = new MeshGeometry3D
-        //        {
-        //            Positions = new Point3DCollection { new Point3D(0, 0, 0), new Point3D(1, 0, 0), new Point3D(1, 1, 0) },
-
-        //            TriangleIndices = new System.Windows.Media.Int32Collection { 0, 1, 2 }
-        //        },
-        //        Material = MaterialHelper.CreateMaterial(System.Windows.Media.Colors.Blue)
-        //    });
-
-        //    var brush = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#2eb9ff");
-        //    //brush.Opacity = 0.85;
-
-        //    var plateMesh = CreateCuboid(plita.PlateWidth, plita.PlateThickness, plita.PlateLength);
-        //    var plateModel = new GeometryModel3D(plateMesh, new DiffuseMaterial(brush));
-        //    model.Children.Add(plateModel);
-
-        //    // Создание рёбер
-        //    decimal ribSpacing = plita.PlateLength / (plita.RibCount + 1);
-        //    for (int i = 1; i <= plita.RibCount; i++)
-        //    {
-        //        decimal ribPosition = i * ribSpacing - plita.PlateLength / 2;
-        //        var ribMesh = CreateCuboid(plita.RibThickness, plita.RibHeight, plita.PlateWidth);
-        //        var ribModel = new GeometryModel3D(ribMesh, new DiffuseMaterial(System.Windows.Media.Brushes.Silver));
-        //        ribModel.Transform = new TranslateTransform3D((double)ribPosition, (double)plita.PlateThickness / 2, 0);
-        //        model.Children.Add(ribModel);
-        //    }
-
-        //    return model;
-        //}
-
-        //// Метод для создания параллелепипеда (кубоида)
-        //private static MeshGeometry3D CreateCuboid(decimal width, decimal height, decimal length)
-        //{
-        //    var mesh = new MeshGeometry3D();
-
-        //    // Вершины
-        //    double halfWidth = (double)width / 250;
-        //    double halfHeight = (double)height / 250;
-        //    double halfLength = (double)length / 250;
-
-        //    mesh.Positions = new Point3DCollection(new[]
-        //    {
-        //    new Point3D(-halfWidth, -halfHeight, -halfLength),
-        //    new Point3D(halfWidth, -halfHeight, -halfLength),
-        //    new Point3D(halfWidth, halfHeight, -halfLength),
-        //    new Point3D(-halfWidth, halfHeight, -halfLength),
-        //    new Point3D(-halfWidth, -halfHeight, halfLength),
-        //    new Point3D(halfWidth, -halfHeight, halfLength),
-        //    new Point3D(halfWidth, halfHeight, halfLength),
-        //    new Point3D(-halfWidth, halfHeight, halfLength)
-        //    });
-
-        //    // Индексы треугольников
-        //    mesh.TriangleIndices = new System.Windows.Media.Int32Collection(new[]
-        //    {
-        //    0, 1, 2, 2, 3, 0, // Передняя грань
-        //    4, 5, 6, 6, 7, 4, // Задняя грань
-        //    0, 1, 5, 5, 4, 0, // Нижняя грань
-        //    2, 3, 7, 7, 6, 2, // Верхняя грань
-        //    0, 3, 7, 7, 4, 0, // Левая грань
-        //    1, 2, 6, 6, 5, 1  // Правая грань
-        //    });
-
-        //    return mesh;
-        //}
-
-        //private GeometryModel3D CreateTextLabel(string text, Point3D position, double fontSize = 2)
-        //{
-        //    var textGeometry = new System.Windows.Media.FormattedText(
-        //        text,
-        //        System.Globalization.CultureInfo.CurrentCulture,
-        //        FlowDirection.LeftToRight,
-        //        new System.Windows.Media.Typeface("Arial"),
-        //        fontSize,
-        //        System.Windows.Media.Brushes.Black);
-
-        //    var geometry = textGeometry.BuildGeometry(new System.Windows.Point(0, 0));
-        //    var mesh = new MeshGeometry3D();
-
-        //    foreach (var figure in geometry.Figures)
-        //    {
-        //        foreach (var segment in figure.Segments)
-        //        {
-        //            if (segment is LineSegment lineSegment)
-        //            {
-        //                mesh.Positions.Add(new Point3D(lineSegment.Point.X, lineSegment.Point.Y, 0));
-        //            }
-        //        }
-        //    }
-
-        //    var textModel = new GeometryModel3D(mesh, new DiffuseMaterial(Brushes.Black));
-        //    textModel.Transform = new TranslateTransform3D(position);
-        //    return textModel;
-        //}
-
-        //private GeometryModel3D CreateArrow(Point3D start, Point3D end, double thickness = 0.5)
-        //{
-        //    var direction = end - start;
-        //    var length = direction.Length;
-        //    direction.Normalize();
-
-        //    var arrowMesh = new MeshGeometry3D();
-        //    // Создание линии (основная часть стрелки).
-        //    arrowMesh.Positions.Add(start);
-        //    arrowMesh.Positions.Add(end);
-
-        //    // Создание наконечника стрелки (треугольник).
-        //    var perpendicular = new Vector3D(-direction.Y, direction.X, 0);
-        //    var arrowTip1 = end - direction * thickness * 2 + perpendicular * thickness;
-        //    var arrowTip2 = end - direction * thickness * 2 - perpendicular * thickness;
-
-        //    arrowMesh.Positions.Add(arrowTip1);
-        //    arrowMesh.Positions.Add(arrowTip2);
-
-        //    arrowMesh.TriangleIndices = new System.Windows.Media.Int32Collection(new[] { 0, 1, 2, 1, 2, 3 });
-
-        //    var arrowModel = new GeometryModel3D(arrowMesh, new DiffuseMaterial(System.Windows.Media.Brushes.Red));
-        //    return arrowModel;
-        //}
-
         #endregion Public functions
     }
 }

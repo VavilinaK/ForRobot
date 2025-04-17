@@ -306,6 +306,7 @@
     <Compile Include="Libr\Behavior\HelixAnnotationsBehavior.cs" />
     <Compile Include="Libr\Behavior\HelixSceneTrackerBehavior.cs" />
     <Compile Include="Libr\Behavior\LayoutMessage.cs" />
+    <Compile Include="Libr\Behavior\HelixWeldsBehavior.cs" />
     <Compile Include="Libr\Behavior\ZoomBehavior.cs" />
     <Compile Include="Libr\Behavior\ZoomMessage.cs" />
     <Compile Include="Libr\ConfigurationProperties\AppConfigurationSection.cs" />
@@ -316,7 +317,6 @@
     <Compile Include="Libr\Converters\DescriptionsStaticClassConverter.cs" />
     <Compile Include="Libr\Converters\EmptyCollectionToColorConverter.cs" />
     <Compile Include="Libr\Converters\NumbersForWeldingSchemaConverter.cs" />
-    <Compile Include="Libr\Converters\VisibilityFolderOnRobot.cs" />
     <Compile Include="Libr\DocumentPaneHelper.cs" />
     <Compile Include="Libr\Json\PlitaWithRibsAttributesResolver.cs" />
     <Compile Include="Libr\Logger.cs" />
@@ -325,15 +325,21 @@
     <Compile Include="Libr\SingleGlobalInstance.cs" />
     <Compile Include="Model\AppMessage.cs" />
     <Compile Include="Model\Controls\FileFlags.cs" />
+    <Compile Include="Model\Detals\Hole.cs" />
+    <Compile Include="Model\Detals\Weld.cs" />
     <Compile Include="Model\Detals\WeldingSchemas.cs" />
     <Compile Include="Model\File3D\Annotation.cs" />
     <Compile Include="Model\File3D\File3D.cs" />
     <Compile Include="Model\File3D\SceneItem.cs" />
     <Compile Include="IUndoableCommand.cs" />
+    <Compile Include="Model\ProcessStatuses.cs" />
     <Compile Include="PropertyChangeCommand.cs" />
+    <Compile Include="Services\AnnotationService.cs" />
     <Compile Include="Services\ExporterService.cs" />
     <Compile Include="Services\FileDialogService.cs" />
     <Compile Include="Services\GenerationService.cs" />
+    <Compile Include="Services\ModelingService.cs" />
+    <Compile Include="Services\WeldService.cs" />
     <Compile Include="ViewModels\CreateWindowViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel3.cs" />
     <Compile Include="ViewModels\MainPageViewModel4.cs" />
@@ -546,16 +552,11 @@
     <Resource Include="Themes\Images\settings.png" />
     <Resource Include="robot_icon.ico" />
     <Resource Include="Themes\Images\settingsWhite.png" />
-    <Resource Include="Themes\Images\dataFile.png" />
-    <Resource Include="Themes\Images\programFile.png" />
-    <Resource Include="Themes\Images\folder.png" />
     <Resource Include="Themes\Images\up.png" />
     <Resource Include="Themes\Images\repeat.png" />
     <EmbeddedResource Include="README.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <Resource Include="Themes\Images\PlitaStringerFull.png" />
-    <Resource Include="Themes\Images\PlitaTreygolnikFull.png" />
     <Resource Include="Themes\Images\toRight.png" />
     <Resource Include="Themes\Images\toLeft.png" />
     <Resource Include="Themes\Images\EndPlita.png" />

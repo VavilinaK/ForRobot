@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Title="Создание модели генерации" 
         Background="#cfcfcf"
-        Height="520" Width="800" ResizeMode="NoResize"
+        Height="530" Width="800" ResizeMode="NoResize"
         ShowInTaskbar="True" WindowStartupLocation="CenterScreen">
 
     <Window.DataContext>
@@ -41,19 +41,24 @@
 
         <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource TextBoxBase}"></Style>
 
+        <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource TextBase}">
+            <Setter Property="Padding" Value="0,10"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+
         <Style TargetType="{x:Type Button}" BasedOn="{StaticResource TextBase}">
             <Setter Property="FontSize" Value="{StaticResource FontSizeNP1}"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="MinWidth" Value="100"/>
-            <Setter Property="Padding" Value="10, 5"/>
-            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Padding" Value="10, 7"/>
+            <Setter Property="Margin" Value="8"/>
         </Style>
 
         <Style x:Key="toggleButtonScosStyle" TargetType="{x:Type ToggleButton}">
-            <Setter Property="MaxHeight" Value="80"/>
-            <Setter Property="MaxWidth" Value="140"/>
+            <Setter Property="MaxHeight" Value="70"/>
+            <Setter Property="MaxWidth" Value="130"/>
 
             <Setter Property="Template">
                 <Setter.Value>
@@ -94,14 +99,6 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
-            <Grid.Resources>
-                <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource TextBase}">
-                    <Setter Property="FontSize" Value="{StaticResource FontSizeNP3}"/>
-                    <Setter Property="Padding" Value="0,10"/>
-                    <Setter Property="Margin" Value="5"/>
-                </Style>
-            </Grid.Resources>
-            
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
@@ -112,7 +109,8 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Row="0" Grid.Column="0" Text="Тип детали"/>
-            <ComboBox Grid.Row="0" Grid.Column="1" FontWeight="DemiBold"
+            <ComboBox Grid.Row="0" Grid.Column="1" IsEnabled="False"
+                      FontSize="{StaticResource FontSizeNP3}" FontWeight="DemiBold"
                       VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
                       ItemsSource="{Binding Path=DetalTypeCollection, Mode=OneWay}"
                       SelectedItem="{Binding Path=SelectedDetalType, Mode=TwoWay}"
@@ -136,7 +134,9 @@
                 </ContentControl.ContentTemplate>
             </ContentControl>-->
 
-            <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"  DataContext="{Binding Path=DataContext.DetalObject, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}">
+            <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="10"
+                  DataContext="{Binding Path=DataContext.DetalObject, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}">
+               
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -215,12 +215,12 @@
                     <TextBlock Grid.Row="2" Grid.Column="0" Text="Скос слева, мм."/>
                     <TextBlock Grid.Row="3" Grid.Column="0" Text="Скос справа, мм."/>
                     <TextBlock Grid.Row="4" Grid.Column="0" Text="Количество ребер, шт."/>
-                    
-                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=Long, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=PlateLength, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
                     <TextBox Grid.Row="1" Grid.Column="1">
                         <TextBox.Style>
                             <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxBase}">
-                                <Setter Property="Text" Value="{Binding Path=Width, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                                <Setter Property="Text" Value="{Binding Path=PlateWidth, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
 
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Path=ScoseType}" Value="d_rect">
@@ -259,7 +259,7 @@
                             </Style>
                         </TextBox.Style>
                     </TextBox>
-                    <TextBox Grid.Row="11" Grid.Column="1" Text="{Binding Path=SumReber, Mode=TwoWay, FallbackValue=4, UpdateSourceTrigger=LostFocus}" />
+                    <TextBox Grid.Row="11" Grid.Column="1" Text="{Binding Path=RibCount, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
                 </Grid>
                 
                 <!--<ContentControl Grid.Row="1">
@@ -283,18 +283,19 @@
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="3.5*"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Row="0" Grid.Column="0" Text="Имя"/>
-            <TextBlock Grid.Row="1" Grid.Column="0" Text="Расположение"/>
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Имя" HorizontalAlignment="Right"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Расположение" HorizontalAlignment="Right"/>
 
-            <TextBox Grid.Row="0" Grid.Column="1"  Text="{Binding Path=FileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Path=FileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=FilePath, Mode=TwoWay}"/>
 
             <Button Grid.Row="1" Grid.Column="2" Content="_Обзор" 
-                    MaxWidth="100" Margin="0,5" HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                    MaxWidth="100" Margin="5" 
+                    HorizontalAlignment="Right" VerticalAlignment="Stretch"
                     Command="{Binding Path=ReviewCommand}"/>
         </Grid>
 

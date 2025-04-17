@@ -1,13 +1,14 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Media;
+using System.Windows.Input;
 using System.Windows.Controls;
+using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Runtime.CompilerServices;
 
+using ForRobot.Model;
 using ForRobot.Model.Controls;
 
 namespace ForRobot.Views.Controls
@@ -17,49 +18,61 @@ namespace ForRobot.Views.Controls
     /// </summary>
     public partial class Breadcrumb : ComboBox, INotifyPropertyChanged
     {
+        #region Properties
+
+        public static readonly DependencyProperty RobotProperty = DependencyProperty.Register(nameof(Robot),
+                                                                                              typeof(Robot),
+                                                                                              typeof(Breadcrumb),
+                                                                                              new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, new PropertyChangedCallback(OnRobotChanged)));
+
+        public static readonly DependencyProperty RootProperty = DependencyProperty.Register(nameof(Root),
+                                                                                             typeof(string),
+                                                                                             typeof(Breadcrumb),
+                                                                                             new PropertyMetadata(string.Empty));
+
+        public static readonly DependencyProperty IsProgressProperty = DependencyProperty.Register(nameof(IsProgress),
+                                                                                                   typeof(bool),
+                                                                                                   typeof(Breadcrumb),
+                                                                                                   new FrameworkPropertyMetadata(false));
+
+        #endregion Properties
+
         #region Private variables
 
-        #region Commands
+        private ICommand _homeCommand;
+        private ICommand _updateFilesCommand;
 
-        private static RelayCommand _onSelectedMenuItem;
-
-        private static RelayCommand _onSelectedDirectory;
-
-        #endregion
+        /// <summary>
+        /// Обработчик исключений асинхронных комманд
+        /// </summary>
+        private static readonly Action<Exception> _exceptionCallback = new Action<Exception>(e =>
+        {
+            try
+            {
+                throw e;
+            }
+            catch (DivideByZeroException ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+            }
+            catch (System.Threading.Tasks.TaskCanceledException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        });
 
         #endregion
 
         #region Public variables
 
-        public bool CanOpenMenu
+        public Robot Robot
         {
-            get => this.ItemsSource == null || this.ItemsSource.Cast<object>().Count() == 0 || this.SelectedFolder == null ? false
-                   : this.ItemsSource.Cast<File>().Select(item => item.Search(this.SelectedFolder ?? this.Root)).First().Children.Count(item => item.Type == FileTypes.Folder) > 0;
-        }
-
-        /// <summary>
-        /// Коллекция имен папок составляющих директорию
-        /// </summary>
-        public List<String> FoldersCollection { get => this.Directory.Split('\\').Where(x => x != this.Root.Replace("\\", "") && x!=string.Empty).ToList<string>(); }
-
-        /// <summary>
-        /// Дочернии папки выбранного каталога
-        /// </summary>
-        public List<File> ChildrenFolder
-        {
-            get => (this.ItemsSource !=null && this.ItemsSource.Cast<object>().Count() > 0 && this.SelectedFolder != null) ?
-                this.ItemsSource.Cast<File>().ToList().First().Search(this.SelectedFolder).Children.Where(item => item.Type == FileTypes.Folder).Cast<File>().ToList() : null;
-        }
-
-        #region Properties
-
-        /// <summary>
-        /// Идёт процесс закрузки файлов
-        /// </summary>
-        public bool IsProgress
-        {
-            get => (bool)GetValue(IsProgressProperty);
-            set => SetValue(IsProgressProperty, value);
+            get => (Robot)GetValue(RobotProperty);
+            set => SetValue(RobotProperty, value);
         }
 
         /// <summary>
@@ -71,207 +84,186 @@ namespace ForRobot.Views.Controls
             set => SetValue(RootProperty, value);
         }
 
-        /// <summary>
-        /// Директория выбранной папки
-        /// </summary>
-        public string Directory
-        {
-            get => (string)GetValue(DirectoryProperty);
-            set => SetValue(DirectoryProperty, value);
-        }
-
+        private string _selectedFolder;
         /// <summary>
         /// Выбранная папка
         /// </summary>
         public string SelectedFolder
         {
-            get => (string)GetValue(SelectedFolderProperty);
-            set => SetValue(SelectedFolderProperty, value);
+            get => this._selectedFolder;
+            set
+            {
+                if (value == null)
+                    return;
+
+                this._selectedFolder = value;
+                this.OnPropertyChanged(nameof(this.ChildrenFolder), nameof(CanOpenMenu));
+            }
         }
 
-        public System.Windows.Media.Brush IconsBackground
+        private ForRobot.Model.Controls.File _selectedPopupItem;
+        public ForRobot.Model.Controls.File SelectedPopupItem
         {
-            get => (System.Windows.Media.Brush)GetValue(IconsBackgroundProperty);
-            set => SetValue(IconsBackgroundProperty, value);
+            get => this._selectedPopupItem;
+            set
+            {
+                if (value == null)
+                    return;
+
+                this._selectedPopupItem = value;
+                this.Robot.PathControllerFolder = this._selectedPopupItem.Path.TrimEnd(new char[] { '\\' });
+                this.OnPropertyChanged(nameof(this.FoldersCollection));
+
+                System.Windows.Input.FocusManager.SetFocusedElement(System.Windows.Input.FocusManager.GetFocusScope(this.Parent), null);
+            }
         }
 
-        #endregion
+        public bool CanOpenMenu { get => this.ChildrenFolder?.Count > 0; }
 
-        #region Event
+        /// <summary>
+        /// Идёт процесс закрузки файлов
+        /// </summary>
+        public bool IsProgress
+        {
+            get => (bool)GetValue(IsProgressProperty);
+            set => SetValue(IsProgressProperty, value);
+        }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        /// <summary>
+        /// Коллекция имен папок составляющих директорию
+        /// </summary>
+        public List<String> FoldersCollection
+        {
+            get => this.Robot.PathControllerFolder.Split('\\').Where(item => item != string.Empty).Select((item, index) => index == 0 ? item + "\\" : item).ToList<string>();
+        }
 
-        #endregion
+        /// <summary>
+        /// Дочернии папки выбранного каталога
+        /// </summary>
+        public List<ForRobot.Model.Controls.File> ChildrenFolder
+        {
+            get => (this.SelectedFolder != null && this.Robot.Files.Children.Count > 0) ?
+                    this.Robot.Files?.Search(this.SelectedFolder)?.Children.Where(item => item.Type == FileTypes.Folder).Cast<ForRobot.Model.Controls.File>().ToList() : null;
+        }
 
         #region Commands
 
-        public RelayCommand SelectMenuItemCommand
-        {
-            get { return (RelayCommand)GetValue(SelectMenuItemCommandProperty); }
-            set { SetValue(SelectMenuItemCommandProperty, value); }
-        }
+        public ICommand HomeCommand { get => this._homeCommand ?? (this._homeCommand = new RelayCommand(_ => this.HomeDirection())); }
 
-        public RelayCommand SelectDirectoryCommand
-        {
-            get { return (RelayCommand)GetValue(SelectMenuItemCommandProperty); }
-            set { SetValue(SelectMenuItemCommandProperty, value); }
-        }
+        public ICommand UpdateFilesCommandAsync { get => this._updateFilesCommand ?? (this._updateFilesCommand = new AsyncRelayCommand(async _  => await this.UpdateFilesAsync(), _exceptionCallback)); }
 
-        public RelayCommand UpDateCommand
-        {
-            get { return (RelayCommand)GetValue(UpDateCommandProperty); }
-            set { SetValue(UpDateCommandProperty, value); }
-        }
+        public ICommand DropFilesCommandAsync { get; } = new AsyncRelayCommand(async obj => await DropFilesAsync(obj as Robot), _exceptionCallback);
 
-        public IAsyncCommand SelectFilesCommand
-        {
-            get { return (IAsyncCommand)GetValue(SelectFilesCommandProperty); }
-            set { SetValue(SelectFilesCommandProperty, value); }
-        }
+        public ICommand DeleteFilesCommandAsync { get; } = new AsyncRelayCommand(async obj => await DeleteFilesAsync(obj as Robot), _exceptionCallback);
 
-        public IAsyncCommand DeleteFilesCommand
-        {
-            get { return (IAsyncCommand)GetValue(DeleteFilesCommandProperty); }
-            set { SetValue(DeleteFilesCommandProperty, value); }
-        }
+        #endregion Commands
 
-        #endregion
-
-        #region Static readonly
-
-        public static readonly DependencyProperty IsProgressProperty = DependencyProperty.Register(nameof(IsProgress),
-                                                                                                   typeof(bool),
-                                                                                                   typeof(Breadcrumb),
-                                                                                                   new PropertyMetadata(false));
-
-        public static readonly DependencyProperty RootProperty = DependencyProperty.Register(nameof(Root), 
-                                                                                             typeof(string), 
-                                                                                             typeof(Breadcrumb), 
-                                                                                             new PropertyMetadata(string.Empty));
-
-        public static readonly DependencyProperty DirectoryProperty = DependencyProperty.Register(nameof(Directory),
-                                                                                                  typeof(string),
-                                                                                                  typeof(Breadcrumb),
-                                                                                                  new PropertyMetadata(@"KRC:\R1", new PropertyChangedCallback(OnDirectoryValueChanged)));
-
-        public static readonly DependencyProperty SelectedFolderProperty = DependencyProperty.Register(nameof(SelectedFolder),
-                                                                                                       typeof(string),
-                                                                                                       typeof(Breadcrumb),
-                                                                                                       new PropertyMetadata(string.Empty, new PropertyChangedCallback(OnSelectedFolderChanged)));
-
-        public static readonly DependencyProperty IconsBackgroundProperty = DependencyProperty.Register(nameof(IconsBackground),
-                                                                                                        typeof(System.Windows.Media.Brush),
-                                                                                                        typeof(Breadcrumb), 
-                                                                                                        new PropertyMetadata(System.Windows.Media.Brushes.Black));
-
-        #region Commands
-
-        public static readonly DependencyProperty SelectMenuItemCommandProperty = DependencyProperty.Register(nameof(SelectMenuItemCommand),
-                                                                                                              typeof(RelayCommand),
-                                                                                                              typeof(Breadcrumb),
-                                                                                                              new PropertyMetadata(OnSelectedMenuItem));
-
-        public static readonly DependencyProperty SelectDirectoryCommandProperty = DependencyProperty.Register(nameof(SelectDirectoryCommand),
-                                                                                                               typeof(RelayCommand),
-                                                                                                               typeof(Breadcrumb),
-                                                                                                               new PropertyMetadata(OnSelectedDirectory));
-
-        public static readonly DependencyProperty UpDateCommandProperty = DependencyProperty.Register(nameof(UpDateCommand),
-                                                                                                      typeof(RelayCommand),
-                                                                                                      typeof(Breadcrumb),
-                                                                                                      new PropertyMetadata());
-
-        public static readonly DependencyProperty SelectFilesCommandProperty = DependencyProperty.Register(nameof(SelectFilesCommand),
-                                                                                                           typeof(IAsyncCommand),
-                                                                                                           typeof(Breadcrumb),
-                                                                                                           new PropertyMetadata());
-
-        public static readonly DependencyProperty DeleteFilesCommandProperty = DependencyProperty.Register(nameof(DeleteFilesCommand),
-                                                                                                           typeof(IAsyncCommand),
-                                                                                                           typeof(Breadcrumb),
-                                                                                                           new PropertyMetadata());
-
-        #endregion
-
-        #endregion
-
-        #endregion
-
-        #region Constructor
+        #endregion Public variables
 
         public Breadcrumb()
         {
             InitializeComponent();
-            //this.DeleteButton.
-            //this.DeleteButton.Click
+        }
+
+        #region Private function
+
+        private void HomeDirection() => this.Robot.PathControllerFolder = this.Root;
+
+        private async Task UpdateFilesAsync() => await this.Robot.GetFilesAsync();
+        
+        private static async Task DeleteFilesAsync(Robot robot)
+        {
+            List<string> checkedFiles = new List<string>(); // Список отмеченных файлов
+            foreach (var file in robot.Files.Children)
+            {
+                Stack<ForRobot.Model.Controls.IFile> stack = new Stack<Model.Controls.IFile>();
+                stack.Push(file);
+                ForRobot.Model.Controls.IFile current;
+                do
+                {
+                    current = stack.Pop();
+                    IEnumerable<ForRobot.Model.Controls.IFile> files = current.Children;
+
+                    if (current.IsCheck)
+                        checkedFiles.Add(current.Path);
+
+                    foreach (var f in files)
+                        stack.Push(f);
+                }
+                while (stack.Count > 0);
+            }
+
+            var task = Task.Run(async () =>
+            {
+                foreach (string path in checkedFiles)
+                {
+                    await Task.Run(() => robot.DeleteFile(path));
+                }
+            });
+            await task;
+            await robot.GetFilesAsync();
+        }
+
+        private static async Task DropFilesAsync(Robot robot)
+        {
+            using (System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog()
+            {
+                Filter = "Source Code or Data files (*.src, *.dat)|*.src;*.dat|Data files (*.dat)|*.dat|Source Code File (*.src)|*src",
+                Title = $"Отправка файла/ов на {robot.Name}",
+                Multiselect = true
+            })
+            {
+                if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.Cancel && (string.IsNullOrEmpty(openFileDialog.FileName) || string.IsNullOrEmpty(openFileDialog.FileNames[0])))
+                    return;
+
+                foreach (var path in openFileDialog.FileNames)
+                {
+                    string fileName = Path.GetFileName(path);
+
+                    string tempFile = System.IO.Path.Combine(Robot.PathOfTempFolder, fileName);
+
+                    if (!robot.CopyToPC(path, tempFile))
+                        continue;
+
+                    if (!robot.Copy(tempFile, System.IO.Path.Combine(robot.PathControllerFolder, fileName)))
+                        continue;
+                }
+
+                await robot.GetFilesAsync();
+
+                foreach (var file in robot.Files.Children)
+                {
+                    foreach (var path in openFileDialog.FileNames)
+                    {
+                        var searchFile = file.Search(Path.GetFileName(path));
+                        if (searchFile == null) continue;
+                        file.Search(Path.GetFileName(path)).IsCopy = true;
+                    }
+                }
+            }
+        }
+
+        private static void OnRobotChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            Breadcrumb breadcrumb = (Breadcrumb)d;
+            breadcrumb.Robot = (Robot)e.NewValue;
+            breadcrumb.Robot.ChangedControllerPathEvent += (s, o) => breadcrumb.OnPropertyChanged(nameof(FoldersCollection));
+            breadcrumb.OnPropertyChanged(nameof(breadcrumb.Robot), nameof(breadcrumb.FoldersCollection));
         }
 
         #endregion
 
-        #region Private functions
+        #region Implementations of IDisposable
 
-        private static void OnDirectoryValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private void OnPropertyChanged(params string[] propertyNames)
         {
-            Breadcrumb breadcrumb = (Breadcrumb)d;
-            breadcrumb.Directory = (string)e.NewValue;
-            breadcrumb.PropertyChanged?.Invoke(breadcrumb, new PropertyChangedEventArgs(nameof(breadcrumb.FoldersCollection)));
-        }
-
-        private static void OnSelectedFolderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            Breadcrumb breadcrumb = (Breadcrumb)d;
-            breadcrumb.SelectedFolder = (string)e.NewValue;
-            breadcrumb.PropertyChanged?.Invoke(breadcrumb, new PropertyChangedEventArgs(nameof(breadcrumb.CanOpenMenu)));
-            breadcrumb.PropertyChanged?.Invoke(breadcrumb, new PropertyChangedEventArgs(nameof(breadcrumb.ChildrenFolder)));
-        }
-
-        private void ButtonHome_Click(object sender, RoutedEventArgs e) => this.Directory = this.Root;
-
-        #region Commands
-
-        /// <summary>
-        /// Команда выбора в всплывающем меню
-        /// </summary>
-        private static RelayCommand OnSelectedMenuItem
-        {
-            get
+            foreach (var prop in propertyNames)
             {
-                return _onSelectedMenuItem ??
-                    (_onSelectedMenuItem = new RelayCommand(obj =>
-                    {
-                        if(obj is object[] && ((object[])obj)[0]!=null && ((object[])obj)[1] != null)
-                        {
-                            Breadcrumb breadcrumb = ((object[])obj)[0] as Breadcrumb;
-                            File file = ((object[])obj)[1] as File;
-                            breadcrumb.Directory = breadcrumb.Root + file.Path.TrimEnd(new char[] { '\\' });
-                        }
-                    }));
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
             }
         }
 
-        /// <summary>
-        /// Команда выбора папки в адресной строке
-        /// </summary>
-        private static RelayCommand OnSelectedDirectory
-        {
-            get
-            {
-                return _onSelectedDirectory ??
-                    (_onSelectedDirectory = new RelayCommand(obj =>
-                    {
-                        if (obj is object[] && ((object[])obj)[0] != null && ((obj as object[]).First() as ObservableCollection<File>).Count > 0
-                                            && ((object[])obj)[1] != null && ((object[])obj)[2] != null)
-                        {
-                            File root = ((obj as object[]).First() as ObservableCollection<File>)[0];
-                            string sSearchFolder = ((object[])obj)[1] as string;
-                            Breadcrumb breadcrumb = ((object[])obj)[2] as Breadcrumb;
-                            breadcrumb.Directory = breadcrumb.Root + root.Search(sSearchFolder).Path.TrimEnd(new char[] { '\\' });
-                        }
-                    }));
-            }
-        }
-
-        #endregion
+        public event PropertyChangedEventHandler PropertyChanged;
 
         #endregion
     }

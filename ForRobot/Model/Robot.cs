@@ -43,7 +43,7 @@ namespace ForRobot.Model
 
         private Task LoadFilesTask;
 
-        private List<ForRobot.Model.Controls.File> FilesCollection = new List<Controls.File>();
+        private List<ForRobot.Model.Controls.IFile> FilesCollection = new List<Controls.IFile>();
 
         //private decimal[] _currentArray = new decimal[] { }; // = new decimal[] { 0, 4, 6, 5, 3, -3, -1, 2 }; // Примерные данные
         //private decimal[] _wireFeedArray = new decimal[] { }; // new decimal[] { 0, 4, 6, 3, 6, -3, -1, 2 }; // Примерные данные
@@ -66,6 +66,14 @@ namespace ForRobot.Model
         /// Событие изменения свойств робота
         /// </summary>
         public event EventHandler ChangeRobot;
+        /// <summary>
+        /// Событие выгрузки файлов
+        /// </summary>
+        public event EventHandler LoadedFilesEvent;
+        /// <summary>
+        /// Событие изменения пути на контроллере
+        /// </summary>
+        public event EventHandler ChangedControllerPathEvent;
         /// <summary>
         /// Событие логирования действия
         /// </summary>
@@ -113,9 +121,9 @@ namespace ForRobot.Model
             get => this._name;
             set
             {
-                //Set(ref this._name, value);
-                this._name = value;
-                this.RaisePropertyChanged(nameof(this.Name));
+                Set(ref this._name, value, false);
+                //this._name = value;
+                //this.RaisePropertyChanged(nameof(this.Name));
                 this.ChangeRobot?.Invoke(this, null);
             }
         }
@@ -134,9 +142,9 @@ namespace ForRobot.Model
             get => this._pathProgram;
             set
             {
-                //Set(ref this._pathProgram, value);
-                this._pathProgram = value;
-                this.RaisePropertyChanged(nameof(this.PathProgramm));
+                Set(ref this._pathProgram, value, false);
+                //this._pathProgram = value;
+                //this.RaisePropertyChanged(nameof(this.PathProgramm));
                 this.ChangeRobot?.Invoke(this, null);
             }
         }
@@ -149,10 +157,11 @@ namespace ForRobot.Model
             get => this._pathControllerFolder;
             set
             {
-                //Set(ref this._pathControllerFolder, value);
-                this._pathControllerFolder = value;
-                this.RaisePropertyChanged(nameof(this.PathControllerFolder));
+                Set(ref this._pathControllerFolder, value, false);
+                //this._pathControllerFolder = value;
+                //this.RaisePropertyChanged(nameof(this.PathControllerFolder));
                 this.ChangeRobot?.Invoke(this, null);
+                this.ChangedControllerPathEvent?.Invoke(this, null);
             }
         }
 
@@ -196,11 +205,11 @@ namespace ForRobot.Model
             get => this._connection ?? (this._connection = new JsonRpcConnection());
             set
             {
-                this._connection = value;
-                this.RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection));
+                //this._connection = value;
+                //this.RaisePropertyChanged(nameof(this.Connection), nameof(this.IsConnection));
 
-                //Set(ref this._connection, value);
-                //RaisePropertyChanged(nameof(this.IsConnection));
+                Set(ref this._connection, value, false);
+                this.RaisePropertyChanged(nameof(this.IsConnection));
             }
         }
 
@@ -262,8 +271,9 @@ namespace ForRobot.Model
             get => this._programName;
             set
             {
-                this._programName = value;
-                this.RaisePropertyChanged(nameof(this.RobotProgramName));
+                this.Set(ref this._programName, value, false);
+                //this._programName = value;
+                //this.RaisePropertyChanged(nameof(this.RobotProgramName));
             }
         }
 
@@ -334,9 +344,15 @@ namespace ForRobot.Model
 
         [JsonIgnore]
         /// <summary>
-        /// Коллекция файлов на роботе
+        /// Файлы роботов
         /// </summary>
-        public ObservableCollection<ForRobot.Model.Controls.File> Files { get => new ObservableCollection<Controls.File>(this.FilesCollection); }
+        public ForRobot.Model.Controls.File Files { get; } = new Controls.File(JsonRpcConnection.DefaulRoot);
+
+        //[JsonIgnore]
+        ///// <summary>
+        ///// Коллекция файлов на роботе
+        ///// </summary>
+        //public ObservableCollection<ForRobot.Model.Controls.File> Files { get => new ObservableCollection<Controls.File>(this.FilesCollection); }
 
         //[JsonIgnore]
         ///// <summary>
@@ -430,49 +446,93 @@ namespace ForRobot.Model
         /// <param name="data"></param>
         /// <param name="node"></param>
         /// <param name="index"></param>
-        private void LoadFiles(List<ForRobot.Model.Controls.File> data, ForRobot.Model.Controls.File node, int index)
+        private void LoadFiles(List<ForRobot.Model.Controls.IFile> data = null, ForRobot.Model.Controls.IFile node = null, int index = 1)
         {
-            if (this.IsConnection)
-            {
-                if (data == null)
-                {
-                    this.FilesCollection = new List<ForRobot.Model.Controls.File>();
-                    List<ForRobot.Model.Controls.File> fileDatas = new List<ForRobot.Model.Controls.File>();
-                    try
-                    {
-                        var files = Task.Run<Dictionary<string, string>>(async () => await this.Connection.File_NameListAsync()).Result;
+            if (!this.IsConnection)
+                return;
 
-                        foreach (var file in files)
-                        {
-                            ForRobot.Model.Controls.File fileData = new ForRobot.Model.Controls.File(file.Key.TrimEnd(new char[] { '\\' }), file.Value.TrimStart(';').TrimEnd(';'));
-                            fileDatas.Add(fileData);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        this.LogErrorMessage(ex.Message, ex);
-                    }
-                    LoadFiles(fileDatas.OrderBy(item => item.Path).ToList(), node, index);
-                }
-                else
+            if (data == null)
+            {
+                this.FilesCollection = new List<ForRobot.Model.Controls.IFile>();
+                List<ForRobot.Model.Controls.File> fileDatas = new List<ForRobot.Model.Controls.File>();
+                try
                 {
-                    var groupData = data.Where(x => x.Path.Split(new char[] { '\\' }).ToArray().Length > index).GroupBy(x => x.Path.Split(new char[] { '\\' }).ToArray()[index]).ToList();
-                    foreach (var group in groupData)
+                    var files = Task.Run<Dictionary<string, string>>(async () => await this.Connection.File_NameListAsync()).Result;
+
+                    foreach (var file in files)
                     {
-                        ForRobot.Model.Controls.File newNode = data.Where(x => x.Name == group.Key).ToList().First();
-                        if (node == null)
-                        {
-                            this.FilesCollection.Add(newNode);
-                        }
-                        else
-                        {
-                            node.Children.Add(newNode);
-                        }
-                        LoadFiles(group.ToList(), newNode, index + 1);
+                        ForRobot.Model.Controls.File fileData = new ForRobot.Model.Controls.File(file.Key.TrimEnd(new char[] { '\\' }), file.Value.TrimStart(';').TrimEnd(';'));
+                        fileData.Path = Path.Combine(JsonRpcConnection.DefaulRoot, fileData.Path);
+                        fileDatas.Add(fileData);
                     }
+                }
+                catch (Exception ex)
+                {
+                    this.LogErrorMessage(ex.Message, ex);
+                }
+                LoadFiles(fileDatas.OrderBy(item => item.Path).ToList<ForRobot.Model.Controls.IFile>(), node, index);
+            }
+            else
+            {
+                var groupData = data.Where(x => x.Path.Split(new char[] { '\\' }).ToArray().Length > index).GroupBy(x => x.Path.Split(new char[] { '\\' }).ToArray()[index]).ToList();
+                foreach (var group in groupData)
+                {
+                    ForRobot.Model.Controls.IFile newNode = data.Where(x => x.Name == group.Key).ToList().First();
+                    if (node == null)
+                    {
+                        this.FilesCollection.Add(newNode);
+                    }
+                    else
+                    {
+                        node.Children.Add(newNode);
+                    }
+                    LoadFiles(group.ToList(), newNode, index + 1);
                 }
             }
         }
+        //{
+        //    if (!this.IsConnection)
+        //        return;
+
+        //    if (data == null)
+        //    {
+        //        this.FilesCollection = new List<ForRobot.Model.Controls.IFile>() { new Controls.File(JsonRpcConnection.DefaulRoot) };
+        //        List<ForRobot.Model.Controls.File> fileDatas = new List<ForRobot.Model.Controls.File>();
+        //        try
+        //        {
+        //            var files = Task.Run<Dictionary<string, string>>(async () => await this.Connection.File_NameListAsync()).Result;
+
+        //            foreach (var file in files)
+        //            {
+        //                ForRobot.Model.Controls.File fileData = new ForRobot.Model.Controls.File(file.Key.TrimEnd(new char[] { '\\' }), file.Value.TrimStart(';').TrimEnd(';'));
+        //                fileData.Path = Path.Combine(JsonRpcConnection.DefaulRoot, fileData.Path);
+        //                fileDatas.Add(fileData);
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            this.LogErrorMessage(ex.Message, ex);
+        //        }
+        //        LoadFiles(fileDatas.OrderBy(item => item.Path).ToList<ForRobot.Model.Controls.IFile>(), node, index);
+        //    }
+        //    else
+        //    {
+        //        var groupData = data.Where(x => x.Path.Split(new char[] { '\\' }).ToArray().Length > index).GroupBy(x => x.Path.Split(new char[] { '\\' }).ToArray()[index]).ToList();
+        //        foreach (var group in groupData)
+        //        {
+        //            ForRobot.Model.Controls.File newNode = data.Where(x => x.Name == group.Key).ToList().First();
+        //            if (node == null)
+        //            {
+        //                this.FilesCollection.Add(newNode);
+        //            }
+        //            else
+        //            {
+        //                node.Children.Add(newNode);
+        //            }
+        //            LoadFiles(group.ToList(), newNode, index + 1);
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Поиск пути файла по его имени
@@ -481,7 +541,7 @@ namespace ForRobot.Model
         /// <returns></returns>
         private string SearchPath(string sNameForSearch)
         {
-            foreach (var file in this.Files)
+            foreach (var file in this.Files.Children)
             {
                 string path = ForRobot.Libr.FileCollection.Search(file, sNameForSearch)?.Path;
                 if (!string.IsNullOrEmpty(path))
@@ -549,7 +609,7 @@ namespace ForRobot.Model
         {
             try
             {
-                if(this.Pro_State == "#P_END")
+                if(this.Pro_State == ProcessStatuses.End)
                 {
                     this.SelectProgramByName(this.RobotProgramName + ".src");
 
@@ -559,7 +619,7 @@ namespace ForRobot.Model
                         this.LogMessage($"Программа {this.RobotProgramName} перезапущена");
                 }
 
-                if (this.Pro_State == "#P_RESET" || this.Pro_State == "#P_STOP")
+                if (this.Pro_State == ProcessStatuses.Reset || this.Pro_State == ProcessStatuses.Stop)
                 {
                     if (!Task.Run<bool>(async () => await this.Connection.StartAsync()).Result)
                         throw new Exception($"Ошибка запуска программы {RobotProgramName}");
@@ -569,13 +629,13 @@ namespace ForRobot.Model
 
                 do
                 {
-                    if (string.Equals(this.Pro_State, "#P_STOP") || string.Equals(this.Pro_State, "#P_END"))
+                    if (string.Equals(this.Pro_State, ProcessStatuses.Stop) || string.Equals(this.Pro_State, ProcessStatuses.End))
                     {
                         this.LogMessage($"Программа {this.RobotProgramName} остановлена/завершена");
                         return;
                     }
                 }
-                while (!string.Equals(this.Pro_State, "#P_END"));
+                while (!string.Equals(this.Pro_State, ProcessStatuses.End));
             }
             catch (Exception ex)
             {
@@ -591,7 +651,7 @@ namespace ForRobot.Model
         {
             try
             {
-                if (this.Pro_State == "#P_ACTIVE")
+                if (this.Pro_State == ProcessStatuses.Active)
                 {
                     if (!Task.Run<bool>(async () => await this.Connection.PauseAsync()).Result)
                         throw new Exception($"Ошибка остановки программы {RobotProgramName}");
@@ -613,9 +673,9 @@ namespace ForRobot.Model
         {
             try
             {
-                if (this.Pro_State == "#P_RESET" || this.Pro_State == "#P_ACTIVE" || this.Pro_State == "#P_STOP" || this.Pro_State == "#P_END")
+                if (this.Pro_State == ProcessStatuses.Reset || this.Pro_State == ProcessStatuses.Active || this.Pro_State == ProcessStatuses.Stop || this.Pro_State == ProcessStatuses.End)
                 {
-                    if (string.Equals(this.Pro_State, "#P_ACTIVE"))
+                    if (string.Equals(this.Pro_State, ProcessStatuses.Active))
                     {
                         Task.Run(() => this.Pause());
 
@@ -646,14 +706,14 @@ namespace ForRobot.Model
             {
                 switch (this.Pro_State)
                 {
-                    case "#P_RESET":
-                    case "#P_END":
+                    case ProcessStatuses.Reset:
+                    case ProcessStatuses.End:
                         this.Cancel();
                         System.Threading.Thread.Sleep(1000); // Костыль).
                         break;
 
-                    case "#P_ACTIVE":
-                    case "#P_STOP":
+                    case ProcessStatuses.Active:
+                    case ProcessStatuses.Stop:
                         this.LogMessage("Отмена копирования: уже запущен процесс!");
                         return false;
                 }
@@ -689,14 +749,14 @@ namespace ForRobot.Model
 
                 switch (this.Pro_State)
                 {
-                    case "#P_RESET":
-                    case "#P_END":
+                    case ProcessStatuses.Reset:
+                    case ProcessStatuses.End:
                         this.Cancel();
                         System.Threading.Thread.Sleep(1000); // Костыль).
                         break;
 
-                    case "#P_ACTIVE":
-                    case "#P_STOP":
+                    case ProcessStatuses.Active:
+                    case ProcessStatuses.Stop:
                         this.LogMessage("Отмена копирования: уже запущен процесс!");
                         return false;
                 }
@@ -808,24 +868,22 @@ namespace ForRobot.Model
             {
                 switch (this.Pro_State)
                 {
-                    case "#P_RESET":
-                    case "#P_END":
+                    case ProcessStatuses.Reset:
+                    case ProcessStatuses.End:
                         this.Cancel();
                         System.Threading.Thread.Sleep(1000);
                         break;
 
-                    case "#P_ACTIVE":
-                    case "#P_STOP":
+                    case ProcessStatuses.Active:
+                    case ProcessStatuses.Stop:
                         this.LogMessage("Отмена выбора: уже запущен процесс!");
                         return;
                 }
 
-                string sFilePath = Path.Combine(JsonRpcConnection.DefaulRoot, sProgramPath);
-
-                if (Task.Run<bool>(async () => await this.Connection.SelectAsync(sFilePath)).Result)
-                    this.LogMessage($"Выбран файл {sFilePath}.");
+                if (Task.Run<bool>(async () => await this.Connection.SelectAsync(sProgramPath)).Result)
+                    this.LogMessage($"Выбран файл {sProgramPath}.");
                 else
-                    throw new Exception($"Ошибка выбора файла {sFilePath}.");
+                    throw new Exception($"Ошибка выбора файла {sProgramPath}.");
             }
             catch (Exception ex)
             {
@@ -844,14 +902,14 @@ namespace ForRobot.Model
             {
                 switch (this.Pro_State)
                 {
-                    case "#P_RESET":
-                    case "#P_END":
+                    case ProcessStatuses.Reset:
+                    case ProcessStatuses.End:
                         this.Cancel();
                         System.Threading.Thread.Sleep(1000);
                         break;
 
-                    case "#P_ACTIVE":
-                    case "#P_STOP":
+                    case ProcessStatuses.Active:
+                    case ProcessStatuses.Stop:
                         this.LogMessage("Отмена удаления: уже запущен процесс!");
                         return false;
                 }
@@ -859,9 +917,7 @@ namespace ForRobot.Model
                 if (!Task.Run<bool>(async () => await this.Connection.DeletAsync(sPathToFile)).Result)
                     throw new Exception($"Ошибка удаления файла {sPathToFile}");
                 else
-                    this.LogMessage($"Файл программы {sPathToFile} удалён");
-
-                Task.Run(async () => await this.GetFilesAsync());
+                    this.LogMessage($"Файл программы {sPathToFile} удалён");                
             }
             catch (Exception ex)
             {
@@ -916,6 +972,11 @@ namespace ForRobot.Model
             return true;
         }
 
+        /// <summary>
+        /// Запуск события по окончанию выгрузки файлов
+        /// </summary>
+        private void OnLoadedFile() => this.LoadedFilesEvent?.Invoke(this, null);
+
         #region Asunc
 
         /// <summary>
@@ -950,15 +1011,17 @@ namespace ForRobot.Model
         /// <param name="data"></param>
         /// <param name="node"></param>
         /// <param name="index"></param>
-        public async Task GetFilesAsync(List<ForRobot.Model.Controls.File> data = null, ForRobot.Model.Controls.File node = null, int index = 0)
+        public async Task GetFilesAsync()
         {
             await Task.Run(() =>
             {
-                this.LoadFilesTask = new Task(() => { this.LoadFiles(data, node, index); });
+                this.LoadFilesTask = new Task(() => { this.LoadFiles(); });
                 this.LoadFilesTask.Start();
                 RaisePropertyChanged(nameof(this.IsLoadFiles));
                 this.LoadFilesTask.Wait();
+                this.Files.Children = new ObservableCollection<Controls.IFile>(this.FilesCollection);
                 RaisePropertyChanged(nameof(this.Files), nameof(this.IsLoadFiles));
+                this.OnLoadedFile();
             });
         }
 

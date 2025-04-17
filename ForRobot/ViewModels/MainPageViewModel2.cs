@@ -527,7 +527,7 @@ namespace ForRobot.ViewModels
                 return _upDateFilesCommand ??
                     (_upDateFilesCommand = new RelayCommand(obj =>
                     {
-                        Task.Run(async () => await this.SelectedRobot.GetFilesAsync());                        
+                        Task.Run(async () => await this.SelectedRobot.GetFilesAsync());
                     }));
             }
         }
@@ -567,7 +567,7 @@ namespace ForRobot.ViewModels
                 return _selectFolderCommand ??
                     (_selectFolderCommand = new RelayCommand(obj =>
                     {
-                        this.SelectedRobot.PathControllerFolder = Path.Combine(ForRobot.Libr.Client.JsonRpcConnection.DefaulRoot, obj as string);
+                        this.SelectedRobot.PathControllerFolder = obj as string;
                     }));
             }
         }
@@ -754,7 +754,7 @@ namespace ForRobot.ViewModels
 
                                     await this.RobotsCollection[i].GetFilesAsync();
 
-                                    for(int y = 0; y < this.RobotsCollection[i].Files.Count; y++)
+                                    for(int y = 0; y < this.RobotsCollection[i].Files.Children.Count; y++)
                                     {
                                         var item = this.RobotsCollection[i].Files[y];
                                         var folder = item.Search(this.RobotsCollection[i].PathControllerFolder.Split(new char[] { '\\' }).Last());
@@ -764,7 +764,7 @@ namespace ForRobot.ViewModels
 
                                         foreach (var child in folder.Children.Where(f => f.Type == Model.Controls.FileTypes.DataList || f.Type == Model.Controls.FileTypes.Program))
                                         {
-                                            await Task.Run(() => this.RobotsCollection[i].DeleteFile(Path.Combine(ForRobot.Libr.Client.JsonRpcConnection.DefaulRoot, child.Path)));
+                                            await Task.Run(() => this.RobotsCollection[i].DeleteFile(child.Path));
                                         }
                                     }
 
@@ -785,7 +785,7 @@ namespace ForRobot.ViewModels
                                 if (!await Task.Run<bool>(() => this.RobotForControl.CopyToPC(string.Join("", this.ProgrammName, ".src"))))
                                     return;
 
-                                for (int i = 0; i < this.RobotForControl.Files.Count; i++)
+                                for (int i = 0; i < this.RobotForControl.Files.Children.Count; i++)
                                 {
                                     var item = this.RobotForControl.Files[i];
                                     var folder = item.Search(this.RobotForControl.PathControllerFolder.Split(new char[] { '\\' }).Last());
@@ -795,7 +795,7 @@ namespace ForRobot.ViewModels
 
                                     foreach (var child in folder.Children.Where(f => f.Type == Model.Controls.FileTypes.DataList || f.Type == Model.Controls.FileTypes.Program))
                                     {
-                                        await Task.Run(() => this.RobotForControl.DeleteFile(Path.Combine(ForRobot.Libr.Client.JsonRpcConnection.DefaulRoot, child.Path)));
+                                        await Task.Run(() => this.RobotForControl.DeleteFile(child.Path));
                                     }
                                 }
 
@@ -853,7 +853,7 @@ namespace ForRobot.ViewModels
 
                       await this.SelectedRobot.GetFilesAsync();
 
-                      foreach(var file in this.SelectedRobot.Files)
+                      foreach(var file in this.SelectedRobot.Files.Children)
                       {
                           foreach (var path in openFileDialog.FileNames)
                           {
@@ -889,7 +889,7 @@ namespace ForRobot.ViewModels
 
                         robot.RunCancelTokenSource = new System.Threading.CancellationTokenSource();
                         await robot.PeriodicTask(async () => {
-                                                                if (robot.Pro_State == "#P_RESET" || robot.Pro_State == "#P_END" || robot.Pro_State == "#P_STOP")
+                                                                if (robot.Pro_State == ProcessStatuses.Reset || robot.Pro_State == ProcessStatuses.End || robot.Pro_State == ProcessStatuses.Stop)
                                                                 {
                                                                     await Task.Run(() => robot.Run());
                                                                 }
@@ -958,9 +958,9 @@ namespace ForRobot.ViewModels
                     {
                         Robot robot = (Robot)obj;
 
-                        if (robot.Pro_State == "#P_ACTIVE" && System.Windows.MessageBox.Show($"Прервать выполнение программы {robot.RobotProgramName}?",
-                                                                                            $"{this.RobotsCollection.Where(item => item == robot).Select(item => item.Name).First()}", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK,
-                                                                                            System.Windows.MessageBoxOptions.DefaultDesktopOnly) != MessageBoxResult.OK)
+                        if (robot.Pro_State == ProcessStatuses.Active && System.Windows.MessageBox.Show($"Прервать выполнение программы {robot.RobotProgramName}?",
+                                                                                                        $"{this.RobotsCollection.Where(item => item == robot).Select(item => item.Name).First()}", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK,
+                                                                                                        System.Windows.MessageBoxOptions.DefaultDesktopOnly) != MessageBoxResult.OK)
                             return;
 
                         await Task.Run(() => robot.Cancel());
@@ -1020,7 +1020,7 @@ namespace ForRobot.ViewModels
                         if(obj == null)
                         {
                             checkedFiles = new List<string>();
-                            foreach (var file in this.SelectedRobot.Files)
+                            foreach (var file in this.SelectedRobot.Files.Children)
                             {
                                 Stack<ForRobot.Model.Controls.IFile> stack = new Stack<Model.Controls.IFile>();
                                 stack.Push(file);
@@ -1044,7 +1044,7 @@ namespace ForRobot.ViewModels
 
                         foreach (string path in checkedFiles)
                         {
-                            await Task.Run(() => this.SelectedRobot.DeleteFile(Path.Combine(ForRobot.Libr.Client.JsonRpcConnection.DefaulRoot, path)));
+                            await Task.Run(() => this.SelectedRobot.DeleteFile(path));
                         }
                         await this.SelectedRobot.GetFilesAsync();
                     }, _exceptionCallback));

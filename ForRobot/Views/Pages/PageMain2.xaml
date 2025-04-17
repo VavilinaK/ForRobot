@@ -732,7 +732,7 @@
                                 <Ellipse.Style>
                                     <Style TargetType="{x:Type Ellipse}">
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=Pro_State}" Value="#P_ACTIVE">
+                                            <DataTrigger Binding="{Binding Path=Pro_State}" Value="{x:Static model:ProcessStatuses.Active}">
                                                 <DataTrigger.EnterActions>
                                                     <BeginStoryboard x:Name="blinkAnimation">
                                                         <Storyboard>
@@ -767,11 +767,11 @@
                                         <Setter Property="TextWrapping" Value="Wrap"/>
 
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=Pro_State}" Value="#P_FREE">
+                                            <DataTrigger Binding="{Binding Path=Pro_State}" Value="{x:Static model:ProcessStatuses.Free}">
                                                 <Setter Property="Text" Value="Программа не выбрана"/>
                                             </DataTrigger>
 
-                                            <DataTrigger Binding="{Binding Path=Pro_State}" Value="#P_RESET">
+                                            <DataTrigger Binding="{Binding Path=Pro_State}" Value="{x:Static model:ProcessStatuses.Reset}">
                                                 <Setter Property="Text">
                                                     <Setter.Value>
                                                         <MultiBinding Converter="{StaticResource StringFormatMultiConvert}" ConverterParameter="Выбрана программа {0}">
@@ -781,7 +781,7 @@
                                                 </Setter>
                                             </DataTrigger>
 
-                                            <DataTrigger Binding="{Binding Path=Pro_State}" Value="#P_ACTIVE">
+                                            <DataTrigger Binding="{Binding Path=Pro_State}" Value="{x:Static model:ProcessStatuses.Active}">
                                                 <Setter Property="Text">
                                                     <Setter.Value>
                                                         <MultiBinding Converter="{StaticResource StringFormatMultiConvert}" ConverterParameter="Запущена программа {0}">
@@ -791,7 +791,7 @@
                                                 </Setter>
                                             </DataTrigger>
 
-                                            <DataTrigger Binding="{Binding Path=Pro_State}" Value="#P_STOP">
+                                            <DataTrigger Binding="{Binding Path=Pro_State}" Value="{x:Static model:ProcessStatuses.Stop}">
                                                 <Setter Property="Text">
                                                     <Setter.Value>
                                                         <MultiBinding Converter="{StaticResource StringFormatMultiConvert}" ConverterParameter="Программа {0} остановлена">
@@ -801,7 +801,7 @@
                                                 </Setter>
                                             </DataTrigger>
 
-                                            <DataTrigger Binding="{Binding Path=Pro_State}" Value="#P_END">
+                                            <DataTrigger Binding="{Binding Path=Pro_State}" Value="{x:Static model:ProcessStatuses.End}">
                                                 <Setter Property="Text">
                                                     <Setter.Value>
                                                         <MultiBinding Converter="{StaticResource StringFormatMultiConvert}" ConverterParameter="Программа {0} завершена">
@@ -833,11 +833,11 @@
                                         <Setter Property="Margin" Value="5"/>
 
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=Pro_State}" Value="#P_STOP">
+                                            <DataTrigger Binding="{Binding Path=Pro_State}" Value="{x:Static model:ProcessStatuses.Stop}">
                                                 <Setter Property="ToolTip" Value="Продолжить выполнение программы"/>
                                             </DataTrigger>
 
-                                            <DataTrigger Binding="{Binding Path=Pro_State}" Value="#P_END">
+                                            <DataTrigger Binding="{Binding Path=Pro_State}" Value="{x:Static model:ProcessStatuses.End}">
                                                 <Setter Property="ToolTip" Value="Перезапуск программы"/>
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -864,7 +864,7 @@
                                                 </Setter>
 
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Path=Pro_State}" Value="#P_END">
+                                                    <DataTrigger Binding="{Binding Path=Pro_State}" Value="{x:Static model:ProcessStatuses.End}">
                                                         <Setter Property="Fill" Value="#3b88c3"/>
                                                         <Setter Property="Data">
                                                             <Setter.Value>
@@ -886,11 +886,11 @@
                                                 <Setter Property="Text" Value="Пуск"/>
 
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Path=Pro_State}" Value="#P_STOP">
+                                                    <DataTrigger Binding="{Binding Path=Pro_State}" Value="{x:Static model:ProcessStatuses.Stop}">
                                                         <Setter Property="Text" Value="Продолжить"/>
                                                     </DataTrigger>
 
-                                                    <DataTrigger Binding="{Binding Path=Pro_State}" Value="#P_END">
+                                                    <DataTrigger Binding="{Binding Path=Pro_State}" Value="{x:Static model:ProcessStatuses.End}">
                                                         <Setter Property="Text" Value="Перезапустить"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -1192,41 +1192,17 @@
                                         </Button>
                                     </Grid>
 
-                                    <control:Breadcrumb Grid.Row="4" Height="40" Padding="0"
-                                                            Root="{Binding Path=DefaulRoot, Source={x:Type client:JsonRpcConnection}}"
-                                                            Directory="{Binding Path=SelectedRobot.PathControllerFolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                            ItemsSource="{Binding Path=SelectedRobot.Files, Mode=OneWay}"
-                                                            UpDateCommand="{Binding Path=DataContext.UpDateFilesCommand, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
-                                                            IsProgress="{Binding Path=SelectedRobot.IsLoadFiles, Mode=OneWay}"
-                                                            SelectFilesCommand="{Binding Path=DataContext.DropFilesCommandAsync, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
-                                                            DeleteFilesCommand="{Binding Path=DataContext.DeleteFileCommandAsync, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"/>
+                                    <control:Breadcrumb Grid.Row="4" Height="40"
+                                                        FontSize="{StaticResource FontSizeNP2}"
+                                                        Robot="{Binding Path=SelectedRobot, Mode=TwoWay}"
+                                                        Root="{x:Static client:JsonRpcConnection.DefaulRoot}"/>
 
-                                    <control:NavigationTreeView Grid.Row="6" FontSize="18"
-                                                                    DataFileIsHidden="{Binding Path=Settings.AccessDataFile, Source={x:Static Application.Current}, Mode=TwoWay}"
-                                                                    SelectedFile="{Binding Path=DataContext.SelectedRobot.RobotProgramName, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
-                                                                    SelectItemCommand="{Binding Path=DataContext.SelectFileCommandAsync, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
-                                                                    SelectFolderCommand="{Binding Path=DataContext.SelectFolderCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
-                                                                    DeleteNodeCommand="{Binding Path=DataContext.DeleteFileCommandAsync, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Page}}}"
-                                                                    ScrollViewer.CanContentScroll="False"
-                                                                    ScrollViewer.VerticalScrollBarVisibility="Auto">
-
-                                        <control:NavigationTreeView.FileCollection>
-                                            <MultiBinding Converter="{StaticResource VisibilityFolderOnRobot}">
-                                                <Binding Path="DataContext.SelectedRobot.Files" RelativeSource="{RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}"/>
-                                                <Binding Path="Settings.AvailableFolders" Source="{x:Static Application.Current}"/>
-                                            </MultiBinding>
-                                        </control:NavigationTreeView.FileCollection>
-
-                                        <control:NavigationTreeView.Style>
-                                            <Style TargetType="{x:Type control:NavigationTreeView}">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Path=SelectedRobot.IsLoadFiles, Mode=OneWay}" Value="True">
-                                                        <Setter Property="IsEnabled" Value="False"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </control:NavigationTreeView.Style>
-                                    </control:NavigationTreeView>
+                                    <control:NavigationTreeView Grid.Row="6" FontSize="{StaticResource FontSizeNP2}"
+                                                                Robot="{Binding Path=SelectedRobot, Mode=TwoWay}"
+                                                                DataFileIsHidden="{Binding Path=Settings.AccessDataFile, Source={x:Static Application.Current}}"
+                                                                BlockedFolder="{Binding Path=Settings.AvailableFolders, Source={x:Static Application.Current}}"
+                                                                Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type RowDefinition}, Mode=FindAncestor}}"
+                                                                ScrollViewer.CanContentScroll="False" ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
                                 </Grid>
                             </TabItem>
 
