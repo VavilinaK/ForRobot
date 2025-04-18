@@ -15,7 +15,7 @@ namespace ForRobot.Services
     }
 
     public sealed class ModelingService : IModelingService
-    {
+    {        
         private static readonly System.Windows.Media.Brush _plateBrush = new System.Windows.Media.BrushConverter().ConvertFromString("#6cc3e6") as System.Windows.Media.Brush;
         private static readonly System.Windows.Media.Brush _plateBorderBrush = new System.Windows.Media.BrushConverter().ConvertFromString("#167cf7") as System.Windows.Media.Brush;
         private static readonly System.Windows.Media.Brush _ribBrush = new System.Windows.Media.BrushConverter().ConvertFromString("#17e64b") as System.Windows.Media.Brush;
@@ -26,10 +26,11 @@ namespace ForRobot.Services
         /// Масштабный коэффициент: 1 единица модели = 200 мм реальных размеров
         /// </summary>
         public const decimal ScaleFactor = 1.00M / 150.00M;
+
         /// <summary>
         /// Коэффициент сужения/расширения для трапеций
         /// </summary>
-        public const double TrapezoidRatio = 0.5;
+        public static double TrapezoidRatio { get; set; } = 0.1;
         /// <summary>
         /// Смещение скоса
         /// </summary>
@@ -234,7 +235,90 @@ namespace ForRobot.Services
         /// <returns></returns>
         private MeshGeometry3D GenerateTrapezoidTopPlate(double length, double width, double height)
         {
-            return new MeshGeometry3D() { };
+            double halfLength = length / 2;
+            double halfWidth = width / 2;
+            double halfHeight = height / 2;
+
+            // Сужение верхней грани по коэффициенту трапеции
+            double topWidthReduction = width * TrapezoidRatio;
+            //double topHalfWidth = (width - topWidthReduction) / 2;
+            double topHalfWidth = width - (width * TrapezoidRatio) / 2;
+
+            Point3D[] vertices = new Point3D[8]
+            {
+                // Нижнее основание (X = -halfWidth)
+                new Point3D(-halfWidth, -halfHeight, -halfLength), // 0: левый задний нижний
+                new Point3D(-halfWidth, -halfHeight, halfLength),  // 1: левый передний нижний
+                new Point3D(-halfWidth, halfHeight, -halfLength),  // 2: левый задний верхний
+                new Point3D(-halfWidth, halfHeight, halfLength),   // 3: левый передний верхний
+
+                // Верхнее основание (X = halfWidth)
+                new Point3D(halfWidth, -halfHeight, -topHalfWidth), // 4: правый задний нижний
+                new Point3D(halfWidth, -halfHeight, topHalfWidth),  // 5: правый передний нижний
+                new Point3D(halfWidth, halfHeight, -topHalfWidth),  // 6: правый задний верхний
+                new Point3D(halfWidth, halfHeight, topHalfWidth)     // 7: правый передний верхний
+            };
+
+            // Поворот на 180° вокруг оси Y (X → -X, Z → -Z)
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                vertices[i] = new Point3D(-vertices[i].X, vertices[i].Y, -vertices[i].Z);
+            }
+
+            int[] indices = new int[]
+            {
+                // Основания (X = halfWidth и X = -halfWidth)
+                0, 1, 3, 3, 2, 0, // Большое основание
+                4, 5, 7, 7, 6, 4, // Малое основание
+
+                // Передняя грань (Z = halfLength)
+                0, 2, 6, 6, 4, 0,
+                // Задняя грань (Z = -halfLength)
+                1, 3, 7, 7, 5, 1,
+
+                // Нижняя грань (Y = -halfHeight)
+                0, 4, 5, 5, 1, 0, // По часовой стрелке
+                1, 5, 4, 4, 0, 1, // Обратные треугольники для двусторонней видимости
+
+                // Верхняя грань (Y = halfHeight)
+                2, 3, 7, 7, 6, 2,
+
+                // Боковые грани
+                0, 1, 3, 3, 2, 0,
+                4, 5, 7, 7, 6, 4
+
+                //// Нижняя грань (Y = -halfHeight) — по часовой стрелке
+                //0, 1, 5, 5, 4, 0,
+
+                //// Верхняя грань (Y = halfHeight) — против часовой (нормаль наружу)
+                //3, 2, 6, 6, 7, 3,
+
+                //// Передняя грань (Z = -halfLength) — по часовой
+                //0, 1, 2, 2, 3, 0,
+
+                //// Задняя грань (Z = halfLength) — по часовой
+                //4, 5, 6, 6, 7, 4,
+
+                //// Левая боковая грань (X = -halfWidth → X = -topHalfWidth)
+                //0, 3, 7, 7, 4, 0,
+
+                //// Правая боковая грань (X = halfWidth → X = topHalfWidth)
+                //1, 2, 6, 6, 5, 1,
+
+                //// Левый скос (дополнительные треугольники для двусторонней видимости)
+                //0, 4, 7, 7, 3, 0,
+                //3, 7, 4, 4, 0, 3, // Обратный порядок для обратной стороны
+
+                //// Правый скос
+                //1, 5, 6, 6, 2, 1,
+                //2, 6, 5, 5, 1, 2  // Обратный порядок
+            };
+
+            return new MeshGeometry3D()
+            {
+                Positions = new Point3DCollection(vertices),
+                TriangleIndices = new Int32Collection(indices)
+            };
         }
 
         /// <summary>
@@ -246,7 +330,84 @@ namespace ForRobot.Services
         /// <returns></returns>
         private MeshGeometry3D GenerateTrapezoidBottomPlate(double length, double width, double height)
         {
-            return new MeshGeometry3D() { };
+            double halfLength = length / 2;
+            double halfWidth = width / 2;
+            double halfHeight = height / 2;
+
+            // Сужение верхней грани по коэффициенту трапеции
+            double topWidthReduction = width * TrapezoidRatio;
+            //double topHalfWidth = (width - topWidthReduction) / 2;
+            double topHalfWidth = width - (width * TrapezoidRatio) / 2;
+
+            Point3D[] vertices = new Point3D[8]
+            {
+                // Нижнее основание (X = -halfWidth)
+                new Point3D(-halfWidth, -halfHeight, -halfLength), // 0: левый задний нижний
+                new Point3D(-halfWidth, -halfHeight, halfLength),  // 1: левый передний нижний
+                new Point3D(-halfWidth, halfHeight, -halfLength),  // 2: левый задний верхний
+                new Point3D(-halfWidth, halfHeight, halfLength),   // 3: левый передний верхний
+
+                // Верхнее основание (X = halfWidth)
+                new Point3D(halfWidth, -halfHeight, -topHalfWidth), // 4: правый задний нижний
+                new Point3D(halfWidth, -halfHeight, topHalfWidth),  // 5: правый передний нижний
+                new Point3D(halfWidth, halfHeight, -topHalfWidth),  // 6: правый задний верхний
+                new Point3D(halfWidth, halfHeight, topHalfWidth)     // 7: правый передний верхний
+            };
+
+            int[] indices = new int[]
+            {
+                // Основания (X = halfWidth и X = -halfWidth)
+                0, 1, 3, 3, 2, 0, // Большое основание
+                4, 5, 7, 7, 6, 4, // Малое основание
+
+                // Передняя грань (Z = halfLength)
+                0, 2, 6, 6, 4, 0,
+                // Задняя грань (Z = -halfLength)
+                1, 3, 7, 7, 5, 1,
+
+                // Нижняя грань (Y = -halfHeight)
+                0, 4, 5, 5, 1, 0, // По часовой стрелке
+                1, 5, 4, 4, 0, 1, // Обратные треугольники для двусторонней видимости
+
+                // Верхняя грань (Y = halfHeight)
+                2, 3, 7, 7, 6, 2,
+
+                // Боковые грани
+                0, 1, 3, 3, 2, 0,
+                4, 5, 7, 7, 6, 4
+
+                //// Нижняя грань (Y = -halfHeight) — по часовой стрелке
+                //0, 1, 5, 5, 4, 0,
+
+                //// Верхняя грань (Y = halfHeight) — против часовой (нормаль наружу)
+                //3, 2, 6, 6, 7, 3,
+
+                //// Передняя грань (Z = -halfLength) — по часовой
+                //0, 1, 2, 2, 3, 0,
+
+                //// Задняя грань (Z = halfLength) — по часовой
+                //4, 5, 6, 6, 7, 4,
+
+                //// Левая боковая грань (X = -halfWidth → X = -topHalfWidth)
+                //0, 3, 7, 7, 4, 0,
+
+                //// Правая боковая грань (X = halfWidth → X = topHalfWidth)
+                //1, 2, 6, 6, 5, 1,
+
+                //// Левый скос (дополнительные треугольники для двусторонней видимости)
+                //0, 4, 7, 7, 3, 0,
+                //3, 7, 4, 4, 0, 3, // Обратный порядок для обратной стороны
+
+                //// Правый скос
+                //1, 5, 6, 6, 2, 1,
+                //2, 6, 5, 5, 1, 2  // Обратный порядок
+            };
+
+            return new MeshGeometry3D()
+            {
+                Positions = new Point3DCollection(vertices),
+                TriangleIndices = new Int32Collection(indices)
+            };
         }
 
         private Model3DGroup AddPlate(Plita plate)
@@ -258,11 +419,6 @@ namespace ForRobot.Services
             double modelPlateWidth = (double)plate.PlateWidth * (double)ScaleFactor;
             double modelPlateHeight = (double)plate.PlateThickness * (double)ScaleFactor;
             double modelPlateLength = (double)plate.PlateLength * (double)ScaleFactor;
-
-            decimal modelBevelToLeft = plate.BevelToLeft * ScaleFactor;
-            decimal modelBevelToRight = plate.BevelToRight * ScaleFactor;
-
-            Point3D[] vertices = new Point3D[] { };
 
             // Валидация.
             if(plate.ScoseType != ScoseTypes.Rect)
@@ -321,8 +477,8 @@ namespace ForRobot.Services
             double modelRibHeight = (double)plate.RibHeight * (double)ScaleFactor;
             double modelRibThickness = (double)plate.RibThickness * (double)ScaleFactor;
 
-            double modelBevelToLeft = (double)plate.BevelToLeft * (double)ScaleFactor;
-            double modelBevelToRight = (double)plate.BevelToRight * (double)ScaleFactor;
+            //decimal modelBevelToLeft = plate.BevelToLeft * ScaleFactor;
+            //decimal modelBevelToRight = plate.BevelToRight * ScaleFactor;
 
             double ribPositionXAxes = 0; // Позиционирование рёбер
             for (int i = 0; i < plate.RibCount; i++)
@@ -338,13 +494,10 @@ namespace ForRobot.Services
                 {
                     case ScoseTypes.SlopeLeft:
                         break;
-
                     case ScoseTypes.SlopeRight:
                         break;
-
                     case ScoseTypes.TrapezoidTop:
                         break;
-
                     case ScoseTypes.TrapezoidBottom:
                         break;
 
@@ -352,8 +505,8 @@ namespace ForRobot.Services
                         break;
                 }
 
-                ribPositionXAxes += modelRibDistanceLeft; // Расчёт позиции ребра.
-                double ribX = ribPositionXAxes - modelPlateWidth / 2;
+                ribPositionXAxes += (double)modelRibDistanceLeft; // Расчёт позиции ребра.
+                double ribX = ribPositionXAxes - (double)modelPlateWidth / 2;
 
                 double ribLength = modelPlateLength - modelRibIdentToLeft - modelRibIdentToRight; // Длина ребра.
                 double ribZCenter = (modelRibIdentToRight - modelRibIdentToLeft) / 2; // Позиция по оси Z.
@@ -365,13 +518,11 @@ namespace ForRobot.Services
                     ribLength
                 );
 
-                model3DGroup.Children.Add(new GeometryModel3D(meshBuilder.ToMesh(), Materials.Rib));
-
                 // Перемещение позиции для следующего ребра
                 if (!plate.ParalleleRibs)
-                    ribPositionXAxes += modelRibThickness + modelRibDistanceRight;
+                    ribPositionXAxes += (double)modelRibThickness + (double)modelRibDistanceRight;
             }
-
+            model3DGroup.Children.Add(new GeometryModel3D(meshBuilder.ToMesh(), Materials.Rib));
             return model3DGroup;
         }
 
@@ -384,73 +535,6 @@ namespace ForRobot.Services
 
             // Добавление рёбер.
             model3DGroup.Children.Add(this.AddRibs(plate));
-
-            model3DGroup.Transform = new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(1, 0, 0), 90)); // Поворот модели на 90 гр.
-            return model3DGroup;
-        }
-
-        private Model3D GetPlateModel_old(Plita plate)
-        {
-            Model3DGroup model3DGroup = new Model3DGroup();
-
-            // Преобразование реальных размеров в модельные.
-            decimal modelPlateWidth = plate.PlateWidth * ScaleFactor;
-            decimal modelPlateHeight = plate.PlateThickness * ScaleFactor;
-            decimal modelPlateLength = plate.PlateLength * ScaleFactor;
-            decimal modelPlateBevelToLeft = plate.BevelToLeft * ScaleFactor;
-            decimal modelPlateBevelToRight = plate.BevelToRight * ScaleFactor;
-
-            decimal modelRibHeight = plate.RibHeight * ScaleFactor;
-            decimal modelRibThickness = plate.RibThickness * ScaleFactor;
-
-            // Создание плиты.
-            MeshGeometry3D plateMesh = CreateCuboid(modelPlateWidth, modelPlateHeight, modelPlateLength);
-            GeometryModel3D plateModel = new GeometryModel3D(plateMesh, new DiffuseMaterial(_plateBrush)
-            {
-                //SpecularPower = 100, // Увеличивает резкость бликов
-                AmbientColor = Colors.White // Улучшает контраст
-            });
-            model3DGroup.Children.Add(plateModel);
-
-            // Добавление рёбер.
-            decimal currentPosition = 0; // Позиционирование рёбер
-            for (int i = 0; i < plate.RibCount; i++)
-            {
-                var rib = plate.RibsCollection[i];
-
-                // Преобразование реальных параметров ребра в модельные
-                decimal modelRibDistanceLeft = rib.DistanceLeft * ScaleFactor;
-                decimal modelRibDistanceRight = rib.DistanceRight * ScaleFactor;
-                decimal modelRibIdentToLeft = rib.IdentToLeft * ScaleFactor;
-                decimal modelRibIdentToRight = rib.IdentToRight * ScaleFactor;
-
-                // Расчёт позиции ребра
-                currentPosition += modelRibDistanceLeft;
-
-                // Создание ребра
-                decimal ribLength = modelPlateLength - modelRibIdentToLeft - modelRibIdentToRight;
-                MeshGeometry3D ribMesh = CreateCuboid(modelRibThickness, modelRibHeight, ribLength);
-                GeometryModel3D ribModel = new GeometryModel3D(ribMesh, new DiffuseMaterial(_ribBrush)
-                {
-                    AmbientColor = Colors.White
-                });
-
-                // Позиционирование ребра
-                decimal ribX = currentPosition - modelPlateWidth / 2;
-
-                ribModel.Transform = new TranslateTransform3D((double)ribX,
-                                                              (double)modelPlateHeight / 2, // Центрирование по высоте плиты
-                                                              (double)modelRibIdentToRight);
-
-                model3DGroup.Children.Add(ribModel);
-
-                // Перемещение позиции для следующего ребра
-                if (!plate.ParalleleRibs)
-                    currentPosition += modelRibThickness + modelRibDistanceRight;
-            }
-
-            //if (!plate.ParalleleRibs && currentPosition > modelPlateWidth)
-            //    throw new Exception("Суммарное расстояние между рёбрами больше, чем вся ширина плиты.");
 
             model3DGroup.Transform = new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(1, 0, 0), 90)); // Поворот модели на 90 гр.
             return model3DGroup;
