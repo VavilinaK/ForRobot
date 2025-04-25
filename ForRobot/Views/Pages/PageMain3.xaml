@@ -215,7 +215,8 @@
             </MenuItem>
 
             <MenuItem Header="_Генерация" >
-                <MenuItem Header="_Копировать программу на контроллер" IsCheckable="True" IsChecked="{Binding Path=SendingGeneratedFiles, Mode=TwoWay}"/>
+                <MenuItem Header="_Копировать программу на контроллер" IsCheckable="True"
+                          IsChecked="{Binding Path=Settings.SendingGeneratedFiles, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <MenuItem Header="_Начать генерацию" InputGestureText="Ctrl+F5" Style="{StaticResource MenuItemDetalNull}">
                     <MenuItem.Icon>
                         <Path Fill="{StaticResource IconRunProgramBrush}" StrokeThickness="0"
@@ -603,14 +604,14 @@
             <avalonDock:DockingManager.DocumentPaneMenuItemHeaderTemplate>
                 <DataTemplate>
                     <Grid>
-                        <TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis"/>
+                        <TextBlock Text="{Binding Path=Content.Name}" TextTrimming="CharacterEllipsis"/>
                     </Grid>
                 </DataTemplate>
             </avalonDock:DockingManager.DocumentPaneMenuItemHeaderTemplate>
 
             <DockingManager.DocumentHeaderTemplate>
                 <DataTemplate>
-                    <Grid>
+                    <Grid ToolTip="{Binding Content.Path}">
                         <TextBlock Text="{Binding Path=Content.Name}"/>
                     </Grid>
                 </DataTemplate>
@@ -708,7 +709,7 @@
 
                                 <i:Interaction.Behaviors>
                                     <behavior:ZoomBehavior/>
-                                    <behavior:HelixWeldsBehavior Welds="{Binding Path=WeldsCollection}"/>
+                                    <!--<behavior:HelixWeldsBehavior Welds="{Binding Path=WeldsCollection}"/>-->
                                     <!--<behavior:HelixAnnotationsBehavior Annotations="{Binding Path=Annotations}"/>-->
                                     <behavior:HelixSceneTrackerBehavior SceneItems="{Binding Path=DataContext.SceneItemsCollection, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>
                                 </i:Interaction.Behaviors>
@@ -871,8 +872,8 @@
                                         <TreeView.Style>
                                             <Style TargetType="{x:Type TreeView}">
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Path=SelectedFile.Detal, Converter={StaticResource NullBooleanConvert}}" Value="{StaticResource False}">
-                                                        <Setter Property="IsEnabled" Value="False"/>
+                                                    <DataTrigger Binding="{Binding Path=SelectedFile.Detal}" Value="{x:Null}">
+                                                        <Setter Property="Visibility" Value="Hidden"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>

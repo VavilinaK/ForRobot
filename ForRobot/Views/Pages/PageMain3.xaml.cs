@@ -102,7 +102,7 @@ namespace ForRobot.Views.Pages
                 this.ViewModel.Select(firstHit.Visual);
             else
                 this.ViewModel.Select(null);
-        }       
+        }
 
         /// <summary>
         /// Сохранение макета AvalonDock
@@ -112,7 +112,7 @@ namespace ForRobot.Views.Pages
             try
             {
                 var serializer = new XmlLayoutSerializer(this.DockingManeger);
-                serializer.Serialize(@".\AvalonDock.config");
+                serializer.Serialize(App.Current.AvalonConfigPath);
             }
             catch (Exception ex)
             {
@@ -128,10 +128,10 @@ namespace ForRobot.Views.Pages
         {
             try
             {
-                if (File.Exists(@".\AvalonDock.config"))
+                if (File.Exists(App.Current.AvalonConfigPath))
                 {
                     var serializer = new XmlLayoutSerializer(this.DockingManeger);
-                    serializer.Deserialize(@".\AvalonDock.config");
+                    serializer.Deserialize(App.Current.AvalonConfigPath);
                 }
             }
             catch (Exception ex)
@@ -140,7 +140,7 @@ namespace ForRobot.Views.Pages
                 MessageBox.Show($"Ошибка при сохранении макета: {ex.Message}");
             }
         }
-       
+
         /// <summary>
         /// Поиск LayoutAnchorable по заголовку
         /// </summary>

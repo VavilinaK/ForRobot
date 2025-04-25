@@ -47,6 +47,11 @@ namespace ForRobot.Libr.Settings
         public bool InformUser { get; set; } = true;
 
         /// <summary>
+        /// Вход в приложение интерфейса по пин-коду
+        /// </summary>
+        public bool LoginByPINCode { get; set; } = false;
+
+        /// <summary>
         /// Ограничено ли время ожидания ответа от сервера
         /// </summary>
         public bool LimitedConnectionTimeOut { get; set; } = false;
@@ -56,10 +61,10 @@ namespace ForRobot.Libr.Settings
         /// </summary>
         public double ConnectionTimeOut { get; set; } = 3;
 
-        /// <summary>
-        /// Режим закрытия приложения. Спрашивает пользователя о закрытии и/или разрыве соединения
-        /// </summary>
-        public ModeClosingApp ModeClosingApp { get; set; } = ModeClosingApp.HaveConnected;
+        ///// <summary>
+        ///// Режим закрытия приложения. Спрашивает пользователя о закрытии и/или разрыве соединения
+        ///// </summary>
+        //public ModeClosingApp ModeClosingApp { get; set; } = ModeClosingApp.HaveConnected;
 
         #endregion Generic
 
@@ -228,6 +233,15 @@ namespace ForRobot.Libr.Settings
         #endregion View
 
         #region Generation
+
+        /// <summary>
+        /// При каждой генерации будет спрашивать имя генерируемого файла
+        /// </summary>
+        public bool AskNameFile { get; set; } = false;
+        /// <summary>
+        /// Отправляются ли сгенерированные файлы на робота/ов
+        /// </summary>
+        public bool SendingGeneratedFiles { get; set; } = true;
 
         /// <summary>
         /// Имя сгенерированной программы (настил с рёбрами)

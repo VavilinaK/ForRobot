@@ -137,19 +137,6 @@ namespace ForRobot.ViewModels
 
         public Version Version { get => System.Reflection.Assembly.GetEntryAssembly().GetName().Version; }
 
-        /// <summary>
-        /// Отправляются ли сгенерированные файлы на робота/ов
-        /// </summary>
-        public bool SendingGeneratedFiles
-        {
-            get => Properties.Settings.Default.SendingGeneratedFiles;
-            set
-            {
-                Properties.Settings.Default.SendingGeneratedFiles = value;
-                Properties.Settings.Default.Save();
-            }
-        }
-
         public object ActiveContent
         {
             get => this._activeContent;
@@ -709,9 +696,22 @@ namespace ForRobot.ViewModels
         private async Task Generation()
         {
             string foldForGenerate = Directory.GetParent(this.RobotsCollection.First().PathProgramm).ToString(); // Путь для генерации скриптом.
-            
+
+            string programName = this._programName;
+
+            if (App.Current.Settings.AskNameFile)
+            {
+                ForRobot.Views.Windows.InputWindow inputWindow = new ForRobot.Views.Windows.InputWindow("Введите имя генерируемой программы:");
+                inputWindow.ShowDialog();
+
+                if (string.IsNullOrEmpty(inputWindow.Answer))
+                    return;
+                else
+                    programName = inputWindow.Answer;
+            }
+
             // Запись Json-файла.
-            this.WriteJsonFile(this.SelectedFile.Detal, Path.Combine(foldForGenerate, $"{this._programName}.json"));
+            this.WriteJsonFile(this.SelectedFile.Detal, Path.Combine(foldForGenerate, $"{programName}.json"));
 
             // Генерация программы.
             switch (this.SelectedFile.Detal)
@@ -729,7 +729,7 @@ namespace ForRobot.ViewModels
                     break;
             }
 
-            new GenerationService(foldForGenerate, this._programName, this._scriptName).Start(this.SelectedFile.Detal);
+            new GenerationService(foldForGenerate, programName, this._scriptName).Start(this.SelectedFile.Detal);
 
             // Проверка успеха генерации
             if (this.SelectedRobotsName == "Все")
@@ -738,23 +738,24 @@ namespace ForRobot.ViewModels
                 {
                     string robotPath = this.RobotsCollection[i].PathProgramm;
 
-                    if (File.Exists(Path.Combine(robotPath, string.Join("", this._programName, ".src"))))
-                        App.Current.Logger.Info($"Файл {string.Join("", this._programName, ".src")} сгенерирован в {robotPath}");
+                    if (File.Exists(Path.Combine(robotPath, string.Join("", programName, ".src"))))
+                        App.Current.Logger.Info($"Файл {string.Join("", programName, ".src")} сгенерирован в {robotPath}");
                     else
-                        App.Current.Logger.Error($"Файл {Path.Combine(robotPath, string.Join("", this._programName, ".src"))} не найден");
+                        App.Current.Logger.Error($"Файл {Path.Combine(robotPath, string.Join("", programName, ".src"))} не найден");
                 }
             }
             else
             {
                 string robotPath = this.RobotsCollection.Where(item => item.Name == this.SelectedRobotsName).First().PathProgramm;
 
-                if (File.Exists(Path.Combine(robotPath, string.Join("", this._programName, ".src"))))
-                    App.Current.Logger.Info($"Файл {string.Join("", this._programName, ".src")} сгенерирован в {robotPath}");
+                if (File.Exists(Path.Combine(robotPath, string.Join("", programName, ".src"))))
+                    App.Current.Logger.Info($"Файл {string.Join("", programName, ".src")} сгенерирован в {robotPath}");
                 else
-                    App.Current.Logger.Error($"Файл {Path.Combine(robotPath, string.Join("", this._programName, ".src"))} не найден");
+                    App.Current.Logger.Error($"Файл {Path.Combine(robotPath, string.Join("", programName, ".src"))} не найден");
             }
 
-            if (!this.SendingGeneratedFiles || System.Windows.MessageBox.Show("Отправить сгенерированные файлы на робота/ов?\nВсе файлы в папке назначения будут удалены.", "Генерация", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) != MessageBoxResult.OK)
+            if (!App.Current.Settings.SendingGeneratedFiles)
+                //|| System.Windows.MessageBox.Show("Отправить сгенерированные файлы на робота/ов?\nВсе файлы в папке назначения будут удалены.", "Генерация", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly) != MessageBoxResult.OK)
                 return;
 
             if (this.RobotsCollection.Count > 0 && string.IsNullOrWhiteSpace(this.RobotsCollection[0].PathProgramm))

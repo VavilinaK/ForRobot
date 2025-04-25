@@ -1,11 +1,13 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Reflection;
 using System.Diagnostics;
 using System.Windows;
+using System.Security.Cryptography;
 using System.Configuration;
 using System.Collections.Generic;
 //using System.Collections.ObjectModel;
@@ -66,6 +68,11 @@ namespace ForRobot
 
         public readonly Stack<IUndoableCommand> UndoStack = new Stack<IUndoableCommand>();
         public readonly Stack<IUndoableCommand> RedoStack = new Stack<IUndoableCommand>();
+
+        /// <summary>
+        /// Директория AvalonDock.config файла, в котором сохраняется макет интерфейса.
+        /// </summary>
+        public string AvalonConfigPath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "AvalonDock.config");
 
         public Libr.Logger Logger { get; } = new Libr.Logger();
 
@@ -137,7 +144,7 @@ namespace ForRobot
 
                 foreach (var i in e.Args) // Исп. для открытия файла модели "с помощью"
                     this.OpenedFiles.Add(new Model.File3D.File3D(i));
-                               
+                
                 RunApp(e.Args);
                 await Task.Run(() => StartPipeServer());
 
@@ -225,7 +232,14 @@ namespace ForRobot
 
             this.Logger.Trace("Запуск приложения");
             Application.Current.MainWindow = MainWindowView;
-            MainWindowView.Show();
+
+            if (this.Settings.LoginByPINCode && !ForRobot.App.EqualsPinCode())
+            {
+                this.Logger.Error("Ошибка при входе: неверный пин-код!");
+                Application.Current.Shutdown(1);
+            }
+            else
+                MainWindowView.Show();
         }
 
         /// <summary>
@@ -337,6 +351,40 @@ namespace ForRobot
             App.Current.MainWindow.WindowState = System.Windows.WindowState.Normal;
             App.Current.MainWindow.Topmost = true;
             App.Current.MainWindow.Focus();
+        }
+
+        #endregion
+
+        #region Public functions
+
+        /// <summary>
+        /// Хэширование строки
+        /// </summary>
+        /// <param name="str">Строка для хэширования</param>
+        /// <returns></returns>
+        public static string Sha256(string str)
+        {
+            StringBuilder Sb = new StringBuilder();
+            using (var hash = SHA256.Create())
+            {
+                Encoding enc = Encoding.UTF8;
+                byte[] result = hash.ComputeHash(Encoding.UTF8.GetBytes(str));
+                foreach (byte b in result)
+                    Sb.Append(b.ToString("x2"));
+            }
+            return Sb.ToString();
+        }
+
+        /// <summary>
+        /// Ввод пин-кода пользователем
+        /// </summary>
+        /// <param name="sInputBoxText">Question, текст в InputBox</param>
+        /// <returns>Верный ли введенный пользователем пин-код</returns>
+        public static bool EqualsPinCode(string sInputBoxText = "Введите пин-код")
+        {
+            ForRobot.Views.Windows.InputWindow inputWindow = new ForRobot.Views.Windows.InputWindow(sInputBoxText);
+            inputWindow.ShowDialog();
+            return Sha256(inputWindow.Answer) == ForRobot.Properties.Settings.Default.PinCode;
         }
 
         #endregion

@@ -30,24 +30,29 @@
                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
             </Style>
 
-            <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource textBase}">
+            <Style x:Key="CheckBoxBase" TargetType="{x:Type CheckBox}" BasedOn="{StaticResource textBase}">
                 <Setter Property="Margin" Value="0,5"/>
                 <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
             </Style>
 
+            <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource CheckBoxBase}"></Style>
+
             <Style TargetType="{x:Type RadioButton}" BasedOn="{StaticResource textBase}"></Style>
-            
-            <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource textBase}"></Style>
+
+            <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource textBase}">
+                <Setter Property="Padding" Value="10"/>
+            </Style>
         </DataTemplate.Resources>
 
         <Grid Background="Transparent" DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <GroupBox Grid.Row="0" Header="Обновление" FontSize="13" Padding="10">
+            <GroupBox Grid.Row="0" Header="Обновление">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>
@@ -64,7 +69,7 @@
                         <CheckBox Grid.Column="0" Content="Автообновление" IsChecked="{Binding Path=Settings.AutoUpdate, Mode=TwoWay}"/>
                         <CheckBox Grid.Column="2" Content="Уведомлять пользователя перед обновлением" IsChecked="{Binding Path=Settings.InformUser, Mode=TwoWay}">
                             <CheckBox.Style>
-                                <Style TargetType="{x:Type CheckBox}">
+                                <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource CheckBoxBase}">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Path=Settings.AutoUpdate}" Value="{StaticResource False}">
                                             <Setter Property="IsEnabled" Value="False"/>
@@ -79,9 +84,22 @@
                 </Grid>
             </GroupBox>
 
-            <Button Grid.Row="1" Content="Изменить пин-код" Margin="15" Command="{Binding Path=EditPinCodeCommand}"/>
+            <CheckBox Grid.Row="1" Content="Вход в интерфейс по пин-коду" IsChecked="{Binding Path=Settings.LoginByPINCode, Mode=TwoWay}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="Checked">
+                        <i:InvokeCommandAction Command="{Binding Path=SelectClosedControlCommand}" CommandParameter="{Binding Path=., RelativeSource={RelativeSource AncestorType={x:Type CheckBox}, Mode=FindAncestor}}"/>
+                    </i:EventTrigger>
 
-            <GroupBox Grid.Row="2" Header="Делать запрос пользователю перед закрытием окна">
+                    <i:EventTrigger EventName="Unchecked">
+                        <i:InvokeCommandAction Command="{Binding Path=SelectClosedControlCommand}" CommandParameter="{Binding Path=., RelativeSource={RelativeSource AncestorType={x:Type CheckBox}, Mode=FindAncestor}}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </CheckBox>
+
+            <Button Grid.Row="2" Content="Изменить пин-код" Margin="15" Command="{Binding Path=EditPinCodeCommand}" 
+                    VerticalAlignment="Bottom"/>
+
+            <!--<GroupBox Grid.Row="2" Header="Делать запрос пользователю перед закрытием окна">
                 <Grid Margin="10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -99,7 +117,7 @@
                         </RadioButton.Content>
                     </RadioButton>
                 </Grid>
-            </GroupBox>
+            </GroupBox>-->
         </Grid>        
     </DataTemplate>
 
@@ -205,11 +223,11 @@
 
                                     <i:Interaction.Triggers>
                                         <i:EventTrigger EventName="Checked">
-                                            <i:InvokeCommandAction Command="{Binding Path=CheckBoxAvailableFolderCommand}" CommandParameter="{Binding}"/>
+                                            <i:InvokeCommandAction Command="{Binding Path=DataContext.CheckBoxAvailableFolderCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}" CommandParameter="{Binding}"/>
                                         </i:EventTrigger>
 
                                         <i:EventTrigger EventName="Unchecked">
-                                            <i:InvokeCommandAction Command="{Binding Path=CheckBoxAvailableFolderCommand}" CommandParameter="{Binding}"/>
+                                            <i:InvokeCommandAction Command="{Binding Path=DataContext.CheckBoxAvailableFolderCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}" CommandParameter="{Binding}"/>
                                         </i:EventTrigger>
                                     </i:Interaction.Triggers>
                                 </CheckBox>
@@ -260,6 +278,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
@@ -283,8 +302,28 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
             </Grid>
-            
-            <GroupBox Grid.Row="1" Header="Видимость вкладок">
+
+            <GroupBox Grid.Row="1" Header="Панели интерфейса">
+                <Grid>
+                    <ListBox SelectionMode="Single"
+                             Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0"
+                             ItemsSource="{Binding Path=Anchorables, Mode=OneWay}">
+
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <CheckBox IsChecked="{Binding Path=IsVisible}"/>
+                                    <Label Content="{Binding Path=Title}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </GroupBox>
+
+            <Button Grid.Row="2" Content="Удалить изменения интерфейса" Margin="10" Command="{Binding Path=DeleteLayoutAnchorableConfigCommand}"/>
+
+            <!--<GroupBox Grid.Row="1" Header="Видимость вкладок">
                 <Grid>
                     <ListBox SelectionMode="Single"
                              Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0"
@@ -308,10 +347,11 @@
                         </ListBox.ItemTemplate>
                     </ListBox>
                 </Grid>
-            </GroupBox>
+            </GroupBox>-->
 
-            <CheckBox Grid.Row="2" Content="Видимость изображений детали" IsChecked="{Binding Path=Settings.VisibilityPictures, Mode=TwoWay}">
-                <!--<CheckBox.Style>
+            <!--<CheckBox Grid.Row="2" Content="Видимость изображений детали" IsChecked="{Binding Path=Settings.VisibilityPictures, Mode=TwoWay}">
+                -->
+            <!--<CheckBox.Style>
                         <Style TargetType="{x:Type CheckBox}">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding Path=Settings.AvailableTab, Source={x:Static Application.Current}, 
@@ -320,8 +360,8 @@
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </CheckBox.Style>-->
-            </CheckBox>
+                    </CheckBox.Style>--><!--
+            </CheckBox>-->
         </Grid>
     </DataTemplate>
 
@@ -500,10 +540,12 @@
                 <Setter Property="TextElement.FontWeight" Value="Normal"/>
             </Style>
 
-            <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource textBase}">
+            <Style x:Key="GroupBoxBase" TargetType="{x:Type GroupBox}" BasedOn="{StaticResource textBase}">
                 <Setter Property="TextElement.FontWeight" Value="Bold"/>
                 <Setter Property="Padding" Value="5"/>
             </Style>
+
+            <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource GroupBoxBase}"></Style>
 
             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource textBase}">
                 <Setter Property="VerticalAlignment" Value="Center"/>
@@ -520,16 +562,36 @@
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
             </Style>
+
+            <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource textBase}">
+                <Setter Property="Margin" Value="0,5"/>
+                <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+            </Style>
         </DataTemplate.Resources>
 
         <Grid Background="Transparent" DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <GroupBox Grid.Row="0" Header="Стандартное наименование файла для типа детали:">
+            <CheckBox Grid.Row="0" Content="Спрашивать при каждой генерации имя файла" IsChecked="{Binding Path=Settings.AskNameFile, Mode=TwoWay}"/>
+
+            <GroupBox Grid.Row="1" Header="Стандартное наименование файла для типа детали:">
+                <GroupBox.Style>
+                    <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource GroupBoxBase}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=Settings.AskNameFile, Mode=TwoWay}" Value="True">
+                                <Setter Property="IsEnabled" Value="False"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </GroupBox.Style>
+                
                 <Grid TextElement.FontWeight="Normal" Margin="4">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -552,7 +614,7 @@
                 </Grid>
             </GroupBox>
             
-            <GroupBox Grid.Row="1" Header="Стандартное наименование скрипта-генератора для типа детали:">
+            <GroupBox Grid.Row="2" Header="Стандартное наименование скрипта-генератора для типа детали:">
                 <Grid TextElement.FontWeight="Normal" Margin="4">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -574,6 +636,8 @@
                     <TextBox Grid.Column="1" Text="{Binding ScriptName, Mode=TwoWay}"/>
                 </Grid>
             </GroupBox>
+
+            <CheckBox Grid.Row="3" Content="Копирование сгенерированной программы на контроллер" IsChecked="{Binding Path=Settings.SendingGeneratedFiles, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
         </Grid>
     </DataTemplate>
 </ResourceDictionary>

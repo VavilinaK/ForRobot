@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 //using HelixToolkit;
@@ -344,7 +345,7 @@ namespace ForRobot.Model.File3D
         //        ProcessNode(childNode, scene, modelGroup);
         //    }
         //}
-        
+
         //private GeometryModel3D ConvertMeshToGeometryModel3D(Assimp.Mesh mesh)
         //{
         //    // Создаем MeshGeometry3D для WPF
@@ -393,7 +394,125 @@ namespace ForRobot.Model.File3D
         //    return materialGroup;
         //}
 
-        #endregion
+        #region Model
+
+        private static List<MeshGeometry3D> ExtractGeometries(Model3DGroup modelGroup)
+        {
+            //foreach (var model in group.Children)
+            //{
+            //    if (model is Model3DGroup subGroup)
+            //    {
+            //        foreach (var mesh in ExtractMeshes(subGroup))
+            //            yield return mesh;
+            //    }
+            //    else if (model is GeometryModel3D geomModel)
+            //    {
+            //        if (geomModel.Geometry is MeshGeometry3D mesh)
+            //            yield return mesh;
+            //    }
+            //}
+
+            var geometries = new List<MeshGeometry3D>();
+            foreach (var model in modelGroup.Children)
+            {
+                if (model is Model3DGroup group)
+                {
+                    geometries.AddRange(ExtractGeometries(group));
+                }
+                else if (model is GeometryModel3D geometryModel)
+                {
+                    if (geometryModel.Geometry is MeshGeometry3D mesh)
+                    {
+                        geometries.Add(mesh);
+                    }
+                }
+            }
+            return geometries;
+        }
+
+        /// <summary>
+        /// Получение уникальных вершин
+        /// </summary>
+        /// <param name="mesh"></param>
+        /// <returns></returns>
+        private static HashSet<Point3D> GetUniquePoints(MeshGeometry3D mesh) => new HashSet<Point3D>(mesh.Positions);
+
+        /// <summary>
+        /// Поиск всех рёбер
+        /// </summary>
+        /// <param name="mesh"></param>
+        /// <returns></returns>
+        private static HashSet<Tuple<int, int>> GetEdges(MeshGeometry3D mesh)
+        {
+            var edges = new HashSet<Tuple<int, int>>();
+
+            for (int i = 0; i < mesh.TriangleIndices.Count; i += 3)
+            {
+                int[] indices = new int[3] {
+                                            mesh.TriangleIndices[i],
+                                            mesh.TriangleIndices[i+1],
+                                            mesh.TriangleIndices[i+2]
+                };
+
+                for (int j = 0; j < 3; j++)
+                {
+                    int a = Math.Min(indices[j], indices[(j + 1) % 3]);
+                    int b = Math.Max(indices[j], indices[(j + 1) % 3]);
+                    edges.Add(Tuple.Create(a, b));
+                }
+            }
+            return edges;
+        }
+
+        /// <summary>
+        /// Расчёт площади поверхности
+        /// </summary>
+        /// <param name="mesh"></param>
+        /// <returns></returns>
+        private static double CalculateSurfaceArea(MeshGeometry3D mesh)
+        {
+            double area = 0;
+            for (int i = 0; i < mesh.TriangleIndices.Count; i += 3)
+            {
+                var p0 = mesh.Positions[mesh.TriangleIndices[i]];
+                var p1 = mesh.Positions[mesh.TriangleIndices[i + 1]];
+                var p2 = mesh.Positions[mesh.TriangleIndices[i + 2]];
+
+                System.Windows.Media.Media3D.Vector3D v1 = p1 - p0;
+                System.Windows.Media.Media3D.Vector3D v2 = p2 - p0;
+                area += System.Windows.Media.Media3D.Vector3D.CrossProduct(v1, v2).Length * 0.5;
+            }
+            return area;
+        }
+
+        /// <summary>
+        /// Построение AABB
+        /// </summary>
+        /// <param name="points"></param>
+        /// <returns></returns>
+        private static Rect3D CalculateAABB(IEnumerable<Point3D> points)
+        {
+            var min = new Point3D(double.MaxValue, double.MaxValue, double.MaxValue);
+            var max = new Point3D(double.MinValue, double.MinValue, double.MinValue);
+
+            foreach (var p in points)
+            {
+                min.X = Math.Min(min.X, p.X);
+                min.Y = Math.Min(min.Y, p.Y);
+                min.Z = Math.Min(min.Z, p.Z);
+
+                max.X = Math.Max(max.X, p.X);
+                max.Y = Math.Max(max.Y, p.Y);
+                max.Z = Math.Max(max.Z, p.Z);
+            }
+
+            return new Rect3D(min.X, min.Y, min.Z, 
+                              max.X - min.X, max.Y - min.Y, max.Z - min.Z);
+        }
+
+        #endregion Model
+
+        #endregion Private functions
 
         #region Event
 

@@ -12,11 +12,11 @@ namespace ForRobot.Libr.Converters
         {
             if (value == null || parameter == null)
                 throw new FormatException("to use this converter, value and parameter shall inherit from Object");
-
+            
             if (value is Boolean && parameter is Boolean)
                 return ((bool)parameter == (bool)value);
             else if (value.GetType() == parameter.GetType())
-                return parameter == value;
+                return value.Equals(parameter);
             //else if (value is ForRobot.Libr.Settings.ModeClosingApp && parameter is ForRobot.Libr.Settings.ModeClosingApp)
             //    return ((ForRobot.Libr.Settings.ModeClosingApp)parameter == (ForRobot.Libr.Settings.ModeClosingApp)value);
             else

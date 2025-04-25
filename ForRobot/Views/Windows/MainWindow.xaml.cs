@@ -57,47 +57,35 @@ namespace ForRobot.Views.Windows
             {
                 GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Behavior.SaveLayoutMessage());
 
-                if (!((System.Windows.Controls.Page)this.MainFrame?.Content is Pages.PageMain2))
+                if((System.Windows.Controls.Page)this.MainFrame?.Content is Pages.PageMain2 && (this.MainFrame.Content as ForRobot.Views.Pages.PageMain2).ViewModel.RobotsCollection.Where(robot => robot.IsConnection).Count() > 0)
                 {
-                    e.Cancel = false;
-                    return;
-                }
-
-                switch (this.Settings.ModeClosingApp)
-                {
-                    case Libr.Settings.ModeClosingApp.Ever:
-                        if (((Pages.PageMain2)this.MainFrame.Content).ViewModel.RobotsCollection.Where(robot => robot.IsConnection).Count() > 0)
-                        {
-                            if (MessageBox.Show($"Закрыть соединение?", "Закрытие приложения", MessageBoxButton.OKCancel, MessageBoxImage.Question) != MessageBoxResult.OK)
-                            {
-                                e.Cancel = true;
-                                return;
-                            }
-                            else
-                                break;
-                        }
-                        else if (MessageBox.Show($"Закрыть приложение?", "Закрытие приложения", MessageBoxButton.OKCancel, MessageBoxImage.Question) != MessageBoxResult.OK)
-                        {
-                            e.Cancel = true;
-                            return;
-                        }                        
-                        break;
-
-                    case Libr.Settings.ModeClosingApp.HaveConnected:
-                        if (((Pages.PageMain2)this.MainFrame.Content).ViewModel.RobotsCollection.Where(robot => robot.IsConnection).Count() > 0 &&
-                            MessageBox.Show($"Закрыть соединение?", "Закрытие приложения", MessageBoxButton.OKCancel, MessageBoxImage.Question) != MessageBoxResult.OK)
-                        {
-                            e.Cancel = true;
-                            return;
-                        }
-                        break;
-                }
-
-                if (((Pages.PageMain2)this.MainFrame.Content).ViewModel.RobotsCollection.Where(robot => robot.IsConnection).Count() > 0)
-                {
-                    foreach (var robot in ((Pages.PageMain2)this.MainFrame.Content).ViewModel.RobotsCollection)
+                    if (MessageBox.Show($"Закрыть соединение?", "Закрытие приложения", MessageBoxButton.OKCancel, MessageBoxImage.Question) != MessageBoxResult.OK)
                     {
-                        robot.Dispose();
+                        e.Cancel = true;
+                        return;
+                    }
+                    else
+                    {
+                        foreach (var robot in (this.MainFrame.Content as ForRobot.Views.Pages.PageMain2).ViewModel.RobotsCollection)
+                        {
+                            robot.Dispose();
+                        }
+                    }
+                }
+
+                if ((System.Windows.Controls.Page)this.MainFrame?.Content is Pages.PageMain3 && (this.MainFrame.Content as ForRobot.Views.Pages.PageMain3).ViewModel.RobotsCollection.Where(robot => robot.IsConnection).Count() > 0)
+                {
+                    if (MessageBox.Show($"Закрыть соединение?", "Закрытие приложения", MessageBoxButton.OKCancel, MessageBoxImage.Question) != MessageBoxResult.OK)
+                    {
+                        e.Cancel = true;
+                        return;
+                    }
+                    else
+                    {
+                        foreach (var robot in (this.MainFrame.Content as ForRobot.Views.Pages.PageMain3).ViewModel.RobotsCollection)
+                        {
+                            robot.Dispose();
+                        }
                     }
                 }
             }
