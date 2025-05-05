@@ -217,6 +217,8 @@
             <MenuItem Header="_Генерация" >
                 <MenuItem Header="_Копировать программу на контроллер" IsCheckable="True"
                           IsChecked="{Binding Path=Settings.SendingGeneratedFiles, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <MenuItem Header="_Запрашивать имя генерируемой программы" IsCheckable="True"
+                          IsChecked="{Binding Path=Settings.AskNameFile, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 <MenuItem Header="_Начать генерацию" InputGestureText="Ctrl+F5" Style="{StaticResource MenuItemDetalNull}">
                     <MenuItem.Icon>
                         <Path Fill="{StaticResource IconRunProgramBrush}" StrokeThickness="0"
@@ -342,6 +344,12 @@
 
                 <Style TargetType="{x:Type Path}">
                     <Setter Property="Stretch" Value="Uniform"/>
+                </Style>
+
+                <Style TargetType="{x:Type ToggleButton}">
+                    <Setter Property="Width" Value="Auto"/>
+                    <Setter Property="Padding" Value="5"/>
+                    <Setter Property="Margin" Value="3, 2"/>
                 </Style>
             </Menu.Resources>
 
@@ -520,10 +528,31 @@
             <MenuItem ToolTip="Вкл/выкл. оси координат">
                 <MenuItem.Template>
                     <ControlTemplate TargetType="{x:Type MenuItem}">
-                        <ToggleButton Width="Auto" Margin="3,2" Padding="5"
-                                      IsChecked="{Binding Path=Settings.ShowCoordinateSystem, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <ToggleButton IsChecked="{Binding Path=Settings.ShowCoordinateSystem, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             <Path Fill="{StaticResource IconAxistBrush}" Stretch="Uniform"
                                   Data="{StaticResource AxistPathGeomerty}"/>
+                        </ToggleButton>
+                    </ControlTemplate>
+                </MenuItem.Template>
+            </MenuItem>
+
+            <MenuItem ToolTip="Вкл/выкл. сетку">
+                <MenuItem.Template>
+                    <ControlTemplate TargetType="{x:Type MenuItem}">
+                        <ToggleButton IsChecked="{Binding Path=IsVisibleGridLinesVisual3D, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            <Path Stroke="{StaticResource IconAxistBrush}" Stretch="Uniform">
+                                <Path.Data>
+                                    <GeometryGroup>
+                                        <StaticResource ResourceKey="PerspectiveGridGeomerty1"/>
+                                        <StaticResource ResourceKey="PerspectiveGridGeomerty2"/>
+                                        <StaticResource ResourceKey="PerspectiveGridGeomerty3"/>
+                                        <StaticResource ResourceKey="PerspectiveGridGeomerty4"/>
+                                        <StaticResource ResourceKey="PerspectiveGridGeomerty5"/>
+                                        <StaticResource ResourceKey="PerspectiveGridGeomerty6"/>
+                                        <StaticResource ResourceKey="PerspectiveGridGeomerty7"/>
+                                    </GeometryGroup>
+                                </Path.Data>
+                            </Path>
                         </ToggleButton>
                     </ControlTemplate>
                 </MenuItem.Template>
@@ -695,12 +724,9 @@
                                     </ModelVisual3D.Content>
                                 </ModelVisual3D>-->
 
-                                <h:GridLinesVisual3D/>
+                                <h:GridLinesVisual3D Visible="{Binding Path=DataContext.IsVisibleGridLinesVisual3D, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>
 
                                 <ModelVisual3D Content="{Binding Path=CurrentModel, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
-
-                                <!--<h:BillboardVisual3D Position="0,0,0"
-                                                     Material="{h:ImageMaterial Opacity, IsEmissive=true}" />-->
 
                                 <h:CoordinateSystemVisual3D ArrowLengths="3"/>
 
@@ -883,7 +909,7 @@
                                             <!--<SolidColorBrush x:Key="TreeViewItem.TreeArrow.Static.Background" Color="#B8B8B8"/>-->
                                             <SolidColorBrush x:Key="TreeViewItem.TreeArrow.Static.Checked.Fill" Color="#304cff"/>
                                             <SolidColorBrush x:Key="TreeViewItem.TreeArrow.Static.Checked.Stroke" Color="#001ccf"/>
-                                            <SolidColorBrush x:Key="TreeViewItem.TreeArrow.MouseOver.Stroke" Color="#FF27C7"/>
+                                            <SolidColorBrush x:Key="TreeViewItem.TreeArrow.MouseOver.Stroke" Color="#42fcff"/>
                                             <SolidColorBrush x:Key="TreeViewItem.TreeArrow.MouseOver.Fill" Color="#FFCCEEFB"/>
                                             <SolidColorBrush x:Key="TreeViewItem.TreeArrow.MouseOver.Checked.Stroke" Color="#FF1CC4F7"/>
                                             <SolidColorBrush x:Key="TreeViewItem.TreeArrow.MouseOver.Checked.Fill" Color="#FF82DFFB"/>
@@ -909,7 +935,8 @@
                                                                     <RowDefinition/>
                                                                 </Grid.RowDefinitions>
 
-                                                                <ToggleButton x:Name="Expander" ClickMode="Press" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" Style="{DynamicResource ExpandCollapseToggleStyle}"/>
+                                                                <ToggleButton x:Name="Expander" ClickMode="Press" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
+                                                                              Style="{DynamicResource ExpandCollapseToggleStyle}"/>
 
                                                                 <Border x:Name="Bd" Grid.Column="1" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
                                                                     <ContentPresenter x:Name="PART_Header" ContentSource="Header" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
@@ -920,7 +947,7 @@
 
                                                             <ControlTemplate.Triggers>
                                                                 <Trigger Property="IsExpanded" Value="false">
-                                                                    <Setter Property="Visibility" TargetName="ItemsHost" Value="Collapsed"/>
+                                                                    <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed"/>
                                                                 </Trigger>
                                                                 <Trigger Property="HasItems" Value="false">
                                                                     <Setter Property="Visibility" TargetName="Expander" Value="Hidden"/>
@@ -948,12 +975,10 @@
 
                                             <Style x:Key="ExpandCollapseToggleStyle" TargetType="{x:Type ToggleButton}">
                                                 <Setter Property="Focusable" Value="False"/>
-                                                <Setter Property="Width" Value="16"/>
-                                                <Setter Property="Height" Value="16"/>
                                                 <Setter Property="Template">
                                                     <Setter.Value>
                                                         <ControlTemplate TargetType="{x:Type ToggleButton}">
-                                                            <Border Background="Transparent"  Height="16" Padding="5,5,5,5" Width="16">
+                                                            <Border Background="Transparent" Height="25" Width="25" Padding="5">
                                                                 <Path x:Name="ExpandPath" Data="{StaticResource TreeArrow}" Fill="{StaticResource TreeViewItem.TreeArrow.Static.Fill}" Stroke="{StaticResource TreeViewItem.TreeArrow.Static.Stroke}">
                                                                     <Path.RenderTransform>
                                                                         <RotateTransform Angle="135" CenterY="3" CenterX="3"/>

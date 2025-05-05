@@ -21,16 +21,49 @@ namespace ForRobot.Services
 
         private Annotation GetPlateLengthAnnotation(Detal detal)
         {
-            decimal modelPlateWidth = detal.PlateWidth * ScaleFactor;
-            decimal modelPlateLength = detal.PlateLength * ScaleFactor;
-            return new Annotation()
+            double modelPlateWidth = (double)detal.PlateWidth * (double)ScaleFactor;
+            double modelPlateLength = (double)detal.PlateLength * (double)ScaleFactor;
+
+            Point3DCollection points = new Point3DCollection(new List<Point3D>()
             {
-                StartPoint = new Point3D(-((double)modelPlateWidth / 2),
-                                         (double)modelPlateLength / 2, 
-                                         0),
-                EndPoint = new Point3D(-((double)modelPlateWidth / 2),
-                                       (double)modelPlateLength / 2 + 10,
-                                       0),
+                new Point3D(modelPlateWidth / 2 + 5,
+                            modelPlateLength / 2,
+                            0),
+
+                new Point3D(modelPlateWidth / 2,
+                            modelPlateLength / 2,
+                            0),
+
+                new Point3D(modelPlateWidth / 2,
+                            -modelPlateLength / 2,
+                            0),
+
+                new Point3D(modelPlateWidth / 2 + 5,
+                            -modelPlateLength / 2,
+                            0),
+            });
+
+            return new Annotation(points, Annotation.ArrowSide.DA)
+            {
+                //StartPoint = new Point3D(modelPlateWidth / 2 + 20,
+                //                         modelPlateLength / 2,
+                //                         0),
+
+                //EndPoint = new Point3D(modelPlateWidth / 2 + 20,
+                //                      -modelPlateLength / 2,
+                //                       0),
+
+                //StartPoint = new Point3D(-((double)modelPlateWidth / 2),
+                //                         (double)modelPlateLength / 2,
+                //                         0),
+
+                //EndPoint = new Point3D(-((double)modelPlateWidth / 2),
+                //                       (double)modelPlateLength / 2 + 10,
+                //                       0),
+
+                //StartPoint = new Point3D(20, 10, 0),
+                //EndPoint = new Point3D(30, 15, 0),
+
                 Text = $"Length: {detal.PlateLength} mm",
                 PropertyName = nameof(detal.PlateLength)
             };

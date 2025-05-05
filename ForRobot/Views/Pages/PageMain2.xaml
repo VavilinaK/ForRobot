@@ -1298,55 +1298,74 @@
                             </Style.Triggers>
                         </Style>
                     </TabItem.Style>
-                    
-                    <ListView SelectionMode="Single" FontSize="18" Margin="15"
+
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <ListView SelectionMode="Single" FontSize="18" Margin="15"
                               ScrollViewer.CanContentScroll="True"
                               ScrollViewer.VerticalScrollBarVisibility="Auto"
                               ScrollViewer.HorizontalScrollBarVisibility="Auto"
                               ItemsSource="{Binding Path=RobotsCollection, Mode=OneWay}">
-                        
-                        <ListView.Resources>
-                            <Style TargetType="{x:Type Button}">
-                                <Setter Property="Height" Value="45"/>
-                                <Setter Property="Background" Value="White"/>
-                                <Setter Property="Padding" Value="5"/>
-                                <Setter Property="Margin" Value="5"/>
-                            </Style>
 
-                            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource textBlockBase}">
-                                <Setter Property="TextWrapping" Value="Wrap"/>
-                            </Style>
-                        </ListView.Resources>
+                            <ListView.Resources>
+                                <Style TargetType="{x:Type Button}">
+                                    <Setter Property="Height" Value="45"/>
+                                    <Setter Property="Background" Value="White"/>
+                                    <Setter Property="Padding" Value="5"/>
+                                    <Setter Property="Margin" Value="5"/>
+                                </Style>
 
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="{x:Type ListViewItem}">
-                                <Setter Property="Padding" Value="0,20"/>
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                            </Style>
-                        </ListView.ItemContainerStyle>
+                                <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource textBlockBase}">
+                                    <Setter Property="TextWrapping" Value="Wrap"/>
+                                </Style>
+                            </ListView.Resources>
 
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn CellTemplate="{StaticResource buttonDelete}"></GridViewColumn>
-                                <GridViewColumn DisplayMemberBinding="{Binding Path=Name}">Название</GridViewColumn>
-                                <GridViewColumn CellTemplate="{StaticResource buttonRename}"></GridViewColumn>
-                                <GridViewColumn CellTemplate="{StaticResource robotControl}" Width="Auto"></GridViewColumn>
-                                <GridViewColumn x:Name="StatusColumn" 
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListViewItem}">
+                                    <Setter Property="Padding" Value="0,20"/>
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                </Style>
+                            </ListView.ItemContainerStyle>
+
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn CellTemplate="{StaticResource buttonDelete}"></GridViewColumn>
+                                    <GridViewColumn DisplayMemberBinding="{Binding Path=Name}">Название</GridViewColumn>
+                                    <GridViewColumn CellTemplate="{StaticResource buttonRename}"></GridViewColumn>
+                                    <GridViewColumn CellTemplate="{StaticResource robotControl}" Width="Auto"></GridViewColumn>
+                                    <GridViewColumn x:Name="StatusColumn" 
                                                 CellTemplate="{StaticResource textBlockStatus}" 
                                                 Width="{Binding Path=DataContext.StatusColumnWidth, Mode=TwoWay,
                                                         RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}">
-                                    Статус
-                                </GridViewColumn>
-                            </GridView>
-                        </ListView.View>
+                                        Статус
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
 
-                        <!--<i:Interaction.Triggers>
+                            <!--<i:Interaction.Triggers>
                             <i:EventTrigger EventName="MouseDoubleClick">
                                 <i:InvokeCommandAction Command="{Binding Path=SelectRobotCommand}"
                                                        CommandParameter="{Binding Path=., RelativeSource={RelativeSource AncestorType={x:Type ListView}, Mode=FindAncestor}}"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>-->
-                    </ListView>
+                        </ListView>
+
+                        <TextBlock Grid.Row="1" TextWrapping="Wrap" FontSize="{StaticResource FontSizeNP4}" FontWeight="Bold"
+                                   Text="Для запуска удерживайте кнопку 'Пуск'">
+                            
+                        </TextBlock>
+
+                        <!--<Border Grid.Row="1" Padding="7" Margin="5" BorderThickness="5"
+                                BorderBrush="#FF1680C9" Background="#FFD5EBFD"
+                                HorizontalAlignment="Left">
+                            
+                        </Border>-->
+                    </Grid>
                 </TabItem>
 
                 <TabItem Header="Программа">

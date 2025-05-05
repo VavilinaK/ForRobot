@@ -37,6 +37,8 @@ namespace ForRobot.ViewModels
         private readonly IModelExporter _modelExporter = new ExporterService();
         private readonly IFileDialogService _fileDialogService = new FileDialogService();
 
+        private bool _isVisibleGridLinesVisual3D = true;
+
         private object _activeContent;
 
         private string _programName
@@ -133,19 +135,9 @@ namespace ForRobot.ViewModels
 
         #region Public variables
 
-        //public IHelixViewport3D Viewport { get; set; }
+        public bool IsVisibleGridLinesVisual3D { get => this._isVisibleGridLinesVisual3D; set => Set(ref this._isVisibleGridLinesVisual3D, value, false); }
 
         public Version Version { get => System.Reflection.Assembly.GetEntryAssembly().GetName().Version; }
-
-        public object ActiveContent
-        {
-            get => this._activeContent;
-            set
-            {
-                this._activeContent = value;
-                this.UpdateSelectedDocument();
-            }
-        }
 
         /// <summary>
         /// Выбранный файл
@@ -165,6 +157,16 @@ namespace ForRobot.ViewModels
         /// Имя выбранного робота для генерации
         /// </summary>
         public string SelectedRobotsName { get; set; }
+        
+        public object ActiveContent
+        {
+            get => this._activeContent;
+            set
+            {
+                this._activeContent = value;
+                this.UpdateSelectedDocument();
+            }
+        }
 
         /// <summary>
         /// Выбранный 3D объект
@@ -184,15 +186,13 @@ namespace ForRobot.ViewModels
                         break;
 
                     default:
-                        Set(ref this._selectedObject, value);
+                        Set(ref this._selectedObject, value, false);
                         break;
                 }
             }
         }
 
-        public System.Windows.Controls.TreeViewItem SelectedItem {
-            get => this._selectedItem;
-            set => Set(ref this._selectedItem, value); }
+        public System.Windows.Controls.TreeViewItem SelectedItem { get => this._selectedItem; set => Set(ref this._selectedItem, value, false); }
 
         #region Collections
 
@@ -231,7 +231,7 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Коллекция сообщений
         /// </summary>
-        public ObservableCollection<Model.File3D.SceneItem> SceneItemsCollection { get => this._sceneItemsCollection; set => Set(ref this._sceneItemsCollection, value); }
+        public ObservableCollection<Model.File3D.SceneItem> SceneItemsCollection { get => this._sceneItemsCollection; set => Set(ref this._sceneItemsCollection, value, false); }
         /// <summary>
         /// Коллекция сообщений
         /// </summary>
@@ -690,7 +690,7 @@ namespace ForRobot.ViewModels
             };
             return robot;
         }
-
+                
         #region Async
 
         private async Task Generation()

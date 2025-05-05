@@ -330,6 +330,7 @@
     <Compile Include="Model\Detals\WeldingSchemas.cs" />
     <Compile Include="Model\File3D\Annotation.cs" />
     <Compile Include="Model\File3D\File3D.cs" />
+    <Compile Include="Model\File3D\Materials.cs" />
     <Compile Include="Model\File3D\SceneItem.cs" />
     <Compile Include="IUndoableCommand.cs" />
     <Compile Include="Model\ProcessStatuses.cs" />
@@ -352,9 +353,6 @@
     <Compile Include="Views\Controls\PanesTemplateSelector.cs" />
     <Compile Include="Views\Controls\SliderButton.xaml.cs">
       <DependentUpon>SliderButton.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Pages\Page3D_2.xaml.cs">
-      <DependentUpon>Page3D_2.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Pages\PageMain3.xaml.cs">
       <DependentUpon>PageMain3.xaml</DependentUpon>
@@ -385,18 +383,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\SliderButton.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Pages\Page2D.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Pages\Page3D.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Pages\Page3D_2.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -480,12 +466,6 @@
     <Compile Include="ViewModels\Controls\NavigationTreeViewVM.cs" />
     <Compile Include="Views\Controls\NavigationTreeView.xaml.cs">
       <DependentUpon>NavigationTreeView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Pages\Page2D.xaml.cs">
-      <DependentUpon>Page2D.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Pages\Page3D.xaml.cs">
-      <DependentUpon>Page3D.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Pages\PageMain2.xaml.cs">
       <DependentUpon>PageMain2.xaml</DependentUpon>

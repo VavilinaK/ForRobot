@@ -39,7 +39,7 @@ DistanceBetween - расстояние между осевыми линиями 
 DistanceToStart - расстояние до торца ребра слева, мм.
 DistanceToEnd - расстояние до торца ребра справа, мм.
 DissolutionStart - роспуск слева, мм.
-DissolutionEnd - оспуск справа, мм.
+DissolutionEnd - роспуск справа, мм.
 ThicknessPlita - толщина настила, мм.
 ThicknessRebro - толщина ребра, мм.
 SearchOffsetStart - отступ поиска в начале, мм.
