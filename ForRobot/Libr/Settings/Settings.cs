@@ -57,9 +57,19 @@ namespace ForRobot.Libr.Settings
         public bool LimitedConnectionTimeOut { get; set; } = false;
 
         /// <summary>
+        /// Создаётся ли при открытии файл детли. Не работает, если приложение открывает файл "с помощью"
+        /// </summary>
+        public bool CreatedDetalFile { get; set; } = true;
+
+        /// <summary>
         /// Время ожидания ответа от сервера, сек.
         /// </summary>
         public double ConnectionTimeOut { get; set; } = 3;
+
+        /// <summary>
+        /// Тип детали, для которой создаётся стартовый файл
+        /// </summary>
+        public string StartedDetalType { get; set; } = Model.Detals.DetalTypes.Plita;
 
         ///// <summary>
         ///// Режим закрытия приложения. Спрашивает пользователя о закрытии и/или разрыве соединения
@@ -85,16 +95,16 @@ namespace ForRobot.Libr.Settings
 
         #endregion
 
-        #region View
+        #region Interface
 
         [JsonIgnore]
         public List<Tuple<string, Theme>> Themes { get; } = new List<Tuple<string, Theme>>()
         {
             new Tuple<string, Theme>(nameof(GenericTheme), new GenericTheme()),
-            //new Tuple<string, Theme>(nameof(AeroTheme),new AeroTheme()),
-            //new Tuple<string, Theme>(nameof(ExpressionDarkTheme),new ExpressionDarkTheme()),
-            //new Tuple<string, Theme>(nameof(ExpressionLightTheme),new ExpressionLightTheme()),
-            //new Tuple<string, Theme>(nameof(MetroTheme),new MetroTheme()),
+            new Tuple<string, Theme>(nameof(AeroTheme),new AeroTheme()),
+            new Tuple<string, Theme>(nameof(ExpressionDarkTheme),new ExpressionDarkTheme()),
+            new Tuple<string, Theme>(nameof(ExpressionLightTheme),new ExpressionLightTheme()),
+            new Tuple<string, Theme>(nameof(MetroTheme),new MetroTheme()),
             //new Tuple<string, Theme>(nameof(VS2010Theme),new VS2010Theme()),
             new Tuple<string, Theme>(nameof(Vs2013BlueTheme),new Vs2013BlueTheme()),
             new Tuple<string, Theme>(nameof(Vs2013DarkTheme),new Vs2013DarkTheme()),
@@ -230,7 +240,7 @@ namespace ForRobot.Libr.Settings
 
         #endregion Camera
 
-        #endregion View
+        #endregion Interface
 
         #region Generation
 

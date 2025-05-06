@@ -43,10 +43,17 @@
             <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource textBase}">
                 <Setter Property="Padding" Value="10"/>
             </Style>
+
+            <Style x:Key="ComboBoxBase" TargetType="{x:Type ComboBox}" BasedOn="{StaticResource textBase}">
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            </Style>
         </DataTemplate.Resources>
 
         <Grid Background="Transparent" DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
@@ -96,7 +103,32 @@
                 </i:Interaction.Triggers>
             </CheckBox>
 
-            <Button Grid.Row="2" Content="Изменить пин-код" Margin="15" Command="{Binding Path=EditPinCodeCommand}" 
+            <CheckBox Grid.Row="2" Content="При запуске приложения создавать файл детали"
+                      IsChecked="{Binding Path=Settings.CreatedDetalFile, Mode=TwoWay}"/>
+
+            <ComboBox Grid.Row="3"
+                      ItemsSource="{Binding Path=DetalTypesCollection, Mode=OneWay}"
+                      SelectedItem="{Binding Path=Settings.StartedDetalType, Mode=TwoWay}"
+                      SelectedIndex="0">
+
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" Padding="5"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+
+                <ComboBox.Style>
+                    <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource ComboBoxBase}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=Settings.CreatedDetalFile}" Value="False">
+                                <Setter Property="IsEnabled" Value="False"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ComboBox.Style>
+            </ComboBox>
+
+            <Button Grid.Row="4" Content="Изменить пин-код" Margin="15" Command="{Binding Path=EditPinCodeCommand}" 
                     VerticalAlignment="Bottom"/>
 
             <!--<GroupBox Grid.Row="2" Header="Делать запрос пользователю перед закрытием окна">
@@ -241,8 +273,8 @@
         </Grid>
     </DataTemplate>
 
-    <!--Вкладка "Вид"-->
-    <DataTemplate x:Key="ViewProperiesTemplate" DataType="{x:Type ContentControl}">
+    <!--Вкладка "Интерфейс"-->
+    <DataTemplate x:Key="InterfaceProperiesTemplate" DataType="{x:Type ContentControl}">
         <DataTemplate.Resources>
             <Style x:Key="textBase" TargetType="{x:Type FrameworkElement}">
                 <Setter Property="TextElement.FontSize" Value="{StaticResource FontSizeNP1}"/>
@@ -312,7 +344,26 @@
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <CheckBox IsChecked="{Binding Path=IsVisible}"/>
+                                    <ToggleButton IsChecked="{Binding Path=IsVisible}" Height="25" Width="25">
+                                        <ToggleButton.Template>
+                                            <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                                <Path Fill="Black" Stretch="Uniform" StrokeThickness="1">
+                                                    <Path.Style>
+                                                        <Style TargetType="{x:Type Path}">
+                                                            <Setter Property="Data" Value="{DynamicResource EyePathGeomerty}"/>
+
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}, Mode=FindAncestor}}" Value="False">
+                                                                    <Setter Property="Data" Value="{DynamicResource EyeOffPathGeomerty}"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Path.Style>
+                                                </Path>
+                                            </ControlTemplate>
+                                        </ToggleButton.Template>
+                                    </ToggleButton>
+                                    
                                     <Label Content="{Binding Path=Title}"/>
                                 </StackPanel>
                             </DataTemplate>
@@ -561,6 +612,13 @@
             <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource textBase}">
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                <Setter Property="ItemTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" Padding="5"/>
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
             </Style>
 
             <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource textBase}">
@@ -601,14 +659,7 @@
                     <ComboBox Grid.Column="0"
                               ItemsSource="{Binding Path=DetalTypesCollection, Mode=OneWay}"
                               SelectedItem="{Binding Path=SelectedDetalTypeName, Mode=TwoWay}"
-                              SelectedIndex="0">
-
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding}" Padding="5"/>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
+                              SelectedIndex="0"/>
 
                     <TextBox Grid.Column="1" Text="{Binding StandartNameFile, Mode=TwoWay}"/>
                 </Grid>
@@ -624,14 +675,7 @@
                     <ComboBox Grid.Column="0"
                               ItemsSource="{Binding Path=DetalTypesCollection, Mode=OneWay}"
                               SelectedItem="{Binding Path=SelectedDetalTypeScript, Mode=TwoWay}"
-                              SelectedIndex="0">
-
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding}" Padding="5"/>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
+                              SelectedIndex="0"/>
 
                     <TextBox Grid.Column="1" Text="{Binding ScriptName, Mode=TwoWay}"/>
                 </Grid>

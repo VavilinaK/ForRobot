@@ -51,7 +51,7 @@
 
         <TreeView Grid.Row="0" Grid.Column="0" x:Name="TreeViewProperties">
 
-            <TreeViewItem Header="Общие" Tag="General"/>
+            <TreeViewItem Header="Общие" Tag="General" IsSelected="True"/>
 
             <TreeViewItem Header="Навигация" Tag="NavigationTree"/>
 
@@ -66,7 +66,7 @@
                 </i:Interaction.Triggers>-->
             </TreeViewItem>
 
-            <TreeViewItem Header="Генерация" Tag="Generation" IsSelected="True"/>
+            <TreeViewItem Header="Генерация" Tag="Generation"/>
 
 
             <!--<TreeViewItem Header="Соединение" Tag="Connection"/>-->
@@ -145,7 +145,7 @@
                                         <Setter Property="Template">
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="ContentControl">
-                                                    <ContentControl ContentTemplate="{StaticResource ViewProperiesTemplate}"/>
+                                                    <ContentControl ContentTemplate="{StaticResource InterfaceProperiesTemplate}"/>
                                                 </ControlTemplate>
                                             </Setter.Value>
                                         </Setter>

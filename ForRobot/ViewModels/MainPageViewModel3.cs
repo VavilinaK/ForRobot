@@ -402,10 +402,25 @@ namespace ForRobot.ViewModels
 
             this.SelectedRobot = this.RobotsCollection[0];
 
-            if (App.Current.OpenedFiles.Count == 0)
+            if (App.Current.OpenedFiles.Count == 0 && App.Current.Settings.CreatedDetalFile)
             {
-                App.Current.OpenedFiles.Add(new Model.File3D.File3D(Detal.GetDetal(DetalTypes.Plita),
-                                                                    Path.Combine(Path.GetTempPath(), App.Current.Settings.PlitaProgramName)));
+                string programName = string.Empty;
+                switch (App.Current.Settings.StartedDetalType)
+                {
+                    case string a when a == DetalTypes.Plita:
+                        programName = App.Current.Settings.PlitaProgramName;
+                        break;
+
+                    case string b when b == DetalTypes.Stringer:
+                        programName = App.Current.Settings.PlitaStringerProgramName;
+                        break;
+
+                    case string c when c == DetalTypes.Stringer:
+                        programName = App.Current.Settings.PlitaTreugolnikProgramName;
+                        break;
+                }
+                App.Current.OpenedFiles.Add(new Model.File3D.File3D(Detal.GetDetal(App.Current.Settings.StartedDetalType),
+                                                                    Path.Combine(Path.GetTempPath(), programName)));
             }
         }
 

@@ -540,19 +540,9 @@
                 <MenuItem.Template>
                     <ControlTemplate TargetType="{x:Type MenuItem}">
                         <ToggleButton IsChecked="{Binding Path=IsVisibleGridLinesVisual3D, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                            <Path Stroke="{StaticResource IconAxistBrush}" Stretch="Uniform">
-                                <Path.Data>
-                                    <GeometryGroup>
-                                        <StaticResource ResourceKey="PerspectiveGridGeomerty1"/>
-                                        <StaticResource ResourceKey="PerspectiveGridGeomerty2"/>
-                                        <StaticResource ResourceKey="PerspectiveGridGeomerty3"/>
-                                        <StaticResource ResourceKey="PerspectiveGridGeomerty4"/>
-                                        <StaticResource ResourceKey="PerspectiveGridGeomerty5"/>
-                                        <StaticResource ResourceKey="PerspectiveGridGeomerty6"/>
-                                        <StaticResource ResourceKey="PerspectiveGridGeomerty7"/>
-                                    </GeometryGroup>
-                                </Path.Data>
-                            </Path>
+                            <Path Stroke="{StaticResource IconAxistBrush}" 
+                                  Data="{StaticResource PerspectiveGridGeomerty}"
+                                  Stretch="Uniform"/>
                         </ToggleButton>
                     </ControlTemplate>
                 </MenuItem.Template>
@@ -1183,18 +1173,9 @@
                                                 </Style>
                                             </Button.Style>
 
-                                            <Path Stroke="{StaticResource IconAddBrush}" StrokeThickness="2.5">
-                                                <Path.Data>
-                                                    <GeometryGroup>
-                                                        <StaticResource ResourceKey="DisconnectPathGeomerty1"/>
-                                                        <StaticResource ResourceKey="DisconnectPathGeomerty2"/>
-                                                        <StaticResource ResourceKey="DisconnectPathGeomerty3"/>
-                                                        <StaticResource ResourceKey="DisconnectPathGeomerty4"/>
-                                                        <StaticResource ResourceKey="DisconnectPathGeomerty5"/>
-                                                        <StaticResource ResourceKey="DisconnectPathGeomerty6"/>
-                                                    </GeometryGroup>
-                                                </Path.Data>
-                                            </Path>
+                                            <Path Stroke="{StaticResource IconAddBrush}"
+                                                  Data="{StaticResource DisconnectPathGeomerty}"
+                                                  StrokeThickness="2.5"/>
                                         </Button>
 
                                         <Button Grid.Column="4" ToolTip="Добавить робота"
@@ -1253,7 +1234,6 @@
                                                                 BlockedFolder="{Binding Path=Settings.AvailableFolders, Source={x:Static Application.Current}}"
                                                                 Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type RowDefinition}, Mode=FindAncestor}}"
                                                                 ScrollViewer.CanContentScroll="False" ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
-
                                 </Grid>
                             </avalonDock:LayoutAnchorable>
 
@@ -1382,18 +1362,8 @@
                                                             </Style>
                                                         </Button.Style>
 
-                                                        <Path Stroke="{StaticResource IconAddBrush}" StrokeThickness="2.5">
-                                                            <Path.Data>
-                                                                <GeometryGroup>
-                                                                    <StaticResource ResourceKey="DisconnectPathGeomerty1"/>
-                                                                    <StaticResource ResourceKey="DisconnectPathGeomerty2"/>
-                                                                    <StaticResource ResourceKey="DisconnectPathGeomerty3"/>
-                                                                    <StaticResource ResourceKey="DisconnectPathGeomerty4"/>
-                                                                    <StaticResource ResourceKey="DisconnectPathGeomerty5"/>
-                                                                    <StaticResource ResourceKey="DisconnectPathGeomerty6"/>
-                                                                </GeometryGroup>
-                                                            </Path.Data>
-                                                        </Path>
+                                                        <Path Data="{StaticResource DisconnectPathGeomerty}"
+                                                              Stroke="{StaticResource IconAddBrush}" StrokeThickness="2.5"/>
                                                     </Button>
                                                 </Grid>
                                             </DataTemplate>
