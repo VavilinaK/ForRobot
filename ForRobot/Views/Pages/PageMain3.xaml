@@ -675,10 +675,17 @@
                                                        FieldOfView="45"
                                                        NearPlaneDistance="0.001"/>-->
 
-                                    <PerspectiveCamera x:Name="CameraControler" 
+                                    <!--<PerspectiveCamera x:Name="CameraControler" 
                                                        Position="100,100,100"
                                                        LookDirection="-100,-100,-100"
                                                        UpDirection="0,0,1"
+                                                       FieldOfView="10"
+                                                       NearPlaneDistance="0.001"/>-->
+
+                                    <PerspectiveCamera x:Name="CameraControler" 
+                                                       Position="-354, 3, 381"
+                                                       LookDirection="351,-3,-383"
+                                                       UpDirection="0.7, 0, 0.7"
                                                        FieldOfView="10"
                                                        NearPlaneDistance="0.001"/>
 
@@ -725,7 +732,7 @@
 
                                 <i:Interaction.Behaviors>
                                     <behavior:ZoomBehavior/>
-                                    <!--<behavior:HelixWeldsBehavior Welds="{Binding Path=WeldsCollection}"/>-->
+                                    <behavior:HelixWeldsBehavior Welds="{Binding Path=WeldsCollection}"/>
                                     <!--<behavior:HelixAnnotationsBehavior Annotations="{Binding Path=Annotations}"/>-->
                                     <behavior:HelixSceneTrackerBehavior SceneItems="{Binding Path=DataContext.SceneItemsCollection, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>
                                 </i:Interaction.Behaviors>
@@ -1181,14 +1188,8 @@
                                         <Button Grid.Column="4" ToolTip="Добавить робота"
                                                 Command="{Binding Path=AddRobotCommand}">
 
-                                            <Path Stroke="{StaticResource IconAddBrush}" StrokeThickness="2">
-                                                <Path.Data>
-                                                    <GeometryGroup>
-                                                        <StaticResource ResourceKey="AddRobotPathGeomerty1"/>
-                                                        <StaticResource ResourceKey="AddRobotPathGeomerty2"/>
-                                                    </GeometryGroup>
-                                                </Path.Data>
-                                            </Path>
+                                            <Path Data="{StaticResource AddRobotPathGeomerty}"
+                                                  Stroke="{StaticResource IconAddBrush}" StrokeThickness="2"/>
                                         </Button>
                                     </Grid>
 
@@ -1341,8 +1342,7 @@
                                                             </Style>
                                                         </Button.Style>
 
-                                                        <Path Fill="{StaticResource IconUpDateBrush}"
-                                                              Data="{StaticResource UpDatePathGeomerty}"/>
+                                                        <Path Fill="{StaticResource IconUpDateBrush}" Data="{StaticResource UpDatePathGeomerty}"/>
                                                     </Button>
 
                                                     <Button Grid.Column="4" ToolTip="Закрыть соединение"
@@ -1426,26 +1426,12 @@
                                                                 <Path.Style>
                                                                     <Style TargetType="{x:Type Path}" BasedOn="{StaticResource PathBase}">
                                                                         <Setter Property="Fill" Value="{StaticResource IconRunProgramBrush}"/>
-                                                                        <Setter Property="Data">
-                                                                            <Setter.Value>
-                                                                                <GeometryGroup>
-                                                                                    <StaticResource ResourceKey="RunProgramPathGeomerty1"/>
-                                                                                    <StaticResource ResourceKey="RunProgramPathGeomerty2"/>
-                                                                                </GeometryGroup>
-                                                                            </Setter.Value>
-                                                                        </Setter>
+                                                                        <Setter Property="Data" Value="{StaticResource RunProgramPathGeomerty}"/>
 
                                                                         <Style.Triggers>
                                                                             <DataTrigger Binding="{Binding Path=Pro_State}" Value="{x:Static model:ProcessStatuses.End}">
                                                                                 <Setter Property="Fill" Value="{StaticResource IconRestartProgramBrush}"/>
-                                                                                <Setter Property="Data">
-                                                                                    <Setter.Value>
-                                                                                        <GeometryGroup>
-                                                                                            <StaticResource ResourceKey="RestartProgramPathGeomerty1"/>
-                                                                                            <StaticResource ResourceKey="RestartProgramPathGeomerty2"/>
-                                                                                        </GeometryGroup>
-                                                                                    </Setter.Value>
-                                                                                </Setter>
+                                                                                <Setter Property="Data" Value="{StaticResource RestartProgramPathGeomerty}"/>
                                                                             </DataTrigger>
                                                                         </Style.Triggers>
                                                                     </Style>
@@ -1486,14 +1472,8 @@
                                                               Command="{Binding Path=DataContext.PauseProgramCommandAsync, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
                                                               CommandParameter="{Binding}">
                                                         <MenuItem.Icon>
-                                                            <Path Stretch="Fill" Fill="{StaticResource IconStopProgramBrush}" Height="30" Width="30">
-                                                                <Path.Data>
-                                                                    <GeometryGroup>
-                                                                        <StaticResource ResourceKey="StopProgramPathGeomerty1"/>
-                                                                        <StaticResource ResourceKey="StopProgramPathGeomerty2"/>
-                                                                    </GeometryGroup>
-                                                                </Path.Data>
-                                                            </Path>
+                                                            <Path Data="{StaticResource StopProgramPathGeomerty}"
+                                                                  Stretch="Fill" Fill="{StaticResource IconStopProgramBrush}" Height="30" Width="30"/>
                                                         </MenuItem.Icon>
                                                     </MenuItem>
 
@@ -1501,14 +1481,8 @@
                                                               Command="{Binding Path=DataContext.CancelProgramCommandAsync, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
                                                               CommandParameter="{Binding}">
                                                         <MenuItem.Icon>
-                                                            <Path Fill="{StaticResource IconCancelProgramBrush}" StrokeThickness="0">
-                                                                <Path.Data>
-                                                                    <GeometryGroup>
-                                                                        <StaticResource ResourceKey="CancelProgramPathGeomerty1"/>
-                                                                        <StaticResource ResourceKey="CancelProgramPathGeomerty2"/>
-                                                                    </GeometryGroup>
-                                                                </Path.Data>
-                                                            </Path>
+                                                            <Path Data="{StaticResource CancelProgramPathGeomerty}"
+                                                                  Fill="{StaticResource IconCancelProgramBrush}" StrokeThickness="0"/>
                                                         </MenuItem.Icon>
                                                     </MenuItem>
                                                 </Menu>

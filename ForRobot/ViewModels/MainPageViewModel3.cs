@@ -402,6 +402,7 @@ namespace ForRobot.ViewModels
 
             this.SelectedRobot = this.RobotsCollection[0];
 
+            // Если нет открываемых файлов, проверяет - нужно ли создать файл детали.
             if (App.Current.OpenedFiles.Count == 0 && App.Current.Settings.CreatedDetalFile)
             {
                 string programName = string.Empty;
