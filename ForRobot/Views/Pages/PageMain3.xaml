@@ -21,7 +21,7 @@
       xmlns:pt="http://propertytools.org/wpf"
       mc:Ignorable="d"       
       d:DesignHeight="800" d:DesignWidth="1500">
-
+    
     <Page.Title>
         <MultiBinding Converter="{StaticResource StringFormatMultiConvert}" ConverterParameter="Интерфейс генерации программ - v.{0}">
             <Binding Path="Version" Mode="OneWay"/>
@@ -96,7 +96,7 @@
             </Style.Triggers>
         </Style>
     </Page.Resources>
-
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -620,6 +620,7 @@
                                    IsVirtualizingAnchorable="True"
                                    IsVirtualizingDocument="True">
 
+            <!--LayoutDocumentPane в меню выбора-->
             <avalonDock:DockingManager.DocumentPaneMenuItemHeaderTemplate>
                 <DataTemplate>
                     <Grid>
@@ -628,6 +629,7 @@
                 </DataTemplate>
             </avalonDock:DockingManager.DocumentPaneMenuItemHeaderTemplate>
 
+            <!--Заголовок LayoutDocumentPane-->
             <DockingManager.DocumentHeaderTemplate>
                 <DataTemplate>
                     <Grid ToolTip="{Binding Content.Path}">
@@ -636,6 +638,7 @@
                 </DataTemplate>
             </DockingManager.DocumentHeaderTemplate>
 
+            <!--Содержание LayoutDocumentPane-->
             <DockingManager.LayoutItemTemplateSelector>
                 <control:PanesTemplateSelector>
                     <control:PanesTemplateSelector.FileViewTemplate>
@@ -732,7 +735,7 @@
 
                                 <i:Interaction.Behaviors>
                                     <behavior:ZoomBehavior/>
-                                    <behavior:HelixWeldsBehavior Welds="{Binding Path=WeldsCollection}"/>
+                                    <!--<behavior:HelixWeldsBehavior Welds="{Binding Path=WeldsCollection}"/>-->
                                     <!--<behavior:HelixAnnotationsBehavior Annotations="{Binding Path=Annotations}"/>-->
                                     <behavior:HelixSceneTrackerBehavior SceneItems="{Binding Path=DataContext.SceneItemsCollection, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>
                                 </i:Interaction.Behaviors>

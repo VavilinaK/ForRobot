@@ -9,7 +9,6 @@ namespace ForRobot.Views.Controls
     {
         public PanesTemplateSelector() { }
 
-
         public DataTemplate FileViewTemplate { get; set; }
 
         public DataTemplate FileStatsViewTemplate { get; set; }
