@@ -16,6 +16,8 @@ namespace ForRobot.Services
 
     public sealed class ModelingService : IModelingService
     {
+        public const double MIN_RIB_LENGTH = 1.0;
+
         /// <summary>
         /// Коэффициент сужения/расширения для трапеций (от 0.1 до 0.9)
         /// </summary>
@@ -34,7 +36,7 @@ namespace ForRobot.Services
         {
             this.ScaleFactor = _scaleFactor;
         }
-        
+
         /// <summary>
         /// Построение модели детали
         /// </summary>
@@ -109,11 +111,11 @@ namespace ForRobot.Services
             return mesh;
         }
 
-        #region Plate
+        #region Plate Logic
 
         //private MeshGeometry3D GenerateRectPlate(double plateLength, double plateWidth, double plateHeight)
         //{ 
-
+    
         //}
 
         /// <summary>
@@ -298,7 +300,7 @@ namespace ForRobot.Services
             model3DGroup.Children.Add(new GeometryModel3D(geometry, ForRobot.Model.File3D.Materials.Plate) { BackMaterial = ForRobot.Model.File3D.Materials.Plate });
             return model3DGroup;
         }
-        
+
         private Model3DGroup AddRibs(Plita plate)
         {
             Model3DGroup model3DGroup = new Model3DGroup();
@@ -313,11 +315,18 @@ namespace ForRobot.Services
 
             double ribPositionXAxes = 0;
 
-            double startWidth = modelPlateLength - (double)plate.RibsCollection.First().IdentToRight * (double)ScaleFactor 
+            // Для TrapezoidTop: start > end; для TrapezoidBottom: start < end (но знак разности меняется).
+            double startWidth = modelPlateLength - (double)plate.RibsCollection.First().IdentToRight * (double)ScaleFactor
                                                  - (double)plate.RibsCollection.First().IdentToLeft * (double)ScaleFactor; // Начальная длина (для первого ребра)
+            
             double endWidth = modelPlateLength * (1 - TrapezoidRatio)
                                                  - (double)plate.RibsCollection.Last().IdentToRight * (double)ScaleFactor
-                                                 - (double)plate.RibsCollection.Last().IdentToLeft * (double)ScaleFactor; // Конечная длина (для последнего ребра)
+                                                 - (double)plate.RibsCollection.Last().IdentToLeft * (double)ScaleFactor; // Конечная длина (для последнего ребра)            
+            if (plate.ScoseType == ScoseTypes.TrapezoidBottom)
+            {
+                (startWidth, endWidth) = (endWidth, startWidth);
+            }
+
             double commonDifference = (endWidth - startWidth) / (plate.RibCount - 1); // Разность прогрессии
 
             for (int i = 0; i < plate.RibCount; i++)
@@ -392,8 +401,7 @@ namespace ForRobot.Services
                             TriangleIndices = new Int32Collection(indices)
                         };
 
-                        if (!plate.ParalleleRibs)
-                            ribPositionXAxes += (double)modelRibThickness + (double)modelRibDistanceRight;
+                        if (!plate.ParalleleRibs) ribPositionXAxes += (double)modelRibThickness + (double)modelRibDistanceRight;
 
                         model3DGroup.Children.Add(new GeometryModel3D(ribMesh, ForRobot.Model.File3D.Materials.Rib) { BackMaterial = ForRobot.Model.File3D.Materials.Rib });
                         continue;
@@ -423,106 +431,7 @@ namespace ForRobot.Services
             model3DGroup.Children.Add(new GeometryModel3D(meshBuilder.ToMesh(), ForRobot.Model.File3D.Materials.Rib) { BackMaterial = ForRobot.Model.File3D.Materials.Rib });
             return model3DGroup;
         }        
-
-        private Model3DGroup AddRibs_old(Plita plate)
-        {
-            Model3DGroup model3DGroup = new Model3DGroup();
-            MeshBuilder meshBuilder = new MeshBuilder();
-
-            // Преобразование реальных размеров в модельные.
-            double modelPlateWidth = (double)plate.PlateWidth * (double)ScaleFactor;
-            double modelPlateHeight = (double)plate.PlateThickness * (double)ScaleFactor;
-            double modelPlateLength = (double)plate.PlateLength * (double)ScaleFactor;
-            double modelRibHeight = (double)plate.RibHeight * (double)ScaleFactor;
-            double modelRibThickness = (double)plate.RibThickness * (double)ScaleFactor;
-
-            double widthReduction = modelPlateWidth * TrapezoidRatio;
-            double ribPositionXAxes = 0; // Позиционирование рёбер
-            for (int i = 0; i < plate.RibCount; i++)
-            {
-                var rib = plate.RibsCollection[i];
-
-                double modelRibDistanceLeft = (double)rib.DistanceLeft * (double)ScaleFactor;
-                double modelRibDistanceRight = (double)rib.DistanceRight * (double)ScaleFactor;
-                double modelRibIdentToLeft = (double)rib.IdentToLeft * (double)ScaleFactor;
-                double modelRibIdentToRight = (double)rib.IdentToRight * (double)ScaleFactor;
-
-                double ribLength = modelPlateLength - modelRibIdentToLeft - modelRibIdentToRight; // Длина ребра.
-
-                ribPositionXAxes += (double)modelRibDistanceLeft; // Расчёт позиции ребра.
-                double ribX = ribPositionXAxes - (double)modelPlateWidth / 2;
-                double ribZCenter = (modelRibIdentToLeft - modelRibIdentToRight) / 2; // Позиция по оси Z. Середина плиты в точки - (0, 0, 0).
-
-                switch (plate.ScoseType)
-                {
-                    case ScoseTypes.SlopeLeft:
-                        break;
-                    case ScoseTypes.SlopeRight:
-                        break;
-                    case ScoseTypes.TrapezoidTop: 
-                    case ScoseTypes.TrapezoidBottom:
-                        // Расчёт текущей ширины плиты для трапеций
-                        double positionRatio = (ribPositionXAxes + modelPlateWidth / 2) / modelPlateWidth;
-                        double currentWidth = plate.ScoseType == ScoseTypes.TrapezoidTop ? modelPlateWidth - widthReduction * (1 - positionRatio)
-                                                                                         : modelPlateWidth - widthReduction * positionRatio;
-                        // Максимальная длина ребра с учётом отступов
-                        double maxRibLength = currentWidth - modelRibIdentToLeft - modelRibIdentToRight;
-                        ribLength = Math.Min(maxRibLength, ribLength);
-                        ribLength = Math.Max(ribLength, 1.0);
-
-                        //double normalizedX = (ribPositionXAxes + modelPlateWidth / 2) / modelPlateWidth;
-                        //// Расчёт сужения для трапеций
-                        //double lengthModifier = 1 - TrapezoidRatio * normalizedX;
-                        //double xOffset = modelPlateWidth * TrapezoidRatio * normalizedX * 0.5;
-                        //ribLength *= lengthModifier;
-                        ////// Корректировка X для компенсации сужения
-                        ////ribX = ribPositionXAxes - xOffset;
-
-                        ////double normalizedX = (ribPositionXAxes + modelPlateWidth / 2) / modelPlateWidth;
-                        ////// Расчёт сужения для трапеций
-                        ////double lengthModifier = 1.0;
-                        ////lengthModifier = 1 - TrapezoidRatio * Math.Abs(normalizedX - 0.5) * 2; // Учёт симметричного сужения с обеих сторон
-                        ////lengthModifier = Math.Max(lengthModifier, 0.1); // Минимальное сужение 10%
-                        ////ribLength *= lengthModifier;
-                        ////// Корректировка X для компенсации сужения
-                        ////ribX += (modelPlateWidth * TrapezoidRatio / 2) * (normalizedX - 0.5);
-
-
-
-                        ////double normalizedX = (ribX + modelPlateWidth / 2) / modelPlateWidth;
-                        ////double currentLength = plate.ScoseType == ScoseTypes.TrapezoidTop
-                        ////              ? modelPlateLength - widthReduction * normalizedX
-                        ////              : modelPlateLength - widthReduction * (1 - normalizedX);
-                        ////ribLength = currentLength - modelRibIdentToLeft - modelRibIdentToRight;
-
-
-                        ////double positionRatio = Math.Abs(ribX + modelPlateWidth / 2) / modelPlateWidth;
-                        ////double widthReduction = modelPlateWidth * TrapezoidRatio * positionRatio;
-
-                        ////// Корректировка длины ребра
-                        ////ribLength -= widthReduction * 2; // Учёт сужения с двух сторон
-                        //ribLength = Math.Max(ribLength, 0); // Защита от отрицательных значений
-                        break;
-
-                    case ScoseTypes.Rect:
-                        break;
-                }
-
-                meshBuilder.AddBox(
-                    new Point3D(ribX, (modelRibHeight + modelPlateHeight) / 2, ribZCenter), // Позиция у верхней грани плиты
-                    modelRibThickness,
-                    modelRibHeight,
-                    ribLength
-                );
-
-                // Перемещение позиции для следующего ребра
-                if (!plate.ParalleleRibs)
-                    ribPositionXAxes += (double)modelRibThickness + (double)modelRibDistanceRight;
-            }
-            model3DGroup.Children.Add(new GeometryModel3D(meshBuilder.ToMesh(), ForRobot.Model.File3D.Materials.Rib) { BackMaterial = ForRobot.Model.File3D.Materials.Rib });
-            return model3DGroup;
-        }
-
+        
         private Model3D GetPlateModel(Plita plate)
         {
             Model3DGroup model3DGroup = new Model3DGroup();
@@ -533,10 +442,10 @@ namespace ForRobot.Services
             // Добавление рёбер.
             model3DGroup.Children.Add(this.AddRibs(plate));
 
-            model3DGroup.Transform = new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(1, 0, 0), 90)); // Поворот модели на 90 гр.
+            //model3DGroup.Transform = new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(1, 0, 0), 90)); // Поворот модели на 90 гр.
             return model3DGroup;
         }
 
-        #endregion
+        #endregion  Plate Logic
     }
 }
