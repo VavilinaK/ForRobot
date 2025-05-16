@@ -304,11 +304,11 @@
             <Menu.Resources>
                 <ControlTemplate x:Key="MenuItemTemplate1" TargetType="{x:Type MenuItem}">
                     <Button Content="{Binding Icon, RelativeSource={RelativeSource TemplatedParent}}"
-                    ToolTip="{Binding Header, RelativeSource={RelativeSource TemplatedParent}}"
-                    Command="{Binding Command, RelativeSource={RelativeSource TemplatedParent}}"
-                    CommandParameter="{Binding CommandParameter, RelativeSource={RelativeSource TemplatedParent}}"
-                    CommandTarget="{Binding CommandTarget, RelativeSource={RelativeSource TemplatedParent}}"
-                    Width="Auto" Margin="3,2" Padding="5"/>
+                            ToolTip="{Binding Header, RelativeSource={RelativeSource TemplatedParent}}"
+                            Command="{Binding Command, RelativeSource={RelativeSource TemplatedParent}}"
+                            CommandParameter="{Binding CommandParameter, RelativeSource={RelativeSource TemplatedParent}}"
+                            CommandTarget="{Binding CommandTarget, RelativeSource={RelativeSource TemplatedParent}}"
+                            Width="Auto" Margin="3,2" Padding="5"/>
                 </ControlTemplate>
 
                 <ControlTemplate x:Key="MenuItemTemplate2" TargetType="{x:Type MenuItem}">
@@ -623,18 +623,18 @@
             <!--LayoutDocumentPane в меню выбора-->
             <avalonDock:DockingManager.DocumentPaneMenuItemHeaderTemplate>
                 <DataTemplate>
-                    <Grid>
-                        <TextBlock Text="{Binding Path=Content.Name}" TextTrimming="CharacterEllipsis"/>
-                    </Grid>
+                    <TextBlock FontSize="{StaticResource FontSizeNP2}" Text="{Binding Path=Content.Name}" 
+                               ToolTip="{Binding Path=Content.Path}"
+                               TextTrimming="CharacterEllipsis"/>
                 </DataTemplate>
             </avalonDock:DockingManager.DocumentPaneMenuItemHeaderTemplate>
 
             <!--Заголовок LayoutDocumentPane-->
             <DockingManager.DocumentHeaderTemplate>
                 <DataTemplate>
-                    <Grid ToolTip="{Binding Content.Path}">
-                        <TextBlock Text="{Binding Path=Content.Name}"/>
-                    </Grid>
+                    <TextBlock Text="{Binding Path=Content.Name}"
+                               ToolTip="{Binding Path=Content.Path}"
+                               VerticalAlignment="Stretch"/>
                 </DataTemplate>
             </DockingManager.DocumentHeaderTemplate>
 

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Input;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -24,33 +25,9 @@ namespace ForRobot.ViewModels
         private string _plitaTreugolnikProgramName = App.Current.Settings.PlitaTreugolnikProgramName;
         private Detal _detalObject;
 
-        #region Commands
-
-        private RelayCommand _reviewCommand;
-        private RelayCommand _createCommand;
-        private RelayCommand _cancelCommand;
-
-        #endregion
-
-        #endregion
+        #endregion Private variables
 
         #region Public variables
-
-        /// <summary>
-        /// Коллекция видов деталей
-        /// </summary>
-        public ObservableCollection<string> DetalTypeCollection
-        {
-            get
-            {
-                List<string> detalTypesList = new List<string>();
-                foreach (var f in typeof(ForRobot.Model.Detals.DetalTypes).GetFields())
-                {
-                    detalTypesList.Add(f.GetValue(null).ToString());
-                }
-                return new ObservableCollection<string>(detalTypesList);
-            }
-        }
 
         /// <summary>
         /// Выбранный тип детали
@@ -112,65 +89,42 @@ namespace ForRobot.ViewModels
         /// </summary>
         public Detal DetalObject { get => this._detalObject; set => Set(ref this._detalObject, value); }
 
+        /// <summary>
+        /// Коллекция видов деталей
+        /// </summary>
+        public ObservableCollection<string> DetalTypeCollection
+        {
+            get
+            {
+                List<string> detalTypesList = new List<string>();
+                foreach (var f in typeof(ForRobot.Model.Detals.DetalTypes).GetFields())
+                {
+                    detalTypesList.Add(f.GetValue(null).ToString());
+                }
+                return new ObservableCollection<string>(detalTypesList);
+            }
+        }
+
         #region Commands
 
         /// <summary>
         /// Выбор пути для файла
         /// </summary>
-        public RelayCommand ReviewCommand
-        {
-            get
-            {
-                return _reviewCommand ??
-                    (_reviewCommand = new RelayCommand(obj =>
-                    {
-                        using (var fbd = new FolderBrowserDialog())
-                        {
-                            DialogResult result = fbd.ShowDialog();
-                            if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
-                                this.FilePath = fbd.SelectedPath;
-                        }
-                    }));
-            }
-        }
+        public ICommand ReviewCommand { get => new RelayCommand(_ => this.SelectFilePath()); }
 
         /// <summary>
         /// Создание файла
         /// </summary>
-        public RelayCommand CreateCommand
-        {
-            get
-            {
-                return _createCommand ??
-                    (_createCommand = new RelayCommand(obj =>
-                    {
-                        if (string.IsNullOrEmpty(this.FilePath) || string.IsNullOrEmpty(this.FileName))
-                            return;
-
-                        App.Current.OpenedFiles.Add(new Model.File3D.File3D(this.DetalObject, Path.Combine(this.FilePath, this.FileName)));
-                        App.Current.CreateWindow.Close();
-                    }));
-            }
-        }
+        public ICommand CreateCommand { get => new RelayCommand(_ => this.CreatedFile()); }
 
         /// <summary>
         /// Закрытие окна
         /// </summary>
-        public RelayCommand CancelCommand
-        {
-            get
-            {
-                return _cancelCommand ??
-                    (_cancelCommand = new RelayCommand(obj =>
-                    {
-                        App.Current.CreateWindow.Close();
-                    }));
-            }
-        }
+        public ICommand CancelCommand { get; } = new RelayCommand(_ => App.Current.WindowsAppService.CloseCreateWindow());
 
-        #endregion
+        #endregion Commands
 
-        #endregion
+        #endregion Public variables
 
         #region Constructor
 
@@ -183,6 +137,25 @@ namespace ForRobot.ViewModels
         #endregion
 
         #region Private functions
+
+        private void SelectFilePath()
+        {
+            using (var fbd = new FolderBrowserDialog())
+            {
+                DialogResult result = fbd.ShowDialog();
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                    this.FilePath = fbd.SelectedPath;
+            }
+        }
+
+        private void CreatedFile()
+        {
+            if (string.IsNullOrEmpty(this.FilePath) || string.IsNullOrEmpty(this.FileName))
+                return;
+
+            App.Current.OpenedFiles.Add(new Model.File3D.File3D(this.DetalObject, Path.Combine(this.FilePath, this.FileName)));
+            App.Current.WindowsAppService.CloseCreateWindow();
+        }
 
         ///// <summary>
         ///// Сохранение изменений Detal
@@ -206,6 +179,6 @@ namespace ForRobot.ViewModels
         //    Properties.Settings.Default.Save();
         //}
 
-        #endregion
+        #endregion Private functions
     }
 }

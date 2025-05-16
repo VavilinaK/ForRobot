@@ -326,6 +326,7 @@
     <Compile Include="Libr\Converters\DescriptionsStaticClassConverter.cs" />
     <Compile Include="Libr\Converters\EmptyCollectionToColorConverter.cs" />
     <Compile Include="Libr\Converters\NumbersForWeldingSchemaConverter.cs" />
+    <Compile Include="Libr\Converters\ScaleFactorConverter.cs" />
     <Compile Include="Libr\DocumentPaneHelper.cs" />
     <Compile Include="Libr\Json\PlitaWithRibsAttributesResolver.cs" />
     <Compile Include="Libr\Logger.cs" />
@@ -350,6 +351,7 @@
     <Compile Include="Services\GenerationService.cs" />
     <Compile Include="Services\ModelingService.cs" />
     <Compile Include="Services\WeldService.cs" />
+    <Compile Include="Services\WindowsAppService.cs" />
     <Compile Include="ViewModels\CreateWindowViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel3.cs" />
     <Compile Include="ViewModels\MainPageViewModel4.cs" />

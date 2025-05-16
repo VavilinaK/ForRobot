@@ -645,13 +645,7 @@ namespace ForRobot.ViewModels
                 return _propertiesCommand ??
                     (_propertiesCommand = new RelayCommand(obj =>
                     {
-                        if (object.Equals(App.Current.PropertiesWindow, null))
-                        {
-                            App.Current.PropertiesWindow = new Views.Windows.PropertiesWindow();
-                            App.Current.PropertiesWindow.Closed += (a, b) => App.Current.PropertiesWindow = null;
-                            App.Current.PropertiesWindow.Owner = App.Current.MainWindowView;
-                            App.Current.PropertiesWindow.Show();
-                        }
+                        App.Current.WindowsAppService.OpenPropertiesWindow();
                     }));
             }
         }

@@ -15,7 +15,10 @@ namespace ForRobot.Services
 
     public sealed class AnnotationService : IAnnotationService
     {
-        public decimal ScaleFactor { get; set; } = 1.00M / 150.00M;
+        /// <summary>
+        /// Масштабный коэффициент: 1 единица модели = <see cref="ScaleFactor"/> мм. реальных размеров
+        /// </summary>
+        public decimal ScaleFactor { get; set; } = 1.00M / 100.00M;
 
         #region Properties
 
@@ -154,6 +157,11 @@ namespace ForRobot.Services
         #endregion Plita
 
         #endregion Properties
+
+        public AnnotationService(decimal _scaleFactor)
+        {
+            this.ScaleFactor = _scaleFactor;
+        }
 
         private ObservableCollection<Annotation> PlateAnnotations(Plita plate)
         {

@@ -26,6 +26,7 @@
     <conv:DescriptionsStaticClassConverter x:Key="DescriptionsStaticClassConvert"/>
     <conv:BindingToTagConverter x:Key="BindingToTagConvert"/>
     <conv:EmptyCollectionToColorConverter x:Key="EmptyCollectionToColorConvert"/>
+    <conv:ScaleFactorConverter x:Key="ScaleFactorConvert"/>
 
 
     <!--Control Content property -->

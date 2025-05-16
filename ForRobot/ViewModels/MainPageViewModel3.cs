@@ -254,7 +254,7 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Создание файла
         /// </summary>
-        public ICommand CreateNewFileCommand { get; } = new RelayCommand(_ => OpenCreateFileWindow());
+        public ICommand CreateNewFileCommand { get; } = new RelayCommand(_ => App.Current.WindowsAppService.OpenCreateWindow());
 
         /// <summary>
         /// Открытие файла программы
@@ -324,7 +324,7 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Открытие окна настроек
         /// </summary>
-        public ICommand PropertiesCommand { get; } = new RelayCommand(_ => OpenPropertyWindow());
+        public ICommand PropertiesCommand { get; } = new RelayCommand(_ => App.Current.WindowsAppService.OpenPropertiesWindow());
 
         /// <summary>
         /// Открытие chm-справки
@@ -445,34 +445,6 @@ namespace ForRobot.ViewModels
             System.Windows.Input.FocusManager.SetFocusedElement(System.Windows.Input.FocusManager.GetFocusScope(frameworkElement), null);
         }
 
-        /// <summary>
-        /// Открытие окна создание файла
-        /// </summary>
-        private static void OpenCreateFileWindow()
-        {
-            if (object.Equals(App.Current.CreateWindow, null))
-            {
-                App.Current.CreateWindow = new Views.Windows.CreateWindow();
-                App.Current.CreateWindow.Closed += (a, b) => App.Current.CreateWindow = null;
-                App.Current.CreateWindow.Owner = App.Current.MainWindowView;
-                App.Current.CreateWindow.Show();
-            }
-        }
-
-        /// <summary>
-        /// Открытие окна настроек
-        /// </summary>
-        private static void OpenPropertyWindow()
-        {
-            if (object.Equals(App.Current.PropertiesWindow, null))
-            {
-                App.Current.PropertiesWindow = new Views.Windows.PropertiesWindow();
-                App.Current.PropertiesWindow.Closed += (a, b) => App.Current.PropertiesWindow = null;
-                App.Current.PropertiesWindow.Owner = App.Current.MainWindowView;
-                App.Current.PropertiesWindow.Show();
-            }
-        }
-
         private static void SaveFile(Model.File3D.File3D file)
         {
             if (file == null)
@@ -499,6 +471,10 @@ namespace ForRobot.ViewModels
         /// <param name="file">Выбранный файл</param>
         private static void GetStandartParametrs(Model.File3D.File3D file) => file.Detal = Model.File3D.File3D.StandartParamertrs(file.Detal);
 
+        /// <summary>
+        /// Приближение/отдаление камеры в HelixViewport3D
+        /// </summary>
+        /// <param name="step">Шаг приближения/отдаления</param>
         private static void ZoomViewPort(double? step = null)
         {
             if (step == null)

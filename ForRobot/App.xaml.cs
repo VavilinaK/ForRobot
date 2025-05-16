@@ -34,13 +34,9 @@ namespace ForRobot
 
         private Mutex _mutex;
         private bool _isNewInstance;
-        private const string _mutexName = "UniqueAppMutex";
-        private const string _pipeName = "UniqueAppPipe";
-
-        //private static Mutex mutex = null;
-
-        //private static SingleGlobalInstance singleMutex;
-
+        private const string _mutexName = "InterfaceOfRobots_UniqueAppMutex";
+        private const string _pipeName = "InterfaceOfRobots_UniqueAppPipe";
+        
         /// <summary>
         /// Путь к программе на сервере
         /// </summary>
@@ -58,15 +54,24 @@ namespace ForRobot
 
         private static ForRobot.Libr.Settings.Settings _settings;
 
-        private Views.Windows.MainWindow _mainWindow;
-
         #endregion
 
         #region Public variables
 
         public static new App Current => Application.Current as App;
 
+        /// <summary>
+        /// Сервис открытия окон приложения
+        /// </summary>
+        public readonly ForRobot.Services.IWindowsAppService WindowsAppService = new ForRobot.Services.WindowsAppService();
+        
+        /// <summary>
+        /// Стек возвращаемых действий (назад)
+        /// </summary>
         public readonly Stack<IUndoableCommand> UndoStack = new Stack<IUndoableCommand>();
+        /// <summary>
+        /// Стек повторяемых действий (вперёд)
+        /// </summary>
         public readonly Stack<IUndoableCommand> RedoStack = new Stack<IUndoableCommand>();
 
         /// <summary>
@@ -74,6 +79,9 @@ namespace ForRobot
         /// </summary>
         public string AvalonConfigPath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "AvalonDock.config");
 
+        /// <summary>
+        /// Общий логер
+        /// </summary>
         public Libr.Logger Logger { get; } = new Libr.Logger();
 
         /// <summary>
@@ -89,37 +97,13 @@ namespace ForRobot
                 _settings.Save();
             }
         }
-
-        //"D:\Git\HelixToolkit\Models\stl\cube.stl"
+        
         /// <summary>
-        /// Открытые файлы
+        /// Открытые файлы 3D моделей
         /// </summary>
         public System.Collections.ObjectModel.ObservableCollection<Model.File3D.File3D> OpenedFiles { get; set; } = new System.Collections.ObjectModel.ObservableCollection<Model.File3D.File3D>();
 
-        #region Windows
-
-        /// <summary>
-        /// Главное окно
-        /// </summary>
-        public Views.Windows.MainWindow MainWindowView { get => _mainWindow ?? (_mainWindow = new Views.Windows.MainWindow()); }
-
-        //private Views.Windows.MainWindow2 _mainWindow2;
-
-        //public Views.Windows.MainWindow2 MainWindowView { get => _mainWindow2 ?? (_mainWindow2 = new Views.Windows.MainWindow2()); }
-
-        /// <summary>
-        /// Окно создания нового файла
-        /// </summary>
-        public Views.Windows.CreateWindow CreateWindow { get; set; }
-
-        /// <summary>
-        /// Окно настроек
-        /// </summary>
-        public Views.Windows.PropertiesWindow PropertiesWindow { get; set; }
-
-        #endregion
-
-        #endregion
+        #endregion Public variables
 
         #region Private functions
 
@@ -141,6 +125,8 @@ namespace ForRobot
                     Application.Current.Shutdown(0);
                     return;
                 }
+
+                this.Logger.Trace("Запуск приложения");
 
                 foreach (var i in e.Args) // Исп. для открытия файла модели "с помощью"
                     this.OpenedFiles.Add(new Model.File3D.File3D(i));
@@ -230,16 +216,14 @@ namespace ForRobot
                 }
             }
 
-            this.Logger.Trace("Запуск приложения");
-            Application.Current.MainWindow = MainWindowView;
-
             if (this.Settings.LoginByPINCode && !ForRobot.App.EqualsPinCode())
             {
                 this.Logger.Error("Ошибка при входе: неверный пин-код!");
                 Application.Current.Shutdown(1);
             }
-            else
-                MainWindowView.Show();
+
+            Application.Current.MainWindow = WindowsAppService.AppMainWindow;
+            WindowsAppService.AppMainWindow.Show();
         }
 
         /// <summary>
@@ -353,9 +337,9 @@ namespace ForRobot
             App.Current.MainWindow.Focus();
         }
 
-        #endregion
+        #endregion Private functions
 
-        #region Public functions
+        #region Public Static functions
 
         /// <summary>
         /// Хэширование строки

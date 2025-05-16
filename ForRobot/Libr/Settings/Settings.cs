@@ -79,7 +79,10 @@ namespace ForRobot.Libr.Settings
         #endregion Generic
 
         #region Navigation
-
+            
+        /// <summary>
+        /// Отображаютя ли файлы с расширением .dat
+        /// </summary>
         public bool AccessDataFile { get; set; } = false;
 
         /// <summary>
@@ -95,7 +98,7 @@ namespace ForRobot.Libr.Settings
 
         #endregion
 
-        #region Interface
+        #region View
 
         [JsonIgnore]
         public List<Tuple<string, Theme>> Themes { get; } = new List<Tuple<string, Theme>>()
@@ -125,19 +128,24 @@ namespace ForRobot.Libr.Settings
         /// <summary>
         /// Отображение рёбер
         /// </summary>
-        public bool VisibilityPictures { get; set; } = true;
+        public bool VisibilityPictures { get; set; } = true; // Устареет в версии 3.0
 
         /// <summary>
-        /// Доступность системных папок в дереве файлов
+        /// Доступность вкладок интерфейса
         /// </summary>
         public SortedDictionary<string, bool> AvailableTab { get; set; } = new SortedDictionary<string, bool>()
                                                                                     {
                                                                                         { "Роботы", true },
                                                                                         { "Управление", true },
                                                                                         { "Программа", true }
-                                                                                    };
+                                                                                    }; // Устареет в версии 3.0
 
         #region 3DView
+
+        /// <summary>
+        /// Масштабный коэффициент: 1 единица модели = <see cref="ScaleFactor"/> мм. реальных размеров
+        /// </summary>
+        public static decimal ScaleFactor { get; set; } = 1.00M / 100.00M;
 
         /// <summary>
         /// Показ системы координат
@@ -240,7 +248,7 @@ namespace ForRobot.Libr.Settings
 
         #endregion Camera
 
-        #endregion Interface
+        #endregion View
 
         #region Generation
 
@@ -288,6 +296,9 @@ namespace ForRobot.Libr.Settings
 
         #region Robots
 
+        /// <summary>
+        /// Стандартный путь к папке на роботе
+        /// </summary>
         public string ControlerFolder { get; set; }
 
         #endregion

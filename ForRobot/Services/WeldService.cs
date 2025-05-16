@@ -13,7 +13,12 @@ namespace ForRobot.Services
 
     public sealed class WeldService : IWeldService
     {
-        public decimal ScaleFactor { get; set; } = 1.00M / 150.00M;
+        public decimal ScaleFactor { get; set; } = 1.00M / 100.00M;
+
+        public WeldService(decimal _scaleFactor)
+        {
+            this.ScaleFactor = _scaleFactor;
+        }
 
         public ObservableCollection<Weld> GetWelds(Plita plate)
         {

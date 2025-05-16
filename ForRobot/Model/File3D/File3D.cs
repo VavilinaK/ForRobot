@@ -35,17 +35,15 @@ namespace ForRobot.Model.File3D
         private Detal _detal;
         private Detal _detalCopy; // Копия для возврата.
 
-        private ObservableCollection<Weld> _weldsCollection;
-
         private readonly Dispatcher dispatcher;
         /// <summary>
         /// Фильтр импортируемых файлов
         /// </summary>
         private static readonly string[] ExtensionsFilter = new string[] { ".3ds", ".obj", ".objz", ".off", ".lwo", ".stl", ".ply" };
 
-        private readonly ForRobot.Services.IModelingService _modelingService = new ForRobot.Services.ModelingService();
-        private readonly ForRobot.Services.IAnnotationService _annotationService = new ForRobot.Services.AnnotationService() { ScaleFactor = ForRobot.Services.ModelingService.ScaleFactor };
-        private readonly ForRobot.Services.IWeldService _weldService = new ForRobot.Services.WeldService() { ScaleFactor = ForRobot.Services.ModelingService.ScaleFactor };
+        private readonly ForRobot.Services.IModelingService _modelingService = new ForRobot.Services.ModelingService(ForRobot.Libr.Settings.Settings.ScaleFactor);
+        private readonly ForRobot.Services.IAnnotationService _annotationService = new ForRobot.Services.AnnotationService(ForRobot.Libr.Settings.Settings.ScaleFactor);
+        private readonly ForRobot.Services.IWeldService _weldService = new ForRobot.Services.WeldService(ForRobot.Libr.Settings.Settings.ScaleFactor);
 
         #endregion Private variables
 

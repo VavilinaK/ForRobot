@@ -42,6 +42,9 @@ namespace ForRobot.ViewModels
 
         public System.Windows.Controls.TreeViewItem SelectedItem { get => this._selectedItem; set => Set(ref this._selectedItem, value); }
 
+        /// <summary>
+        /// Выбранный тип детали для названия программы
+        /// </summary>
         public string SelectedDetalTypeName
         {
             get => this._selectedDetalTypeName ?? (this._selectedDetalTypeName = ForRobot.Model.Detals.DetalTypes.Plita);
@@ -52,6 +55,9 @@ namespace ForRobot.ViewModels
             }
         }
 
+        /// <summary>
+        /// Выбранный тип детали для имени скрипта
+        /// </summary>
         public string SelectedDetalTypeScript
         {
             get => this._selectedDetalTypeScript ?? (this._selectedDetalTypeScript = ForRobot.Model.Detals.DetalTypes.Plita);
@@ -62,6 +68,9 @@ namespace ForRobot.ViewModels
             }
         }
 
+        /// <summary>
+        /// Стандарное название генерируемой программы
+        /// </summary>
         public string StandartNameFile
         {
             get
@@ -100,6 +109,9 @@ namespace ForRobot.ViewModels
             }
         }
 
+        /// <summary>
+        /// Название скрипта-генератора
+        /// </summary>
         public string ScriptName
         {
             get
@@ -138,13 +150,16 @@ namespace ForRobot.ViewModels
             }
         }
 
+        /// <summary>
+        /// Коллекция панелей макета интерфейса
+        /// </summary>
         public List<LayoutAnchorable> Anchorables
         {
             get
             {
-                if (App.Current.MainWindowView.MainFrame?.Content is Views.Pages.PageMain3)
+                if ((App.Current.MainWindow as ForRobot.Views.Windows.MainWindow).MainFrame?.Content is Views.Pages.PageMain3)
                 {
-                    var dockingManager = (App.Current.MainWindowView.MainFrame?.Content as Views.Pages.PageMain3).DockingManeger;
+                    var dockingManager = ((App.Current.MainWindow as ForRobot.Views.Windows.MainWindow).MainFrame?.Content as Views.Pages.PageMain3).DockingManeger;
                     return dockingManager.Layout.Descendents().OfType<LayoutAnchorable>().ToList();
                 }
                 else
@@ -185,7 +200,7 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Закрытие окна
         /// </summary>
-        public ICommand CancelCommand { get; } = new RelayCommand(_ => { App.Current.PropertiesWindow.Close(); });
+        public ICommand CancelCommand { get; } = new RelayCommand(_ => App.Current.WindowsAppService.ClosePropertiesWindow());
         /// <summary>
         /// Команда изменения директивы каталога с новой версией программы
         /// </summary>
@@ -304,7 +319,7 @@ namespace ForRobot.ViewModels
                 };
                 new System.Threading.Thread(() => process.Start()).Start();
             }
-            App.Current.PropertiesWindow.Close();
+            App.Current.WindowsAppService.ClosePropertiesWindow();
         }
 
         /// <summary>

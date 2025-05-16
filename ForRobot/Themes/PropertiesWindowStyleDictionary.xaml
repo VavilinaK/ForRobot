@@ -446,10 +446,10 @@
                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
             </Style>-->
 
-            <!--<Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource textBase}">
+            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource textBase}">
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
-            </Style>-->
+            </Style>
 
             <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource textBase}">
                 <Setter Property="Margin" Value="0,5"/>
@@ -471,15 +471,27 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <CheckBox Grid.Row="0" Content="Система координат" IsChecked="{Binding Path=Settings.ShowCoordinateSystem, Mode=TwoWay}"/>
-            <CheckBox Grid.Row="1" Content="Пространственный куб" IsChecked="{Binding Path=Settings.ShowViewCube, Mode=TwoWay}"/>
-            <CheckBox Grid.Row="2" Content="Количество полигонов" IsChecked="{Binding Path=Settings.ShowTriangleCountInfo, Mode=TwoWay}"/>
-            <CheckBox Grid.Row="3" Content="Количество кадров" IsChecked="{Binding Path=Settings.ShowFrameRate, Mode=TwoWay}"/>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-            <GroupBox Grid.Row="4" Header="Камера">
+                <TextBlock Grid.Column="0" Text="Маштаб 3д модели 1:"/>
+                <TextBox Grid.Column="1" Text="{Binding Path=Settings.ScaleFactor, StringFormat={}{0:D}, Converter={StaticResource ScaleFactorConvert}, Mode=TwoWay}"
+                         HorizontalContentAlignment="Left"/>
+            </Grid>
+
+            <CheckBox Grid.Row="1" Content="Система координат" IsChecked="{Binding Path=Settings.ShowCoordinateSystem, Mode=TwoWay}"/>
+            <CheckBox Grid.Row="2" Content="Пространственный куб" IsChecked="{Binding Path=Settings.ShowViewCube, Mode=TwoWay}"/>
+            <CheckBox Grid.Row="3" Content="Количество полигонов" IsChecked="{Binding Path=Settings.ShowTriangleCountInfo, Mode=TwoWay}"/>
+            <CheckBox Grid.Row="4" Content="Количество кадров" IsChecked="{Binding Path=Settings.ShowFrameRate, Mode=TwoWay}"/>
+
+            <GroupBox Grid.Row="5" Header="Камера">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>

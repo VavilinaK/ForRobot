@@ -27,7 +27,12 @@ namespace ForRobot.Views.Pages
 
         public ViewModels.MainPageViewModel3 ViewModel
         {
-            get { return _viewModel ?? (ViewModels.MainPageViewModel3)this.DataContext ?? (_viewModel = new ViewModels.MainPageViewModel3()); }
+            get
+            {
+                return _viewModel ?? 
+                    (ViewModels.MainPageViewModel3)this.DataContext ?? 
+                    (_viewModel = new ViewModels.MainPageViewModel3());
+            }
         }
         
         public PageMain3()
@@ -65,9 +70,9 @@ namespace ForRobot.Views.Pages
                         }
                     }
                 }));
-            });
-            Messenger.Default.Register<SaveLayoutMessage>(this, _ => SaveLayout());
-            Messenger.Default.Register<LoadLayoutMessage>(this, _ => LoadLayout());
+            }); // Сообщение получения фокуса TextBox при нажатии на соответствующий параметр модели.
+            Messenger.Default.Register<SaveLayoutMessage>(this, _ => SaveLayout()); // Сообщение сохранения макета интерфейса.
+            Messenger.Default.Register<LoadLayoutMessage>(this, _ => LoadLayout()); // Сообщение выгрузки макета интерфейса.
 
             if (this.DataContext == null) { this.DataContext = ViewModel; }
         }
