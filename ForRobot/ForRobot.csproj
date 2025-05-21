@@ -362,6 +362,9 @@
     <Compile Include="Views\Controls\CustomAttributes.cs" />
     <Compile Include="Views\Controls\Image2D.cs" />
     <Compile Include="Views\Controls\PanesTemplateSelector.cs" />
+    <Compile Include="Views\Controls\SceneItemsTreeView.xaml.cs">
+      <DependentUpon>SceneItemsTreeView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Controls\SliderButton.xaml.cs">
       <DependentUpon>SliderButton.xaml</DependentUpon>
     </Compile>
@@ -390,6 +393,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\NavigationTreeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\SceneItemsTreeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

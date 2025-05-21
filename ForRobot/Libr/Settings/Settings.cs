@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Configuration;
 using System.Collections.Generic;
 
@@ -156,12 +157,25 @@ namespace ForRobot.Libr.Settings
         /// </summary>
         public bool ShowViewCube { get; set; } = true;
         /// <summary>
+        /// Доступности нажатия рёбер пространственного куба
+        /// </summary>
+        public bool IsViewCubeEdgeClicksEnabled { get; set; } = false;
+        /// <summary>
         /// Показ кол-ва полигонов
         /// </summary>
         public bool ShowTriangleCountInfo { get; set; } = false;
 
         public bool ShowFieldOfView { get; set; } = false;
         public bool ShowFrameRate { get; set; } = false;
+
+        /// <summary>
+        /// Вертикальное положение системы координат
+        /// </summary>
+        public VerticalAlignment CoordinateSystemVerticalPosition { get; set; } = VerticalAlignment.Top;
+        /// <summary>
+        /// Горизонтальное положение системы координат
+        /// </summary>
+        public HorizontalAlignment CoordinateSystemHorizontalPosition { get; set; } = HorizontalAlignment.Right;
 
         #endregion 3DView
 

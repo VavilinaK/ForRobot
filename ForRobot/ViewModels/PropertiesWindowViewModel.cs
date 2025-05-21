@@ -183,6 +183,13 @@ namespace ForRobot.ViewModels
             }
         }
 
+        public ObservableCollection<HorizontalAlignment> HorizontalAlignments { get; } = new ObservableCollection<HorizontalAlignment>(Enum.GetValues(typeof(HorizontalAlignment))
+                                                                                                                                                                                  .Cast<HorizontalAlignment>()
+                                                                                                                                                                                  .ToList<HorizontalAlignment>());
+        public ObservableCollection<VerticalAlignment> VerticalAlignments { get; } = new ObservableCollection<VerticalAlignment>(Enum.GetValues(typeof(VerticalAlignment))
+                                                                                                                                                                         .Cast<VerticalAlignment>()
+                                                                                                                                                                         .ToList<VerticalAlignment>());
+
         #region Commands
 
         /// <summary>

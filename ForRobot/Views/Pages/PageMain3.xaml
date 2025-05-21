@@ -637,7 +637,7 @@
                                VerticalAlignment="Stretch"/>
                 </DataTemplate>
             </DockingManager.DocumentHeaderTemplate>
-
+            
             <!--Содержание LayoutDocumentPane-->
             <DockingManager.LayoutItemTemplateSelector>
                 <control:PanesTemplateSelector>
@@ -645,8 +645,9 @@
                         <DataTemplate>
                             <h:HelixViewport3D PreviewMouseDown="UIElement_OnMouseDown"
                                                Background="{h:LinearGradientBrush Gray, White}"
-                                               CoordinateSystemHorizontalPosition="Right" CoordinateSystemVerticalPosition="Top"
                                                
+                                               CoordinateSystemHorizontalPosition="{Binding Path=Settings.CoordinateSystemHorizontalPosition, Source={x:Static Application.Current}, Mode=OneWay}"
+                                               CoordinateSystemVerticalPosition="{Binding Path=Settings.CoordinateSystemVerticalPosition, Source={x:Static Application.Current}, Mode=OneWay}"                                              
                                                ShowCoordinateSystem="{Binding Path=Settings.ShowCoordinateSystem, Source={x:Static Application.Current}, Mode=OneWay}"
                                                ShowViewCube="{Binding Path=Settings.ShowViewCube, Source={x:Static Application.Current}, Mode=OneWay}"
                                                ShowTriangleCountInfo="{Binding Path=Settings.ShowTriangleCountInfo, Source={x:Static Application.Current}, Mode=OneWay}"
@@ -714,9 +715,9 @@
                                 </h:HelixViewport3D.InputBindings>
 
                                 <!--<h:SunLight/>-->
-                                <h:DefaultLights/>
+                                <h:DefaultLights ShowLights="True"/>
                                 <!-- Дополнительный источник света -->
-                                <!--<ModelVisual3D>
+                                <!--<ModelVisual3D x:Name="Доп. источник света">
                                     <ModelVisual3D.Content>
                                         <Model3DGroup>
                                             <DirectionalLight Color="White" Direction="-1,-1, -1" />
@@ -848,7 +849,11 @@
                         <avalonDock:LayoutAnchorablePaneGroup>
                             <avalonDock:LayoutAnchorablePane>
                                 <avalonDock:LayoutAnchorable Title="Состав" ContentId="Components">
-                                    <TreeView FontSize="{StaticResource FontSizeNP2}"
+                                    <control:SceneItemsTreeView FontSize="{StaticResource FontSizeNP2}"
+                                                                Style="{StaticResource TextBase}"
+                                                                ItemsSource="{Binding Path=SceneItemsCollection, Mode=OneWay}"/>
+
+                                    <!--<TreeView FontSize="{StaticResource FontSizeNP2}"
                                               Style="{StaticResource TextBase}"
                                               ItemsSource="{Binding Path=SceneItemsCollection, Mode=OneWay}">
                                      
@@ -857,13 +862,13 @@
                                                                       ItemsSource="{Binding Path=Children, Mode=OneWay, NotifyOnSourceUpdated=True}">
                                               
                                                 <StackPanel Orientation="Horizontal">
-                                                    <!--<ToggleButton IsChecked="{Binding IsVisible, Mode=TwoWay, TargetNullValue={StaticResource True}}">
+                                                    --><!--<ToggleButton IsChecked="{Binding IsVisible, Mode=TwoWay, TargetNullValue={StaticResource True}}">
                                                         <ToggleButton.Template>
                                                             <ControlTemplate TargetType="{x:Type ToggleButton}">
                                                                 
                                                             </ControlTemplate>
                                                         </ToggleButton.Template>
-                                                    </ToggleButton>-->
+                                                    </ToggleButton>--><!--
                                                     
                                                     <CheckBox IsChecked="{Binding IsVisible, Mode=TwoWay}" VerticalAlignment="Center" Margin="0,0,5,0"/>                                    
                                                     <TextBlock Text="{Binding Name}"/>
@@ -871,7 +876,7 @@
                                             </HierarchicalDataTemplate>
                                         </TreeView.Resources>
 
-                                    </TreeView>
+                                    </TreeView>-->
                                     
                                     <!--<ContentControl ContentTemplate="{StaticResource OtherTemplateStyle}"/>-->
                                 </avalonDock:LayoutAnchorable>

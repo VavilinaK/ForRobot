@@ -30,7 +30,11 @@ namespace ForRobot.Model.File3D
 
         //public string Name { get => this._element.GetName(); }
 
-        public DependencyObject SceneObject { get => this._element; set => Set(ref this._element, value, false); }
+        public DependencyObject SceneObject
+        {
+            get => this._element;
+            set => Set(ref this._element, value, false);
+        }
         //public object SceneObject { get => this._element; set => Set(ref this._element, value); }
         //public MeshGeometry3D SceneObject { get => this._element; set => Set(ref this._element, value); }
         public static readonly Material TransparentMaterial = new DiffuseMaterial(Brushes.Transparent);
@@ -155,7 +159,12 @@ namespace ForRobot.Model.File3D
         public SceneItem(DependencyObject visual3D)
         {
             this.SceneObject = visual3D;
-            this.Name = this.SceneObject.GetType().Name;
+
+            if (string.IsNullOrEmpty(visual3D.GetName()))
+                this.Name = this.TypeName;
+            else
+                this.Name = visual3D.GetName();
+
             this.AddChildren(this.SceneObject);
         }
 

@@ -4,6 +4,7 @@
                     xmlns:properties="clr-namespace:ForRobot.Properties"
                     xmlns:settings="clr-namespace:ForRobot.Libr.Settings"
                     xmlns:h="http://helix-toolkit.org/wpf"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib"
                     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity">
     
     <!--Вкладка "Общии"-->
@@ -433,6 +434,7 @@
             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource textBase}">
                 <Setter Property="VerticalAlignment" Value="Center"/>
                 <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Padding" Value="5"/>
             </Style>
 
             <Style TargetType="{x:Type Slider}">
@@ -462,11 +464,25 @@
                 <Setter Property="Padding" Value="5"/>
             </Style>
 
+            <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource textBase}">
+                <Setter Property="ItemTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" Padding="5"/>
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="10, 5"/>
+            </Style>
+
             <Style TargetType="{x:Type RadioButton}" BasedOn="{StaticResource textBase}"></Style>
         </DataTemplate.Resources>
 
         <Grid Background="Transparent" DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -486,12 +502,39 @@
                          HorizontalContentAlignment="Left"/>
             </Grid>
 
-            <CheckBox Grid.Row="1" Content="Система координат" IsChecked="{Binding Path=Settings.ShowCoordinateSystem, Mode=TwoWay}"/>
-            <CheckBox Grid.Row="2" Content="Пространственный куб" IsChecked="{Binding Path=Settings.ShowViewCube, Mode=TwoWay}"/>
-            <CheckBox Grid.Row="3" Content="Количество полигонов" IsChecked="{Binding Path=Settings.ShowTriangleCountInfo, Mode=TwoWay}"/>
-            <CheckBox Grid.Row="4" Content="Количество кадров" IsChecked="{Binding Path=Settings.ShowFrameRate, Mode=TwoWay}"/>
+            <GroupBox Grid.Row="1" Header="Система координат">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
 
-            <GroupBox Grid.Row="5" Header="Камера">
+                    <CheckBox Grid.Row="0" Grid.ColumnSpan="2" Content="Видимость" IsChecked="{Binding Path=Settings.ShowCoordinateSystem, Mode=TwoWay}"/>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Вертикальное расположение"/>
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Горизонтальное расположение"/>
+
+                    <ComboBox Grid.Row="1" Grid.Column="1" 
+                              ItemsSource="{Binding Path=VerticalAlignments, Mode=OneWay}"
+                              SelectedItem="{Binding Path=Settings.CoordinateSystemVerticalPosition, Mode=TwoWay}"/>
+
+                    <ComboBox Grid.Row="2" Grid.Column="1"
+                              ItemsSource="{Binding Path=HorizontalAlignments, Mode=OneWay}"
+                              SelectedItem="{Binding Path=Settings.CoordinateSystemHorizontalPosition, Mode=TwoWay}"/>
+                </Grid>
+            </GroupBox>
+
+            <CheckBox Grid.Row="2" Content="Пространственный куб" IsChecked="{Binding Path=Settings.ShowViewCube, Mode=TwoWay}"/>
+            <CheckBox Grid.Row="3" Content="Доступности нажатия рёбер пространственного куба" IsChecked="{Binding Path=Settings.IsViewCubeEdgeClicksEnabled, Mode=TwoWay}"/>
+            <CheckBox Grid.Row="4" Content="Количество полигонов" IsChecked="{Binding Path=Settings.ShowTriangleCountInfo, Mode=TwoWay}"/>
+            <CheckBox Grid.Row="5" Content="Количество кадров" IsChecked="{Binding Path=Settings.ShowFrameRate, Mode=TwoWay}"/>
+
+            <GroupBox Grid.Row="6" Header="Камера">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>

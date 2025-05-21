@@ -30,11 +30,12 @@ namespace ForRobot.Services
         /// <summary>
         /// Масштабный коэффициент: 1 единица модели = <see cref="ScaleFactor"/> мм. реальных размеров
         /// </summary>
-        public decimal ScaleFactor { get; set; } = 1.00M / 100.00M;
+        public decimal ScaleFactor { get; private set; } = 1.00M / 100.00M;
 
-        public ModelingService(decimal _scaleFactor)
+        public ModelingService(decimal scaleFactor)
         {
-            this.ScaleFactor = _scaleFactor;
+            this.ValidateScaleFactor(scaleFactor);
+            this.ScaleFactor = scaleFactor;
         }
 
         /// <summary>
@@ -248,6 +249,8 @@ namespace ForRobot.Services
 
         private Model3DGroup AddPlate(Plita plate)
         {
+            this.ValidatePlateParameters(plate);
+
             Model3DGroup model3DGroup = new Model3DGroup();
             MeshBuilder meshBuilder = new MeshBuilder();
 
@@ -255,19 +258,6 @@ namespace ForRobot.Services
             double modelPlateWidth = (double)plate.PlateWidth * (double)ScaleFactor;
             double modelPlateHeight = (double)plate.PlateThickness * (double)ScaleFactor;
             double modelPlateLength = (double)plate.PlateLength * (double)ScaleFactor;
-
-            // Валидация.
-            if(plate.ScoseType != ScoseTypes.Rect)
-            {
-                if (plate.BevelToLeft < 0 || plate.BevelToRight < 0)
-                    throw new ArgumentException("Скосы не могут быть отрицательными.");
-
-                if (plate.BevelToLeft + plate.BevelToRight >= plate.PlateWidth)
-                    throw new ArgumentException("Сумма скосов превышает ширину плиты.");
-
-                if (plate.ScoseType == ScoseTypes.SlopeLeft && plate.BevelToLeft > plate.PlateWidth)
-                    throw new ArgumentException("Смещение параллелограмма и скосы недопустимы.");
-            }
 
             MeshGeometry3D geometry = new MeshGeometry3D();
             switch (plate.ScoseType)
@@ -321,14 +311,23 @@ namespace ForRobot.Services
             
             double endWidth = modelPlateLength * (1 - TrapezoidRatio)
                                                  - (double)plate.RibsCollection.Last().IdentToRight * (double)ScaleFactor
-                                                 - (double)plate.RibsCollection.Last().IdentToLeft * (double)ScaleFactor; // Конечная длина (для последнего ребра)            
-            if (plate.ScoseType == ScoseTypes.TrapezoidBottom)
-            {
-                (startWidth, endWidth) = (endWidth, startWidth);
-            }
+                                                 - (double)plate.RibsCollection.Last().IdentToLeft * (double)ScaleFactor; // Конечная длина (для последнего ребра)      
+
+            //double startWidth = modelPlateLength - (double)plate.RibsCollection.First().IdentToRight * (double)ScaleFactor
+            //                                     - (double)plate.RibsCollection.First().IdentToLeft * (double)ScaleFactor; // Начальная длина (для первого ребра)
+            
+            //double endWidth = modelPlateLength * (1 - TrapezoidRatio)
+            //                                     - (double)plate.RibsCollection.Last().IdentToRight * (double)ScaleFactor
+            //                                     - (double)plate.RibsCollection.Last().IdentToLeft * (double)ScaleFactor; // Конечная длина (для последнего ребра)            
 
             double commonDifference = (endWidth - startWidth) / (plate.RibCount - 1); // Разность прогрессии
 
+            if (plate.ScoseType == ScoseTypes.TrapezoidBottom)
+            {
+                (startWidth, endWidth) = (endWidth, startWidth);
+                commonDifference = -Math.Abs(commonDifference);
+            }
+            
             for (int i = 0; i < plate.RibCount; i++)
             {
                 var rib = plate.RibsCollection[i];
@@ -350,7 +349,6 @@ namespace ForRobot.Services
                 {
                     case ScoseTypes.SlopeLeft:
                     case ScoseTypes.SlopeRight:
-
                         double slopeFactor = (ribX + modelPlateWidth / 2) / modelPlateWidth;
                         double plateSurfaceY = modelPlateHeight / 2;
 
@@ -409,20 +407,24 @@ namespace ForRobot.Services
                     case ScoseTypes.TrapezoidTop:
                     case ScoseTypes.TrapezoidBottom:
                         startWidth -= (modelRibIdentToLeft + modelRibIdentToRight);
+                        //double currentWidth = (startWidth -= (modelRibIdentToLeft + modelRibIdentToRight)) + commonDifference * i;
+
+                        //double currentWidth = (plate.ScoseType == ScoseTypes.TrapezoidTop) ? (startWidth -= (modelRibIdentToLeft + modelRibIdentToRight)) + commonDifference * i
+                        //                                                                   : (endWidth -= (modelRibIdentToLeft + modelRibIdentToRight)) + commonDifference * i;
                         double currentWidth = startWidth + commonDifference * i;
+                        //double currentWidth = (plate.ScoseType == ScoseTypes.TrapezoidBottom) ? startWidth - commonDifference * i
+                        //                                                                      : startWidth + commonDifference * i;
 
                         // Длина ребра с учётом отступов
-                        ribLength = currentWidth - modelRibIdentToLeft - modelRibIdentToRight;
-                        ribLength = Math.Max(ribLength, 1.0); // Минимальная длина
+                        ribLength = currentWidth - (modelRibIdentToLeft + modelRibIdentToRight);
+                        ribLength = Math.Max(ribLength, MIN_RIB_LENGTH); // Минимальная длина ребра.
                         break;
                 }
 
-                meshBuilder.AddBox(
-                    new Point3D(ribX, ribY, ribZCenter), // Позиция у верхней грани плиты
-                    modelRibThickness,
-                    modelRibHeight,
-                    ribLength
-                );
+                meshBuilder.AddBox(new Point3D(ribX, ribY, ribZCenter), // Позиция у верхней грани плиты
+                                   modelRibThickness,
+                                   modelRibHeight,
+                                   ribLength);
 
                 // Перемещение позиции для следующего ребра
                 if (!plate.ParalleleRibs)
@@ -447,5 +449,32 @@ namespace ForRobot.Services
         }
 
         #endregion  Plate Logic
+
+        #region Helper Methods
+
+        private void ValidateScaleFactor(decimal scaleFactor)
+        {
+            if (scaleFactor <= 0)
+                throw new ArgumentException("Масштабный коэффициент должен быть больше нуля.");
+        }
+
+        private void ValidatePlateParameters(Plita plate)
+        {
+            if (plate.ScoseType == ScoseTypes.Rect) return;
+
+            if (plate.BevelToLeft < 0 || plate.BevelToRight < 0)
+                throw new ArgumentException("Скосы не могут быть отрицательными.", nameof(plate));
+
+            if (plate.BevelToLeft + plate.BevelToRight >= plate.PlateWidth)
+                throw new ArgumentException("Сумма скосов превышает ширину плиты.", nameof(plate));
+
+            if (plate.ScoseType == ScoseTypes.SlopeLeft && plate.BevelToLeft > plate.PlateWidth)
+                throw new ArgumentException("Смещение параллелограмма и скосы недопустимы.", nameof(plate));
+
+            if (TrapezoidRatio < 0.1 || TrapezoidRatio > 0.9)
+                throw new InvalidOperationException("Недопустимый коэффициент трапеции.");
+        }
+
+        #endregion Helper Methods
     }
 }
