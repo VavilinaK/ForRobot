@@ -147,15 +147,6 @@ namespace ForRobot.Model.File3D
 
         #region Constructor
 
-        private void FillWeldsCollection(Plita plate)
-        {
-            this.WeldsCollection.Clear();
-            foreach (var item in this._weldService.GetWelds(plate))
-            {
-                this.WeldsCollection.Add(item);
-            }
-        }
-
         public File3D() => this.dispatcher = Dispatcher.CurrentDispatcher;
 
         public File3D(Detal detal, string path) : this()
@@ -325,6 +316,15 @@ namespace ForRobot.Model.File3D
             //    // Преобразуем ноды сцены в Model3DGroup
             //    ProcessNode(scene.RootNode, scene, this.CurrentModel);
             //}
+        }
+
+        private void FillWeldsCollection(Plita plate)
+        {
+            this.WeldsCollection.Clear();
+            foreach (var item in this._weldService.GetWelds(plate))
+            {
+                this.WeldsCollection.Add(item);
+            }
         }
 
         //private void ProcessNode(Node node, Scene scene, Model3DGroup modelGroup)

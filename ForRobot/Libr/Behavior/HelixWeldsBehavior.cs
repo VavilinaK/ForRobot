@@ -71,6 +71,7 @@ namespace ForRobot.Libr.Behavior
                 Color = weld.Color,
                 Thickness = weld.Thickness
             };
+            line.SetName("Weld");
             this._weldsVisuals.Add(line);
             this._helixViewport.Children.Add(line);
         }

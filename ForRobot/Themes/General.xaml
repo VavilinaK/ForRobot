@@ -135,6 +135,7 @@
     <Color x:Key="IconStopProgramColor">#FFFF0000</Color>
     <Color x:Key="IconCancelProgramColor">#FFFF0000</Color>
     <Color x:Key="IconSelectGenProgramColor">#FF008AD8</Color>
+    <Color x:Key="IconSceneItemColor">#2b2b2b</Color>
 
     <SolidColorBrush opt:Freeze="True" x:Key="IconRectangularBrush" Color="{StaticResource IconRectangularColor}"/>
     <SolidColorBrush opt:Freeze="True" x:Key="IconNewFileBrush" Color="{StaticResource IconNewFileColor}"/>
@@ -160,6 +161,7 @@
     <SolidColorBrush opt:Freeze="True" x:Key="IconStopProgramBrush" Color="{StaticResource IconStopProgramColor}"/>
     <SolidColorBrush opt:Freeze="True" x:Key="IconCancelProgramBrush" Color="{StaticResource IconCancelProgramColor}"/>
     <SolidColorBrush opt:Freeze="True" x:Key="IconSelectGenProgramBrush" Color="{StaticResource IconSelectGenProgramColor}"/>
+    <SolidColorBrush opt:Freeze="True" x:Key="IconSceneItemBrush" Color="{StaticResource IconSceneItemColor}"/>
 
     <!--***************************************************************************-->
 

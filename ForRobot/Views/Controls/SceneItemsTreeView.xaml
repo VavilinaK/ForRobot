@@ -5,8 +5,23 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ForRobot.Views.Controls"
              xmlns:file="clr-namespace:ForRobot.Model.File3D"
-             mc:Ignorable="d">
-    
+             mc:Ignorable="d"
+             HorizontalContentAlignment="Stretch">
+
+    <!--<TreeView.ItemsPanel>
+        <ItemsPanelTemplate>
+            <WrapPanel HorizontalAlignment="Stretch"/>
+        </ItemsPanelTemplate>
+    </TreeView.ItemsPanel>-->
+
+    <!--<TreeView.ItemContainerStyle>
+        <Style TargetType="{x:Type TreeViewItem}">
+            <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}"/>
+            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+    </TreeView.ItemContainerStyle>-->
+
     <TreeView.Resources>
         <Style x:Key="TextBase" TargetType="{x:Type FrameworkElement}">
             <Setter Property="TextElement.FontFamily" Value="DefaultFont"/>
@@ -14,15 +29,26 @@
         </Style>
         
         <Style TargetType="{x:Type TextBlock}">
-            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="TextAlignment" Value="Center"/>
         </Style>
-        
+
+        <Style x:Key="PathBase" TargetType="{x:Type Path}">
+            <Setter Property="Stretch" Value="Uniform"/>
+            <Setter Property="Fill" Value="{StaticResource IconSceneItemBrush}"/>
+            <Setter Property="StrokeThickness" Value="1"/>
+        </Style>
+
+        <Style TargetType="{x:Type Path}" BasedOn="{StaticResource PathBase}"></Style>
+                
         <HierarchicalDataTemplate DataType="{x:Type file:SceneItem}"
                                   ItemsSource="{Binding Path=Children, Mode=OneWay, NotifyOnSourceUpdated=True}">
 
             <Grid Margin="5">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="10"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="10"/>
                     <ColumnDefinition Width="*"/>
@@ -31,9 +57,9 @@
                 <ToggleButton Grid.Column="0" IsChecked="{Binding Path=IsVisible}" Height="20" Width="20">
                     <ToggleButton.Template>
                         <ControlTemplate TargetType="{x:Type ToggleButton}">
-                            <Path Fill="Black" Stretch="Uniform" StrokeThickness="1">
+                            <Path>
                                 <Path.Style>
-                                    <Style TargetType="{x:Type Path}">
+                                    <Style TargetType="{x:Type Path}" BasedOn="{StaticResource PathBase}">
                                         <Setter Property="Data" Value="{DynamicResource EyePathGeomerty}"/>
 
                                         <Style.Triggers>
@@ -48,8 +74,26 @@
                     </ToggleButton.Template>
                 </ToggleButton>
 
-                <!--<CheckBox Grid.Column="0" IsChecked="{Binding IsVisible, Mode=TwoWay}" VerticalAlignment="Center"/>-->
-                <TextBlock Grid.Column="2" Text="{Binding Name}" Background="Aqua"/>
+                <Path Grid.Column="2">
+                    <Path.Style>
+                        <Style TargetType="{x:Type Path}" BasedOn="{StaticResource PathBase}">
+                            <Style.Triggers>
+                                <!--Lights-->
+                                <DataTrigger Binding="{Binding Path=GenericTypeName}" Value="Light">
+                                    <Setter Property="Data" Value="{StaticResource LightGeomerty}"/>
+                                </DataTrigger>
+
+                                <!--CoordinateSystem-->
+                                <DataTrigger Binding="{Binding Path=GenericTypeName}" Value="CoordinateSystem">
+                                    <Setter Property="Data" Value="{StaticResource AxistPathGeomerty}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Path.Style>
+                </Path>
+                
+                <TextBlock Grid.Column="4" Text="{Binding Name}" TextWrapping="Wrap"
+                           Background="Aqua"/>
             </Grid>
         </HierarchicalDataTemplate>
     </TreeView.Resources>

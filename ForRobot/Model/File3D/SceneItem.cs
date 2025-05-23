@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
@@ -10,6 +11,11 @@ using HelixToolkit.Wpf;
 
 namespace ForRobot.Model.File3D
 {
+    internal static class ItemNameByType
+    {
+        internal static string DefaultLightsName = "По-умолчанию";
+    }
+
     public sealed class SceneItem : BaseClass
     {
         #region Private variables
@@ -40,7 +46,28 @@ namespace ForRobot.Model.File3D
         public static readonly Material TransparentMaterial = new DiffuseMaterial(Brushes.Transparent);
 
         public string Name { get; set; }
-        public string TypeName { get => this.SceneObject.GetType().Name; }
+        public string GenericTypeName
+        {
+            get
+            {
+                switch (this.ObjectType)
+                {
+                    case Type a when a == typeof(SunLight):
+                    case Type b when b == typeof(DefaultLights):
+                    case Type c when c == typeof(SpotHeadLight):
+                    case Type d when d == typeof(LightVisual3D):
+                    case Type e when e == typeof(ThreePointLights):
+                    case Type f when f == typeof(DirectionalHeadLight):
+                        return "Light";
+
+                    case Type g when g == typeof(CoordinateSystemVisual3D):
+                        return "CoordinateSystem";
+
+                    default:
+                        return null;
+                }
+            }
+        }
 
         public bool IsVisible
         {
@@ -57,6 +84,8 @@ namespace ForRobot.Model.File3D
                 //this.UpdateVisibility(this._isVisible);
             }
         }
+
+        public Type ObjectType { get; set; }
 
         //public Brush Brush
         //{
@@ -159,9 +188,10 @@ namespace ForRobot.Model.File3D
         public SceneItem(DependencyObject visual3D)
         {
             this.SceneObject = visual3D;
+            this.ObjectType = visual3D.GetType();
 
             if (string.IsNullOrEmpty(visual3D.GetName()))
-                this.Name = this.TypeName;
+                this.Name = this.SceneObject.GetType().Name;
             else
                 this.Name = visual3D.GetName();
 
@@ -196,6 +226,32 @@ namespace ForRobot.Model.File3D
             switch (element)
             {
                 case System.Windows.Media.Media3D.ModelVisual3D modelVisual3D:
+                    switch (modelVisual3D)
+                    {
+                        case SunLight sunLight:
+                        case DefaultLights defaultLights:
+                        case SpotHeadLight spotHeadLight:
+                        case LightVisual3D lightVisual3D:
+                        case ThreePointLights threePointLights:
+                        case DirectionalHeadLight directionalHeadLight:
+                        case CoordinateSystemVisual3D coordinateSystemVisual3D:
+                            return;
+
+                        case LinesVisual3D linesVisual3D:
+                            //if (linesVisual3D.GetName() == "Weld")
+                            //{
+                            //    if (this.Children.Where(item => item.Name == "Сварочные швы").Count() == 0)
+                            //        this.Children.Add(new SceneItem() { Name = "Сварочные швы" });
+
+                            //    (this.Children.Where(item => item.Name == "Сварочные швы").First()).Children.Add(new SceneItem()
+                            //    {
+                            //        SceneObject = modelVisual3D,
+                            //        ObjectType = modelVisual3D.GetType()
+                            //    });
+                            //}
+                            return;
+                    }
+
                     foreach (var item in modelVisual3D.Children)
                     {
                         this.Children.Add(new SceneItem(item));

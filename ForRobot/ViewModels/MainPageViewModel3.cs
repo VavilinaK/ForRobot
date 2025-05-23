@@ -181,6 +181,9 @@ namespace ForRobot.ViewModels
                     case HelixToolkit.Wpf.GridLinesVisual3D gridLinesVisual3D:
                         return;
 
+                    //case HelixToolkit.Wpf.BoundingBoxVisual3D boundingBoxVisual3D:
+                    //    return;
+
                     case ForRobot.Model.File3D.Annotation annotation:
                         GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Behavior.FindElementByTagMessage((value as Model.File3D.Annotation).PropertyName));
                         break;
