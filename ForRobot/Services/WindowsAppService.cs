@@ -74,7 +74,7 @@ namespace ForRobot.Services
                 this._propertiesWindow.Owner = App.Current.MainWindow;
                 this._propertiesWindow.Show();
             }
-        }
+        }        
 
         public void CloseCreateWindow() => this._createWindow.Close();
         public void ClosePropertiesWindow() => this._propertiesWindow.Close();

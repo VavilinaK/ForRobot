@@ -558,6 +558,8 @@
                       Template="{StaticResource MenuItemTemplate1}"
                       Command="{x:Static h:CameraController.TopViewCommand}">
 
+                <!--LeftViewCommand-->
+
                 <MenuItem.Icon>
                     <Image Source="/InterfaceOfRobots;component/Themes/Images/top_view.png" Height="24" Width="24" Stretch="Uniform"/>
                 </MenuItem.Icon>
@@ -566,7 +568,7 @@
             <MenuItem Header="Вид снизу (Ctrl+D)"
                       Template="{StaticResource MenuItemTemplate1}"
                       Command="{x:Static h:CameraController.BottomViewCommand}">
-
+                <!--RightViewCommand-->
                 <MenuItem.Icon>
                     <Image Source="/InterfaceOfRobots;component/Themes/Images/bottom_view.png" Height="24" Width="24" Stretch="Uniform"/>
                 </MenuItem.Icon>
@@ -687,10 +689,17 @@
                                                        FieldOfView="10"
                                                        NearPlaneDistance="0.001"/>-->
 
-                                    <PerspectiveCamera x:Name="CameraControler" 
+                                    <!--<PerspectiveCamera x:Name="CameraControler" 
                                                        LookDirection="636, -343, 0.04"
                                                        UpDirection="0.5, 0.89, 0"
                                                        Position="-639, 342, -0.5"
+                                                       FieldOfView="10"
+                                                       NearPlaneDistance="0.001"/>-->
+
+                                    <PerspectiveCamera x:Name="CameraControler" 
+                                                       LookDirection="0.4, -517, -619"
+                                                       UpDirection="0, 0.8, -0.7"
+                                                       Position="1, 515, 619"
                                                        FieldOfView="10"
                                                        NearPlaneDistance="0.001"/>
                                 </h:HelixViewport3D.DefaultCamera>

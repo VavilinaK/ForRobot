@@ -5,7 +5,8 @@
                     xmlns:settings="clr-namespace:ForRobot.Libr.Settings"
                     xmlns:h="http://helix-toolkit.org/wpf"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib"
-                    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity">
+                    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+                    xmlns:pt="clr-namespace:PropertyTools.Wpf;assembly=PropertyTools.Wpf">
     
     <!--Вкладка "Общии"-->
     <DataTemplate x:Key="GeneralProperiesTemplate" DataType="{x:Type ContentControl}">
@@ -430,13 +431,16 @@
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                 <Setter Property="HorizontalContentAlignment" Value="Left"/>
             </Style>
-            
-            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource textBase}">
+
+            <Style x:Key="TextBlockBase" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource textBase}">
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
                 <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="Padding" Value="5"/>
             </Style>
 
+            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBlockBase}"> </Style> 
+            
             <Style TargetType="{x:Type Slider}">
                 <Setter Property="Margin" Value="5,0"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
@@ -468,13 +472,13 @@
                 <Setter Property="ItemTemplate">
                     <Setter.Value>
                         <DataTemplate>
-                            <TextBlock Text="{Binding}" Padding="5"/>
+                            <TextBlock Text="{Binding}"/>
                         </DataTemplate>
                     </Setter.Value>
                 </Setter>
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                <Setter Property="Margin" Value="10, 5"/>
+                <Setter Property="Margin" Value="10, 0"/>
             </Style>
 
             <Style TargetType="{x:Type RadioButton}" BasedOn="{StaticResource textBase}"></Style>
@@ -482,6 +486,7 @@
 
         <Grid Background="Transparent" DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -632,6 +637,39 @@
                                                                                                                          TargetNullValue={StaticResource False}, FallbackValue={StaticResource False}}"/>
                         </Grid>
                     </GroupBox>
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Grid.Row="7" Header="Цветовое обозначение">
+                <Grid TextElement.FontWeight="Normal">
+                    <Grid.Resources>
+                        <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBlockBase}">                            
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                        </Style>
+                    </Grid.Resources>
+                    
+                    <ListBox SelectionMode="Single"
+                             Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0"
+                             ItemsSource="{Binding Path=Settings.Colors}">
+
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.Column="0">
+                                        <TextBlock Text="{Binding Path=PropertyName}" VerticalAlignment="Center"/>
+                                    </Border>
+
+                                    <pt:ColorPicker Grid.Column="1" SelectedColor="{Binding Path=Color, Mode=TwoWay}"
+                                                    HorizontalContentAlignment="Right"  Margin="5"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </Grid>
             </GroupBox>
         </Grid>

@@ -19,8 +19,8 @@ namespace ForRobot.Model.File3D
         static Materials()
         {
             var brushConverter = new BrushConverter();
-            Plate = new DiffuseMaterial(DefaultPlateBrush) { AmbientColor = Colors.White };
-            Rib = new DiffuseMaterial(DefaultRibBrush) { AmbientColor = Colors.White };
+            Plate = new DiffuseMaterial(DefaultPlateBrush) { AmbientColor = System.Windows.Media.Colors.White };
+            Rib = new DiffuseMaterial(DefaultRibBrush) { AmbientColor = System.Windows.Media.Colors.White };
             Weld = new DiffuseMaterial(DefaultWeldBrush);
             Arrow = new DiffuseMaterial(DefaultArrowBrush);
         }

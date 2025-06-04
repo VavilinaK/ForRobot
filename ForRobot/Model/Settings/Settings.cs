@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Reflection;
 using System.Configuration;
 using System.Collections.Generic;
 
@@ -27,6 +28,8 @@ namespace ForRobot.Libr.Settings
         };
 
         private Tuple<string, Theme> _selectedTheme;
+
+        private List<ForRobot.Model.File3D.PropertyColor> _colors;
 
         private ForRobot.Libr.ConfigurationProperties.AppConfigurationSection _appConfig = ConfigurationManager.GetSection("app") as ForRobot.Libr.ConfigurationProperties.AppConfigurationSection;
         private ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection _robotConfig = ConfigurationManager.GetSection("robot") as ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection;
@@ -177,6 +180,11 @@ namespace ForRobot.Libr.Settings
         /// </summary>
         public HorizontalAlignment CoordinateSystemHorizontalPosition { get; set; } = HorizontalAlignment.Right;
 
+        /// <summary>
+        /// Перечень цветов
+        /// </summary>
+        public List<ForRobot.Model.File3D.PropertyColor> Colors { get; }
+        
         #endregion 3DView
 
         #region Camera
@@ -339,6 +347,8 @@ namespace ForRobot.Libr.Settings
             this.PathFolderOfGeneration = this._robotConfig.PathForGeneration;
 
             this.ControlerFolder = this._robotConfig.PathControllerFolder;
+
+            if (this.Colors == null || this.Colors.Count == 0) this.Colors = GetColors();
         }
 
         #endregion
@@ -366,6 +376,34 @@ namespace ForRobot.Libr.Settings
                 return new Settings();
         }
 
-        #endregion
+        #endregion Public functions
+
+        #region Private functions
+
+        private List<ForRobot.Model.File3D.PropertyColor> GetColors()
+        {
+            this.Colors?.Clear();
+            List<ForRobot.Model.File3D.PropertyColor> colors = new List<ForRobot.Model.File3D.PropertyColor>();
+            // Создаем экземпляр класса Colors
+            //var colorsInstance = new ForRobot.Model.File3D.Colors();
+
+            foreach (var f in typeof(ForRobot.Model.File3D.Colors).GetProperties(BindingFlags.Static | BindingFlags.Public))
+            {
+                var attribute = f.GetCustomAttributes(typeof(ForRobot.Libr.Attributes.PropertyNameAttribute), false).FirstOrDefault() as ForRobot.Libr.Attributes.PropertyNameAttribute;
+                if (attribute != null)
+                {
+                    // Извлекаем название из атрибута
+                    string name = attribute.PropertyName;
+
+                    // Получаем значение цвета из свойства экземпляра
+                    System.Windows.Media.Color colorValue = (System.Windows.Media.Color)f.GetValue(null);
+
+                    colors.Add(new Model.File3D.PropertyColor(name, colorValue));
+                }
+            }
+            return colors;
+        }
+
+        #endregion Private functions
     }
 }

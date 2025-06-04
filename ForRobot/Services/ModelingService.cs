@@ -173,7 +173,7 @@ namespace ForRobot.Services
                 TriangleIndices = new Int32Collection(indices)
             };
         }
-
+        
         /// <summary>
         /// Сборка геометрии настила формой "Tрапиция"
         /// </summary>
@@ -206,14 +206,8 @@ namespace ForRobot.Services
                 new Point3D(halfWidth, halfHeight, topHalfWidth)     // 7: правый передний верхний
             };
 
-            if (!isTop)
-            {
-                // Поворот на 180° вокруг оси Y (X → -X, Z → -Z)
-                for (int i = 0; i < vertices.Length; i++)
-                {
-                    vertices[i] = new Point3D(-vertices[i].X, vertices[i].Y, -vertices[i].Z);
-                }
-            }
+            // Применение поворота
+            RotateVerticesAroundY(vertices, isTop ? -90 : 90);
 
             int[] indices = new int[]
             {
@@ -281,10 +275,6 @@ namespace ForRobot.Services
                                        modelPlateLength,
                                        modelPlateHeight,
                                        modelPlateWidth);
-                    //meshBuilder.AddBox(new Point3D(0, 0, 0),
-                    //                  modelPlateWidth,
-                    //                  modelPlateHeight,
-                    //                  modelPlateLength);
                     geometry = meshBuilder.ToMesh();
                     break;
             }
@@ -292,7 +282,7 @@ namespace ForRobot.Services
             model3DGroup.Children.Add(new GeometryModel3D(geometry, ForRobot.Model.File3D.Materials.Plate) { BackMaterial = ForRobot.Model.File3D.Materials.Plate });
             return model3DGroup;
         }
-
+                
         private Model3DGroup AddRibs(Plita plate)
         {
             Model3DGroup model3DGroup = new Model3DGroup();
@@ -330,7 +320,7 @@ namespace ForRobot.Services
                 commonDifference = -Math.Abs(commonDifference);
             }
             
-            for (int i = 0; i < 1; i++)
+            for (int i = 0; i < plate.RibCount; i++)
             {
                 var rib = plate.RibsCollection[i];
 
@@ -341,11 +331,11 @@ namespace ForRobot.Services
 
                 double ribLength = modelPlateLength - modelRibIdentToLeft - modelRibIdentToRight; // Длина ребра (с учётом отступов).
 
-                ribPositionZAxes += (double)modelRibDistanceLeft; // Расчёт позиции ребра по оси X - отступ от торца слева.
+                ribPositionZAxes += (double)modelRibDistanceLeft; // Расчёт позиции ребра по оси Z - отступ от торца слева.
 
-                double ribZ = ribPositionZAxes - (double)modelPlateWidth / 2; // Позиционирование рёбер по оси X (с учётом разного растояния).                
+                double ribZ = (double)modelPlateWidth / 2 - ribPositionZAxes; // Позиционирование рёбер по оси Z (с учётом разного растояния).                
                 double ribY = (modelRibHeight + modelPlateHeight) / 2; // Позиция по оси Y.
-                double ribXCenter = (modelRibIdentToLeft - modelRibIdentToRight) / 2; // Позиция по оси Z. Середина плиты в точки - (0, 0, 0).
+                double ribXCenter = (modelRibIdentToLeft - modelRibIdentToRight) / 2; // Позиция по оси X. Середина плиты в точки - (0, 0, 0).
 
                 switch (plate.ScoseType)
                 {
@@ -359,7 +349,7 @@ namespace ForRobot.Services
                         else
                             plateSurfaceY -= SlopeOffset * (double)ScaleFactor * (ribY / (modelPlateWidth / 2));
 
-                        double ribX = (plate.ScoseType == ScoseTypes.SlopeLeft) ? -SlopeOffset : SlopeOffset;
+                        double ribX = (plate.ScoseType == ScoseTypes.SlopeLeft) ? SlopeOffset : -SlopeOffset;
 
                         // Вершины ребра (параллелограмм)
                         Point3D[] vertices = new Point3D[8]
@@ -519,6 +509,86 @@ namespace ForRobot.Services
         #endregion  Plate Logic
 
         #region Helper Methods
+
+        /// <summary>
+        /// Поворот вершин вокруг оси X на заданный угол (в градусах)
+        /// </summary>
+        private void RotateVerticesAroundX(Point3D[] vertices, double angleDegrees)
+        {
+            double angleRadians = angleDegrees * Math.PI / 180;
+            double cos = Math.Cos(angleRadians);
+            double sin = Math.Sin(angleRadians);
+
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                double y = vertices[i].Y;
+                double z = vertices[i].Z;
+
+                // Матрица поворота вокруг оси X:
+                // Y' = Y * cosθ - Z * sinθ
+                // Z' = Y * sinθ + Z * cosθ
+                double newY = y * cos - z * sin;
+                double newZ = y * sin + z * cos;
+
+                vertices[i] = new Point3D(
+                    vertices[i].X, // X остаётся без изменений
+                    newY,
+                    newZ
+                );
+            }
+        }
+
+        /// <summary>
+        /// Поворот вершин вокруг оси Y на заданный угол (в градусах)
+        /// </summary>
+        private void RotateVerticesAroundY(Point3D[] vertices, double angleDegrees)
+        {
+            double angleRadians = angleDegrees * Math.PI / 180;
+            double cos = Math.Cos(angleRadians);
+            double sin = Math.Sin(angleRadians);
+
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                double x = vertices[i].X;
+                double z = vertices[i].Z;
+
+                // Применение матрицы поворота вокруг оси Y:
+                // X' = X * cosθ - Z * sinθ
+                // Z' = X * sinθ + Z * cosθ
+                double newX = x * cos - z * sin;
+                double newZ = x * sin + z * cos;
+
+                vertices[i] = new Point3D(newX, vertices[i].Y, newZ);
+            }
+        }
+
+        /// <summary>
+        /// Поворот вершин вокруг оси Z на заданный угол (в градусах)
+        /// </summary>
+        private void RotateVerticesAroundZ(Point3D[] vertices, double angleDegrees)
+        {
+            double angleRadians = angleDegrees * Math.PI / 180;
+            double cos = Math.Cos(angleRadians);
+            double sin = Math.Sin(angleRadians);
+
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                double x = vertices[i].X;
+                double y = vertices[i].Y;
+
+                // Матрица поворота вокруг оси Z:
+                // X' = X * cosθ - Y * sinθ
+                // Y' = X * sinθ + Y * cosθ
+                double newX = x * cos - y * sin;
+                double newY = x * sin + y * cos;
+
+                vertices[i] = new Point3D(
+                    newX,
+                    newY,
+                    vertices[i].Z // Z остаётся без изменений
+                );
+            }
+        }
 
         private void ValidateScaleFactor(decimal scaleFactor)
         {

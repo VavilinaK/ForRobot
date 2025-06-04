@@ -308,6 +308,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Libr\Attributes\PropertyNameAttribute.cs" />
     <Compile Include="Libr\Behavior\CollapedLayoutAnchorableBehavior.cs" />
     <Compile Include="Libr\Behavior\CollapedLayoutAnchorableMessage.cs" />
     <Compile Include="Libr\Behavior\DataGridStretchLastColumn.cs" />
@@ -330,8 +331,10 @@
     <Compile Include="Libr\DocumentPaneHelper.cs" />
     <Compile Include="Libr\Json\PlitaWithRibsAttributesResolver.cs" />
     <Compile Include="Libr\Logger.cs" />
-    <Compile Include="Libr\Settings\ModeClosingApp.cs" />
-    <Compile Include="Libr\Settings\Settings.cs" />
+    <Compile Include="Model\File3D\Colors.cs" />
+    <Compile Include="Model\File3D\PropertyColor.cs" />
+    <Compile Include="Model\Settings\ModeClosingApp.cs" />
+    <Compile Include="Model\Settings\Settings.cs" />
     <Compile Include="Libr\SingleGlobalInstance.cs" />
     <Compile Include="Model\AppMessage.cs" />
     <Compile Include="Model\Controls\FileFlags.cs" />

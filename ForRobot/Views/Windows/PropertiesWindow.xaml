@@ -51,13 +51,13 @@
 
         <TreeView Grid.Row="0" Grid.Column="0" x:Name="TreeViewProperties">
 
-            <TreeViewItem Header="Общие" Tag="General" IsSelected="True"/>
+            <TreeViewItem Header="Общие" Tag="General"/>
 
             <TreeViewItem Header="Навигация" Tag="NavigationTree"/>
 
             <TreeViewItem Header="Вид" Tag="View" IsExpanded="False">
                 <TreeViewItem Header="Интерфейс" Tag="Interface"/>
-                <TreeViewItem Header="3D сцена" Tag="3DView"/>
+                <TreeViewItem Header="3D сцена" Tag="3DView" IsSelected="True"/>
 
                 <!--<i:Interaction.Triggers>
                     <i:EventTrigger EventName="Selected">
@@ -67,7 +67,6 @@
             </TreeViewItem>
 
             <TreeViewItem Header="Генерация" Tag="Generation"/>
-
 
             <!--<TreeViewItem Header="Соединение" Tag="Connection"/>-->
             
