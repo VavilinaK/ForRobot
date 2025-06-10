@@ -9,12 +9,13 @@ using System.Collections.Generic;
 using AvalonDock.Themes;
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 using HelixToolkit.Wpf;
 
-namespace ForRobot.Libr.Settings
+namespace ForRobot.Model.Settings
 {
-    public class Settings
+    public class Settings : ICloneable
     {
         #region Private variables
 
@@ -29,8 +30,8 @@ namespace ForRobot.Libr.Settings
 
         private Tuple<string, Theme> _selectedTheme;
 
-        private List<ForRobot.Model.File3D.PropertyColor> _colors;
-
+        private Dictionary<string, System.Windows.Media.Color> _colors = new Dictionary<string, System.Windows.Media.Color>();
+        
         private ForRobot.Libr.ConfigurationProperties.AppConfigurationSection _appConfig = ConfigurationManager.GetSection("app") as ForRobot.Libr.ConfigurationProperties.AppConfigurationSection;
         private ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection _robotConfig = ConfigurationManager.GetSection("robot") as ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection;
         
@@ -183,8 +184,20 @@ namespace ForRobot.Libr.Settings
         /// <summary>
         /// Перечень цветов
         /// </summary>
-        public List<ForRobot.Model.File3D.PropertyColor> Colors { get; }
-        
+        public Dictionary<string, System.Windows.Media.Color> Colors
+        {
+            get => this._colors;
+            set
+            {
+                this._colors = value;
+
+                foreach(var c in this._colors) // Установка класса Colors.
+                {
+                    SetColor(c.Key, c.Value);
+                }
+            }
+        }
+
         #endregion 3DView
 
         #region Camera
@@ -348,7 +361,8 @@ namespace ForRobot.Libr.Settings
 
             this.ControlerFolder = this._robotConfig.PathControllerFolder;
 
-            if (this.Colors == null || this.Colors.Count == 0) this.Colors = GetColors();
+            //if (this.Colors == null || this.Colors.Count == 0) this.Colors = new List<File3D.PropertyColor>();
+            if (this.Colors.Count == 0) this.Colors = GetColors();
         }
 
         #endregion
@@ -370,22 +384,31 @@ namespace ForRobot.Libr.Settings
         /// <returns></returns>
         public static Settings GetSettings()
         {
-            if (File.Exists(_path))
-                return JsonConvert.DeserializeObject<Settings>(File.ReadAllText(_path), _jsonSettings);
-            else
+            if (!File.Exists(_path))
                 return new Settings();
+
+            try
+            {
+                string json = File.ReadAllText(_path);
+                Settings settings =  JsonConvert.DeserializeObject<Settings>(json, _jsonSettings) ?? new Settings();
+                settings.Colors = JObject.Parse(json)["Colors"].ToObject<Dictionary<string, System.Windows.Media.Color>>();
+                return settings;
+            }
+            catch (Exception ex) when (LogException(ex))
+            {
+                Settings settings = new Settings();
+                settings.Save();
+                return settings;
+            }
         }
 
-        #endregion Public functions
-
-        #region Private functions
-
-        private List<ForRobot.Model.File3D.PropertyColor> GetColors()
+        /// <summary>
+        /// Выгрузка установленных цветов для 3д сцены
+        /// </summary>
+        /// <returns></returns>
+        public Dictionary<string, System.Windows.Media.Color> GetColors()
         {
-            this.Colors?.Clear();
-            List<ForRobot.Model.File3D.PropertyColor> colors = new List<ForRobot.Model.File3D.PropertyColor>();
-            // Создаем экземпляр класса Colors
-            //var colorsInstance = new ForRobot.Model.File3D.Colors();
+            Dictionary<string, System.Windows.Media.Color> colors = new Dictionary<string, System.Windows.Media.Color>();
 
             foreach (var f in typeof(ForRobot.Model.File3D.Colors).GetProperties(BindingFlags.Static | BindingFlags.Public))
             {
@@ -398,10 +421,67 @@ namespace ForRobot.Libr.Settings
                     // Получаем значение цвета из свойства экземпляра
                     System.Windows.Media.Color colorValue = (System.Windows.Media.Color)f.GetValue(null);
 
-                    colors.Add(new Model.File3D.PropertyColor(name, colorValue));
+                    colors.Add(name, colorValue);
                 }
             }
             return colors;
+        }
+
+        /// <summary>
+        /// Установка цвета объекта 3д сцена
+        /// </summary>
+        /// <param name="propertyName">Имя свойства</param>
+        /// <param name="color">Значение цвета</param>
+        public static void SetColor(string propertyName, System.Windows.Media.Color color)
+        {
+            foreach (var f in typeof(ForRobot.Model.File3D.Colors).GetProperties(BindingFlags.Static | BindingFlags.Public))
+            {
+                var attribute = f.GetCustomAttributes(typeof(ForRobot.Libr.Attributes.PropertyNameAttribute), false).FirstOrDefault() as ForRobot.Libr.Attributes.PropertyNameAttribute;
+                if (attribute.PropertyName == propertyName)
+                    f.SetValue(null, color);
+            }
+        }
+
+        //public List<ForRobot.Model.File3D.PropertyColor> GetColors()
+        //{
+        //    //this.Colors = new List<Model.File3D.PropertyColor>();
+        //    //this.Colors?.Clear();
+        //    List<ForRobot.Model.File3D.PropertyColor> colors = new List<ForRobot.Model.File3D.PropertyColor>();
+        //    // Создаем экземпляр класса Colors
+        //    //var colorsInstance = new ForRobot.Model.File3D.Colors();
+
+        //    foreach (var f in typeof(ForRobot.Model.File3D.Colors).GetProperties(BindingFlags.Static | BindingFlags.Public))
+        //    {
+        //        var attribute = f.GetCustomAttributes(typeof(ForRobot.Libr.Attributes.PropertyNameAttribute), false).FirstOrDefault() as ForRobot.Libr.Attributes.PropertyNameAttribute;
+        //        if (attribute != null)
+        //        {
+        //            // Извлекаем название из атрибута
+        //            string name = attribute.PropertyName;
+
+        //            // Получаем значение цвета из свойства экземпляра
+        //            System.Windows.Media.Color colorValue = (System.Windows.Media.Color)f.GetValue(null);
+
+        //            colors.Add(new Model.File3D.PropertyColor(name, colorValue));
+        //        }
+        //    }
+        //    return colors;
+        //}
+
+        public object Clone() => (Settings)this.MemberwiseClone();
+
+        #endregion Public functions
+
+        #region Private functions
+
+        /// <summary>
+        /// Логирование исключений выгрузки настроек
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <returns></returns>
+        private static bool LogException(Exception ex)
+        {
+            App.Current.Logger.Error(ex, "Ошибка выгрузки настроек приложения");
+            return true;
         }
 
         #endregion Private functions

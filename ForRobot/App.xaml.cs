@@ -52,7 +52,7 @@ namespace ForRobot
         /// </summary>
         private ForRobot.Libr.ConfigurationProperties.AppConfigurationSection AppConfig { get; set; } = (ConfigurationManager.GetSection("app") as ForRobot.Libr.ConfigurationProperties.AppConfigurationSection);
 
-        private static ForRobot.Libr.Settings.Settings _settings;
+        private static ForRobot.Model.Settings.Settings _settings;
 
         #endregion
 
@@ -88,9 +88,10 @@ namespace ForRobot
         /// Настройки приложения
         /// (Выгружаются из временных файлов, иначе инициализируются как класс)
         /// </summary>
-        public ForRobot.Libr.Settings.Settings Settings
+        public ForRobot.Model.Settings.Settings Settings
         {
-            get => _settings ?? (_settings = ForRobot.Libr.Settings.Settings.GetSettings());
+            //get => _settings ?? this.GetSetting();
+            get => _settings ?? (_settings = ForRobot.Model.Settings.Settings.GetSettings());
             set
             {
                 _settings = value;
@@ -336,6 +337,27 @@ namespace ForRobot
             App.Current.MainWindow.Topmost = true;
             App.Current.MainWindow.Focus();
         }
+
+        //private ForRobot.Model.Settings.Settings GetSetting()
+        //{
+        //    ForRobot.Model.Settings.Settings settings;
+        //    try
+        //    {
+        //        settings = ForRobot.Model.Settings.Settings.GetSettings();
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //    //_settings = setting;
+        //    //_settings.Colors.Clear();
+        //    ////_settings = setting.Colors;
+        //    //foreach (var c in setting.Colors)
+        //    //{
+        //    //    _settings.Colors.Add(c);
+        //    //}
+        //    return settings;
+        //}
 
         #endregion Private functions
 

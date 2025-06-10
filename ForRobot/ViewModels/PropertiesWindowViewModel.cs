@@ -14,6 +14,7 @@ using System.Collections.ObjectModel;
 using AvalonDock.Layout;
 
 using ForRobot.Model.Detals;
+using ForRobot.Model.Settings;
 
 namespace ForRobot.ViewModels
 {
@@ -21,7 +22,8 @@ namespace ForRobot.ViewModels
     {
         #region Private variables
 
-        private ForRobot.Libr.Settings.Settings _settings = ForRobot.Libr.Settings.Settings.GetSettings();
+        private Settings _settings;
+        //private ForRobot.Libr.Settings.Settings _settings = ForRobot.Libr.Settings.Settings.GetSettings();
         private System.Windows.Controls.TreeViewItem _selectedItem;
         private string _selectedDetalTypeName;
         private string _selectedDetalTypeScript;
@@ -38,7 +40,7 @@ namespace ForRobot.ViewModels
 
         #region Public variables
 
-        public ForRobot.Libr.Settings.Settings Settings { get => this._settings; set => Set(ref this._settings, value); }
+        public Settings Settings { get => this._settings; set => Set(ref this._settings, value); }
 
         public System.Windows.Controls.TreeViewItem SelectedItem { get => this._selectedItem; set => Set(ref this._selectedItem, value); }
 
@@ -199,11 +201,11 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Возвращение к стандартным настройкам
         /// </summary>
-        public ICommand StandartSettingsCommand { get => this._standartSettingsCommand ?? (this._standartSettingsCommand = new RelayCommand(_ => { this.Settings = new Libr.Settings.Settings(); })); }
+        public ICommand StandartSettingsCommand { get => this._standartSettingsCommand ?? (this._standartSettingsCommand = new RelayCommand(_ => { this.Settings = new Settings(); })); }
         /// <summary>
         /// Сохранение настроек
         /// </summary>
-        public ICommand SaveSettingsCommand { get; } = new RelayCommand(obj => SaveSettings(obj as Libr.Settings.Settings));
+        public ICommand SaveSettingsCommand { get; } = new RelayCommand(obj => SaveSettings(obj as Settings));
         /// <summary>
         /// Закрытие окна
         /// </summary>
@@ -236,6 +238,8 @@ namespace ForRobot.ViewModels
         {
             if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
                 return;
+
+            this.Settings = App.Current.Settings.Clone() as ForRobot.Model.Settings.Settings;
         }
 
         #endregion
@@ -304,7 +308,7 @@ namespace ForRobot.ViewModels
         /// Сохранение настроек
         /// </summary>
         /// <param name="settings"></param>
-        private static void SaveSettings(Libr.Settings.Settings settings)
+        private static void SaveSettings(Settings settings)
         {
             settings.Save();
             if (MessageBox.Show("Чтобы изменения вступили в силу, необходимо перезапустить приложение.\n\nПерезапустить интерфейс?", "Сохранение настроек", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.Yes)

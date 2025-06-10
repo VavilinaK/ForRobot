@@ -14,34 +14,28 @@ namespace ForRobot.Model.File3D
         private static Color DefaultWeldColor => Color.FromRgb(255, 142, 20);
         private static Color DefaultLeftWeldColor => Color.FromRgb(43, 255, 209);
         private static Color DefaultRightWeldColor => Color.FromRgb(255, 31, 53);
-        private static Color DefaultAnnotationColor => Color.FromRgb(0, 191, 255);
+        private static Color DefaultAnnotationArrowsColor => Color.FromRgb(0, 191, 255);
+        private static Color DefaultAnnotationTextColor => Color.FromRgb(255, 3, 192);
 
         [PropertyName("Плита")]
-        public static Color PlateColor { get; set; }
+        public static Color PlateColor { get; set; } = DefaultPlateColor;
 
         [PropertyName("Ребра")]
-        public static Color RibsColor { get; set; }
-        
+        public static Color RibsColor { get; set; } = DefaultRibsColor;
+
         [PropertyName("Сварочные швы")]
-        public static Color WeldColor { get; set; }
-        
+        public static Color WeldColor { get; set; } = DefaultWeldColor;
+
         [PropertyName("Левая сторона шва")]
-        public static Color LeftWeldColor { get; set; }
-        
+        public static Color LeftWeldColor { get; set; } = DefaultLeftWeldColor;
+
         [PropertyName("Правая сторона шва")]
-        public static Color RightWeldColor { get; set; }
+        public static Color RightWeldColor { get; set; } = DefaultRightWeldColor;
 
-        [PropertyName("Параметры детали")]
-        public static Color AnnotationColor { get; set; }
+        [PropertyName("Параметры детали (стрелки)")]
+        public static Color AnnotationArrowsColor { get; set; } = DefaultAnnotationArrowsColor;
 
-        static Colors()
-        {
-            PlateColor = DefaultPlateColor;
-            RibsColor = DefaultRibsColor;
-            WeldColor = DefaultWeldColor;
-            LeftWeldColor = DefaultLeftWeldColor;
-            RightWeldColor = DefaultRightWeldColor;
-            AnnotationColor = DefaultAnnotationColor;
-        }
+        [PropertyName("Параметры детали (тескт)")]
+        public static Color AnnotationTextColor { get; set; } = DefaultAnnotationTextColor;
     }
 }

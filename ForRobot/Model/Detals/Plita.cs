@@ -44,6 +44,7 @@ namespace ForRobot.Model.Detals
         private BitmapImage _rebraImage;
         private BitmapImage _plitaImage;
 
+        private FullyObservableCollection<Rib> _ribsCollection;
         private readonly JsonSerializerSettings _jsonSettings = new JsonSerializerSettings()
         {
             Formatting = Formatting.Indented
@@ -178,9 +179,7 @@ namespace ForRobot.Model.Detals
                 if (this._paralleleRibs && this.RibsCollection?.Count > 0) // Изменение расстояния для параллельных рёбер.
                     for (int i = 0; i < this.RibsCollection.Count; i++)
                     {
-                        //rib.IsSave = false;
                         this.RibsCollection[i].OnChangeDistanceEvent(this.RibsCollection[i], null);
-                        //rib.IsSave = true;
                     }
                 this.OnChangeProperty(nameof(this.ParalleleRibs));
             }
@@ -756,12 +755,26 @@ namespace ForRobot.Model.Detals
                 this.OnChangeProperty(nameof(this.RibCount));
             }
         }
-
+        
         [JsonProperty("d_W2")]
         /// <summary>
         /// Коллекция рёбер
         /// </summary>
-        public FullyObservableCollection<Rib> RibsCollection { get; private set; }
+        public FullyObservableCollection<Rib> RibsCollection
+        {
+            get => this._ribsCollection;
+            private set
+            {
+                this._ribsCollection = value;
+
+                foreach (var rib in this._ribsCollection)
+                    rib.ChangeDistance += (s, e) =>
+                    {
+                        if (this.ParalleleRibs)
+                            (s as Rib).DistanceRight = (s as Rib).DistanceLeft;
+                    };
+            }
+        }
 
         [JsonIgnore]
         [SaveAttribute]
@@ -844,12 +857,6 @@ namespace ForRobot.Model.Detals
                     rib.DistanceLeft = this.DistanceBetween;
                     rib.DistanceRight = this.DistanceBetween;
                 }
-
-                rib.ChangeDistance += (s, e) =>
-                {
-                    if (this.ParalleleRibs)
-                        (s as Rib).DistanceRight = (s as Rib).DistanceLeft;
-                };
 
                 ribs.Add(rib);
             }

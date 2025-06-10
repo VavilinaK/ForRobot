@@ -100,7 +100,7 @@ namespace ForRobot.Model.File3D
             this.IsHorizontal = horizontalAnnotation;
 
             _lines.Thickness = DefaultThickness;
-            _lines.Color = (DefaultArrowColor as SolidColorBrush)?.Color ?? Colors.AnnotationColor;
+            _lines.Color = (DefaultArrowColor as SolidColorBrush)?.Color ?? Colors.AnnotationArrowsColor;
 
             _arrows.Thickness = DefaultThickness;
             _arrows.Color = _lines.Color;

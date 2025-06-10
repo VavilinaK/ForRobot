@@ -324,9 +324,11 @@
     <Compile Include="Libr\Converters\BindingToTagConverter.cs" />
     <Compile Include="Libr\Converters\BoundsConverter.cs" />
     <Compile Include="Libr\Converters\CollectionsStringToBoolConverter.cs" />
+    <Compile Include="Libr\Converters\ColorSaveConverter.cs" />
     <Compile Include="Libr\Converters\DescriptionsStaticClassConverter.cs" />
     <Compile Include="Libr\Converters\EmptyCollectionToColorConverter.cs" />
     <Compile Include="Libr\Converters\NumbersForWeldingSchemaConverter.cs" />
+    <Compile Include="Libr\Converters\DictionaryToBindableCollectionConverter.cs" />
     <Compile Include="Libr\Converters\ScaleFactorConverter.cs" />
     <Compile Include="Libr\DocumentPaneHelper.cs" />
     <Compile Include="Libr\Json\PlitaWithRibsAttributesResolver.cs" />
@@ -522,13 +524,13 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Scripts\coord_templates.py">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Scripts\krl_templates.py">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Scripts\weld_gen.py">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <Resource Include="Themes\Images\back_view.png" />
     <Resource Include="Themes\Images\bottom_view.png" />

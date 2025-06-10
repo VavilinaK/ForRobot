@@ -1,4 +1,4 @@
-__version__ = '0.7.0'
+__version__ = '0.7.1'
 # 0.1.0 - начальная версия простые прямоугольные детали
 # 0.2.0 - добавлены детали с наклоном, трапециевидные детали, изменение параметров сварки в зависимости от скорости
 # 0.3.0 - добавлены детали с разными расстояниями между рёбрами
@@ -8,6 +8,7 @@ __version__ = '0.7.0'
 # 0.5.1 - высота бокового поиска равна половине высоты ребра
 # 0.6.0 - добавлен параметр welding_sequence для указания порядка сварки
 # 0.7.0 - reverse_deflection для указания высоты обратного прогиба
+# 0.7.1 - исправление: убраны синхронизации если используется один робот
 
 # requrements: numpy, transforms3d, pyyaml
 
@@ -554,7 +555,8 @@ def write_arcon(src_f, dat_f, p_name, p_speed, p_xyz, p_cba, p_S, p_T, p_ext_ax,
     Запись операции включения дуги (ARCON) в src и dat файлы.
     """
     angle, wl, wa = interpolate_weld_parm_by_speed(0, 0, velocity)
-    src_f.write(f'\ncustom_sync(\'h{250:02X}{250:02X}0000\', \'hffff0000\', {250})\n')
+    if len(detail_params.robots) > 1:
+        src_f.write(f'\ncustom_sync(\'h{250:02X}{250:02X}0000\', \'hffff0000\', {250})\n')
     src_f.write(k_tmpl.arcon_src_template.format(p_name, p_speed))
     dat_f.write(k_tmpl.arcon_dat_template.format(p_name, p_speed, *p_xyz, *reversed(p_cba), p_S, p_T, *p_ext_ax, job, velocity/6000, wl, wa))
 
@@ -677,7 +679,8 @@ def generate(out_dir, main_name, robot_num=1, seam_type='start-to-end'):
         for edge_num, side in welding_sequence:
             side = side.replace('_side', '')
             prog_name, statements = write_seam_src_dat(edge_num-1, side, seam_type, out_dir_rob)
-            f.write(f'custom_sync(\'h{sync:02X}{sync:02X}0000\', \'hffff0000\', {sync})\n')
+            if len(detail_params.robots) > 1:
+                f.write(f'custom_sync(\'h{sync:02X}{sync:02X}0000\', \'hffff0000\', {sync})\n')
             f.write(f'{prog_name}()\n\n')
             sync += 1
 
@@ -687,8 +690,8 @@ def generate(out_dir, main_name, robot_num=1, seam_type='start-to-end'):
         #        f.write(f'custom_sync(\'h{sync:02X}{sync:02X}0000\', \'hffff0000\', {sync})\n')
         #        f.write(f'{prog_name}()\n\n')
         #        sync += 1
-
-        f.write(f'custom_sync(\'h{sync:02X}{sync:02X}0000\', \'hffff0000\', {sync})\n')
+        if len(detail_params.robots) > 1:
+            f.write(f'custom_sync(\'h{sync:02X}{sync:02X}0000\', \'hffff0000\', {sync})\n')
         f.write('\ngo_end()\n')
         f.write('\ngo_home()\n')
         f.write('\nfold()\n')

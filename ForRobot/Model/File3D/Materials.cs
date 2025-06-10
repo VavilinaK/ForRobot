@@ -4,7 +4,7 @@ using System.Windows.Media.Media3D;
 
 namespace ForRobot.Model.File3D
 {
-    public class Materials
+    public static class Materials
     {
         public static Brush DefaultPlateBrush => new System.Windows.Media.BrushConverter().ConvertFromString("#17e64b") as System.Windows.Media.Brush;
         public static Brush DefaultRibBrush => new System.Windows.Media.BrushConverter().ConvertFromString("#17e64b") as System.Windows.Media.Brush;

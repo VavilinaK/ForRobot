@@ -27,6 +27,8 @@
     <conv:BindingToTagConverter x:Key="BindingToTagConvert"/>
     <conv:EmptyCollectionToColorConverter x:Key="EmptyCollectionToColorConvert"/>
     <conv:ScaleFactorConverter x:Key="ScaleFactorConvert"/>
+    <conv:DictionaryToBindableCollectionConverter x:Key="DictionaryToBindableCollectionConvert"/>
+    <conv:ColorSaveConverter x:Key="ColorSaveConvert"/>
 
 
     <!--Control Content property -->

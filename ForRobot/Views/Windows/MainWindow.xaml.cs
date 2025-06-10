@@ -49,7 +49,7 @@ namespace ForRobot.Views.Windows
         /// <summary>
         /// Настройки приложения
         /// </summary>
-        private readonly ForRobot.Libr.Settings.Settings Settings = ForRobot.Libr.Settings.Settings.GetSettings();
+        private readonly ForRobot.Model.Settings.Settings Settings = ForRobot.Model.Settings.Settings.GetSettings();
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {

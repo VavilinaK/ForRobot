@@ -30,6 +30,9 @@ namespace ForRobot.Services
         /// </summary>
         public static double SlopeOffset { get; set; } = 10;
 
+        public static Material PlateMaterial { get; set; } = new DiffuseMaterial(new SolidColorBrush(ForRobot.Model.File3D.Colors.PlateColor));
+        public static Material RibsMaterial { get; set; } = new DiffuseMaterial(new SolidColorBrush(ForRobot.Model.File3D.Colors.RibsColor));
+
         /// <summary>
         /// Масштабный коэффициент: 1 единица модели = <see cref="ScaleFactor"/> мм. реальных размеров
         /// </summary>
@@ -279,7 +282,7 @@ namespace ForRobot.Services
                     break;
             }
 
-            model3DGroup.Children.Add(new GeometryModel3D(geometry, ForRobot.Model.File3D.Materials.Plate) { BackMaterial = ForRobot.Model.File3D.Materials.Plate });
+            model3DGroup.Children.Add(new GeometryModel3D(geometry, PlateMaterial) { BackMaterial = PlateMaterial });
             return model3DGroup;
         }
                 
@@ -405,7 +408,7 @@ namespace ForRobot.Services
 
                         if (!plate.ParalleleRibs) ribPositionZAxes += (double)modelRibThickness + (double)modelRibDistanceRight;
 
-                        model3DGroup.Children.Add(new GeometryModel3D(ribMesh, ForRobot.Model.File3D.Materials.Rib) { BackMaterial = ForRobot.Model.File3D.Materials.Rib });
+                        model3DGroup.Children.Add(new GeometryModel3D(ribMesh, RibsMaterial) { BackMaterial = RibsMaterial });
 
                         //        double slopeFactor = (ribX + modelPlateWidth / 2) / modelPlateWidth;
                         //        double plateSurfaceY = modelPlateHeight / 2;
@@ -488,7 +491,7 @@ namespace ForRobot.Services
                 if (!plate.ParalleleRibs)
                     ribPositionZAxes += (double)modelRibThickness + (double)modelRibDistanceRight;
             }
-            model3DGroup.Children.Add(new GeometryModel3D(meshBuilder.ToMesh(), ForRobot.Model.File3D.Materials.Rib) { BackMaterial = ForRobot.Model.File3D.Materials.Rib });
+            model3DGroup.Children.Add(new GeometryModel3D(meshBuilder.ToMesh(), RibsMaterial) { BackMaterial = RibsMaterial });
             return model3DGroup;
         }        
         

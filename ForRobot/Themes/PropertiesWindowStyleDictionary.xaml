@@ -5,6 +5,7 @@
                     xmlns:settings="clr-namespace:ForRobot.Libr.Settings"
                     xmlns:h="http://helix-toolkit.org/wpf"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib"
+                    xmlns:conv="clr-namespace:ForRobot.Libr.Converters"
                     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
                     xmlns:pt="clr-namespace:PropertyTools.Wpf;assembly=PropertyTools.Wpf">
     
@@ -581,13 +582,13 @@
                         <Slider Value="{Binding Path=Settings.ZoomSensitivity, Mode=TwoWay}" Minimum="0.1" Maximum="5" Width="200"/>
                         <TextBlock Text="{Binding Path=Settings.ZoomSensitivity, Mode=OneWay, StringFormat='{}{0:0.0}'}"/>
                     </StackPanel>
-                    
+
                     <StackPanel Grid.Row="12" Orientation="Horizontal">
                         <Label Content="Степень инерции камеры"/>
                         <Slider Value="{Binding Path=Settings.CameraInertiaFactor, Mode=TwoWay}" Minimum="0.7" Maximum="1" Width="200"/>
                         <TextBlock Text="{Binding Path=Settings.CameraInertiaFactor, Mode=OneWay, StringFormat='{}{0:0.0}'}"/>
                     </StackPanel>
-
+                    
                     <GroupBox Grid.Row="13" Header="Режим поворота камеры">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -650,7 +651,7 @@
                     
                     <ListBox SelectionMode="Single"
                              Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0"
-                             ItemsSource="{Binding Path=Settings.Colors}">
+                             ItemsSource="{Binding Path=Settings.Colors, Converter={StaticResource DictionaryToBindableCollectionConvert}}">
 
                         <ListBox.ItemTemplate>
                             <DataTemplate>
@@ -661,11 +662,23 @@
                                     </Grid.ColumnDefinitions>
 
                                     <Border Grid.Column="0">
-                                        <TextBlock Text="{Binding Path=PropertyName}" VerticalAlignment="Center"/>
+                                        <TextBlock x:Name="PropertyNameTextBlock" Text="{Binding Path=PropertyName}" VerticalAlignment="Center"/>
                                     </Border>
 
-                                    <pt:ColorPicker Grid.Column="1" SelectedColor="{Binding Path=Color, Mode=TwoWay}"
-                                                    HorizontalContentAlignment="Right"  Margin="5"/>
+                                    <!--SelectedColor="{Binding Path=Color, Mode=TwoWay, 
+                                    Converter={StaticResource ColorSaveConvert}, 
+                                    ConverterParameter={Binding Path=Text, ElementName=PropertyNameTextBlock}}"-->
+
+                                    <pt:ColorPicker Grid.Column="1" HorizontalContentAlignment="Right" Margin="5"
+                                                    SelectedColor="{Binding Path=Color, Mode=TwoWay, 
+                                                                            Converter={StaticResource ColorSaveConvert}, 
+                                                                            ConverterParameter={x:Reference PropertyNameTextBlock}}">
+                                        <!--<pt:ColorPicker.SelectedColor>
+                                            <Binding Path="Color" Mode="TwoWay"
+                                                     Converter="{StaticResource ColorSaveConvert}"
+                                                     ConverterParameter="{}"/>
+                                        </pt:ColorPicker.SelectedColor>-->
+                                    </pt:ColorPicker>
                                 </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>

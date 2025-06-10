@@ -26,6 +26,6 @@ namespace ForRobot.Model.Detals
         /// <summary>
         /// Цвет шва
         /// </summary>
-        public Color Color { get; set; } = (Materials.DefaultWeldBrush as SolidColorBrush).Color;
+        public Color Color { get; set; } = ForRobot.Model.File3D.Colors.WeldColor;
     }
 }
