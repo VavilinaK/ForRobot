@@ -28,6 +28,7 @@ namespace ForRobot.Libr
             this._logger = LogManager.GetLogger(nameof(Logger));
         }
 
+        public void Warn<T>(T value) => this._logger.Warn(value);
         public void Trace<T>(T value) => this._logger.Trace(value);
         public void Error<T>(T value) => this._logger.Error(value);
         public void Error(Exception v1, string v2) => this._logger.Error(v1, v2);

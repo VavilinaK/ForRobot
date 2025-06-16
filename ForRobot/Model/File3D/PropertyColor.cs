@@ -10,22 +10,9 @@ namespace ForRobot.Model.File3D
     /// </summary>
     public class PropertyColor
     {
-        private Color _color;
-
         public string PropertyName { get; set; }
 
         public Color Color { get; set; }
-        //public Color Color
-        //{
-        //    get => this._color == System.Windows.Media.Colors.Transparent ? (this._color = this.GetColor()) : this._color;
-        //    set
-        //    {
-        //        this._color = value;
-
-        //        if (this._isSave)
-        //            this.SetColor(this._color);
-        //    }
-        //}
 
         public PropertyColor(string name, Color color)
         {

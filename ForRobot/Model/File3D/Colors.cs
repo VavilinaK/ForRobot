@@ -37,5 +37,19 @@ namespace ForRobot.Model.File3D
 
         [PropertyName("Параметры детали (тескт)")]
         public static Color AnnotationTextColor { get; set; } = DefaultAnnotationTextColor;
+
+        /// <summary>
+        /// Установка стандартных значений
+        /// </summary>
+        public static void DefaultColors()
+        {
+            PlateColor = DefaultPlateColor;
+            RibsColor = DefaultRibsColor;
+            WeldColor = DefaultWeldColor;
+            LeftWeldColor = DefaultLeftWeldColor;
+            RightWeldColor = DefaultRightWeldColor;
+            AnnotationArrowsColor = DefaultAnnotationArrowsColor;
+            AnnotationTextColor = DefaultAnnotationTextColor;
+        }
     }
 }

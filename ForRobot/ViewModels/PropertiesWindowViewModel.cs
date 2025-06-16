@@ -201,7 +201,14 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Возвращение к стандартным настройкам
         /// </summary>
-        public ICommand StandartSettingsCommand { get => this._standartSettingsCommand ?? (this._standartSettingsCommand = new RelayCommand(_ => { this.Settings = new Settings(); })); }
+        public ICommand StandartSettingsCommand
+        {
+            get => this._standartSettingsCommand ?? (this._standartSettingsCommand = new RelayCommand(_ => 
+                                                                                                          {
+                                                                                                              ForRobot.Model.File3D.Colors.DefaultColors();
+                                                                                                              this.Settings = new Settings();
+                                                                                                          }));
+        }
         /// <summary>
         /// Сохранение настроек
         /// </summary>
@@ -338,7 +345,7 @@ namespace ForRobot.ViewModels
         /// </summary>
         public static void EditPinCode()
         {
-            if (!ForRobot.App.EqualsPinCode("Введите старый пин-код"))
+            if (App.Sha256(new Services.WindowsAppService().InputWindowShow("Введите старый пин-код")) != Properties.Settings.Default.PinCode)
                 return;
 
             using (ForRobot.Views.Windows.InputWindow inputWindow = new ForRobot.Views.Windows.InputWindow("Введите новый пин-код"))

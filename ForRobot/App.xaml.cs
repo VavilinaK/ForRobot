@@ -36,7 +36,7 @@ namespace ForRobot
         private bool _isNewInstance;
         private const string _mutexName = "InterfaceOfRobots_UniqueAppMutex";
         private const string _pipeName = "InterfaceOfRobots_UniqueAppPipe";
-        
+
         /// <summary>
         /// Путь к программе на сервере
         /// </summary>
@@ -64,7 +64,7 @@ namespace ForRobot
         /// Сервис открытия окон приложения
         /// </summary>
         public readonly ForRobot.Services.IWindowsAppService WindowsAppService = new ForRobot.Services.WindowsAppService();
-        
+
         /// <summary>
         /// Стек возвращаемых действий (назад)
         /// </summary>
@@ -86,19 +86,17 @@ namespace ForRobot
 
         /// <summary>
         /// Настройки приложения
-        /// (Выгружаются из временных файлов, иначе инициализируются как класс)
+        /// (выгружаются из временных файлов, иначе инициализируются как класс)
         /// </summary>
         public ForRobot.Model.Settings.Settings Settings
         {
-            //get => _settings ?? this.GetSetting();
             get => _settings ?? (_settings = ForRobot.Model.Settings.Settings.GetSettings());
             set
             {
                 _settings = value;
-                _settings.Save();
             }
         }
-        
+
         /// <summary>
         /// Открытые файлы 3D моделей
         /// </summary>
@@ -131,7 +129,7 @@ namespace ForRobot
 
                 foreach (var i in e.Args) // Исп. для открытия файла модели "с помощью"
                     this.OpenedFiles.Add(new Model.File3D.File3D(i));
-                
+
                 RunApp(e.Args);
                 await Task.Run(() => StartPipeServer());
 
@@ -161,7 +159,7 @@ namespace ForRobot
             if (((Application.Current.Windows.Count == 0) && (Application.Current.ShutdownMode == ShutdownMode.OnLastWindowClose))
                 || (Application.Current.ShutdownMode == ShutdownMode.OnMainWindowClose))
             {
-                if(this._isNewInstance)
+                if (this._isNewInstance)
                     this.Logger.Trace("Закрытие приложения\n\n");
 
                 this._mutex?.Dispose();
@@ -217,13 +215,32 @@ namespace ForRobot
                 }
             }
 
-            if (this.Settings.LoginByPINCode && !ForRobot.App.EqualsPinCode())
+            Application.Current.MainWindow = WindowsAppService.AppMainWindow;
+            
+            // Вход в приложение по пин-коду
+            //if (this.Settings.LoginByPINCode && !ForRobot.App.EqualsPinCode())
+            //{
+            //    this.Logger.Error("Ошибка при входе: неверный пин-код!");
+            //    Application.Current.Shutdown(1);
+            //}
+            if (this.Settings.LoginByPINCode)
             {
-                this.Logger.Error("Ошибка при входе: неверный пин-код!");
-                Application.Current.Shutdown(1);
+                bool pinResult = false;
+
+                // Выполняем проверку пин-кода в UI потоке
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    pinResult = ForRobot.App.EqualsPinCode();
+                });
+
+                if (!pinResult)
+                {
+                    this.Logger.Error("Ошибка при входе: неверный пин-код!");
+                    Application.Current.Shutdown(1);
+                    return;
+                }
             }
 
-            Application.Current.MainWindow = WindowsAppService.AppMainWindow;
             WindowsAppService.AppMainWindow.Show();
         }
 
@@ -244,7 +261,9 @@ namespace ForRobot
                     WorkingDirectory = this.FilePathOnPC,
                     CreateNoWindow = true,
                     FileName = "cmd.exe",
-                    Arguments = $"/K taskkill /im {ResourceAssembly.GetName().Name}.exe /f& xcopy \"{this.UpdatePath + "\\*.*"}\" \"{this.FilePathOnPC}\" /E /Y& START \"\" \"{this.FilePathOnPC + "\\" + ResourceAssembly.GetName().Name + ".exe"}\" \"{string.Join("\" \"", args)}\"",
+                    Arguments = $"/K taskkill /im {ResourceAssembly.GetName().Name}.exe /f& " +
+                                $"xcopy \"{this.UpdatePath + "\\*.*"}\" \"{this.FilePathOnPC}\" /E /Y& " +
+                                $"START \"\" \"{this.FilePathOnPC + "\\" + ResourceAssembly.GetName().Name + ".exe"}\" \"{string.Join("\" \"", args)}\"",
                     WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden
                 }
             };
@@ -338,27 +357,6 @@ namespace ForRobot
             App.Current.MainWindow.Focus();
         }
 
-        //private ForRobot.Model.Settings.Settings GetSetting()
-        //{
-        //    ForRobot.Model.Settings.Settings settings;
-        //    try
-        //    {
-        //        settings = ForRobot.Model.Settings.Settings.GetSettings();
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //    }
-        //    //_settings = setting;
-        //    //_settings.Colors.Clear();
-        //    ////_settings = setting.Colors;
-        //    //foreach (var c in setting.Colors)
-        //    //{
-        //    //    _settings.Colors.Add(c);
-        //    //}
-        //    return settings;
-        //}
-
         #endregion Private functions
 
         #region Public Static functions
@@ -382,16 +380,23 @@ namespace ForRobot
         }
 
         /// <summary>
-        /// Ввод пин-кода пользователем
+        /// Ввод и сравнение пин-кодов
         /// </summary>
         /// <param name="sInputBoxText">Question, текст в InputBox</param>
         /// <returns>Верный ли введенный пользователем пин-код</returns>
-        public static bool EqualsPinCode(string sInputBoxText = "Введите пин-код")
-        {
-            ForRobot.Views.Windows.InputWindow inputWindow = new ForRobot.Views.Windows.InputWindow(sInputBoxText);
-            inputWindow.ShowDialog();
-            return Sha256(inputWindow.Answer) == ForRobot.Properties.Settings.Default.PinCode;
-        }
+        public static bool EqualsPinCode() => Sha256(new ForRobot.Services.WindowsAppService().InputWindowShow()) == ForRobot.Properties.Settings.Default.PinCode;
+
+        ///// <summary>
+        ///// Ввод пин-кода пользователем
+        ///// </summary>
+        ///// <param name="sInputBoxText">Question, текст в InputBox</param>
+        ///// <returns>Верный ли введенный пользователем пин-код</returns>
+        //public static bool EqualsPinCode(string sInputBoxText = "Введите пин-код")
+        //{
+        //    ForRobot.Views.Windows.InputWindow inputWindow = new ForRobot.Views.Windows.InputWindow(sInputBoxText);
+        //    inputWindow.ShowDialog();
+        //    return Sha256(inputWindow.Answer) == ForRobot.Properties.Settings.Default.PinCode;
+        //}
 
         #endregion
     }

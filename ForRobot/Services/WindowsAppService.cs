@@ -15,6 +15,13 @@ namespace ForRobot.Services
         ForRobot.Views.Windows.MainWindow AppMainWindow { get; }
 
         /// <summary>
+        /// Вывод окна ввода
+        /// </summary>
+        /// <param name="sInputBoxText">Question, текст в InputBox</param>
+        /// <returns>Введённый пользователем текст</returns>
+        string InputWindowShow(string sInputBoxText = "Введите пин-код");
+
+        /// <summary>
         /// Открытие окна создание файла
         /// </summary>
         void OpenCreateWindow();
@@ -54,6 +61,17 @@ namespace ForRobot.Services
 
         public Views.Windows.MainWindow AppMainWindow { get => _appMainWindow ?? (_appMainWindow = new Views.Windows.MainWindow()); }
 
+        public string InputWindowShow(string sInputBoxText = "Введите пин-код")
+        {
+
+            ForRobot.Views.Windows.InputWindow inputWindow = new ForRobot.Views.Windows.InputWindow(sInputBoxText);
+            inputWindow.ShowDialog();
+            string answer = inputWindow.Answer;
+            inputWindow.Dispose();
+            GC.SuppressFinalize(inputWindow);
+            return answer;
+        }
+
         public void OpenCreateWindow()
         {
             if (object.Equals(this._createWindow, null)) // Блокировка открытия 2-ого окна.
@@ -64,7 +82,6 @@ namespace ForRobot.Services
                 this._createWindow.Show();
             }
         }
-
         public void OpenPropertiesWindow()
         {
             if (object.Equals(this._propertiesWindow, null)) // Блокировка открытия 2-ого окна.
