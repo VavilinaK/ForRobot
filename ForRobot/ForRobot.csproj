@@ -311,6 +311,7 @@
     <Compile Include="Libr\Attributes\PropertyNameAttribute.cs" />
     <Compile Include="Libr\Behavior\CollapedLayoutAnchorableBehavior.cs" />
     <Compile Include="Libr\Behavior\CollapedLayoutAnchorableMessage.cs" />
+    <Compile Include="Libr\Behavior\HelixAddCollectionBehavior.cs" />
     <Compile Include="Libr\Behavior\DataGridStretchLastColumn.cs" />
     <Compile Include="Libr\Behavior\FindElementByTagMessage.cs" />
     <Compile Include="Libr\Behavior\HelixAnnotationsBehavior.cs" />
@@ -325,8 +326,10 @@
     <Compile Include="Libr\Converters\BoundsConverter.cs" />
     <Compile Include="Libr\Converters\CollectionsStringToBoolConverter.cs" />
     <Compile Include="Libr\Converters\ColorSaveConverter.cs" />
+    <Compile Include="Libr\Converters\ColorToBrushConverter.cs" />
     <Compile Include="Libr\Converters\DescriptionsStaticClassConverter.cs" />
     <Compile Include="Libr\Converters\EmptyCollectionToColorConverter.cs" />
+    <Compile Include="Libr\Converters\GetColorConverter.cs" />
     <Compile Include="Libr\Converters\NumbersForWeldingSchemaConverter.cs" />
     <Compile Include="Libr\Converters\DictionaryToBindableCollectionConverter.cs" />
     <Compile Include="Libr\Converters\ScaleFactorConverter.cs" />
@@ -334,7 +337,7 @@
     <Compile Include="Libr\Json\PlitaWithRibsAttributesResolver.cs" />
     <Compile Include="Libr\Logger.cs" />
     <Compile Include="Model\File3D\Colors.cs" />
-    <Compile Include="Model\File3D\PropertyColor.cs" />
+    <Compile Include="Model\Settings\PropertyColor.cs" />
     <Compile Include="Model\Settings\ModeClosingApp.cs" />
     <Compile Include="Model\Settings\Settings.cs" />
     <Compile Include="Libr\SingleGlobalInstance.cs" />
@@ -523,6 +526,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Resource Include="Themes\Images\EndPlita.png" />
+    <Resource Include="Themes\Images\Plita.png" />
+    <Resource Include="Themes\Images\StartPlita.png" />
     <EmbeddedResource Include="Scripts\coord_templates.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -562,7 +568,6 @@
     </EmbeddedResource>
     <Resource Include="Themes\Images\toRight.png" />
     <Resource Include="Themes\Images\toLeft.png" />
-    <Resource Include="Themes\Images\EndPlita.png" />
     <Resource Include="Themes\Images\edit.png" />
     <Resource Include="Themes\Images\Pause.png" />
     <Resource Include="Themes\Images\SelectProgramm.png" />
@@ -571,14 +576,12 @@
     <Resource Include="Themes\Images\graph.png" />
     <Resource Include="Themes\Images\3d.png" />
     <Resource Include="Themes\Images\2d.png" />
-    <Resource Include="Themes\Images\Plita.png" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Resource Include="Themes\Images\StartReber.png" />
-    <Resource Include="Themes\Images\StartPlita.png" />
     <Resource Include="Themes\Images\update.png" />
     <Resource Include="Themes\Images\Start.png" />
     <Resource Include="Themes\Images\Stop.png" />

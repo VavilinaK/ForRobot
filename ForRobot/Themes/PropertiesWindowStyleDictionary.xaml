@@ -142,7 +142,8 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <RadioButton Grid.Column="0" GroupName="CloseWindow" Content="Всегда" IsChecked="{Binding Path=Settings.ModeClosingApp, Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static settings:ModeClosingApp.Ever}, Mode=TwoWay, TargetNullValue={StaticResource False}, FallbackValue={StaticResource False}}"/>
+                    <RadioButton Grid.Column="0" GroupName="CloseWindow" Content="Всегда" IsChecked="{Binding Path=Settings.
+            , Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static settings:ModeClosingApp.Ever}, Mode=TwoWay, TargetNullValue={StaticResource False}, FallbackValue={StaticResource False}}"/>
 
                     <RadioButton Grid.Column="1" GroupName="CloseWindow" Content="Никогда" IsChecked="{Binding Path=Settings.ModeClosingApp, Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static settings:ModeClosingApp.Never}, Mode=TwoWay, TargetNullValue={StaticResource False}, FallbackValue={StaticResource False}}"/>
 
@@ -494,6 +495,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
@@ -508,7 +510,28 @@
                          HorizontalContentAlignment="Left"/>
             </Grid>
 
-            <GroupBox Grid.Row="1" Header="Система координат">
+            <GroupBox Grid.Row="1" Header="Отображение параметров">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <!--<Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>-->
+
+                    <CheckBox Grid.Row="0" Content="Видимость" IsChecked="{Binding Path=Settings.ParamsIsVisibale, Mode=TwoWay}"/>
+
+                    <StackPanel Grid.Row="1" Orientation="Horizontal">
+                        <TextBlock Text="Размер шрифта"/>
+                        <Slider Value="{Binding Path=Settings.ParamsFontSize, Mode=TwoWay}" Minimum="6" Maximum="52" TickPlacement="BottomRight" TickFrequency="2" IsSnapToTickEnabled="True" Width="300"/>
+                        <TextBlock Text="{Binding Path=Settings.ParamsFontSize, Mode=OneWay, StringFormat='{}{0:0}'}"/>
+                    </StackPanel>
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Grid.Row="2" Header="Система координат">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -535,12 +558,12 @@
                 </Grid>
             </GroupBox>
 
-            <CheckBox Grid.Row="2" Content="Пространственный куб" IsChecked="{Binding Path=Settings.ShowViewCube, Mode=TwoWay}"/>
-            <CheckBox Grid.Row="3" Content="Доступности нажатия рёбер пространственного куба" IsChecked="{Binding Path=Settings.IsViewCubeEdgeClicksEnabled, Mode=TwoWay}"/>
-            <CheckBox Grid.Row="4" Content="Количество полигонов" IsChecked="{Binding Path=Settings.ShowTriangleCountInfo, Mode=TwoWay}"/>
-            <CheckBox Grid.Row="5" Content="Количество кадров" IsChecked="{Binding Path=Settings.ShowFrameRate, Mode=TwoWay}"/>
+            <CheckBox Grid.Row="3" Content="Пространственный куб" IsChecked="{Binding Path=Settings.ShowViewCube, Mode=TwoWay}"/>
+            <CheckBox Grid.Row="4" Content="Доступности нажатия рёбер пространственного куба" IsChecked="{Binding Path=Settings.IsViewCubeEdgeClicksEnabled, Mode=TwoWay}"/>
+            <CheckBox Grid.Row="5" Content="Количество полигонов" IsChecked="{Binding Path=Settings.ShowTriangleCountInfo, Mode=TwoWay}"/>
+            <CheckBox Grid.Row="6" Content="Количество кадров" IsChecked="{Binding Path=Settings.ShowFrameRate, Mode=TwoWay}"/>
 
-            <GroupBox Grid.Row="6" Header="Камера">
+            <GroupBox Grid.Row="7" Header="Камера">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -641,7 +664,7 @@
                 </Grid>
             </GroupBox>
 
-            <GroupBox Grid.Row="7" Header="Цветовое обозначение">
+            <GroupBox Grid.Row="8" Header="Цветовое обозначение">
                 <Grid TextElement.FontWeight="Normal">
                     <Grid.Resources>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBlockBase}">                            
@@ -650,35 +673,27 @@
                     </Grid.Resources>
                     
                     <ListBox SelectionMode="Single"
-                             Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0"
-                             ItemsSource="{Binding Path=Settings.Colors, Converter={StaticResource DictionaryToBindableCollectionConvert}}">
-
+                             Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" HorizontalContentAlignment="Stretch"
+                             ItemsSource="{Binding Path=Settings.Colors, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource DictionaryToBindableCollectionConvert}}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
 
                                     <Border Grid.Column="0">
                                         <TextBlock x:Name="PropertyNameTextBlock" Text="{Binding Path=PropertyName}" VerticalAlignment="Center"/>
                                     </Border>
 
-                                    <!--SelectedColor="{Binding Path=Color, Mode=TwoWay, 
-                                    Converter={StaticResource ColorSaveConvert}, 
-                                    ConverterParameter={Binding Path=Text, ElementName=PropertyNameTextBlock}}"-->
-
-                                    <pt:ColorPicker Grid.Column="1" HorizontalContentAlignment="Right" Margin="5"
-                                                    SelectedColor="{Binding Path=Color, Mode=TwoWay, 
+                                    <pt:ColorPicker Grid.Column="2" HorizontalContentAlignment="Right" Padding="5" Margin="5"
+                                                    SelectedColor="{Binding Path=Color, Mode=TwoWay,
                                                                             Converter={StaticResource ColorSaveConvert}, 
-                                                                            ConverterParameter={x:Reference PropertyNameTextBlock}}">
-                                        <!--<pt:ColorPicker.SelectedColor>
-                                            <Binding Path="Color" Mode="TwoWay"
-                                                     Converter="{StaticResource ColorSaveConvert}"
-                                                     ConverterParameter="{}"/>
-                                        </pt:ColorPicker.SelectedColor>-->
-                                    </pt:ColorPicker>
+                                                                            ConverterParameter={x:Reference PropertyNameTextBlock}}"
+                                                    Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}"
+                                                    Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}"/>
                                 </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>

@@ -16,6 +16,7 @@ namespace ForRobot.Model.File3D
         private static Color DefaultRightWeldColor => Color.FromRgb(255, 31, 53);
         private static Color DefaultAnnotationArrowsColor => Color.FromRgb(0, 191, 255);
         private static Color DefaultAnnotationTextColor => Color.FromRgb(255, 3, 192);
+        private static Color DefaultSelectorBoxColor => Color.FromRgb(255, 218, 33);
 
         [PropertyName("Плита")]
         public static Color PlateColor { get; set; } = DefaultPlateColor;
@@ -38,6 +39,9 @@ namespace ForRobot.Model.File3D
         [PropertyName("Параметры детали (тескт)")]
         public static Color AnnotationTextColor { get; set; } = DefaultAnnotationTextColor;
 
+        [PropertyName("Бокс выбора модели/части модели")]
+        public static Color SelectorBoxColor { get; set; } = DefaultSelectorBoxColor;
+
         /// <summary>
         /// Установка стандартных значений
         /// </summary>
@@ -50,6 +54,7 @@ namespace ForRobot.Model.File3D
             RightWeldColor = DefaultRightWeldColor;
             AnnotationArrowsColor = DefaultAnnotationArrowsColor;
             AnnotationTextColor = DefaultAnnotationTextColor;
+            SelectorBoxColor = DefaultSelectorBoxColor;
         }
     }
 }

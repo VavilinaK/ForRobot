@@ -6,7 +6,7 @@ using System.Windows.Media;
 namespace ForRobot.Model.File3D
 {
     /// <summary>
-    /// Модель представления имени элемента и цвета
+    /// Модель представления имени элемента и его цвета
     /// </summary>
     public class PropertyColor
     {

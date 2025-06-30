@@ -87,7 +87,11 @@ namespace ForRobot.Services
             if (object.Equals(this._propertiesWindow, null)) // Блокировка открытия 2-ого окна.
             {
                 this._propertiesWindow = new ForRobot.Views.Windows.PropertiesWindow();
-                this._propertiesWindow.Closed += (a, b) => this._propertiesWindow = null;
+                this._propertiesWindow.Closed += (a, b) =>
+                {
+                    this._propertiesWindow = null;
+                    App.Current.SelectAppMainWindow();
+                };
                 this._propertiesWindow.Owner = App.Current.MainWindow;
                 this._propertiesWindow.Show();
             }

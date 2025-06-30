@@ -15,10 +15,50 @@ namespace ForRobot.Services
 
     public sealed class AnnotationService : IAnnotationService
     {
+        #region Public variables
+
         /// <summary>
         /// Масштабный коэффициент: 1 единица модели = <see cref="ScaleFactor"/> мм. реальных размеров
         /// </summary>
         public decimal ScaleFactor { get; set; } = 1.00M / 100.00M;
+
+        #endregion Public variables
+
+        #region Constructor
+
+        public AnnotationService(decimal _scaleFactor)
+        {
+            this.ScaleFactor = _scaleFactor;
+        }
+
+        #endregion
+
+        #region Private functions
+
+        private List<Annotation> GetDetalAnnotations(Detal detal)
+        {
+            List<Annotation> annotations = new List<Annotation>()
+            {
+                this.GetPlateLengthAnnotation(detal),
+                //this.GetPlateWidthAnnotation(detal)
+                //this.GetPlateThicknessAnnotation(detal),
+            };
+            return annotations;
+        }
+
+        private List<Annotation> PlateAnnotations(Plita plate)
+        {
+            List<Annotation> annotations = new List<Annotation>()
+            {
+                //this.GetRibHeightAnnotation(plate),
+                //this.GetRibThicknessAnnotation(plate),
+                //this.GetTechOffsetSeamStartAnnotation(plate),
+                //this.GetTechOffsetSeamEndAnnotation(plate),
+                //this.GetBevelToLeftAnnotation(plate),
+                //this.GetBevelToRightAnnotation(plate)
+            };
+            return annotations;
+        }
 
         #region Properties
 
@@ -29,68 +69,92 @@ namespace ForRobot.Services
 
             Point3DCollection points = new Point3DCollection(new List<Point3D>()
             {
-                new Point3D(modelPlateWidth / 2 + 5,
-                            modelPlateLength / 2,
-                            0),
+                new Point3D(modelPlateLength / 2,
+                            0,
+                            -modelPlateWidth / 2),
 
-                new Point3D(modelPlateWidth / 2,
-                            modelPlateLength / 2,
-                            0),
+                new Point3D(-modelPlateLength / 2,
+                            0,
+                            -modelPlateWidth / 2),
 
-                new Point3D(modelPlateWidth / 2,
-                            -modelPlateLength / 2,
-                            0),
+                new Point3D(-modelPlateLength / 2,
+                            0,
+                            -modelPlateWidth/2 - Annotation.DefaultAnnotationWidth),
 
-                new Point3D(modelPlateWidth / 2 + 5,
-                            -modelPlateLength / 2,
-                            0),
+                new Point3D(modelPlateLength / 2,
+                            0,
+                            -modelPlateWidth/2 - Annotation.DefaultAnnotationWidth),
             });
 
-            return new Annotation(points, Annotation.ArrowSide.DA)
+            return new Annotation(points)
             {
-                //StartPoint = new Point3D(modelPlateWidth / 2 + 20,
-                //                         modelPlateLength / 2,
-                //                         0),
-
-                //EndPoint = new Point3D(modelPlateWidth / 2 + 20,
-                //                      -modelPlateLength / 2,
-                //                       0),
-
-                //StartPoint = new Point3D(-((double)modelPlateWidth / 2),
-                //                         (double)modelPlateLength / 2,
-                //                         0),
-
-                //EndPoint = new Point3D(-((double)modelPlateWidth / 2),
-                //                       (double)modelPlateLength / 2 + 10,
-                //                       0),
-
-                //StartPoint = new Point3D(20, 10, 0),
-                //EndPoint = new Point3D(30, 15, 0),
-
-                Text = $"Length: {detal.PlateLength} mm",
-                PropertyName = nameof(detal.PlateLength)
+                Text = ParamToString(detal.PlateLength),
+                PropertyName = nameof(detal.PlateLength),                
             };
         }
 
-        //private Annotation GetPlateWidthAnnotation(Detal detal)
-        //{
-        //    return new Annotation()
-        //    {
-        //        Position = new Point3D(15, 10, 0),
-        //        Text = $"Width: {detal.PlateWidth} mm",
-        //        PropertyName = nameof(detal.PlateWidth)
-        //    };
-        //}
+        private Annotation GetPlateWidthAnnotation(Detal detal)
+        {
+            double modelPlateWidth = (double)detal.PlateWidth * (double)ScaleFactor;
+            double modelPlateLength = (double)detal.PlateLength * (double)ScaleFactor;
 
-        //private Annotation GetPlateThicknessAnnotation(Detal detal)
-        //{
-        //    return new Annotation()
-        //    {
-        //        Position = new Point3D(10, 10, 0),
-        //        Text = $"Thickness: {detal.PlateThickness} mm",
-        //        PropertyName = nameof(detal.PlateThickness)
-        //    };
-        //}
+            Point3DCollection points = new Point3DCollection(new List<Point3D>()
+            {
+                new Point3D(modelPlateLength / 2 + Annotation.DefaultAnnotationWidth,
+                            0,
+                            modelPlateWidth / 2),
+
+                new Point3D(modelPlateLength / 2,
+                            0,
+                            modelPlateWidth / 2),
+
+                new Point3D(modelPlateLength / 2,
+                            0,
+                            -modelPlateWidth / 2),
+
+                new Point3D(modelPlateLength / 2 + Annotation.DefaultAnnotationWidth,
+                            0,
+                            -modelPlateWidth / 2),
+            });
+
+            return new Annotation(points, Annotation.ArrowSide.Left)
+            {
+                Text = ParamToString(detal.PlateWidth),
+                PropertyName = nameof(detal.PlateWidth)
+            };
+        }
+
+        private Annotation GetPlateThicknessAnnotation(Detal detal)
+        {
+            double modelPlateWidth = (double)detal.PlateWidth * (double)ScaleFactor;
+            double modelPlateLength = (double)detal.PlateLength * (double)ScaleFactor;
+            double modelPlateHeight = (double)detal.PlateThickness * (double)ScaleFactor;
+
+            Point3DCollection points = new Point3DCollection(new List<Point3D>()
+            {
+                new Point3D(-modelPlateLength / 2,
+                            -modelPlateHeight,
+                            -modelPlateWidth / 2),
+
+                new Point3D(-modelPlateLength / 2,
+                            modelPlateHeight,
+                            -modelPlateWidth / 2),
+
+                new Point3D(-modelPlateLength / 2 - Annotation.DefaultAnnotationWidth,
+                            modelPlateHeight,
+                            -modelPlateWidth / 2),
+
+                new Point3D(-modelPlateLength / 2 - Annotation.DefaultAnnotationWidth,
+                            -modelPlateHeight,
+                            -modelPlateWidth / 2),
+            });
+
+            return new Annotation(points)
+            {
+                Text = $"Thickness: {detal.PlateThickness} mm",
+                PropertyName = nameof(detal.PlateThickness)
+            };
+        }
 
         //private Annotation GetRibHeightAnnotation(Detal detal)
         //{
@@ -158,38 +222,28 @@ namespace ForRobot.Services
 
         #endregion Properties
 
-        public AnnotationService(decimal _scaleFactor)
-        {
-            this.ScaleFactor = _scaleFactor;
-        }
+        #endregion Private functions
 
-        private ObservableCollection<Annotation> PlateAnnotations(Plita plate)
-        {
-            List<Annotation> annotations = new List<Annotation>()
-            {
-                this.GetPlateLengthAnnotation(plate)
-                //this.GetPlateWidthAnnotation(plate),
-                //this.GetPlateThicknessAnnotation(plate),
-                //this.GetRibHeightAnnotation(plate),
-                //this.GetRibThicknessAnnotation(plate),
-                //this.GetTechOffsetSeamStartAnnotation(plate),
-                //this.GetTechOffsetSeamEndAnnotation(plate),
-                //this.GetBevelToLeftAnnotation(plate),
-                //this.GetBevelToRightAnnotation(plate)
-            };
-            return new ObservableCollection<Annotation>(annotations);
-        }
+        #region Public functions
 
         public ObservableCollection<Annotation> GetAnnotations(Detal detal)
         {
+            List<Annotation> annotationsList = this.GetDetalAnnotations(detal);
+
             switch (detal.DetalType)
             {
                 case DetalTypes.Plita:
-                    return this.PlateAnnotations(detal as Plita);
+                    annotationsList.AddRange(this.PlateAnnotations(detal as Plita));
+                    break;
 
                 default:
                     return null;
             }
+            return new ObservableCollection<Annotation>(annotationsList);
         }
+
+        public static string ParamToString(decimal param) => string.Format("{0} mm", param);
+
+        #endregion
     }
 }

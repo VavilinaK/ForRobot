@@ -20,7 +20,23 @@ namespace ForRobot.Model.File3D
 
     public class Annotation : ScreenSpaceVisual3D
     {
+        #region Private variables
+
         private Point3DCollection _points;
+        private readonly TextVisual3D _label = new TextVisual3D
+        {
+            FontSize = DefaultFontSize,
+            Foreground = new SolidColorBrush(ForRobot.Model.File3D.Colors.AnnotationTextColor),
+            VerticalAlignment = VerticalAlignment.Center,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            IsDoubleSided = true
+        };
+        private readonly LinesVisual3D _lines;
+        private readonly LinesVisual3D _arrows;
+
+        #endregion Private variables
+
+        #region Public variables
 
         [Flags]
         /// <summary>
@@ -28,13 +44,13 @@ namespace ForRobot.Model.File3D
         /// </summary>
         public enum ArrowSide
         {
-            AB,
+            AB = 0,
 
-            BC,
+            BC = 1,
 
-            CD,
+            CD = 2,
 
-            DA,
+            DA = 3,
 
             Top = AB,
 
@@ -47,27 +63,39 @@ namespace ForRobot.Model.File3D
             All = Top | Right | Bottom | Left
         }
 
-        private readonly TextVisual3D _label;
-        private readonly LinesVisual3D _lines = new LinesVisual3D();
-        private readonly LinesVisual3D _arrows = new LinesVisual3D();
-
-        public static double DefaultFontSize { get; set; } = 32;
+        public static double DefaultFontSize { get; set; } = 20.0;
         public static double DefaultThickness { get; set; } = 2.0;
-        public static double DefaultHeadSize { get; set; } = 10.0;
-        public static Brush DefaultTextForeground { get; set; } = Brushes.Black;
+        public static double DefaultHeadSize { get; set; } = 1.0;
+        public static double DefaultAnnotationWidth { get; set; } = 5.0;
+        //public static Brush DefaultTextForeground { get; set; } = Brushes.Black;
         public static Brush DefaultTextBackground { get; set; } = Brushes.Transparent;
-        public static Brush DefaultArrowColor { get; set; } = Brushes.Blue;
+        //public static Brush DefaultArrowColor { get; set; } = Brushes.Blue;
 
         /// <summary>
         /// Сторона со стрелкой
         /// </summary>
-        public ArrowSide ArrowsSide { get; set; }
+        public ArrowSide ArrowsSide { get; set; } = ArrowSide.Bottom;
+
+        public double FontSize
+        {
+            get => _label.FontSize;
+            set
+            {
+                _label.FontSize = value;
+                this.UpdateText();
+            }
+        }
+        public double Thickness { get; set; } = DefaultThickness;
 
         public string PropertyName { get; set; }
         public string Text
         {
             get => _label.Text;
-            set => _label.Text = value;
+            set
+            {
+                _label.Text = value;
+                this.UpdateText();
+            }
         }
 
         /// <summary>
@@ -81,8 +109,34 @@ namespace ForRobot.Model.File3D
             set
             {
                 this._points = value;
-                this.UpdateGeometry();
+                this.UpdatePoints();
             }
+        }
+
+        #endregion Public variables
+
+        #region Constructors
+
+        public Annotation(Point3DCollection points)
+        {
+            this._lines = new LinesVisual3D()
+            {
+                Color = ForRobot.Model.File3D.Colors.AnnotationArrowsColor,
+                Thickness = this.Thickness
+            };
+
+            this._arrows = new LinesVisual3D()
+            {
+                Color = ForRobot.Model.File3D.Colors.AnnotationArrowsColor,
+                Thickness = this.Thickness
+            };
+
+            points = new Point3DCollection(points.Take(4));
+            this.Points = points;
+
+            Children.Add(_lines);
+            Children.Add(_arrows);
+            Children.Add(_label);
         }
 
         /// <summary>
@@ -92,37 +146,39 @@ namespace ForRobot.Model.File3D
         /// <param name="point3Ds">Точки прямоугольника примечания</param>
         /// <param name="arrowSide">Сторона со стрелкой</param>
         /// <param name="horisontalAnnotation">Горизонтальное ли примечание</param>
-        public Annotation(Point3DCollection point3Ds, ArrowSide arrowSide, bool horizontalAnnotation = true)
+        public Annotation(Point3DCollection points, ArrowSide arrowSide, bool horizontalAnnotation = true) : this(points)
         {
-            point3Ds = new Point3DCollection(point3Ds.Take(4));
-            this.Points = point3Ds;
             this.ArrowsSide = arrowSide;
-            this.IsHorizontal = horizontalAnnotation;
 
-            _lines.Thickness = DefaultThickness;
-            _lines.Color = (DefaultArrowColor as SolidColorBrush)?.Color ?? Colors.AnnotationArrowsColor;
+            this.UpdateGeometry();
+            //this.IsHorizontal = horizontalAnnotation;            
 
-            _arrows.Thickness = DefaultThickness;
-            _arrows.Color = _lines.Color;
+            //_lines.Thickness = Thickness;
+            //_lines.Color = (DefaultArrowColor as SolidColorBrush)?.Color ?? Colors.AnnotationArrowsColor;
 
-            _label = new TextVisual3D
-            {
-                FontSize = DefaultFontSize,
-                Foreground = DefaultTextForeground,
-                VerticalAlignment = VerticalAlignment.Center,
-                HorizontalAlignment = HorizontalAlignment.Center
-            };
+            //_arrows.Thickness = Thickness;
+            //_arrows.Color = _lines.Color;
 
-            Children.Add(_lines);
-            Children.Add(_arrows);
-            Children.Add(_label);
+            //_label = new TextVisual3D
+            //{
+            //    FontSize = FontSize,
+            //    Foreground = DefaultTextForeground,
+            //    VerticalAlignment = VerticalAlignment.Center,
+            //    HorizontalAlignment = HorizontalAlignment.Center
+            //};
+
+            //Children.Add(_lines);
+            //Children.Add(_arrows);
+            //Children.Add(_label);
         }
 
-        protected override bool UpdateTransforms() => true;
+        #endregion
 
-        protected override void UpdateGeometry()
+        #region Private functions
+
+        private void UpdatePoints()
         {
-            if (Points == null || Points.Count < 4) return;
+            if (this.Points == null || this.Points.Count < 4) return;
 
             _lines.Points.Clear();
             _arrows.Points.Clear();
@@ -135,8 +191,8 @@ namespace ForRobot.Model.File3D
             }
 
             // Добавление стрелок на выбранных сторонах
-            var arrowPoints = new List<Point3D>();
-            var directions = new Dictionary<ArrowSide, (int start, int end)>
+            List<Point3D> arrowPoints = new List<Point3D>();
+            var directions = new Dictionary<ArrowSide, (int start, int end)> // Направления стрелок и индексы точек
             {
                 { ArrowSide.AB, (0, 1) },
                 { ArrowSide.BC, (1, 2) },
@@ -144,63 +200,199 @@ namespace ForRobot.Model.File3D
                 { ArrowSide.DA, (3, 0) }
             };
 
-            foreach (var side in directions.Where(x => ArrowsSide.HasFlag(x.Key)))
+            foreach (var side in directions.Where(x => x.Key == ArrowsSide))
             {
                 //var start = Points[side.Value.start];
                 //var end = Points[side.Value.end];
                 //var direction = (end - start).Normalized();
                 //var mid = start + (end - start) * 0.5;
 
-                //// Стрелка в середине линии
+                ////Стрелка в середине линии
                 //arrowPoints.Add(mid - direction * DefaultHeadSize);
                 //arrowPoints.Add(mid);
                 //arrowPoints.Add(mid + direction * DefaultHeadSize);
+
+                //var start = Points[side.Value.start];
+                //var end = Points[side.Value.end];
+                //var direction = (end - start).Normalized();
+                //var perpendicular = new Vector3D(-direction.Y, direction.X, 0).Normalized();
+                //var mid = start + (end - start) * 0.5;
+
+                //// Треугольный наконечник
+                //arrowPoints.Add(mid - direction * DefaultHeadSize + perpendicular * DefaultHeadSize * 0.5);
+                //arrowPoints.Add(mid);
+                //arrowPoints.Add(mid - direction * DefaultHeadSize - perpendicular * DefaultHeadSize * 0.5);
+
+                //var start = Points[side.Value.start];
+                //var end = Points[side.Value.end];
+                //var direction = (end - start).Normalized();
+                //var perpendicular = new Vector3D(-direction.Y, direction.X, 0).Normalized();
+                //var mid = start + (end - start) * 0.5;
+
+                //// Стрелки по обе стороны линии
+                //arrowPoints.Add(mid - direction * DefaultHeadSize + perpendicular * DefaultHeadSize * 0.5);
+                //arrowPoints.Add(mid);
+                //arrowPoints.Add(mid - direction * DefaultHeadSize - perpendicular * DefaultHeadSize * 0.5);
+
+                //// Вторая стрелка с противоположной стороны
+                //arrowPoints.Add(mid + direction * DefaultHeadSize + perpendicular * DefaultHeadSize * 0.5);
+                //arrowPoints.Add(mid);
+                //arrowPoints.Add(mid + direction * DefaultHeadSize - perpendicular * DefaultHeadSize * 0.5);
 
                 var start = Points[side.Value.start];
                 var end = Points[side.Value.end];
                 var direction = (end - start).Normalized();
                 var perpendicular = new Vector3D(-direction.Y, direction.X, 0).Normalized();
-                var mid = start + (end - start) * 0.5;
 
-                // Треугольный наконечник
-                arrowPoints.Add(mid - direction * DefaultHeadSize + perpendicular * DefaultHeadSize * 0.5);
-                arrowPoints.Add(mid);
-                arrowPoints.Add(mid - direction * DefaultHeadSize - perpendicular * DefaultHeadSize * 0.5);
+                // Стрелка в начале грани (начальная точка)
+                arrowPoints.Add(start);
+                arrowPoints.Add(start + direction * DefaultHeadSize + perpendicular * DefaultHeadSize * 0.5);
+
+                arrowPoints.Add(start);
+                arrowPoints.Add(start + direction * DefaultHeadSize - perpendicular * DefaultHeadSize * 0.5);
+
+                // Стрелка в конце грани (конечная точка)
+                arrowPoints.Add(end);
+                arrowPoints.Add(end - direction * DefaultHeadSize + perpendicular * DefaultHeadSize * 0.5);
+
+                arrowPoints.Add(end);
+                arrowPoints.Add(end - direction * DefaultHeadSize - perpendicular * DefaultHeadSize * 0.5);
             }
-
             _arrows.Points = new Point3DCollection(arrowPoints);
+        }
 
-            // Позиционирование текста
-            //var center = new Point3D(Points.Average(p => p.X),
-            //                         Points.Average(p => p.Y),
-            //                         Points.Average(p => p.Z));
+        public List<TextVisual3D> Labels { get; set; } = new List<TextVisual3D>();
 
-            //if (_label == null) return;
-            ////_label.Position = IsHorizontal ? center + new Vector3D(0, DefaultHeadSize * 2, 0) : center + new Vector3D(DefaultHeadSize * 2, 0, 0);
-            //_label.Position = center + new Vector3D(DefaultHeadSize * 2, 0, 0);
+        private void UpdateText()
+        {
+            //// Позиционирование текста
+            ////var mainLineDirection = (Points[1] - Points[0]).Normalized();
+            //Vector3D textOffset = IsHorizontal ? new Vector3D(0, DefaultHeadSize * 2, 0) : new Vector3D(DefaultHeadSize * 2, 0, 0);
 
-            // Позиционирование текста
-            var mainLineDirection = (Points[1] - Points[0]).Normalized();
-            var textOffset = IsHorizontal
-                ? new Vector3D(0, DefaultHeadSize * 2, 0)
-                : new Vector3D(DefaultHeadSize * 2, 0, 0);
-            
-            if (_label == null) return;
+            if (_label == null || this.Points == null || this.Points.Count < 4) return;
+
+            var directions = new Dictionary<ArrowSide, (int start, int end)> // Направления стрелок и индексы точек
+            {
+                { ArrowSide.AB, (0, 1) },
+                { ArrowSide.BC, (1, 2) },
+                { ArrowSide.CD, (2, 3) },
+                { ArrowSide.DA, (3, 0) }
+            };
+
             // Вычисляем середину между Points[0] и Points[1]
-            var point0 = Points[0];
-            var point1 = Points[1];
+            var side = directions.Where(x => x.Key == ArrowsSide).First();
+            var point0 = Points[side.Value.start];
+            var point1 = Points[side.Value.end];
             var midPoint = new Point3D(
                 (point0.X + point1.X) * 0.5,
                 (point0.Y + point1.Y) * 0.5,
                 (point0.Z + point1.Z) * 0.5
             );
-            _label.Position = midPoint + textOffset;
+            _label.Position = midPoint - new Vector3D(0, 0, DefaultHeadSize * 2);
+            //_label.FontSize = FontSize;
+            //_label.Position = midPoint + textOffset;
+            //_label.Transform = new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), -90));
 
-            //if (this.IsHorizontal)
-            //    _label.Transform = new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(1, 0, 0), 90));
+            //Labels = new List<TextVisual3D>()
+            //{
+            //    new TextVisual3D() { Position = Points[0], Text = "A" },
+            //    new TextVisual3D() { Position = Points[1], Text = "B" },
+            //    new TextVisual3D() { Position = Points[2], Text = "C" },
+            //    new TextVisual3D() { Position = Points[3], Text = "D" }
+            //};
 
-            _label.Transform = new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), -90));
+            //foreach (var item in Labels)
+            //    Application.Current.Dispatcher.Invoke(() => { Children.Add(item); });
         }
+
+        protected override bool UpdateTransforms() => true;
+
+        protected override void UpdateGeometry()
+        {
+            this.UpdatePoints();
+            this.UpdateText();
+
+            //if (Points == null || Points.Count < 4) return;
+
+            //_lines.Points.Clear();
+            //_arrows.Points.Clear();
+
+            //// Построение линий прямоугольника
+            //for (int i = 0; i < 4; i++)
+            //{
+            //    _lines.Points.Add(Points[i]);
+            //    _lines.Points.Add(Points[(i + 1) % 4]);
+            //}
+
+            //// Добавление стрелок на выбранных сторонах
+            //var arrowPoints = new List<Point3D>();
+            //var directions = new Dictionary<ArrowSide, (int start, int end)>
+            //{
+            //    { ArrowSide.AB, (0, 1) },
+            //    { ArrowSide.BC, (1, 2) },
+            //    { ArrowSide.CD, (2, 3) },
+            //    { ArrowSide.DA, (3, 0) }
+            //};
+
+            //foreach (var side in directions.Where(x => ArrowsSide.HasFlag(x.Key)))
+            //{
+            //    //var start = Points[side.Value.start];
+            //    //var end = Points[side.Value.end];
+            //    //var direction = (end - start).Normalized();
+            //    //var mid = start + (end - start) * 0.5;
+
+            //    //// Стрелка в середине линии
+            //    //arrowPoints.Add(mid - direction * DefaultHeadSize);
+            //    //arrowPoints.Add(mid);
+            //    //arrowPoints.Add(mid + direction * DefaultHeadSize);
+
+            //    var start = Points[side.Value.start];
+            //    var end = Points[side.Value.end];
+            //    var direction = (end - start).Normalized();
+            //    var perpendicular = new Vector3D(-direction.Y, direction.X, 0).Normalized();
+            //    var mid = start + (end - start) * 0.5;
+
+            //    // Треугольный наконечник
+            //    arrowPoints.Add(mid - direction * DefaultHeadSize + perpendicular * DefaultHeadSize * 0.5);
+            //    arrowPoints.Add(mid);
+            //    arrowPoints.Add(mid - direction * DefaultHeadSize - perpendicular * DefaultHeadSize * 0.5);
+            //}
+
+            //_arrows.Points = new Point3DCollection(arrowPoints);
+
+            //// Позиционирование текста
+            ////var center = new Point3D(Points.Average(p => p.X),
+            ////                         Points.Average(p => p.Y),
+            ////                         Points.Average(p => p.Z));
+
+            ////if (_label == null) return;
+            //////_label.Position = IsHorizontal ? center + new Vector3D(0, DefaultHeadSize * 2, 0) : center + new Vector3D(DefaultHeadSize * 2, 0, 0);
+            ////_label.Position = center + new Vector3D(DefaultHeadSize * 2, 0, 0);
+
+            //// Позиционирование текста
+            //var mainLineDirection = (Points[1] - Points[0]).Normalized();
+            //var textOffset = IsHorizontal
+            //    ? new Vector3D(0, DefaultHeadSize * 2, 0)
+            //    : new Vector3D(DefaultHeadSize * 2, 0, 0);
+
+            //if (_label == null) return;
+            //// Вычисляем середину между Points[0] и Points[1]
+            //var point0 = Points[0];
+            //var point1 = Points[1];
+            //var midPoint = new Point3D(
+            //    (point0.X + point1.X) * 0.5,
+            //    (point0.Y + point1.Y) * 0.5,
+            //    (point0.Z + point1.Z) * 0.5
+            //);
+            //_label.Position = midPoint + textOffset;
+
+            ////if (this.IsHorizontal)
+            ////    _label.Transform = new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(1, 0, 0), 90));
+
+            //_label.Transform = new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), -90));
+        }
+
+        #endregion
     }
 
     //public class Annotation : ScreenSpaceVisual3D

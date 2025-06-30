@@ -254,6 +254,10 @@ namespace ForRobot.Model.Detals
             }
         }
         
+        /// <summary>
+        /// Вызов события изменения свойства
+        /// </summary>
+        /// <param name="propertyName">Наименование свойства</param>
         public virtual void OnChangeProperty(string propertyName = null) => this.ChangePropertyEvent?.Invoke(this, propertyName);
 
         #endregion

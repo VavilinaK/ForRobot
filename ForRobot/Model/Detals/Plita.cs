@@ -1389,7 +1389,7 @@ namespace ForRobot.Model.Detals
                     graphics.DrawString(PlateLength.ToString(),
                                         FontLibr.FindFont(graphics, PlateLength.ToString(), new System.Drawing.Size(100, 30), font),
                                         new SolidBrush(Color.Black),
-                                        new PointF(420, 440),
+                                        new PointF(420, 475),
                                         stringFormat2);
 
                     //graphics.DrawString(PlateWidth.ToString(),
@@ -1401,13 +1401,13 @@ namespace ForRobot.Model.Detals
                     graphics.DrawString(DissolutionLeft.ToString(),
                                         FontLibr.FindFont(graphics, DissolutionLeft.ToString(), new System.Drawing.Size(48, 22), font),
                                         new SolidBrush(Color.Black),
-                                        new PointF(95, 430),
+                                        new PointF(95, 420),
                                         stringFormat2);
 
                     graphics.DrawString(DissolutionRight.ToString(),
                                         FontLibr.FindFont(graphics, DissolutionRight.ToString(), new System.Drawing.Size(48, 22), font),
                                         new SolidBrush(Color.Black),
-                                        new PointF(710, 430),
+                                        new PointF(710, 420),
                                         stringFormat2);
 
                     graphics.DrawString(RibThickness.ToString(),
@@ -1830,7 +1830,7 @@ namespace ForRobot.Model.Detals
         private BitmapImage JoinPlita(Bitmap png1, Bitmap png2, Bitmap png3)
         {
             BitmapImage imageSource = new BitmapImage();
-            using (Bitmap result = new Bitmap(980, png1.Height + png2.Height * 2 + png3.Height))
+            using (Bitmap result = new Bitmap(980, png1.Height + png2.Height * 2 + png3.Height ))
             {
                 using (Graphics g = Graphics.FromImage(result))
                 {
@@ -1842,22 +1842,11 @@ namespace ForRobot.Model.Detals
                             g.DrawImage(png2, 0, 150);
                         else
                             g.DrawImage(png2, 0, (i - 1) * 88 + 150);
-
-                        //    else if (RibCount % 2 == 0 && i == (RibCount / 2) + 1)
-                        //        g.DrawImage(PaintDistanceBetween_And_WightImage(png2), i * 150, 0);
-                        //    else if (RibCount % 2 == 1 && i == Math.Ceiling((decimal)RibCount / 2))
-                        //        g.DrawImage(PaintDistanceBetween_And_WightImage(png2), i * 150, 0);
-                        //    else
-                        //        g.DrawImage(png2, i * 150, 0);
                     }
 
                     g.DrawImage(png3, 0, 2 * 88 + 150);
-
-                    //Font font = new Font("Lucida Console", 18, System.Drawing.FontStyle.Regular);
-                    //StringFormat stringFormat = new StringFormat(StringFormatFlags.DirectionVertical);
-                    //g.DrawString(PlateLength.ToString(), font, new SolidBrush(Color.Black), new PointF(835, result.Height/2 - PlateLength.ToString().Length * (font.Size - 8)), stringFormat);
                 }
-                imageSource = ForRobot.Libr.Converters.ImageConverter.BitmapToBitmapImage(GetText(GetArrows(result)));
+                imageSource = ForRobot.Libr.Converters.ImageConverter.BitmapToBitmapImage(GetText(result));
             }
             return imageSource;
         }

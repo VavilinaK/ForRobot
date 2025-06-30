@@ -29,6 +29,8 @@
     <conv:ScaleFactorConverter x:Key="ScaleFactorConvert"/>
     <conv:DictionaryToBindableCollectionConverter x:Key="DictionaryToBindableCollectionConvert"/>
     <conv:ColorSaveConverter x:Key="ColorSaveConvert"/>
+    <conv:GetColorConverter x:Key="GetColorConverter"/>
+    <conv:ColorToBrushConverter x:Key="ColorToBrushConverter"/>
 
 
     <!--Control Content property -->

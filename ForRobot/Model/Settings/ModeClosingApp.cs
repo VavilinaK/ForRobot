@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ForRobot.Libr.Settings
+namespace ForRobot.Model.Settings
 {
     [Flags]
     /// <summary>

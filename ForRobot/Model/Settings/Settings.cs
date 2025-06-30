@@ -34,8 +34,26 @@ namespace ForRobot.Model.Settings
         
         private ForRobot.Libr.ConfigurationProperties.AppConfigurationSection _appConfig = ConfigurationManager.GetSection("app") as ForRobot.Libr.ConfigurationProperties.AppConfigurationSection;
         private ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection _robotConfig = ConfigurationManager.GetSection("robot") as ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection;
-        
+
+        #region Properties
+
+        private bool _showCoordinateSystem = true;
+        private bool _showViewCube = true;
+        private bool _showTriangleCountInfo = false;
+        private bool _orthographic = false;
+        private bool _showCameraInfo = false;
+        private bool _showCameraTarget = true;
+        private bool _rotateAroundMouseDownPoint = false;
+        private bool _zoomAroundMouseDownPoint = false;
+        private bool _isInertiaEnabled = false;
+        private bool _isPanEnabled = true;
+        private bool _isMoveEnabled = true;
+        private bool _isRotationEnabled = true;
+        private bool _isZoomEnabled = true;
+
         #endregion
+
+        #endregion Private variables
 
         #region Public variables
 
@@ -57,34 +75,34 @@ namespace ForRobot.Model.Settings
         public bool LoginByPINCode { get; set; } = false;
 
         /// <summary>
-        /// Ограничено ли время ожидания ответа от сервера
-        /// </summary>
-        public bool LimitedConnectionTimeOut { get; set; } = false;
-
-        /// <summary>
         /// Создаётся ли при открытии файл детли. Не работает, если приложение открывает файл "с помощью"
         /// </summary>
         public bool CreatedDetalFile { get; set; } = true;
 
         /// <summary>
+        /// Ограничено ли время ожидания ответа от сервера
+        /// </summary>
+        public bool LimitedConnectionTimeOut { get; set; } = false; // Не используется
+
+        /// <summary>
         /// Время ожидания ответа от сервера, сек.
         /// </summary>
-        public double ConnectionTimeOut { get; set; } = 3;
+        public double ConnectionTimeOut { get; set; } = 3; // Не используется
 
         /// <summary>
         /// Тип детали, для которой создаётся стартовый файл
         /// </summary>
         public string StartedDetalType { get; set; } = Model.Detals.DetalTypes.Plita;
 
-        ///// <summary>
-        ///// Режим закрытия приложения. Спрашивает пользователя о закрытии и/или разрыве соединения
-        ///// </summary>
-        //public ModeClosingApp ModeClosingApp { get; set; } = ModeClosingApp.HaveConnected;
+        /// <summary>
+        /// Режим закрытия приложения. Спрашивает пользователя о закрытии и/или разрыве соединения
+        /// </summary>
+        public ModeClosingApp ModeClosingApp { get; set; } = ModeClosingApp.HaveConnected; // Устарело
 
         #endregion Generic
 
         #region Navigation
-            
+
         /// <summary>
         /// Отображаютя ли файлы с расширением .dat
         /// </summary>
@@ -155,11 +173,27 @@ namespace ForRobot.Model.Settings
         /// <summary>
         /// Показ системы координат
         /// </summary>
-        public bool ShowCoordinateSystem { get; set; } = true;
+        public bool ShowCoordinateSystem
+        {
+            get => this._showCoordinateSystem;
+            set
+            {
+                this._showCoordinateSystem = value;
+                this.OnChangeProperty();
+            }
+        }
         /// <summary>
         /// Показ пространственного куба
         /// </summary>
-        public bool ShowViewCube { get; set; } = true;
+        public bool ShowViewCube
+        {
+            get => this._showViewCube;
+            set
+            {
+                this._showViewCube = value;
+                this.OnChangeProperty();
+            }
+        }
         /// <summary>
         /// Доступности нажатия рёбер пространственного куба
         /// </summary>
@@ -167,7 +201,15 @@ namespace ForRobot.Model.Settings
         /// <summary>
         /// Показ кол-ва полигонов
         /// </summary>
-        public bool ShowTriangleCountInfo { get; set; } = false;
+        public bool ShowTriangleCountInfo
+        {
+            get => this._showTriangleCountInfo;
+            set
+            {
+                this._showTriangleCountInfo = value;
+                this.OnChangeProperty();
+            }
+        }
 
         public bool ShowFieldOfView { get; set; } = false;
         public bool ShowFrameRate { get; set; } = false;
@@ -200,54 +242,161 @@ namespace ForRobot.Model.Settings
 
         #endregion 3DView
 
+        #region Params
+
+        private double _paramsFontSize = 20;
+        private bool _paramsIsVisibale = true;
+
+        public double ParamsFontSize
+        {
+            get => this._paramsFontSize;
+            set
+            {
+                this._paramsFontSize = value;
+                this.OnChangeProperty();
+            }
+        }
+
+        public bool ParamsIsVisibale
+        {
+            get => this._paramsIsVisibale;
+            set
+            {
+                this._paramsIsVisibale = value;
+                this.OnChangeProperty();
+            }
+        }
+
+        #endregion Params
+
         #region Camera
 
         /// <summary>
         /// Включена ли ортоганальная камера
         /// </summary>
-        public bool Orthographic { get; set; } = false;
+        public bool Orthographic
+        {
+            get => this._orthographic;
+            set
+            {
+                this._orthographic = value;
+                this.OnChangeProperty();
+            }
+        }
         /// <summary>
         /// Демонстрация информации о камере
         /// </summary>
-        public bool ShowCameraInfo { get; set; } = false;
+        public bool ShowCameraInfo
+        {
+            get => this._showCameraInfo;
+            set
+            {
+                this._showCameraInfo = value;
+                this.OnChangeProperty();
+            }
+        }
         /// <summary>
         /// Демонстрация курсора камеры
         /// </summary>
-        public bool ShowCameraTarget { get; set; } = true;
+        public bool ShowCameraTarget
+        {
+            get => this._showCameraTarget;
+            set
+            {
+                this._showCameraTarget = value;
+                this.OnChangeProperty();
+            }
+        }
         /// <summary>
         /// Поворот вокруг мыши
         /// </summary>
-        public bool RotateAroundMouseDownPoint { get; set; } = false;
+        public bool RotateAroundMouseDownPoint
+        {
+            get => this._rotateAroundMouseDownPoint;
+            set
+            {
+                this._rotateAroundMouseDownPoint = value;
+                this.OnChangeProperty();
+            }
+        }
         /// <summary>
         /// Приближение около мыши
         /// </summary>
-        public bool ZoomAroundMouseDownPoint { get; set; } = false;
+        public bool ZoomAroundMouseDownPoint
+        {
+            get => this._zoomAroundMouseDownPoint;
+            set
+            {
+                this._zoomAroundMouseDownPoint = value;
+                this.OnChangeProperty();
+            }
+        }
         /// <summary>
         /// Инерция камеры
         /// </summary>
-        public bool IsInertiaEnabled { get; set; } = false;
+        public bool IsInertiaEnabled
+        {
+            get => this._isInertiaEnabled;
+            set
+            {
+                this._isInertiaEnabled = value;
+                this.OnChangeProperty();
+            }
+        }
         /// <summary>
         /// Вкличено ли панорамирование
         /// </summary>
-        public bool IsPanEnabled { get; set; } = true;
+        public bool IsPanEnabled
+        {
+            get => this._isPanEnabled;
+            set
+            {
+                this._isPanEnabled = value;
+                this.OnChangeProperty();
+            }
+        }
         /// <summary>
         /// Вкличено ли перемещение
         /// </summary>
-        public bool IsMoveEnabled { get; set; } = true;
+        public bool IsMoveEnabled
+        {
+            get => this._isMoveEnabled;
+            set
+            {
+                this._isMoveEnabled = value;
+                this.OnChangeProperty();
+            }
+        }
         /// <summary>
         /// Вкличено ли вращение
         /// </summary>
-        public bool IsRotationEnabled { get; set; } = true;
+        public bool IsRotationEnabled
+        {
+            get => this._isRotationEnabled;
+            set
+            {
+                this._isRotationEnabled = value;
+                this.OnChangeProperty();
+            }
+        }
         /// <summary>
         /// Вкличено ли маштабирование
         /// </summary>
-        public bool IsZoomEnabled { get; set; } = true;
+        public bool IsZoomEnabled
+        {
+            get => this._isZoomEnabled;
+            set
+            {
+                this._isZoomEnabled = value;
+                this.OnChangeProperty();
+            }
+        }
 
         ///// <summary>
         ///// Включено ли панаромирование
         ///// </summary>
         //public bool IsChangeFieldOfViewEnabled { get; set; } = true;
-        
+
         /// <summary>
         /// Режим поворота камеры
         /// <example>
@@ -338,6 +487,11 @@ namespace ForRobot.Model.Settings
 
         #endregion
 
+        /// <summary>
+        /// Событие изменения свойства настроек
+        /// </summary>
+        public event EventHandler ChangePropertyEvent;
+
         #endregion Public variables
 
         #region Constructor
@@ -377,7 +531,7 @@ namespace ForRobot.Model.Settings
             string sPathForSave = Path.Combine(Path.GetTempPath(), "interfaceOfRobot_settings.json");
             File.WriteAllText(sPathForSave, JsonConvert.SerializeObject(this, _jsonSettings));
         }
-
+        
         /// <summary>
         /// Инициализация настроек (при первой загрузки) или выгрузка из временных файлов
         /// </summary>
@@ -472,6 +626,11 @@ namespace ForRobot.Model.Settings
         #endregion Public functions
 
         #region Private functions
+
+        /// <summary>
+        /// Вызов события изменения свойства
+        /// </summary>
+        public void OnChangeProperty() => this.ChangePropertyEvent?.Invoke(this, null);
 
         /// <summary>
         /// Логирование исключений выгрузки настроек

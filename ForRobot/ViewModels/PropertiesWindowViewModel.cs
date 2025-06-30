@@ -197,7 +197,7 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Выбор закрытого элемента управления
         /// </summary>
-        public ICommand SelectClosedControlCommand { get; } = new RelayCommand(obj => SelectClosedControl(obj as System.Windows.Controls.Control));
+        public ICommand SelectClosedControlCommand { get; } = new RelayCommand(obj => SelectClosedControl(obj as System.Windows.Controls.Control), _ => _isSelectClosedControl);
         /// <summary>
         /// Возвращение к стандартным настройкам
         /// </summary>
@@ -212,7 +212,12 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Сохранение настроек
         /// </summary>
-        public ICommand SaveSettingsCommand { get; } = new RelayCommand(obj => SaveSettings(obj as Settings));
+        public ICommand SaveSettingsCommand { get; } = new RelayCommand(obj => 
+                                                                              {
+                                                                                  Settings settings = obj as Settings;
+                                                                                  settings.Colors = App.Current.Settings.Colors;
+                                                                                  SaveSettings(settings);
+                                                                              });
         /// <summary>
         /// Закрытие окна
         /// </summary>
@@ -247,6 +252,7 @@ namespace ForRobot.ViewModels
                 return;
 
             this.Settings = App.Current.Settings.Clone() as ForRobot.Model.Settings.Settings;
+            this.Settings.ChangePropertyEvent -= App.Current.SaveAppSettings;
         }
 
         #endregion
@@ -284,6 +290,8 @@ namespace ForRobot.ViewModels
 
         #region Static
 
+        private static bool _isSelectClosedControl = true;
+
         /// <summary>
         /// Выбор закрытого элемента управления
         /// </summary>
@@ -293,6 +301,7 @@ namespace ForRobot.ViewModels
             if (ForRobot.App.EqualsPinCode())
                 return;
 
+            _isSelectClosedControl = false;
             switch (control)
             {
                 case System.Windows.Controls.TreeView tree when tree.ToString() == control.ToString():
@@ -309,6 +318,7 @@ namespace ForRobot.ViewModels
                     checkBox.IsChecked = !checkBox.IsChecked;
                     break;
             }
+            _isSelectClosedControl = true;
         }
 
         /// <summary>
@@ -318,7 +328,8 @@ namespace ForRobot.ViewModels
         private static void SaveSettings(Settings settings)
         {
             settings.Save();
-            if (MessageBox.Show("Чтобы изменения вступили в силу, необходимо перезапустить приложение.\n\nПерезапустить интерфейс?", "Сохранение настроек", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.Yes)
+            if (MessageBox.Show("Чтобы изменения вступили в силу, необходимо перезапустить приложение.\n\nПерезапустить интерфейс?", "Сохранение настроек", 
+                MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.Yes)
             {
                 string sAppPath = Directory.GetCurrentDirectory();
                 System.Diagnostics.Process process = new System.Diagnostics.Process()
@@ -331,7 +342,8 @@ namespace ForRobot.ViewModels
                         WorkingDirectory = sAppPath,
                         CreateNoWindow = true,
                         FileName = "cmd.exe",
-                        Arguments = $"/K taskkill /im {Application.ResourceAssembly.GetName().Name}.exe /f& START \"\" \"{sAppPath + "\\" + Application.ResourceAssembly.GetName().Name + ".exe"}\"",
+                        Arguments = $"/K taskkill /im {Application.ResourceAssembly.GetName().Name}.exe /f& " +
+                                    $"START \"\" /HIGH \"{sAppPath + "\\" + Application.ResourceAssembly.GetName().Name + ".exe"}\"",
                         WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden
                     }
                 };

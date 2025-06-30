@@ -1639,7 +1639,7 @@
                         </Style>
                     </Grid.Style>
 
-                    <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="15"
+                    <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="15, 5"
                                       HorizontalAlignment="Center" VerticalAlignment="Center"
                                       Height="{Binding RelativeSource={RelativeSource Self}, Path=Child.ActualHeight}"
                                       Width="{Binding RelativeSource={RelativeSource Self}, Path=Child.ActualWidth}">
@@ -1674,7 +1674,7 @@
                         </control:Image2D>
                     </ScrollViewer>
 
-                    <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="15"
+                    <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="15, 5"
                                       HorizontalAlignment="Center" VerticalAlignment="Center"
                                       Height="{Binding RelativeSource={RelativeSource Self}, Path=Child.ActualHeight}"
                                       Width="{Binding RelativeSource={RelativeSource Self}, Path=Child.ActualWidth}">

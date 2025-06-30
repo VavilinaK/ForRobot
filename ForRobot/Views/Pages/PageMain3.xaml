@@ -144,6 +144,7 @@
                               Data="{StaticResource NewFilePathGeomerty}"/>
                     </MenuItem.Icon>
                 </MenuItem>
+                
                 <MenuItem Header="_Открыть"
                           Command="{Binding Path=OpenedFileCommand}"
                           InputGestureText="Ctrl+O">
@@ -152,6 +153,7 @@
                               Data="{StaticResource OpenPathGeomerty}"/>
                     </MenuItem.Icon>
                 </MenuItem>
+                
                 <MenuItem Command="{Binding Path=SaveFileCommand}" InputGestureText="Ctrl+S">
                     <MenuItem.Header>
                         <MultiBinding Converter="{StaticResource StringFormatMultiConvert}" ConverterParameter="_Сохранить {0}">
@@ -164,6 +166,7 @@
                               Data="{StaticResource SavePathGeomerty}"/>
                     </MenuItem.Icon>
                 </MenuItem>
+                
                 <MenuItem Command="{Binding Path=SaveAsFileCommand}"
                           CommandParameter="{Binding Path=SelectedFile}"
                           IsEnabled="False">
@@ -173,6 +176,7 @@
                         </MultiBinding>
                     </MenuItem.Header>
                 </MenuItem>
+                
                 <MenuItem Header="_Сохранить все"
                           Command="{Binding Path=SaveAsFileCommand}"
                           InputGestureText="Ctrl+K, S">
@@ -180,7 +184,8 @@
                         <Path Fill="{StaticResource IconSaveAsBrush}"
                               Data="{StaticResource SaveAsPathGeomerty}"/>
                     </MenuItem.Icon>
-                </MenuItem>                
+                </MenuItem>   
+                
                 <Separator/>
                 <!--<MenuItem Header="_Экспорт модели"/>-->
                 <MenuItem Header="_Экспорт параметров">
@@ -261,6 +266,18 @@
 
                 <MenuItem Header="_Кол-во полигонов" IsCheckable="True"
                           IsChecked="{Binding Path=Settings.ShowTriangleCountInfo, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                <Separator/>
+
+                <MenuItem Header="_Параметры детали" IsCheckable="True"
+                          IsChecked="{Binding Path=Settings.ParamsIsVisibale, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                <MenuItem Header="_Размер шрифта" Margin="0">
+                    <StackPanel Orientation="Horizontal">
+                        <Slider Value="{Binding Path=Settings.ParamsFontSize, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="6" Maximum="52" TickPlacement="BottomRight" TickFrequency="2" IsSnapToTickEnabled="True" Width="200"/>
+                        <Label Content="{Binding Path=Settings.ParamsFontSize, Mode=OneWay, StringFormat='{}{0:0}', Source={x:Static Application.Current}, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                </MenuItem>
 
                 <Separator/>
 
@@ -583,7 +600,7 @@
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem Header="Вид сзади (Ctrl+B)"
+            <MenuItem Header="Вид сзади (Ctrl+B)" InputGestureText="Ctrl+B"
                       Template="{StaticResource MenuItemTemplate1}"
                       Command="{x:Static h:CameraController.BackViewCommand}">
 
@@ -646,7 +663,6 @@
                     <control:PanesTemplateSelector.FileViewTemplate>
                         <DataTemplate> 
                             <h:HelixViewport3D PreviewMouseDown="UIElement_OnMouseDown"
-                                               ModelUpDirection="0,1,0"
                                                Background="{h:LinearGradientBrush Gray, White}"
                                                
                                                CoordinateSystemHorizontalPosition="{Binding Path=Settings.CoordinateSystemHorizontalPosition, Source={x:Static Application.Current}, Mode=OneWay}"
@@ -696,10 +712,18 @@
                                                        FieldOfView="10"
                                                        NearPlaneDistance="0.001"/>-->
 
-                                    <PerspectiveCamera x:Name="CameraControler" 
+                                    <!--<PerspectiveCamera x:Name="CameraControler" 
                                                        LookDirection="0.4, -517, -619"
                                                        UpDirection="0, 0.8, -0.7"
                                                        Position="1, 515, 619"
+                                                       FieldOfView="10"
+                                                       NearPlaneDistance="0.001"/>-->
+
+
+                                    <PerspectiveCamera x:Name="CameraControler" 
+                                                       Position="-354, 3, 381"
+                                                       LookDirection="351,-3,-383"
+                                                       UpDirection="0.7, 0, 0.7"
                                                        FieldOfView="10"
                                                        NearPlaneDistance="0.001"/>
                                 </h:HelixViewport3D.DefaultCamera>
@@ -732,20 +756,21 @@
                                     </ModelVisual3D.Content>
                                 </ModelVisual3D>-->
 
-                                <h:GridLinesVisual3D LengthDirection="1,0,0" Normal="0,1,0"
-                                                     Visible="{Binding Path=DataContext.IsVisibleGridLinesVisual3D, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>
+                                <h:GridLinesVisual3D Visible="{Binding Path=DataContext.IsVisibleGridLinesVisual3D, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>
 
                                 <ModelVisual3D Content="{Binding Path=CurrentModel, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                                 <h:CoordinateSystemVisual3D ArrowLengths="3"/>
 
                                 <h:BoundingBoxVisual3D BoundingBox="{Binding Path=DataContext.SelectedObject, Converter={StaticResource BoundsConvert}, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
-                                                       Diameter="0.1"/>
-
+                                                       Diameter="0.1"
+                                                       Fill="{Binding Source={x:Static file:Colors.SelectorBoxColor}, Converter={StaticResource ColorToBrushConverter}}"/>
+                                <!--{Binding Source={x:Static file:Colors.SelectorBoxColor}}-->
                                 <i:Interaction.Behaviors>
                                     <behavior:ZoomBehavior/>
                                     <!--<behavior:HelixWeldsBehavior Welds="{Binding Path=WeldsCollection}"/>-->
-                                    <!--<behavior:HelixAnnotationsBehavior Annotations="{Binding Path=Annotations}"/>-->
+                                    <!--<behavior:HelixAnnotationsBehavior Items="{Binding Path=Annotations}"
+                                                                       FontSize="{Binding Path=Settings.ParamsFontSize, Mode=OneWay, Source={x:Static Application.Current}, UpdateSourceTrigger=PropertyChanged}"/>-->
                                     <behavior:HelixSceneTrackerBehavior SceneItems="{Binding Path=DataContext.SceneItemsCollection, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>
                                 </i:Interaction.Behaviors>
                             </h:HelixViewport3D>
