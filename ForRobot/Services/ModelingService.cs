@@ -38,11 +38,17 @@ namespace ForRobot.Services
         /// </summary>
         public decimal ScaleFactor { get; private set; } = 1.00M / 100.00M;
 
+        #region Contructor
+
         public ModelingService(decimal scaleFactor)
         {
             this.ValidateScaleFactor(scaleFactor);
             this.ScaleFactor = scaleFactor;
         }
+
+        #endregion
+
+        #region Private Methods
 
         /// <summary>
         /// Построение модели детали
@@ -57,7 +63,7 @@ namespace ForRobot.Services
                     return GetPlateModel(detal as Plita);
 
                 default:
-                    throw new NotSupportedException($"Тип детали {detal.DetalType} не поддерживается.");
+                    throw new NotSupportedException($"Ошибка построения модели: тип детали {detal.DetalType} не поддерживается.");
             }
         }
 
@@ -445,20 +451,42 @@ namespace ForRobot.Services
             // Добавление рёбер.
             model3DGroup.Children.Add(this.AddRibs(plate));
 
-            model3DGroup.Transform = new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(1, 0, 0), 90)); // Поворот модели на 90 гр.    
-            //model3DGroup.Transform = new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), 90)); // Поворот модели на 90 гр.
+            //model3DGroup.Transform = new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(1, 0, 0), 90)); // Поворот модели на 90 гр.
             model3DGroup.SetName("DetalModel");
             return model3DGroup;
         }
 
         #endregion  Plate Logic
 
-        #region Helper Methods
+        private void ValidateScaleFactor(decimal scaleFactor) { if (scaleFactor <= 0) throw new ArgumentException("Масштабный коэффициент должен быть больше нуля."); }
+
+        private void ValidatePlateParameters(Plita plate)
+        {
+            if (plate.ScoseType == ScoseTypes.Rect) return;
+
+            if (plate.BevelToLeft < 0 || plate.BevelToRight < 0)
+                throw new ArgumentException("Скосы не могут быть отрицательными.", nameof(plate));
+
+            if (plate.BevelToLeft + plate.BevelToRight >= plate.PlateWidth)
+                throw new ArgumentException("Сумма скосов превышает ширину плиты.", nameof(plate));
+
+            //if (plate.ScoseType == ScoseTypes.SlopeLeft && plate.BevelToLeft > plate.PlateWidth)
+            //    throw new ArgumentException("Смещение параллелограмма и скосы недопустимы.", nameof(plate));
+
+            if (TrapezoidRatio < 0.1 || TrapezoidRatio > 0.9)
+                throw new InvalidOperationException("Недопустимый коэффициент трапеции.");
+        }
+
+        #endregion Private Methods
+
+        #region Public Methods
 
         /// <summary>
         /// Поворот вершин вокруг оси X на заданный угол (в градусах)
         /// </summary>
-        private void RotateVerticesAroundX(Point3D[] vertices, double angleDegrees)
+        /// <param name="vertices">Точки вершин</param>
+        /// <param name="angleDegrees">Угол поворота (в градусах)</param>
+        public static void RotateVerticesAroundX(Point3D[] vertices, double angleDegrees)
         {
             double angleRadians = angleDegrees * Math.PI / 180;
             double cos = Math.Cos(angleRadians);
@@ -486,7 +514,9 @@ namespace ForRobot.Services
         /// <summary>
         /// Поворот вершин вокруг оси Y на заданный угол (в градусах)
         /// </summary>
-        private void RotateVerticesAroundY(Point3D[] vertices, double angleDegrees)
+        /// <param name="vertices">Точки вершин</param>
+        /// <param name="angleDegrees">Угол поворота (в градусах)</param>
+        public static void RotateVerticesAroundY(Point3D[] vertices, double angleDegrees)
         {
             double angleRadians = angleDegrees * Math.PI / 180;
             double cos = Math.Cos(angleRadians);
@@ -510,7 +540,9 @@ namespace ForRobot.Services
         /// <summary>
         /// Поворот вершин вокруг оси Z на заданный угол (в градусах)
         /// </summary>
-        private void RotateVerticesAroundZ(Point3D[] vertices, double angleDegrees)
+        /// <param name="vertices">Точки вершин</param>
+        /// <param name="angleDegrees">Угол поворота (в градусах)</param>
+        public static void RotateVerticesAroundZ(Point3D[] vertices, double angleDegrees)
         {
             double angleRadians = angleDegrees * Math.PI / 180;
             double cos = Math.Cos(angleRadians);
@@ -535,29 +567,6 @@ namespace ForRobot.Services
             }
         }
 
-        private void ValidateScaleFactor(decimal scaleFactor)
-        {
-            if (scaleFactor <= 0)
-                throw new ArgumentException("Масштабный коэффициент должен быть больше нуля.");
-        }
-
-        private void ValidatePlateParameters(Plita plate)
-        {
-            if (plate.ScoseType == ScoseTypes.Rect) return;
-
-            if (plate.BevelToLeft < 0 || plate.BevelToRight < 0)
-                throw new ArgumentException("Скосы не могут быть отрицательными.", nameof(plate));
-
-            if (plate.BevelToLeft + plate.BevelToRight >= plate.PlateWidth)
-                throw new ArgumentException("Сумма скосов превышает ширину плиты.", nameof(plate));
-
-            if (plate.ScoseType == ScoseTypes.SlopeLeft && plate.BevelToLeft > plate.PlateWidth)
-                throw new ArgumentException("Смещение параллелограмма и скосы недопустимы.", nameof(plate));
-
-            if (TrapezoidRatio < 0.1 || TrapezoidRatio > 0.9)
-                throw new InvalidOperationException("Недопустимый коэффициент трапеции.");
-        }
-
-        #endregion Helper Methods
+        #endregion Public Methods
     }
 }
