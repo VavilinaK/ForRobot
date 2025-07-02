@@ -768,10 +768,10 @@
                                 <!--{Binding Source={x:Static file:Colors.SelectorBoxColor}}-->
                                 <i:Interaction.Behaviors>
                                     <behavior:ZoomBehavior/>
-                                    <!--<behavior:HelixWeldsBehavior Welds="{Binding Path=WeldsCollection}"/>-->
-                                    <!--<behavior:HelixAnnotationsBehavior Items="{Binding Path=Annotations}"
+                                    <!--<behavior:HelixWeldsBehavior Items="{Binding Path=WeldsCollection}"/>-->
+                                    <!--<behavior:HelixAnnotationsBehavior Items="{Binding Path=AnnotationsCollection}"
                                                                        FontSize="{Binding Path=Settings.ParamsFontSize, Mode=OneWay, Source={x:Static Application.Current}, UpdateSourceTrigger=PropertyChanged}"/>-->
-                                    <behavior:HelixSceneTrackerBehavior SceneItems="{Binding Path=DataContext.SceneItemsCollection, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>
+                                    <!--<behavior:HelixSceneTrackerBehavior SceneItems="{Binding Path=DataContext.SceneItemsCollection, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>-->
                                 </i:Interaction.Behaviors>
                             </h:HelixViewport3D>
                         </DataTemplate>

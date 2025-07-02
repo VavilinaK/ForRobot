@@ -344,7 +344,7 @@
     <Compile Include="Model\AppMessage.cs" />
     <Compile Include="Model\Controls\FileFlags.cs" />
     <Compile Include="Model\Detals\Hole.cs" />
-    <Compile Include="Model\Detals\Weld.cs" />
+    <Compile Include="Model\File3D\Weld.cs" />
     <Compile Include="Model\Detals\WeldingSchemas.cs" />
     <Compile Include="Model\File3D\Annotation.cs" />
     <Compile Include="Model\File3D\File3D.cs" />

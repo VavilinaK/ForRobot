@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 using ForRobot.Model.Detals;
+using ForRobot.Model.File3D;
 
 namespace ForRobot.Services
 {
@@ -53,8 +54,10 @@ namespace ForRobot.Services
                 double zEnd = modelRibDissolutionRight - ribLength / 2;
 
                 // Швы добавляются с обеих сторон ребра
+                string name = String.Format("Weld {0}", Convert.ToDouble(welds.Count/ 2 + 1));
                 welds.Add(new Weld()
                 {
+                    Name = name + ".1",
                     StartPoint = new System.Windows.Media.Media3D.Point3D(xPosition, modelPlateHeight, zStart),
                     EndPoint = new System.Windows.Media.Media3D.Point3D(xPosition, modelPlateHeight, zEnd)
                 });
@@ -63,6 +66,7 @@ namespace ForRobot.Services
 
                 welds.Add(new Weld()
                 {
+                    Name = name + ".2",
                     StartPoint = new System.Windows.Media.Media3D.Point3D(xPosition, modelPlateHeight, zStart),
                     EndPoint = new System.Windows.Media.Media3D.Point3D(xPosition, modelPlateHeight, zEnd)
                 });

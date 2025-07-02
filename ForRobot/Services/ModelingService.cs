@@ -63,7 +63,7 @@ namespace ForRobot.Services
                     return GetPlateModel(detal as Plita);
 
                 default:
-                    throw new NotSupportedException($"Ошибка построения модели: тип детали {detal.DetalType} не поддерживается.");
+                    throw new NotSupportedException($"Ошибка построения модели: тип детали {detal.DetalType} не поддерживается!");
             }
         }
 

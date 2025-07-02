@@ -78,7 +78,7 @@ namespace ForRobot.Model.File3D
         /// <summary>
         /// Коллекция подписей на 3д моделе
         /// </summary>
-        public ObservableCollection<Annotation> Annotations { get; } = new ObservableCollection<Annotation>();
+        public ObservableCollection<Annotation> AnnotationsCollection { get; } = new ObservableCollection<Annotation>();
         /// <summary>
         /// Коллекция швов для отображения на модели
         /// </summary>
@@ -153,7 +153,7 @@ namespace ForRobot.Model.File3D
         {
             this.Detal = detal;
             this.ModelChangedEvent += (s, o) => this.CurrentModel.Children.Clear();
-            this.Annotations = this._annotationService.GetAnnotations(this.Detal);
+            this.AnnotationsCollection = this._annotationService.GetAnnotations(this.Detal);
             switch (this.Detal.DetalType)
             {
                 case DetalTypes.Plita:
@@ -269,7 +269,7 @@ namespace ForRobot.Model.File3D
             if (propertyName == null)
                 return;
 
-            Annotation annotation = this.Annotations.Count(item => item.PropertyName == propertyName) > 0 ? this.Annotations.Where(item => item.PropertyName == propertyName).First() : null;
+            Annotation annotation = this.AnnotationsCollection.Count(item => item.PropertyName == propertyName) > 0 ? this.AnnotationsCollection.Where(item => item.PropertyName == propertyName).First() : null;
 
             if (annotation == null)
                 return;

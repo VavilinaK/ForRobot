@@ -22,6 +22,7 @@ namespace ForRobot.Model.File3D
     {
         #region Private variables
 
+        private double _thickness = DefaultThickness;
         private Point3DCollection _points;
         private readonly TextVisual3D _label = new TextVisual3D
         {
@@ -85,7 +86,16 @@ namespace ForRobot.Model.File3D
                 this.UpdateText();
             }
         }
-        public double Thickness { get; set; } = DefaultThickness;
+        public double Thickness
+        {
+            get => this._thickness;
+            set
+            {
+                this._thickness = value;
+                this._lines.Thickness = this._thickness;
+                this._arrows.Thickness = this._thickness;
+            }
+        }
 
         public string PropertyName { get; set; }
         public string Text

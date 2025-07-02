@@ -13,6 +13,9 @@ namespace ForRobot.Services
         ObservableCollection<Annotation> GetAnnotations(Detal detal);
     }
 
+    /// <summary>
+    /// Класс сервис для составления коллекции <see cref="Annotation"/> отражающую параметры детали
+    /// </summary>
     public sealed class AnnotationService : IAnnotationService
     {
         #region Public variables
