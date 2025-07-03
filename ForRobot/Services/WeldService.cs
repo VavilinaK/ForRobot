@@ -9,7 +9,7 @@ namespace ForRobot.Services
 {
     public interface IWeldService
     {
-        ObservableCollection<Weld> GetWelds(Plita plate);
+        ObservableCollection<Weld> GetWelds(Detal plate);
     }
 
     public sealed class WeldService : IWeldService
@@ -21,7 +21,9 @@ namespace ForRobot.Services
             this.ScaleFactor = _scaleFactor;
         }
 
-        public ObservableCollection<Weld> GetWelds(Plita plate)
+        #region Private functions
+
+        private List<Weld> GetPlateWelds(Plita plate)
         {
             // Преобразование реальных размеров в модельные.
             double modelPlateWidth = (double)plate.PlateWidth * (double)ScaleFactor;
@@ -34,7 +36,7 @@ namespace ForRobot.Services
 
             double weldPositionXAxes = 0; // Позиционирование швов
 
-            for (int i=0; i< plate.RibCount; i++)
+            for (int i = 0; i < plate.RibCount; i++)
             {
                 var rib = plate.RibsCollection[i];
 
@@ -54,7 +56,7 @@ namespace ForRobot.Services
                 double zEnd = modelRibDissolutionRight - ribLength / 2;
 
                 // Швы добавляются с обеих сторон ребра
-                string name = String.Format("Weld {0}", Convert.ToDouble(welds.Count/ 2 + 1));
+                string name = String.Format("Weld {0}", Convert.ToDouble(welds.Count / 2 + 1));
                 welds.Add(new Weld()
                 {
                     Name = name + ".1",
@@ -97,7 +99,25 @@ namespace ForRobot.Services
                 if (!plate.ParalleleRibs)
                     weldPositionXAxes += modelRibThickness + modelRibDistanceRight;
             }
-            return new ObservableCollection<Weld>(welds);
+            return welds;
         }
+
+        #endregion Private functions
+
+        #region Public functions
+        
+        public ObservableCollection<Weld> GetWelds(Detal detal)
+        {
+            switch (detal.DetalType)
+            {
+                case DetalTypes.Plita:
+                     return new ObservableCollection<Weld>(this.GetPlateWelds(detal as Plita));
+
+                default:
+                    return null;
+            }
+        }
+
+        #endregion Public functions
     }
 }

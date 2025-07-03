@@ -756,6 +756,16 @@
                                     </ModelVisual3D.Content>
                                 </ModelVisual3D>-->
 
+                                <ModelVisual3D x:Name="Light">
+                                    <ModelVisual3D.Content>
+                                        <Model3DGroup>
+                                            <!--<DirectionalLight Color="White" Direction="-1,-1, -1" />-->
+                                            <!--<DirectionalLight Color="#c8c8c8"  Direction="1,-0.5, -0.5" />
+                                            <AmbientLight Color="#505050"/>-->
+                                        </Model3DGroup>
+                                    </ModelVisual3D.Content>
+                                </ModelVisual3D>
+
                                 <h:GridLinesVisual3D Visible="{Binding Path=DataContext.IsVisibleGridLinesVisual3D, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>
 
                                 <ModelVisual3D Content="{Binding Path=CurrentModel, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
@@ -768,7 +778,7 @@
                                 <!--{Binding Source={x:Static file:Colors.SelectorBoxColor}}-->
                                 <i:Interaction.Behaviors>
                                     <behavior:ZoomBehavior/>
-                                    <!--<behavior:HelixWeldsBehavior Items="{Binding Path=WeldsCollection}"/>-->
+                                    <behavior:HelixWeldsBehavior Items="{Binding Path=WeldsCollection}"/>
                                     <!--<behavior:HelixAnnotationsBehavior Items="{Binding Path=AnnotationsCollection}"
                                                                        FontSize="{Binding Path=Settings.ParamsFontSize, Mode=OneWay, Source={x:Static Application.Current}, UpdateSourceTrigger=PropertyChanged}"/>-->
                                     <!--<behavior:HelixSceneTrackerBehavior SceneItems="{Binding Path=DataContext.SceneItemsCollection, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>-->

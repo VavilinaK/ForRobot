@@ -49,7 +49,7 @@ namespace ForRobot.Services
             return annotations;
         }
 
-        private List<Annotation> PlateAnnotations(Plita plate)
+        private List<Annotation> GetPlateAnnotations(Plita plate)
         {
             List<Annotation> annotations = new List<Annotation>()
             {
@@ -67,26 +67,15 @@ namespace ForRobot.Services
 
         private Annotation GetPlateLengthAnnotation(Detal detal)
         {
-            double modelPlateWidth = (double)detal.PlateWidth * (double)ScaleFactor;
-            double modelPlateLength = (double)detal.PlateLength * (double)ScaleFactor;
+            double halfLength = (double)detal.PlateLength * (double)ScaleFactor / 2;
+            double halfWidth = (double)detal.PlateWidth * (double)ScaleFactor / 2;
 
             Point3DCollection points = new Point3DCollection(new List<Point3D>()
             {
-                new Point3D(modelPlateLength / 2,
-                            0,
-                            -modelPlateWidth / 2),
-
-                new Point3D(-modelPlateLength / 2,
-                            0,
-                            -modelPlateWidth / 2),
-
-                new Point3D(-modelPlateLength / 2,
-                            0,
-                            -modelPlateWidth/2 - Annotation.DefaultAnnotationWidth),
-
-                new Point3D(modelPlateLength / 2,
-                            0,
-                            -modelPlateWidth/2 - Annotation.DefaultAnnotationWidth),
+                new Point3D(-halfLength, -halfWidth, 0),
+                new Point3D(halfLength, -halfWidth, 0),
+                new Point3D(halfLength, -(halfWidth + Annotation.DefaultAnnotationWidth), 0),
+                new Point3D(-halfLength, -(halfWidth + Annotation.DefaultAnnotationWidth), 0)
             });
 
             return new Annotation(points)
@@ -236,7 +225,7 @@ namespace ForRobot.Services
             switch (detal.DetalType)
             {
                 case DetalTypes.Plita:
-                    annotationsList.AddRange(this.PlateAnnotations(detal as Plita));
+                    annotationsList.AddRange(this.GetPlateAnnotations(detal as Plita));
                     break;
 
                 default:
