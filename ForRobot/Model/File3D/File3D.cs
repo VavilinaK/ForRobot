@@ -34,6 +34,7 @@ namespace ForRobot.Model.File3D
 
         private Detal _detal;
         private Detal _detalCopy; // Копия для возврата.
+        private ObservableCollection<Weld> _weldsCollection = new ObservableCollection<Weld>();
 
         private readonly Dispatcher dispatcher;
         /// <summary>
@@ -83,7 +84,6 @@ namespace ForRobot.Model.File3D
         /// Коллекция швов для отображения на модели
         /// </summary>
         public ObservableCollection<Weld> WeldsCollection { get; } = new ObservableCollection<Weld>();
-        //public ObservableCollection<Weld> WeldsCollection { get => this._weldsCollection; set => Set(ref this._weldsCollection, value); }
 
         public Model3DGroup CurrentModel
         {
@@ -318,13 +318,11 @@ namespace ForRobot.Model.File3D
             //}
         }
 
-        private void FillWeldsCollection(Plita plate)
+        private void FillWeldsCollection(Detal detal)
         {
+            foreach (var item in this.WeldsCollection) item.Children.Clear();
             this.WeldsCollection.Clear();
-            foreach (var item in this._weldService.GetWelds(plate))
-            {
-                this.WeldsCollection.Add(item);
-            }
+            foreach (var item in this._weldService.GetWelds(detal)) this.WeldsCollection.Add(item);
         }
 
         //private void ProcessNode(Node node, Scene scene, Model3DGroup modelGroup)
@@ -524,6 +522,7 @@ namespace ForRobot.Model.File3D
         
         public void Load(string sPath)
         {
+            // Проверка соответстия разрешения файла на доступность загрузки
             if (ExtensionsFilter.Contains(System.IO.Path.GetExtension(sPath)))
                 this.LoadAll(sPath);
             else

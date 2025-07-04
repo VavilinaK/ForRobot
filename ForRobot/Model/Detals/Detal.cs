@@ -26,6 +26,8 @@ namespace ForRobot.Model.Detals
 
         #region Public variables
 
+        public const int MIN_RIB_COUNT = 1;
+        
         #region Static
 
         #endregion Static

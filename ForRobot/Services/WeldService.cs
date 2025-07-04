@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows.Media.Media3D;
 
 using ForRobot.Model.Detals;
 using ForRobot.Model.File3D;
@@ -23,6 +24,16 @@ namespace ForRobot.Services
 
         #region Private functions
 
+        private void AddWeld(List<Weld> welds, Point3D startPoint, Point3D endPoint, string weldName = null)
+        {
+            welds.Add(new Weld()
+            {
+                Name = weldName,
+                StartPoint = startPoint,
+                EndPoint = endPoint
+            });
+        }
+
         private List<Weld> GetPlateWelds(Plita plate)
         {
             // Преобразование реальных размеров в модельные.
@@ -34,7 +45,7 @@ namespace ForRobot.Services
 
             List<Weld> welds = new List<Weld>();
 
-            double weldPositionXAxes = 0; // Позиционирование швов
+            double weldPositionY = -modelPlateWidth / 2; // Начальная позиция по Y
 
             for (int i = 0; i < plate.RibCount; i++)
             {
@@ -47,57 +58,31 @@ namespace ForRobot.Services
                 double modelRibDissolutionLeft = (double)rib.DissolutionLeft * (double)ScaleFactor;
                 double modelRibDissolutionRight = (double)rib.DissolutionRight * (double)ScaleFactor;
 
-                double ribLength = modelPlateLength - (modelRibIdentToLeft + modelRibIdentToRight); // Длина ребра.
+                // Перемещение к позиции шва по Y - отступ от торца слева.
+                weldPositionY += modelRibDistanceLeft;
 
-                weldPositionXAxes += modelRibDistanceLeft; // Расчёт позиции шва.
-                double xPosition = (weldPositionXAxes - modelPlateWidth / 2) - modelRibThickness;
-
-                double zStart = ribLength / 2 - modelRibDissolutionLeft;
-                double zEnd = modelRibDissolutionRight - ribLength / 2;
+                // Длина шва (с учётом отступов и роспусков)
+                double weldLength = modelPlateLength - modelRibIdentToLeft - modelRibIdentToRight;
+                
+                double xStart = weldLength / 2 - modelRibDissolutionLeft;
+                double xEnd = modelRibDissolutionRight - weldLength / 2;
 
                 // Швы добавляются с обеих сторон ребра
-                string name = String.Format("Weld {0}", Convert.ToDouble(welds.Count / 2 + 1));
-                welds.Add(new Weld()
-                {
-                    Name = name + ".1",
-                    StartPoint = new System.Windows.Media.Media3D.Point3D(xPosition, modelPlateHeight, zStart),
-                    EndPoint = new System.Windows.Media.Media3D.Point3D(xPosition, modelPlateHeight, zEnd)
-                });
+                string weldName = String.Format("Weld {0}", Convert.ToDouble(welds.Count / 2 + 1));
 
-                xPosition = (weldPositionXAxes - modelPlateWidth / 2) + modelRibThickness;
+                this.AddWeld(welds,
+                             new Point3D(xStart, weldPositionY, modelPlateHeight),
+                             new Point3D(xEnd, weldPositionY, modelPlateHeight),
+                             weldName + ".1");
 
-                welds.Add(new Weld()
-                {
-                    Name = name + ".2",
-                    StartPoint = new System.Windows.Media.Media3D.Point3D(xPosition, modelPlateHeight, zStart),
-                    EndPoint = new System.Windows.Media.Media3D.Point3D(xPosition, modelPlateHeight, zEnd)
-                });
+                this.AddWeld(welds,
+                             new Point3D(xStart, weldPositionY + modelRibThickness, modelPlateHeight),
+                             new Point3D(xEnd, weldPositionY + modelRibThickness, modelPlateHeight),
+                             weldName + ".2");
 
-                //welds.Add(new Weld()
-                //{
-                //    StartPoint = new System.Windows.Media.Media3D.Point3D(xPosition,
-                //                                                         yStart,
-                //                                                         modelPlateHeight),
-                //    EndPoint = new System.Windows.Media.Media3D.Point3D(xPosition,
-                //                                                        yEnd,
-                //                                                        modelPlateHeight)
-                //});
-
-                //xPosition = (weldPositionXAxes - modelPlateWidth / 2) + modelRibThickness;
-
-                //welds.Add(new Weld()
-                //{
-                //    StartPoint = new System.Windows.Media.Media3D.Point3D(xPosition,
-                //                                         yStart,
-                //                                         modelPlateHeight),
-                //    EndPoint = new System.Windows.Media.Media3D.Point3D(xPosition,
-                //                                        yEnd,
-                //                                        modelPlateHeight)
-                //});
-
-                // Перемещение позиции для следующего ребра
+                // Перемещение позиции до ребра
                 if (!plate.ParalleleRibs)
-                    weldPositionXAxes += modelRibThickness + modelRibDistanceRight;
+                    weldPositionY += modelRibThickness + modelRibDistanceRight;
             }
             return welds;
         }

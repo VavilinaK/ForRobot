@@ -9,6 +9,9 @@ namespace ForRobot.Model.File3D
     /// </summary>
     public static class Colors
     {
+        private static Color DefaultRobotColor => Color.FromRgb(255, 132, 0);
+        private static Color DefaultPcColor => Color.FromRgb(66, 66, 66);
+        private static Color DefaultWatcherColor => Color.FromRgb(217, 0, 0);
         private static Color DefaultPlateColor => Color.FromRgb(23, 230, 75);
         private static Color DefaultRibsColor => Color.FromRgb(23, 230, 75);
         private static Color DefaultWeldColor => Color.FromRgb(255, 142, 20);
@@ -17,6 +20,15 @@ namespace ForRobot.Model.File3D
         private static Color DefaultAnnotationArrowsColor => Color.FromRgb(0, 191, 255);
         private static Color DefaultAnnotationTextColor => Color.FromRgb(255, 3, 192);
         private static Color DefaultSelectorBoxColor => Color.FromRgb(255, 218, 33);
+
+        [PropertyName("Робот")]
+        public static Color RobotColor { get; set; } = DefaultRobotColor;
+
+        [PropertyName("ПК")]
+        public static Color PcColor { get; set; } = DefaultPcColor;
+
+        [PropertyName("Наблюдатель")]
+        public static Color WatcherColor { get; set; } = DefaultWatcherColor;
 
         [PropertyName("Плита")]
         public static Color PlateColor { get; set; } = DefaultPlateColor;

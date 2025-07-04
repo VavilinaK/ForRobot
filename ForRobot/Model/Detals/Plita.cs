@@ -743,6 +743,9 @@ namespace ForRobot.Model.Detals
             get => base.RibCount;
             set
             {
+                if (value < MIN_RIB_COUNT)
+                    return;
+
                 base.RibCount = value;
 
                 if (this.RibsCollection != null)

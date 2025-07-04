@@ -51,20 +51,93 @@ namespace ForRobot.Services
         #region Private Methods
 
         /// <summary>
-        /// Построение модели детали
+        /// Выгрузка модели наблюдателя из компонентов сборки
         /// </summary>
-        /// <param name="detal"></param>
         /// <returns></returns>
-        public Model3DGroup ModelBuilding(Detal detal)
+        private Model3DGroup GetMansModel(double detalLength, double detalWidth, double detalHeight)
         {
-            switch (detal.DetalType)
-            {
-                case DetalTypes.Plita:
-                    return GetPlateModel(detal as Plita);
+            Model3DGroup mans = new Model3DGroup();
+            double halfLength = detalLength / 2;
+            double halfWidth = detalWidth / 2;
+            double halfHeight = detalHeight / 2;
 
-                default:
-                    throw new NotSupportedException($"Ошибка построения модели: тип детали {detal.DetalType} не поддерживается!");
-            }
+            Vector3D manATranslate = new Vector3D(halfLength + 7, 0, 0);
+            Vector3D manBTranslate = new Vector3D(0, halfWidth + 15, 0);
+            
+            var manModelA = new ModelImporter().Load("pack://application:,,,/InterfaceOfRobots;component/3DModels/stickman.stl"); // По ширине
+            var manModelB = new ModelImporter().Load("pack://application:,,,/InterfaceOfRobots;component/3DModels/stickman.stl"); // По длине
+
+            Transform3DGroup modelTransformA = new Transform3DGroup();
+            modelTransformA.Children.Add(new ScaleTransform3D((double)ScaleFactor, (double)ScaleFactor, (double)ScaleFactor));
+            modelTransformA.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(1, 0, 0), 90), new Point3D(manATranslate.X, manATranslate.Y, manATranslate.Z)));
+
+            Transform3DGroup modelTransformB = modelTransformA.Clone();
+
+            modelTransformA.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), -90)));
+
+            modelTransformA.Children.Add(new TranslateTransform3D(manATranslate));
+            modelTransformB.Children.Add(new TranslateTransform3D(manBTranslate));
+
+            manModelA.Transform = modelTransformA;
+            manModelB.Transform = modelTransformB;
+            
+            mans.Children.Add(manModelA);
+            mans.Children.Add(manModelB);
+
+            this.ApplyCustomColor(mans, Model.File3D.Colors.WatcherColor);
+
+            return mans;
+        }
+
+        /// <summary>
+        /// Выгрузка модели монитора из компонентов сборки
+        /// </summary>
+        /// <returns></returns>
+        private Model3DGroup GetPCModel(double detalLength, double detalWidth, double detalHeight)
+        {
+            double halfLength = detalLength / 2;
+            double halfWidth = detalWidth / 2;
+            double halfHeight = detalHeight / 2;
+
+            Vector3D pcTranslate = new Vector3D(-halfLength, -(halfWidth + 7), 0);
+
+            var pcModel = new ModelImporter().Load("pack://application:,,,/InterfaceOfRobots;component/3DModels/computer_monitor.stl");
+
+            this.ApplyCustomColor(pcModel, Model.File3D.Colors.PcColor);
+
+            Transform3DGroup modelTransform = new Transform3DGroup();
+            modelTransform.Children.Add(new TranslateTransform3D(pcTranslate));
+            modelTransform.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(1, 0, 0), 90), new Point3D(pcTranslate.X, pcTranslate.Y, pcTranslate.Z)));
+            modelTransform.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), 180), new Point3D(pcTranslate.X, pcTranslate.Y, pcTranslate.Z)));
+            pcModel.Transform = modelTransform;
+
+            return pcModel;
+        }
+
+        /// <summary>
+        /// Выгрузка модели робота из компонентов сборки
+        /// </summary>
+        /// <returns></returns>
+        private Model3DGroup GetRobotModel(double detalLength, double detalWidth, double detalHeight)
+        {
+            double scaleFactor = (double)ScaleFactor * 10;
+            double halfLength = detalLength / 2;
+            double halfWidth = detalWidth / 2;
+            double halfHeight = detalHeight / 2;
+
+            Vector3D robotTranslate = new Vector3D(halfLength, -(halfWidth + 7), 0);
+            
+            var robotModel = new ModelImporter().Load("pack://application:,,,/InterfaceOfRobots;component/3DModels/kukaRobot.stl");
+
+            this.ApplyCustomColor(robotModel, Model.File3D.Colors.RobotColor);
+
+            Transform3DGroup modelTransform = new Transform3DGroup();
+            modelTransform.Children.Add(new ScaleTransform3D(scaleFactor, scaleFactor, scaleFactor));
+            modelTransform.Children.Add(new TranslateTransform3D(robotTranslate));
+            modelTransform.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), 90), new Point3D(robotTranslate.X, robotTranslate.Y, robotTranslate.Z)));
+            robotModel.Transform = modelTransform;
+
+            return robotModel;
         }
 
         /// <summary>
@@ -182,8 +255,8 @@ namespace ForRobot.Services
             double halfHeight = height / 2;
 
             // Вычисление размеров оснований с учетом ориентации
-            double bottomHalfLen = isTop ? halfLength : halfLength * (1 - TrapezoidRatio);
-            double topHalfLen = isTop ? halfLength * (1 - TrapezoidRatio) : halfLength;
+            double bottomHalfLen = isTop ?  halfLength * (1 - TrapezoidRatio) : halfLength;
+            double topHalfLen = isTop ? halfLength : halfLength * (1 - TrapezoidRatio);
 
             // Создание вершин с точным округлением
             Func<double, double, double, Point3D> createPoint = (x, y, z) => new Point3D(Math.Round(x, 4), Math.Round(y, 4), Math.Round(z, 4));
@@ -213,62 +286,6 @@ namespace ForRobot.Services
             meshBuilder.AddQuad(B, F, G, C);  // Правая
 
             return meshBuilder.ToMesh();
-
-            //// Сужение верхней грани по коэффициенту трапеции
-            //double topHalfWidth = width - (width * TrapezoidRatio) / 2;
-
-            //Point3D[] vertices = new Point3D[8]
-            //{
-            //    // Нижнее основание (Y = -halfWidth)
-            //    new Point3D(-halfLength, -halfWidth, -halfHeight), // 0: левый задний нижний
-            //    new Point3D(halfLength, -halfWidth, -halfHeight),  // 1: левый передний нижний
-            //    new Point3D(-halfLength, -halfWidth, halfHeight),  // 2: левый задний верхний
-            //    new Point3D(halfLength, -halfWidth, halfHeight),   // 3: левый передний верхний
-
-            //    // Верхнее основание (Y = halfWidth)
-            //    new Point3D(-topHalfWidth, halfWidth, -halfHeight), // 4: правый задний нижний
-            //    new Point3D(topHalfWidth, halfWidth, -halfHeight),  // 5: правый передний нижний
-            //    new Point3D(-topHalfWidth, halfWidth, halfHeight),  // 6: правый задний верхний
-            //    new Point3D(topHalfWidth, halfWidth, halfHeight)     // 7: правый передний верхний
-            //};
-
-            //if (!isTop)
-            //{
-            //    // Поворот на 180° вокруг оси X (Y → -Y, Z → -Z)
-            //    for (int i = 0; i < vertices.Length; i++)
-            //    {
-            //        vertices[i] = new Point3D(vertices[i].X, -vertices[i].Y, -vertices[i].Z);
-            //    }
-            //}
-
-            //int[] indices = new int[]
-            //{
-            //    // Основания (X = halfWidth и X = -halfWidth)
-            //    0, 1, 3, 3, 2, 0, // Большое основание
-            //    4, 5, 7, 7, 6, 4, // Малое основание
-
-            //    // Передняя грань (Z = halfLength)
-            //    0, 2, 6, 6, 4, 0,
-            //    // Задняя грань (Z = -halfLength)
-            //    1, 5, 7, 7, 3, 1,
-
-            //    // Нижняя грань (Y = -halfHeight)
-            //    0, 1, 5, 5, 4, 0,
-            //    1, 5, 4, 4, 0, 1, // Обратные треугольники для двусторонней видимости
-
-            //    // Верхняя грань (Y = halfHeight)
-            //    2, 3, 7, 7, 6, 2,
-
-            //    // Боковые грани
-            //    0, 1, 3, 3, 2, 0,
-            //    4, 5, 7, 7, 6, 4
-            //};
-
-            //return new MeshGeometry3D()
-            //{
-            //    Positions = new Point3DCollection(vertices),
-            //    TriangleIndices = new Int32Collection(indices)
-            //};
         }
 
         private Model3DGroup AddPlate(Plita plate)
@@ -341,7 +358,8 @@ namespace ForRobot.Services
                 double ribLength = modelPlateLength - modelRibIdentToLeft - modelRibIdentToRight;
                 
                 // Центр ребра
-                double centerX = (modelRibIdentToLeft - modelRibIdentToRight) / 2;
+                double centerX = (modelRibIdentToRight - modelRibIdentToLeft) / 2;
+                //double centerX = (modelRibIdentToLeft - modelRibIdentToRight) / 2;
                 double centerY = ribPositionY + modelRibThickness / 2;
                 double centerZ = modelPlateHeight / 2 + modelRibHeight / 2;
 
@@ -409,13 +427,11 @@ namespace ForRobot.Services
                         double baseLength;
                         if (plate.ScoseType == ScoseTypes.TrapezoidTop)
                         {
-                            // Для верхней трапеции: уменьшение длины к верхнему краю
-                            baseLength = modelPlateLength * (1 - TrapezoidRatio * positionRatio);
+                            baseLength = modelPlateLength * (1 - TrapezoidRatio * (1 - positionRatio));
                         }
                         else
                         {
-                            // Для нижней трапеции: уменьшение длины к нижнему краю
-                            baseLength = modelPlateLength * (1 - TrapezoidRatio * (1 - positionRatio));
+                            baseLength = modelPlateLength * (1 - TrapezoidRatio * positionRatio);
                         }
 
                         // Длина ребра с учетом отступов
@@ -484,6 +500,57 @@ namespace ForRobot.Services
         #endregion Private Methods
 
         #region Public Methods
+
+        /// <summary>
+        /// Построение модели детали
+        /// </summary>
+        /// <param name="detal"></param>
+        /// <returns></returns>
+        public Model3DGroup ModelBuilding(Detal detal)
+        {
+            Model3DGroup scene = new Model3DGroup();
+
+            double modelPlateLength = (double)detal.PlateLength * (double)ScaleFactor;
+            double modelPlateWidth = (double)detal.PlateWidth * (double)ScaleFactor;
+            double modelPlateHeight = (double)detal.PlateThickness * (double)ScaleFactor;
+
+            var robotModel = GetRobotModel(modelPlateLength, modelPlateWidth, modelPlateHeight);
+            var pcModel = GetPCModel(modelPlateLength, modelPlateWidth, modelPlateHeight);
+            var mansModel = GetMansModel(modelPlateLength, modelPlateWidth, modelPlateHeight);
+
+            switch (detal.DetalType)
+            {
+                case DetalTypes.Plita:
+                    var plateModel = GetPlateModel(detal as Plita);
+                    plateModel.SetName("Plate");
+                    scene.Children.Add(plateModel);
+                    break;
+
+                default:
+                    throw new NotSupportedException($"Ошибка построения модели: тип детали {detal.DetalType} не поддерживается!");
+            }
+
+            scene.Children.Add(robotModel);
+            scene.Children.Add(pcModel);
+            scene.Children.Add(mansModel);
+            return scene;
+        }
+
+        private void ApplyCustomColor(Model3DGroup modelGroup, Color color)
+        {
+            foreach (var model in modelGroup.Children)
+            {
+                if (model is GeometryModel3D geometryModel)
+                {
+                    geometryModel.Material = new DiffuseMaterial(new SolidColorBrush(color));
+                    geometryModel.BackMaterial = geometryModel.Material;
+                }
+                else if (model is Model3DGroup group)
+                {
+                    ApplyCustomColor(group, color);
+                }
+            }
+        }
 
         /// <summary>
         /// Поворот вершин вокруг оси X на заданный угол (в градусах)

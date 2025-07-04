@@ -43,7 +43,7 @@ namespace ForRobot.Services
             List<Annotation> annotations = new List<Annotation>()
             {
                 this.GetPlateLengthAnnotation(detal),
-                //this.GetPlateWidthAnnotation(detal)
+                this.GetPlateWidthAnnotation(detal)
                 //this.GetPlateThicknessAnnotation(detal),
             };
             return annotations;
@@ -87,29 +87,18 @@ namespace ForRobot.Services
 
         private Annotation GetPlateWidthAnnotation(Detal detal)
         {
-            double modelPlateWidth = (double)detal.PlateWidth * (double)ScaleFactor;
-            double modelPlateLength = (double)detal.PlateLength * (double)ScaleFactor;
+            double halfLength = (double)detal.PlateLength * (double)ScaleFactor / 2;
+            double halfWidth = (double)detal.PlateWidth * (double)ScaleFactor / 2;
 
             Point3DCollection points = new Point3DCollection(new List<Point3D>()
             {
-                new Point3D(modelPlateLength / 2 + Annotation.DefaultAnnotationWidth,
-                            0,
-                            modelPlateWidth / 2),
-
-                new Point3D(modelPlateLength / 2,
-                            0,
-                            modelPlateWidth / 2),
-
-                new Point3D(modelPlateLength / 2,
-                            0,
-                            -modelPlateWidth / 2),
-
-                new Point3D(modelPlateLength / 2 + Annotation.DefaultAnnotationWidth,
-                            0,
-                            -modelPlateWidth / 2),
+                new Point3D(-halfLength, halfWidth, 0),
+                new Point3D(-halfLength, -halfWidth, 0),
+                new Point3D(-(halfLength + Annotation.DefaultAnnotationWidth), -halfWidth , 0),
+                new Point3D(-(halfLength + Annotation.DefaultAnnotationWidth), halfWidth, 0)
             });
 
-            return new Annotation(points, Annotation.ArrowSide.Left)
+            return new Annotation(points)
             {
                 Text = ParamToString(detal.PlateWidth),
                 PropertyName = nameof(detal.PlateWidth)

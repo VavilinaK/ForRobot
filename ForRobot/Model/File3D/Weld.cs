@@ -51,7 +51,7 @@ namespace ForRobot.Model.File3D
         /// <summary>
         /// Толщина линии шва
         /// </summary>
-        public double Thickness { get; set; } = 4;
+        public double Thickness { get; set; } = 5;
 
         #endregion Public variables
 
