@@ -691,39 +691,18 @@
                                                MinimumFieldOfView="10.0" MaximumFieldOfView="120.0">
 
                                 <h:HelixViewport3D.DefaultCamera>
-                                    <!--<PerspectiveCamera x:Name="CameraControler" 
-                                                       Position="0,0,100"
-                                                       LookDirection="0,0,-1"
-                                                       UpDirection="0,1,0"
-                                                       FieldOfView="45"
-                                                       NearPlaneDistance="0.001"/>-->
 
                                     <!--<PerspectiveCamera x:Name="CameraControler" 
-                                                       Position="-354, 3, 381"
-                                                       LookDirection="351,-3,-383"
-                                                       UpDirection="0, 1, 0"
-                                                       FieldOfView="10"
-                                                       NearPlaneDistance="0.001"/>-->
-
-                                    <!--<PerspectiveCamera x:Name="CameraControler" 
-                                                       LookDirection="636, -343, 0.04"
-                                                       UpDirection="0.5, 0.89, 0"
-                                                       Position="-639, 342, -0.5"
-                                                       FieldOfView="10"
-                                                       NearPlaneDistance="0.001"/>-->
-
-                                    <!--<PerspectiveCamera x:Name="CameraControler" 
-                                                       LookDirection="0.4, -517, -619"
-                                                       UpDirection="0, 0.8, -0.7"
-                                                       Position="1, 515, 619"
-                                                       FieldOfView="10"
-                                                       NearPlaneDistance="0.001"/>-->
-
-
-                                    <PerspectiveCamera x:Name="CameraControler" 
                                                        Position="-354, 3, 381"
                                                        LookDirection="351,-3,-383"
                                                        UpDirection="0.7, 0, 0.7"
+                                                       FieldOfView="10"
+                                                       NearPlaneDistance="0.001"/>-->
+
+                                    <PerspectiveCamera x:Name="CameraControler" 
+                                                       Position="3.7, 512.8, 620.5"
+                                                       LookDirection="-4.6,-513,-622"
+                                                       UpDirection="0, -0.7, 0.7"
                                                        FieldOfView="10"
                                                        NearPlaneDistance="0.001"/>
                                 </h:HelixViewport3D.DefaultCamera>
@@ -778,7 +757,7 @@
                                 <!--{Binding Source={x:Static file:Colors.SelectorBoxColor}}-->
                                 <i:Interaction.Behaviors>
                                     <behavior:ZoomBehavior/>
-                                    <behavior:HelixWeldsBehavior Items="{Binding Path=WeldsCollection}"/>
+                                    <behavior:HelixWeldsBehavior Items="{Binding Path=WeldsCollection}" Thickness="{Binding Path=Settings.WeldsThickness, Source={x:Static Application.Current}, Mode=OneWay}"/>
                                     <!--<behavior:HelixAnnotationsBehavior Items="{Binding Path=AnnotationsCollection}"
                                                                        FontSize="{Binding Path=Settings.ParamsFontSize, Mode=OneWay, Source={x:Static Application.Current}, UpdateSourceTrigger=PropertyChanged}"/>-->
                                     <!--<behavior:HelixSceneTrackerBehavior SceneItems="{Binding Path=DataContext.SceneItemsCollection, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>-->

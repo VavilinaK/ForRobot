@@ -15,6 +15,7 @@ namespace ForRobot.Model.File3D
         private readonly LinesVisual3D _line;
         private Point3D _startPoint;
         private Point3D _endPoint;
+        private double _thickness = 5;
 
         #endregion Private variables
 
@@ -51,7 +52,15 @@ namespace ForRobot.Model.File3D
         /// <summary>
         /// Толщина линии шва
         /// </summary>
-        public double Thickness { get; set; } = 5;
+        public double Thickness
+        {
+            get => this._thickness;
+            set
+            {
+                this._thickness = value;
+                this._line.Thickness = this._thickness;
+            }
+        }
 
         #endregion Public variables
 

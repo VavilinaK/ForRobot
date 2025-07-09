@@ -18,7 +18,7 @@ namespace ForRobot.Model.File3D
         private static Color DefaultLeftWeldColor => Color.FromRgb(43, 255, 209);
         private static Color DefaultRightWeldColor => Color.FromRgb(255, 31, 53);
         private static Color DefaultAnnotationArrowsColor => Color.FromRgb(0, 191, 255);
-        private static Color DefaultAnnotationTextColor => Color.FromRgb(255, 3, 192);
+        private static Color DefaultAnnotationTextColor => Color.FromRgb(0, 0, 0);
         private static Color DefaultSelectorBoxColor => Color.FromRgb(255, 218, 33);
 
         [PropertyName("Робот")]

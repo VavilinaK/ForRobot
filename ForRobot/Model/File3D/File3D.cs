@@ -89,21 +89,10 @@ namespace ForRobot.Model.File3D
         {
             get => this._currentModel;
             set
-            {
+            {                
                 Set(ref this._currentModel, value);
                 SceneUpdate();
             }
-        }
-
-        private void CloneDetal()
-        {
-            this._detalCopy = (Detal)this.Detal.Clone();
-            //switch (this._detalCopy)
-            //{
-            //    case Plita plita:
-            //        ((Plita)this._detalCopy).SetRibsCollection(((Plita)this.Detal).RibsCollection);
-            //        break;
-            //}
         }
 
         public Detal Detal
@@ -181,7 +170,7 @@ namespace ForRobot.Model.File3D
         public File3D(string sPath) : this()
         {
             if (!File.Exists(sPath))
-                throw new FileNotFoundException("Заданный файл не существует", sPath);
+                throw new FileNotFoundException("Файл не найден по пути", sPath);
 
             //if (ExtensionsFilter.Count(item => System.IO.Path.GetExtension(sPath) == item) == 0)
             //    throw new FileFormatException("Неверный формат файла");
@@ -205,7 +194,7 @@ namespace ForRobot.Model.File3D
                 return new ModelImporter().Load(model3DPath, this.dispatcher);
             });
         }
-        
+
         //{
         //    this.SceneObjects = new ObservableCollection<SceneItem>();
         //    this.SceneObjects.Add(new SceneItem()
@@ -215,6 +204,17 @@ namespace ForRobot.Model.File3D
         //    //this.CurrentModel.Children.Add(new SunLight());
         //    SceneItem.AddChildren(this.SceneObjects.First(), this.CurrentModel);
         //}
+
+        private void CloneDetal()
+        {
+            this._detalCopy = (Detal)this.Detal.Clone();
+            //switch (this._detalCopy)
+            //{
+            //    case Plita plita:
+            //        ((Plita)this._detalCopy).SetRibsCollection(((Plita)this.Detal).RibsCollection);
+            //        break;
+            //}
+        }
 
         private void CreateParameterArrow(Point3D start, Point3D end, string label, Color color)
         {

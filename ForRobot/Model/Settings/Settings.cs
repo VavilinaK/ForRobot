@@ -245,7 +245,18 @@ namespace ForRobot.Model.Settings
         #region Params
 
         private double _paramsFontSize = 20;
+        private double _weldsThickness = 5;
         private bool _paramsIsVisibale = true;
+
+        public double WeldsThickness { get; set; } = 5;
+        //{
+        //    get => this._weldsThickness;
+        //    set
+        //    {
+        //        this._weldsThickness = value;
+        //        this.OnChangeProperty();
+        //    }
+        //}
 
         public double ParamsFontSize
         {

@@ -359,7 +359,6 @@ namespace ForRobot.Services
                 
                 // Центр ребра
                 double centerX = (modelRibIdentToRight - modelRibIdentToLeft) / 2;
-                //double centerX = (modelRibIdentToLeft - modelRibIdentToRight) / 2;
                 double centerY = ribPositionY + modelRibThickness / 2;
                 double centerZ = modelPlateHeight / 2 + modelRibHeight / 2;
 
@@ -367,7 +366,6 @@ namespace ForRobot.Services
                 {
                     case ScoseTypes.SlopeLeft:
                     case ScoseTypes.SlopeRight:
-                        double slopeFactor = (centerY + modelPlateWidth / 2) / modelPlateWidth;
                         double plateSurfaceZ = modelPlateHeight / 2;
 
                         if (plate.ScoseType == ScoseTypes.SlopeLeft)
@@ -530,9 +528,9 @@ namespace ForRobot.Services
                     throw new NotSupportedException($"Ошибка построения модели: тип детали {detal.DetalType} не поддерживается!");
             }
 
-            scene.Children.Add(robotModel);
-            scene.Children.Add(pcModel);
-            scene.Children.Add(mansModel);
+            //scene.Children.Add(robotModel);
+            //scene.Children.Add(pcModel);
+            //scene.Children.Add(mansModel);
             return scene;
         }
 

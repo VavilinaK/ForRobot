@@ -500,14 +500,24 @@
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Column="0" Text="Маштаб 3д модели 1:"/>
-                <TextBox Grid.Column="1" Text="{Binding Path=Settings.ScaleFactor, StringFormat={}{0:D}, Converter={StaticResource ScaleFactorConvert}, Mode=TwoWay}"
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Маштаб 3д модели 1:"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=Settings.ScaleFactor, StringFormat={}{0:D}, Converter={StaticResource ScaleFactorConvert}, Mode=TwoWay}"
                          HorizontalContentAlignment="Left"/>
+
+                <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0, 5">
+                    <TextBlock Text="Размер шва"/>
+                    <Slider Value="{Binding Path=Settings.WeldsThickness, Mode=TwoWay}" Minimum="1" Maximum="8" TickPlacement="BottomRight" TickFrequency="0.5" IsSnapToTickEnabled="True" Width="300"/>
+                    <TextBlock Text="{Binding Path=Settings.WeldsThickness, Mode=OneWay, StringFormat='{}{0:0.0}'}"/>
+                </StackPanel>
             </Grid>
 
             <GroupBox Grid.Row="1" Header="Отображение параметров">
