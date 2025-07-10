@@ -91,10 +91,26 @@ namespace ForRobot.Services
                         endPoint = new Point3D(xEnd, centerY, modelPlateHeight);                        
                         break;
 
-                    //case ScoseTypes.TrapezoidTop:
-                    //case ScoseTypes.TrapezoidBottom:
-                    //    break;
-                    
+                    case ScoseTypes.TrapezoidTop:
+                    case ScoseTypes.TrapezoidBottom:
+                        positionRatio = (weldPositionY + modelPlateWidth / 2) / modelPlateWidth;
+                        if (plate.ScoseType == ScoseTypes.TrapezoidTop)
+                        {
+                            weldLength = modelPlateLength * (1 - ModelingService.TrapezoidRatio * (1 - positionRatio));
+                        }
+                        else
+                        {
+                            weldLength = modelPlateLength * (1 - ModelingService.TrapezoidRatio * positionRatio);
+                        }
+                        weldLength = Math.Max(weldLength, ModelingService.MIN_RIB_LENGTH);
+
+                        xStart = weldLength / 2 - modelRibIdentToLeft - modelRibDissolutionLeft;
+                        xEnd = (modelRibIdentToRight + modelRibDissolutionRight) - weldLength / 2;
+
+                        startPoint = new Point3D(xStart, weldPositionY, modelPlateHeight);
+                        endPoint = new Point3D(xEnd, weldPositionY, modelPlateHeight);
+                        break;
+
                     default:
                         startPoint = new Point3D(xStart, weldPositionY, modelPlateHeight);
                         endPoint = new Point3D(xEnd, weldPositionY, modelPlateHeight);
