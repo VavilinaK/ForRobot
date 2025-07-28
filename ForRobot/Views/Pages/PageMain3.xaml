@@ -651,9 +651,27 @@
             <!--Заголовок LayoutDocumentPane-->
             <DockingManager.DocumentHeaderTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Path=Content.Name}"
-                               ToolTip="{Binding Path=Content.Path}"
-                               VerticalAlignment="Stretch"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Path=Content.Name}"
+                                   ToolTip="{Binding Path=Content.Path}"
+                                   VerticalAlignment="Stretch"/>
+
+                        <TextBlock Text="*">
+                            <TextBlock.Style>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Path=Content.IsSaved}" Value="{StaticResource True}">
+                                            <Setter Property="Visibility" Value="Hidden"/>
+                                        </DataTrigger>
+
+                                        <DataTrigger Binding="{Binding Path=Content.IsSaved}" Value="{StaticResource False}">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </StackPanel>
                 </DataTemplate>
             </DockingManager.DocumentHeaderTemplate>
             
@@ -778,6 +796,24 @@
                         <avalonDock:LayoutAnchorablePaneGroup>
                             <avalonDock:LayoutAnchorablePane>
                                 <avalonDock:LayoutAnchorable Title="Сообщения" ContentId="Messages">
+                                    <avalonDock:LayoutAnchorable.IconSource>
+                                        <!--<Image>
+                                            <Image.Source>
+                                                <DrawingImage>
+                                                    <DrawingImage.Drawing>
+                                                        <GeometryDrawing Brush="Black" Geometry="{StaticResource JournalGeomertyPath}"/>
+                                                    </DrawingImage.Drawing>
+                                                </DrawingImage>
+                                            </Image.Source>
+                                        </Image>-->
+
+                                        <DrawingImage>
+                                            <DrawingImage.Drawing>
+                                                <GeometryDrawing Brush="Black" Geometry="{DynamicResource JournalGeomertyPath}"/>
+                                            </DrawingImage.Drawing>
+                                        </DrawingImage>
+                                    </avalonDock:LayoutAnchorable.IconSource>
+                                    
                                     <DataGrid ItemsSource="{Binding Path=MessagesCollection, Mode=OneWay}"
                                               SelectionMode="Single"
                                               AutoGenerateColumns="False"
@@ -958,6 +994,7 @@
                                                                     <Setter Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
                                                                     <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
                                                                 </Trigger>
+                                                              
                                                                 <MultiTrigger>
                                                                     <MultiTrigger.Conditions>
                                                                         <Condition Property="IsSelected" Value="true"/>

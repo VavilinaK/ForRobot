@@ -9,6 +9,9 @@ using System.Windows.Media.Media3D;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 //using HelixToolkit;
 using HelixToolkit.Wpf;
 using Assimp;
@@ -38,9 +41,13 @@ namespace ForRobot.Model.File3D
 
         private readonly Dispatcher dispatcher;
         /// <summary>
-        /// Фильтр импортируемых файлов
+        /// Массив допустимых для импорта форматов 3д файлов
         /// </summary>
-        private static readonly string[] ExtensionsFilter = new string[] { ".3ds", ".obj", ".objz", ".off", ".lwo", ".stl", ".ply" };
+        private static readonly string[] File3DExtensions = new string[] { ".3ds", ".obj", ".objz", ".off", ".lwo", ".stl", ".ply" };
+        /// <summary>
+        /// Массив допустимых для импрта форматов текстовых файлов
+        /// </summary>
+        private static readonly string[] FileTextExtensions = new string[] { ".txt", ".json" };
 
         private readonly ForRobot.Services.IModelingService _modelingService = new ForRobot.Services.ModelingService(ForRobot.Model.Settings.Settings.ScaleFactor);
         private readonly ForRobot.Services.IAnnotationService _annotationService = new ForRobot.Services.AnnotationService(ForRobot.Model.Settings.Settings.ScaleFactor);
@@ -61,7 +68,7 @@ namespace ForRobot.Model.File3D
         /// <summary>
         /// Сохранены ли последнии изменения
         /// </summary>
-        public bool IsSaved { get; private set; }
+        public bool IsSaved { get; private set; } = true;
 
         /// <summary>
         /// Путь к файлу
@@ -79,7 +86,7 @@ namespace ForRobot.Model.File3D
         /// <summary>
         /// Коллекция подписей на 3д моделе
         /// </summary>
-        public ObservableCollection<Annotation> AnnotationsCollection { get; } = new ObservableCollection<Annotation>();
+        public ObservableCollection<Annotation> AnnotationsCollection { get; set; } = new ObservableCollection<Annotation>();
         /// <summary>
         /// Коллекция швов для отображения на модели
         /// </summary>
@@ -136,33 +143,16 @@ namespace ForRobot.Model.File3D
 
         #region Constructor
 
-        public File3D() => this.dispatcher = Dispatcher.CurrentDispatcher;
+        public File3D()
+        {
+            this.dispatcher = Dispatcher.CurrentDispatcher;
+            this.FileChangedEvent += (s, o) => this.IsSaved = false;
+        }
 
         public File3D(Detal detal, string path) : this()
         {
-            this.Detal = detal;
-            this.ModelChangedEvent += (s, o) => this.CurrentModel.Children.Clear();
-            this.AnnotationsCollection = this._annotationService.GetAnnotations(this.Detal);
-            switch (this.Detal.DetalType)
-            {
-                case DetalTypes.Plita:
-                    this.CurrentModel.Children.Add(this._modelingService.ModelBuilding((Plita)this.Detal));
-                    this.FillWeldsCollection(this.Detal as Plita);
-                    this.ModelChangedEvent += (s, o) =>
-                    {
-                        var plita = (s as File3D).Detal as Plita;
-                        this.CurrentModel.Children.Add(this._modelingService.ModelBuilding((Plita)this.Detal));
-                        this.FillWeldsCollection(plita);
-                    };
-                    break;
+            this.AddDetal(detal);
 
-                case DetalTypes.Stringer:
-                    break;
-
-                case DetalTypes.Treygolnik:
-                    break;
-            }
-            this.ModelChangedEvent += (s, o) => SceneUpdate();
             this.Path = path;
             this.IsCreated = true;
         }
@@ -174,7 +164,7 @@ namespace ForRobot.Model.File3D
 
             //if (ExtensionsFilter.Count(item => System.IO.Path.GetExtension(sPath) == item) == 0)
             //    throw new FileFormatException("Неверный формат файла");
-                
+
             this.Path = sPath;
             this.Load(sPath);
             //this.CurrentModel = Task.Run(async () => await this.LoadAsync(Path, true)).Result;
@@ -204,6 +194,38 @@ namespace ForRobot.Model.File3D
         //    //this.CurrentModel.Children.Add(new SunLight());
         //    SceneItem.AddChildren(this.SceneObjects.First(), this.CurrentModel);
         //}
+
+        //public Detal GetDetalFromString(string stringDetalProperties)
+        //{
+        //    return JsonConvert.DeserializeObject<Detal>(JObject.Parse(stringDetalProperties, _jsonLoadSettings).ToString(), this._jsonSettings);
+        //}
+
+        private void AddDetal(Detal detal)
+        {
+            this.Detal = detal;
+            this.ModelChangedEvent += (s, o) => this.CurrentModel.Children.Clear();
+            this.AnnotationsCollection = this._annotationService.GetAnnotations(this.Detal);
+            switch (this.Detal.DetalType)
+            {
+                case DetalTypes.Plita:
+                    this.CurrentModel.Children.Add(this._modelingService.ModelBuilding((Plita)this.Detal));
+                    this.FillWeldsCollection(this.Detal as Plita);
+                    this.ModelChangedEvent += (s, o) =>
+                    {
+                        var plita = (s as File3D).Detal as Plita;
+                        this.CurrentModel.Children.Add(this._modelingService.ModelBuilding((Plita)this.Detal));
+                        this.FillWeldsCollection(plita);
+                    };
+                    break;
+
+                case DetalTypes.Stringer:
+                    break;
+
+                case DetalTypes.Treygolnik:
+                    break;
+            }
+            this.ModelChangedEvent += (s, o) => SceneUpdate();
+        }
 
         private void CloneDetal()
         {
@@ -278,7 +300,89 @@ namespace ForRobot.Model.File3D
             annotation.Text = string.Format("{0}: {1} mm.", propertyName, detal.GetType().GetProperty(propertyName).GetValue(detal, null));
         }
 
-        private void LoadAll(string path) => this.CurrentModel.Children.Add(new ModelImporter().Load(path));
+        #region Load
+
+        /// <summary>
+        /// Выгрузка 3Д модели и файла
+        /// </summary>
+        /// <param name="path"></param>
+        private void Load3DModel(string path) => this.CurrentModel.Children.Add(new ModelImporter().Load(path));
+
+        /// <summary>
+        /// Выгрузка параметров детали из текстового файла
+        /// </summary>
+        /// <param name="path"></param>
+        private void LoadTextFileModel(string path)
+        {
+            string jsonString = File.ReadAllText(path);
+            string detalType = JObject.Parse(jsonString)["DetalType"].ToString();
+
+            //switch (detalType)
+            //{
+            //    case DetalTypes.Plita:
+            //        this.Detal = new Detals.Plita(DetalType.Plita);
+            //        break;
+
+            //    case DetalTypes.Stringer:
+            //        this.Detal = new Detals.PlitaStringer(DetalType.Stringer);
+            //        break;
+
+            //    case DetalTypes.Treygolnik:
+            //        this.Detal = new Detals.PlitaTreygolnik(DetalType.Treygolnik);
+            //        break;
+            //}
+
+            //if (detalType == App.Current.Settings.StartedDetalType)
+            //{
+            //    switch (detalType)
+            //    {
+            //        case DetalTypes.Plita:
+            //            this.Detal = this.Detal.DeserializeDetal(jsonString) as Plita;
+            //            return;
+
+            //        case DetalTypes.Stringer:
+            //            break;
+
+            //        case DetalTypes.Treygolnik:
+            //            break;
+            //    }
+            //}
+
+            if (detalType == App.Current.Settings.StartedDetalType)
+            {
+                switch (detalType)
+                {
+                    case DetalTypes.Plita:
+                        this.AddDetal(new Detals.Plita(DetalType.Plita).DeserializeDetal(jsonString) as Plita);
+                        break;
+
+                    case DetalTypes.Stringer:
+                        break;
+
+                    case DetalTypes.Treygolnik:
+                        break;
+                }
+            }
+            else
+            {
+                switch (detalType)
+                {
+                    case DetalTypes.Plita:
+                        this.AddDetal(new Detals.Plita(DetalType.Plita));
+                        break;
+
+                    case DetalTypes.Stringer:
+                        this.Detal = new Detals.PlitaStringer(DetalType.Stringer);
+                        break;
+
+                    case DetalTypes.Treygolnik:
+                        this.Detal = new Detals.PlitaTreygolnik(DetalType.Treygolnik);
+                        break;
+                }
+            }
+        }
+
+        #endregion
 
         private void LoadOther(string path)
         {
@@ -508,11 +612,23 @@ namespace ForRobot.Model.File3D
 
         #endregion Model
 
+        #region
+
+        private void SaveJsonFile()
+        {
+            if (this.Detal.JsonForSave == string.Empty) return;
+            File.WriteAllText(this.Path, this.Detal.JsonForSave);
+            this.IsSaved = true;
+        }
+
+        #endregion
+
         #endregion Private functions
 
         #region Event
 
         public event EventHandler ModelChangedEvent;
+        public event EventHandler FileChangedEvent;
 
         #endregion
 
@@ -523,11 +639,14 @@ namespace ForRobot.Model.File3D
         public void Load(string sPath)
         {
             // Проверка соответстия разрешения файла на доступность загрузки
-            if (ExtensionsFilter.Contains(System.IO.Path.GetExtension(sPath)))
-                this.LoadAll(sPath);
-            else
-                this.LoadOther(sPath);
-            
+            if (File3DExtensions.Contains(System.IO.Path.GetExtension(sPath)))
+                this.Load3DModel(sPath);
+
+            else if (FileTextExtensions.Contains(System.IO.Path.GetExtension(sPath)))
+                this.LoadTextFileModel(sPath);
+
+            //else
+            //    this.LoadOther(sPath);
             this.IsOpened = true;
             this.IsSaved = true;
         }
@@ -545,13 +664,25 @@ namespace ForRobot.Model.File3D
         /// </summary>
         public void Save()
         {
+            switch (System.IO.Path.GetExtension(this.Name))
+            {
+                case ".json":
+                case ".txt":
+                    this.SaveJsonFile();
+                    break;
+            }
             //if (string.IsNullOrEmpty(this.Path))
             //{
 
             //}
         }
 
-        public void OnModelChanged() => this.ModelChangedEvent?.Invoke(this, null);
+        public void OnModelChanged()
+        {
+            this.ModelChangedEvent?.Invoke(this, null);
+            this.FileChangedEvent?.Invoke(this, null);
+        }
+        public void OnFileChanged() => this.FileChangedEvent?.Invoke(this, null);
 
         #region Static
 

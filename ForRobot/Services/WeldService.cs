@@ -38,7 +38,7 @@ namespace ForRobot.Services
                 EndPoint = endPoint
             });
         }
-
+        
         private List<Weld> GetPlateWelds(Plita plate)
         {
             // Преобразование реальных размеров в модельные.
@@ -76,20 +76,54 @@ namespace ForRobot.Services
                 {
                     case ScoseTypes.SlopeLeft:
                     case ScoseTypes.SlopeRight:
-                        double centerY = (plate.ScoseType == ScoseTypes.SlopeLeft) ? weldPositionY - modelRibThickness / 2 : weldPositionY + modelRibThickness * 1.5;
-                        
-                        // Смещение задней части ребра для скоса
+
+                        double baseY = weldPositionY - modelRibThickness/2;
+
                         double ribYOffset = (plate.ScoseType == ScoseTypes.SlopeLeft) ? -this._slopeOffset
                                                                                       : this._slopeOffset;
 
                         double totalLength = modelPlateLength - modelRibIdentToLeft - modelRibIdentToRight;
-                        //double lengthRatio = (xStart - xEnd) / totalLength;
-                        double positionRatio = (plate.ScoseType == ScoseTypes.SlopeLeft) ? Math.Abs(xStart - xEnd) / totalLength : Math.Abs(xEnd - xStart) / totalLength;
+                        //double positionRatio = (plate.ScoseType == ScoseTypes.SlopeLeft)
+                        //                       ? Math.Abs(xStart - xEnd) / totalLength
+                        //                       : Math.Abs(xEnd - xStart) / totalLength;
+                        double positionRatio = (plate.ScoseType == ScoseTypes.SlopeLeft)
+                                  ? Math.Abs((modelPlateLength / 2 - modelRibIdentToLeft) -
+                                             (modelRibIdentToRight - modelPlateLength / 2)) / totalLength
+                                  : Math.Abs((modelRibIdentToRight - modelPlateLength / 2) -
+                                             (modelPlateLength / 2 - modelRibIdentToLeft)) / totalLength;
 
-                        startPoint = new Point3D(xStart, centerY + ribYOffset * positionRatio, modelPlateHeight);
-                        //startPoint = new Point3D(xStart, centerY + ribYOffset * lengthRatio, modelPlateHeight);
-                        endPoint = new Point3D(xEnd, centerY, modelPlateHeight);                        
-                        break;
+                        startPoint = new Point3D(xStart, baseY + ribYOffset * positionRatio, modelPlateHeight);
+                        endPoint = new Point3D(xEnd, baseY, modelPlateHeight);
+
+                        ////double centerY = weldPositionY;
+                        //double centerY = weldPositionY - modelRibThickness / 2;
+                        ////double centerY = (plate.ScoseType == ScoseTypes.SlopeLeft) ? weldPositionY - modelRibThickness / 2 : weldPositionY + modelRibThickness * 1.5;
+
+                        //// Смещение задней части ребра для скоса
+                        //double ribYOffset = (plate.ScoseType == ScoseTypes.SlopeLeft) ? -this._slopeOffset
+                        //                                                              : this._slopeOffset;
+
+                        //double totalLength = modelPlateLength - modelRibIdentToLeft - modelRibIdentToRight;
+                        ////double positionRatio = (xStart - xEnd) / totalLength;
+                        //double positionRatio = (plate.ScoseType == ScoseTypes.SlopeLeft) 
+                        //                       ? Math.Abs(xStart - xEnd) / totalLength
+                        //                       : Math.Abs(xEnd - xStart) / totalLength;
+
+                        ////if (plate.ScoseType == ScoseTypes.SlopeRight)
+                        ////{
+                        ////    startPoint = new Point3D(xStart, centerY, modelPlateHeight);
+                        ////    endPoint = new Point3D(xEnd, centerY + ribYOffset * positionRatio, modelPlateHeight);
+                        ////}
+                        ////else
+                        ////{
+                        ////    startPoint = new Point3D(xStart, centerY + ribYOffset * positionRatio, modelPlateHeight);
+                        ////    endPoint = new Point3D(xEnd, centerY, modelPlateHeight);
+                        ////}
+
+                        //startPoint = new Point3D(xStart, centerY + ribYOffset, modelPlateHeight);
+                        ////startPoint = new Point3D(xStart, centerY + ribYOffset * positionRatio, modelPlateHeight);
+                        //endPoint = new Point3D(xEnd, centerY, modelPlateHeight);
+                        break;                        
 
                     case ScoseTypes.TrapezoidTop:
                     case ScoseTypes.TrapezoidBottom:

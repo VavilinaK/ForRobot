@@ -528,9 +528,9 @@ namespace ForRobot.Services
                     throw new NotSupportedException($"Ошибка построения модели: тип детали {detal.DetalType} не поддерживается!");
             }
 
-            //scene.Children.Add(robotModel);
-            //scene.Children.Add(pcModel);
-            //scene.Children.Add(mansModel);
+            scene.Children.Add(robotModel);
+            scene.Children.Add(pcModel);
+            scene.Children.Add(mansModel);
             return scene;
         }
 

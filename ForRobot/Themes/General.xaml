@@ -248,13 +248,9 @@
         </Border>
     </ControlTemplate>
 
-
-
     <BitmapImage x:Key="ImagePlitaStart" UriSource="/InterfaceOfRobots;component/Themes/Images/StartPlita.png"/>
     <BitmapImage x:Key="ImagePlitaBody" UriSource="/InterfaceOfRobots;component/Themes/Images/Plita.png"/>
     <BitmapImage x:Key="ImagePlitaEnd" UriSource="/InterfaceOfRobots;component/Themes/Images/EndPlita.png"/>
-
-
 
     <Image x:Key="ImageSettingFill" Source="/InterfaceOfRobots;component/Themes/Images/setting-fill.png" />
     <Image x:Key="ImageSettingUnFill" Source="/InterfaceOfRobots;component/Themes/Images/setting-unfill.png" />

@@ -408,23 +408,18 @@ namespace ForRobot.ViewModels
             // Если нет открываемых файлов, проверяет - нужно ли создать файл детали.
             if (App.Current.OpenedFiles.Count == 0 && App.Current.Settings.CreatedDetalFile)
             {
-                string programName = string.Empty;
-                switch (App.Current.Settings.StartedDetalType)
+                string programName = this.GetStandartProgramName(App.Current.Settings.StartedDetalType);
+                string path = Path.Combine(Path.GetTempPath(), programName);
+
+                if (App.Current.Settings.SaveDetalProperties && File.Exists(path))
                 {
-                    case string a when a == DetalTypes.Plita:
-                        programName = App.Current.Settings.PlitaProgramName;
-                        break;
-
-                    case string b when b == DetalTypes.Stringer:
-                        programName = App.Current.Settings.PlitaStringerProgramName;
-                        break;
-
-                    case string c when c == DetalTypes.Stringer:
-                        programName = App.Current.Settings.PlitaTreugolnikProgramName;
-                        break;
+                    App.Current.OpenedFiles.Add(new Model.File3D.File3D(path));
                 }
-                App.Current.OpenedFiles.Add(new Model.File3D.File3D(Detal.GetDetal(App.Current.Settings.StartedDetalType),
-                                                                    Path.Combine(Path.GetTempPath(), programName)));
+                else
+                {
+
+                    App.Current.OpenedFiles.Add(new Model.File3D.File3D(Detal.GetDetal(App.Current.Settings.StartedDetalType), path));
+                }
             }
         }
 
@@ -520,6 +515,39 @@ namespace ForRobot.ViewModels
         }
 
         #endregion Static
+
+        /// <summary>
+        /// Возвращаетстандартное имя для генерируемой программы
+        /// </summary>
+        /// <param name="startedDetalType"></param>
+        /// <returns></returns>
+        private string GetStandartProgramName(string startedDetalType)
+        {
+            string programName;
+            switch (startedDetalType)
+            {
+                case DetalTypes.Plita:
+                //case string a when a == DetalTypes.Plita:
+                    programName = App.Current.Settings.PlitaProgramName;
+                    break;
+
+                case DetalTypes.Stringer:
+                //case string b when b == DetalTypes.Stringer:
+                    programName = App.Current.Settings.PlitaStringerProgramName;
+                    break;
+                    
+                case DetalTypes.Treygolnik:
+                    //case string c when c == DetalTypes.Treygolnik:
+                    programName = App.Current.Settings.PlitaTreugolnikProgramName;
+                    break;
+
+                default:
+                    programName = string.Empty;
+                    break;
+            }
+            programName = string.Format("{0}.json", programName);
+            return programName;
+        }
         
         private void SaveFileAs(Model.File3D.File3D file)
         {
@@ -633,15 +661,23 @@ namespace ForRobot.ViewModels
                 sumRobots = new int[1] { this.RobotsCollection.IndexOf(this.RobotsCollection.Where(p => p.Name == this.SelectedRobotsName).ToArray()[0]) + 1 };
             jObject.Add("robots", JToken.FromObject(sumRobots)); // Запись в json-строку выбранных для генерации роботов (не зависит от подключения).
 
-            switch (detal)
+            try
             {
-                case Plita p:
-                    var plita = (Plita)detal;
-                    var sch = WeldingSchemas.GetSchema(plita.WeldingSchema);
-                    jObject.Add("welding_sequence", JToken.FromObject(sch)); // Запись в json-строку схему сварки настила.
-                    break;
+                switch (detal)
+                {
+                    case Plita p:
+                        var plita = (Plita)detal;
+                        var sch = WeldingSchemas.GetSchema(plita.WeldingSchema);
+                        jObject.Add("welding_sequence", JToken.FromObject(sch)); // Запись в json-строку схему сварки настила.
+                        break;
+                }
             }
-
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly);
+                throw ex;
+            }
+                        
             File.WriteAllText(path, jObject.ToString());
 
             if (File.Exists(path))

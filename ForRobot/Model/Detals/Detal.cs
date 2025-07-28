@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Configuration;
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 using ForRobot.Model.File3D;
 using ForRobot.Libr;
@@ -21,6 +22,17 @@ namespace ForRobot.Model.Detals
         /// Экземпляр детали из app.config
         /// </summary>
         private ForRobot.Libr.ConfigurationProperties.PlitaConfigurationSection PlitaConfig { get; set; }
+
+        protected readonly JsonSerializerSettings _jsonDeserializerSettings = new JsonSerializerSettings()
+        {
+            ContractResolver = new ForRobot.Libr.Json.SaveAttributesResolver(),
+            Formatting = Formatting.Indented,
+
+        };
+        protected readonly JsonLoadSettings _jsonLoadSettings = new JsonLoadSettings()
+        {
+            CommentHandling = CommentHandling.Ignore
+        };
 
         #endregion
 
@@ -189,6 +201,11 @@ namespace ForRobot.Model.Detals
         /// </summary>
         public event EventHandler<object> ChangePropertyEvent;
 
+        /// <summary>
+        /// Событие сохранения параметров детали
+        /// </summary>
+        public event EventHandler SavePropertiesEvent;
+
         //public virtual event Func<object, EventArgs, Task> Change;
 
         #endregion
@@ -236,6 +253,31 @@ namespace ForRobot.Model.Detals
 
         #region Public functions
 
+        public virtual object DeserializeDetal(string sJsonString)
+        {
+            return null;
+            //string detalType = Newtonsoft.Json.Linq.JObject.Parse(sJsonString)["DetalType"].ToString();
+
+            //if (string.IsNullOrEmpty(sJsonString))
+            //    return new Detal();
+
+            //switch (detalType)
+            //{
+            //    case DetalTypes.Plita:
+            //        break;
+
+            //    case DetalTypes.Stringer:
+            //        break;
+
+            //    case DetalTypes.Treygolnik:
+            //        break;
+            //}
+
+            //Detal detal = DetalTypes.StringToEnum(detalType)
+
+            //string.IsNullOrEmpty(sJsonString) ? new Plita(DetalType.Plita) : JsonConvert.DeserializeObject<Plita>(JObject.Parse(Properties.Settings.Default.SavePlita, _jsonLoadSettings).ToString(), this._jsonSettings);
+        }
+
         public object Clone() => (Detal)this.MemberwiseClone();
 
         public static Detal GetDetal(string detalType)
@@ -255,12 +297,17 @@ namespace ForRobot.Model.Detals
                     return null;
             }
         }
-        
+
         /// <summary>
         /// Вызов события изменения свойства
         /// </summary>
         /// <param name="propertyName">Наименование свойства</param>
         public virtual void OnChangeProperty(string propertyName = null) => this.ChangePropertyEvent?.Invoke(this, propertyName);
+
+        /// <summary>
+        /// Вызов события сохранения свойств
+        /// </summary>
+        public void SaveProperties() => this.SavePropertiesEvent?.Invoke(this, null);
 
         #endregion
     }

@@ -3,8 +3,8 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Reflection;
-using System.Configuration;
 using System.Collections.Generic;
+using System.Configuration;
 
 using AvalonDock.Themes;
 
@@ -78,6 +78,11 @@ namespace ForRobot.Model.Settings
         /// Создаётся ли при открытии файл детли. Не работает, если приложение открывает файл "с помощью"
         /// </summary>
         public bool CreatedDetalFile { get; set; } = true;
+
+        /// <summary>
+        /// Сохраняются ли параметры детали на выходе
+        /// </summary>
+        public bool SaveDetalProperties { get; set; } = true;
 
         /// <summary>
         /// Ограничено ли время ожидания ответа от сервера

@@ -17,6 +17,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <IsWebBootstrapper>false</IsWebBootstrapper>
+    <TargetFrameworkProfile />
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -356,6 +357,7 @@
     <Compile Include="Services\AnnotationService.cs" />
     <Compile Include="Services\ExporterService.cs" />
     <Compile Include="Services\FileDialogService.cs" />
+    <Compile Include="Services\FileService.cs" />
     <Compile Include="Services\GenerationService.cs" />
     <Compile Include="Services\ModelingService.cs" />
     <Compile Include="Services\WeldService.cs" />
@@ -370,6 +372,9 @@
     <Compile Include="Views\Controls\CustomAttributes.cs" />
     <Compile Include="Views\Controls\Image2D.cs" />
     <Compile Include="Views\Controls\PanesTemplateSelector.cs" />
+    <Compile Include="Views\Controls\ParamsTreeView.xaml.cs">
+      <DependentUpon>ParamsTreeView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Controls\SceneItemsTreeView.xaml.cs">
       <DependentUpon>SceneItemsTreeView.xaml</DependentUpon>
     </Compile>
@@ -401,6 +406,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Controls\NavigationTreeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Controls\ParamsTreeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

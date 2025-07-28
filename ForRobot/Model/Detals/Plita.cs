@@ -1860,6 +1860,19 @@ namespace ForRobot.Model.Detals
 
         #region Public functions
 
+        /// <summary>
+        /// Десериализация класса <see cref="Plita"/> из JSON-строки
+        /// </summary>
+        /// <param name="sJsonString">JSON-строка</param>
+        /// <returns></returns>
+        public override object DeserializeDetal(string sJsonString)
+        {
+            if (string.IsNullOrEmpty(sJsonString))
+                return new Plita(Detals.DetalType.Plita);
+            else
+                return JsonConvert.DeserializeObject<Plita>(JObject.Parse(sJsonString, this._jsonLoadSettings).ToString(), this._jsonDeserializerSettings);
+        }
+
         public FullyObservableCollection<Rib> SetRibsCollection(FullyObservableCollection<Rib> collection) => this.RibsCollection = collection;
         
         #endregion Public functions

@@ -58,7 +58,6 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
@@ -106,32 +105,55 @@
                 </i:Interaction.Triggers>
             </CheckBox>
 
-            <CheckBox Grid.Row="2" Content="При запуске приложения создавать файл детали"
-                      IsChecked="{Binding Path=Settings.CreatedDetalFile, Mode=TwoWay}"/>
+            <GroupBox Grid.Row="2" Header="Начальный файл для генерации">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-            <ComboBox Grid.Row="3"
-                      ItemsSource="{Binding Path=DetalTypesCollection, Mode=OneWay}"
-                      SelectedItem="{Binding Path=Settings.StartedDetalType, Mode=TwoWay}"
-                      SelectedIndex="0">
+                    <CheckBox Grid.Row="0" Content="При запуске приложения создавать файл детали"
+                              IsChecked="{Binding Path=Settings.CreatedDetalFile, Mode=TwoWay}"/>
 
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding}" Padding="5"/>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
+                    <CheckBox Grid.Row="1" Content="Сохранять параметры детали перед закрытием"
+                              IsChecked="{Binding Path=Settings.SaveDetalProperties, Mode=TwoWay}">
+                        <CheckBox.Style>
+                            <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource CheckBoxBase}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=Settings.CreatedDetalFile}" Value="{StaticResource False}">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </CheckBox.Style>
+                    </CheckBox>
 
-                <ComboBox.Style>
-                    <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource ComboBoxBase}">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Path=Settings.CreatedDetalFile}" Value="False">
-                                <Setter Property="IsEnabled" Value="False"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </ComboBox.Style>
-            </ComboBox>
+                    <ComboBox Grid.Row="2"
+                              ItemsSource="{Binding Path=DetalTypesCollection, Mode=OneWay}"
+                              SelectedItem="{Binding Path=Settings.StartedDetalType, Mode=TwoWay}"
+                              SelectedIndex="0">
 
-            <Button Grid.Row="4" Content="Изменить пин-код" Margin="15" Command="{Binding Path=EditPinCodeCommand}" 
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}" Padding="5"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+
+                        <ComboBox.Style>
+                            <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource ComboBoxBase}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=Settings.CreatedDetalFile}" Value="False">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ComboBox.Style>
+                    </ComboBox>
+                </Grid>
+            </GroupBox>
+           
+            <Button Grid.Row="3" Content="Изменить пин-код" Margin="15" Command="{Binding Path=EditPinCodeCommand}" 
                     VerticalAlignment="Bottom"/>
 
             <!--<GroupBox Grid.Row="2" Header="Делать запрос пользователю перед закрытием окна">
@@ -514,7 +536,7 @@
                          HorizontalContentAlignment="Left"/>
 
                 <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0, 5">
-                    <TextBlock Text="Размер шва"/>
+                    <TextBlock Text="Толщина шва"/>
                     <Slider Value="{Binding Path=Settings.WeldsThickness, Mode=TwoWay}" Minimum="1" Maximum="8" TickPlacement="BottomRight" TickFrequency="0.5" IsSnapToTickEnabled="True" Width="300"/>
                     <TextBlock Text="{Binding Path=Settings.WeldsThickness, Mode=OneWay, StringFormat='{}{0:0.0}'}"/>
                 </StackPanel>
