@@ -4,12 +4,95 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ForRobot.Views.Controls"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+          xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             mc:Ignorable="d">
 
     <TreeView.Resources>
+        <SolidColorBrush x:Key="TreeViewItem.TreeArrow.Static.Checked.Fill" Color="#304cff"/>
+        <SolidColorBrush x:Key="TreeViewItem.TreeArrow.Static.Checked.Stroke" Color="#001ccf"/>
+        <SolidColorBrush x:Key="TreeViewItem.TreeArrow.MouseOver.Stroke" Color="#42fcff"/>
+        <SolidColorBrush x:Key="TreeViewItem.TreeArrow.MouseOver.Fill" Color="#FFCCEEFB"/>
+        <SolidColorBrush x:Key="TreeViewItem.TreeArrow.MouseOver.Checked.Stroke" Color="#FF1CC4F7"/>
+        <SolidColorBrush x:Key="TreeViewItem.TreeArrow.MouseOver.Checked.Fill" Color="#FF82DFFB"/>
+
+        <local:TreeViewItemToolTipBehavior x:Key="TreeViewItemToolTipBehavior" />
+
         <Style TargetType="{x:Type TreeViewItem}">
-            
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Padding" Value="5"/>
+
+            <!--<Setter Property="i:Interaction.Triggers">
+                <Setter.Value>
+                    <b:TriggerCollection>
+                        <b:EventTrigger EventName="Click">
+                            <b:PlaySoundAction Source="buttonClick.wav"/>
+                        </b:EventTrigger>
+                    </b:TriggerCollection>
+                    --><!--<i:BehaviorCollection>
+                        <local:TreeViewItemToolTipBehavior/>
+                    </i:BehaviorCollection>--><!--
+                </Setter.Value>
+            </Setter>-->
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TreeViewItem}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                        </Grid>
+
+                        <!--<ControlTemplate.Triggers>
+                            --><!--<EventTrigger RoutedEvent="Button.Click">
+                                <i:InvokeCommandAction Command="{Binding ElementName=TreeViewItemToolTipBehavior"/>
+                            </EventTrigger>--><!--
+
+                            <EventTrigger RoutedEvent="Button.Click">
+                                <EventTrigger.Actions>
+                                    <i:InvokeCommandAction Command="{Binding ElementName=TreeViewItemToolTipBehavior"/>
+                                </EventTrigger.Actions>
+                            </EventTrigger>
+                        </ControlTemplate.Triggers>-->
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type local:ParamsTreeView}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type local:ParamsTreeView}">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Основной контейнер TreeView -->
+                                <ScrollViewer Grid.Row="0"
+                                              VerticalScrollBarVisibility="Auto"
+                                              HorizontalScrollBarVisibility="Auto">
+                                    <ItemsPresenter/>
+                                </ScrollViewer>
+
+                                <!-- Блок для отображения ToolTip -->
+                                <Border Grid.Row="1" Height="50" Background="LightGray"
+                                        Padding="5"
+                                        Visibility="{Binding LastToolTip, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource StringToVisibilityConverter}}">
+
+                                    <TextBlock Text="{Binding LastToolTip, RelativeSource={RelativeSource TemplatedParent}}" TextWrapping="Wrap"/>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </TreeView.Resources>
 
@@ -19,11 +102,7 @@
         </ItemsPanelTemplate>
     </TreeView.ItemsPanel>
 
-    <TreeViewItem Header="Общие">
+    <!--<TreeViewItem Header="Общие" ToolTip="Tooltip for Item 1">
         <TreeViewItem Header="Общие"/>
-    </TreeViewItem>
-
-    <Grid>
-        <Border Background="AliceBlue" Width="100" />
-    </Grid>
+    </TreeViewItem>-->
 </TreeView>

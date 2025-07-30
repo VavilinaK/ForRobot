@@ -89,7 +89,18 @@
                         </CheckBox>
                     </Grid>
 
-                    <Button Grid.Row="1" Content="Изменить путь к папке для обновлений" Padding="0, 5" Margin="0, 15, 0, 0" Command="{Binding Path=EditPathForUpdateCommand}"/>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox Grid.Column="0" Text="{Binding Source={x:Static properties:Settings.Default}, Path=UpdatePath, Mode=OneWay}" IsEnabled="False"/>
+
+                        <Button Grid.Column="2" Content="Изменить" Padding="10, 5" 
+                                Command="{Binding Path=EditPathForUpdateCommand}"/>
+                    </Grid>
                 </Grid>
             </GroupBox>
 

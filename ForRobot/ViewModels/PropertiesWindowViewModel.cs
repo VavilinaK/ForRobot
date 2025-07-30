@@ -267,6 +267,7 @@ namespace ForRobot.ViewModels
             if (!ForRobot.App.EqualsPinCode())
                 return;
 
+            //ForRobot.Properties.Settings.Default.UpdatePath
 
             //                using (ForRobot.Views.Windows.InputWindow inputWindow = new ForRobot.Views.Windows.InputWindow("Введите путь к новой папке с обновлениями"))
             //                {

@@ -310,6 +310,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Libr\Attributes\PropertyNameAttribute.cs" />
+    <Compile Include="Libr\Behavior\BehaviorAttacher.cs" />
     <Compile Include="Libr\Behavior\CollapedLayoutAnchorableBehavior.cs" />
     <Compile Include="Libr\Behavior\CollapedLayoutAnchorableMessage.cs" />
     <Compile Include="Libr\Behavior\HelixAddCollectionBehavior.cs" />
@@ -334,6 +335,7 @@
     <Compile Include="Libr\Converters\NumbersForWeldingSchemaConverter.cs" />
     <Compile Include="Libr\Converters\DictionaryToBindableCollectionConverter.cs" />
     <Compile Include="Libr\Converters\ScaleFactorConverter.cs" />
+    <Compile Include="Libr\Converters\StringToVisibilityConverter.cs" />
     <Compile Include="Libr\DocumentPaneHelper.cs" />
     <Compile Include="Libr\Json\PlitaWithRibsAttributesResolver.cs" />
     <Compile Include="Libr\Logger.cs" />

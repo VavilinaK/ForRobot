@@ -929,7 +929,22 @@
                                 </avalonDock:LayoutAnchorable>
 
                                 <avalonDock:LayoutAnchorable Title="Параметры детали" ContentId="ParametrsOfDetal">
-                                    <TreeView FontSize="{StaticResource FontSizeNP2}" BorderBrush="Transparent"
+                                    <control:ParamsTreeView>
+                                        <TreeViewItem Header="Общие">
+                                            <ContentControl ContentTemplate="{StaticResource PlitaTemplate3Style}"/>
+                                        </TreeViewItem>
+
+                                        <TreeViewItem Header="Доп.">
+                                            <ContentControl ContentTemplate="{StaticResource PlitaDopTemplate3Style}"/>
+                                        </TreeViewItem>
+
+                                        <TreeViewItem Header="Сварка" HorizontalContentAlignment="Stretch">
+                                            <ContentControl ContentTemplate="{StaticResource PlitaSvarkaTemplate3Style}"/>
+                                        </TreeViewItem>
+                                    </control:ParamsTreeView>
+                                    
+                                    
+                                    <!--<TreeView FontSize="{StaticResource FontSizeNP2}" BorderBrush="Transparent"
                                               VerticalContentAlignment="Top" HorizontalContentAlignment="Stretch"
                                               VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                                         
@@ -944,7 +959,9 @@
                                         </TreeView.Style>
 
                                         <TreeView.Resources>
-                                            <!--<SolidColorBrush x:Key="TreeViewItem.TreeArrow.Static.Background" Color="#B8B8B8"/>-->
+                                            -->
+                                    <!--<SolidColorBrush x:Key="TreeViewItem.TreeArrow.Static.Background" Color="#B8B8B8"/>-->
+                                    <!--
                                             <SolidColorBrush x:Key="TreeViewItem.TreeArrow.Static.Checked.Fill" Color="#304cff"/>
                                             <SolidColorBrush x:Key="TreeViewItem.TreeArrow.Static.Checked.Stroke" Color="#001ccf"/>
                                             <SolidColorBrush x:Key="TreeViewItem.TreeArrow.MouseOver.Stroke" Color="#42fcff"/>
@@ -1075,7 +1092,7 @@
                                                                               HierarchyPredicate="{Binding HierarchyPredicate}"
                                                                               SelectedItem="{Binding Path=SelectedItem, Mode=TwoWay}"/>
                                         </i:Interaction.Behaviors>
-                                    </TreeView>
+                                    </TreeView>-->
                                 </avalonDock:LayoutAnchorable>
                             </avalonDock:LayoutAnchorablePane>
                         </avalonDock:LayoutAnchorablePaneGroup>
