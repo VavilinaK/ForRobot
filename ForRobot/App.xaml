@@ -17,7 +17,7 @@
                 <ResourceDictionary Source="/InterfaceOfRobots;component/Themes/TabControlStyleResourceDictionary.xaml"/>
                 <ResourceDictionary Source="/InterfaceOfRobots;component/Themes/PropertiesWindowStyleDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
-
+            
             <!--Icons paths-->
             <Geometry x:Key="RectangularPathGeomerty">M2 20V4h20v16H2Zm1.5 -1.5h17V5.5H3.5v13Z</Geometry>
             <Geometry x:Key="ParallelogramRightPathGeomerty">M6 4.5h17l-5 15H1l5 -15Z</Geometry>
