@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Title="Создание модели генерации" 
         Background="#cfcfcf"
-        Height="530" Width="800" ResizeMode="NoResize"
+        Height="530" Width="800"
         ShowInTaskbar="True" WindowStartupLocation="CenterScreen">
 
     <Window.DataContext>
@@ -299,11 +299,11 @@
                             <Setter Property="ItemsPanel">
                                 <Setter.Value>
                                     <ItemsPanelTemplate>
-                                        <VirtualizingStackPanel/>
+                                        <VirtualizingStackPanel Orientation="Horizontal"/>
                                     </ItemsPanelTemplate>
                                 </Setter.Value>
                             </Setter>
-                            
+
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type TabControl}">
