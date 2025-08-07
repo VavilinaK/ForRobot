@@ -15,9 +15,7 @@ using System.Collections.Generic;
 using System.IO.Pipes;
 using System.Threading.Tasks;
 
-using Newtonsoft.Json;
-
-using ClassLibraryTaskManager;
+//using Newtonsoft.Json;
 
 using ForRobot.Libr;
 
