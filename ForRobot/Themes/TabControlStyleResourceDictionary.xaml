@@ -1466,7 +1466,7 @@
             </Style>
         </DataTemplate.Resources>
 
-        <Grid DataContext="{Binding Path=DataContext.SelectedFile.Detal, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}">
+        <Grid Width="{Binding Path=Parent.ActualWidth, RelativeSource={RelativeSource Self}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>

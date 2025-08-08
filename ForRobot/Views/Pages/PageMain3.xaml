@@ -772,7 +772,7 @@
                                 <h:BoundingBoxVisual3D BoundingBox="{Binding Path=DataContext.SelectedObject, Converter={StaticResource BoundsConvert}, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
                                                        Diameter="0.1"
                                                        Fill="{Binding Source={x:Static file:Colors.SelectorBoxColor}, Converter={StaticResource ColorToBrushConverter}}"/>
-                                <!--{Binding Source={x:Static file:Colors.SelectorBoxColor}}-->
+                                
                                 <i:Interaction.Behaviors>
                                     <behavior:ZoomBehavior/>
                                     <behavior:HelixWeldsBehavior Items="{Binding Path=WeldsCollection}" Thickness="{Binding Path=Settings.WeldsThickness, Source={x:Static Application.Current}, Mode=OneWay}"/>

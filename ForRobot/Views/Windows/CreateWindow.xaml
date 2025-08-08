@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:ForRobot.Views.Windows"
         xmlns:detals="clr-namespace:ForRobot.Model.Detals"
         xmlns:vm="clr-namespace:ForRobot.ViewModels"
+        xmlns:h="http://helix-toolkit.org/wpf"
         mc:Ignorable="d"
         Title="Создание модели генерации" 
         Background="#cfcfcf"
@@ -91,13 +92,13 @@
         </Style>
     </Window.Resources>
     
-    <Grid Margin="15">
+    <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="1.5*"/>
         </Grid.ColumnDefinitions>
         
-        <Grid>
+        <Grid Margin="15, 15, 0, 15">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
@@ -282,16 +283,18 @@
                 </ContentControl>--><!--
                 </Grid>-->
 
-                <TabControl Grid.Row="1" Grid.ColumnSpan="2" TabStripPlacement="Bottom" FontSize="14">
+                <TabControl Grid.Row="1" Grid.ColumnSpan="2" TabStripPlacement="Bottom"
+                            FontSize="{StaticResource FontSizeNP2}"
+                            DataContext="{Binding Path=DetalObject, Mode=TwoWay}">
+                    
                     <TabControl.Resources>
+                        <Style TargetType="{x:Type ItemsPresenter}">
+                            <Setter Property="DataContext" Value="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type TabControl}, Mode=FindAncestor}}"/>
+                        </Style>
+                        
                         <Style TargetType="{x:Type TabItem}">
                             <!--<Setter Property="Panel.Con"-->
                         </Style>
-
-                        <!--<Style TargetType="{x:Type ContentControl}">
-                            <Setter Property="Margin" Value="-25,0,5,5"/>
-                        </Style>-->
-                        
 
                         <Style TargetType="{x:Type TabControl}">
                             <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True" />
@@ -307,29 +310,17 @@
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type TabControl}">
-                                        <!--<ScrollViewer HorizontalScrollBarVisibility="Auto">
-                                            <ItemsPresenter Name="PART_ItemsPresenter"
-                                                            Items="{TemplateBinding Items}"
-                                                            ItemsPanel="{TemplateBinding ItemsPanel}"
-                                                            DockPanel.Dock="{TemplateBinding TabStripPlacement}" />
-                                        </ScrollViewer>-->
-
                                         <Grid>
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="*"/>
                                                 <RowDefinition Height="Auto"/>
                                             </Grid.RowDefinitions>
-
-                                            <!--<ScrollViewer Grid.Row="0" 
-                                                          HorizontalScrollBarVisibility="Auto"
-                                                          VerticalScrollBarVisibility="Disabled">
-                                                
-
-                                            </ScrollViewer>-->
-
-                                            <ContentPresenter ContentSource="SelectedContent"
+                                            
+                                            <Border>
+                                                <ContentPresenter ContentSource="SelectedContent"
                                                                   ScrollViewer.CanContentScroll="True"
                                                                   ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                                            </Border>
 
                                             <WrapPanel Grid.Row="1" Orientation="Horizontal">
                                                 <ItemsPresenter HorizontalAlignment="Stretch"/>
@@ -377,11 +368,12 @@
                                     </Setter>
 
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=SelectedDetalType}" Value="Настил с ребром">
+                                        <DataTrigger Binding="{Binding Path=DataContext.SelectedDetalType, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}" 
+                                                     Value="{x:Static detals:DetalTypes.Plita}">
                                             <Setter Property="Template">
                                                 <Setter.Value>
                                                     <ControlTemplate TargetType="ContentControl">
-                                                        <ContentControl ContentTemplate="{StaticResource PlitaTemplateStyle}"/>
+                                                        <ContentControl ContentTemplate="{StaticResource PlitaTemplate3Style}"/>
                                                     </ControlTemplate>
                                                 </Setter.Value>
                                             </Setter>
@@ -405,11 +397,12 @@
                                     </Setter>
 
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=SelectedDetalType}" Value="Настил с ребром">
+                                        <DataTrigger Binding="{Binding Path=DataContext.SelectedDetalType, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"
+                                                     Value="{x:Static detals:DetalTypes.Plita}">
                                             <Setter Property="Template">
                                                 <Setter.Value>
                                                     <ControlTemplate TargetType="ContentControl">
-                                                        <ContentControl ContentTemplate="{StaticResource PlitaDopTemplateStyle}"/>
+                                                        <ContentControl ContentTemplate="{StaticResource PlitaDopTemplate3Style}"/>
                                                     </ControlTemplate>
                                                 </Setter.Value>
                                             </Setter>
@@ -433,11 +426,12 @@
                                     </Setter>
 
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=SelectedDetalType}" Value="Настил с ребром">
+                                        <DataTrigger Binding="{Binding Path=DataContext.SelectedDetalType, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"
+                                                     Value="{x:Static detals:DetalTypes.Plita}">
                                             <Setter Property="Template">
                                                 <Setter.Value>
                                                     <ControlTemplate TargetType="ContentControl">
-                                                        <ContentControl ContentTemplate="{StaticResource PlitaSvarkaTemplateStyle}"/>
+                                                        <ContentControl ContentTemplate="{StaticResource PlitaSvarkaTemplate3Style}"/>
                                                     </ControlTemplate>
                                                 </Setter.Value>
                                             </Setter>
@@ -485,7 +479,19 @@
                 <Button Grid.Column="3" Content="_Отмена" IsCancel="True" Command="{Binding Path=CancelCommand}"/>
             </Grid>
         </Grid>
-        
 
+        <h:HelixViewport3D Grid.Column="1" Margin="15"
+                           CoordinateSystemHorizontalPosition="Right"
+                           CoordinateSystemVerticalPosition="Top"
+                           ShowViewCube="False"
+                           Orthographic="False"                           
+                           IsPanEnabled="False"
+                           IsMoveEnabled="True"
+                           IsRotationEnabled="False"
+                           IsZoomEnabled="True">
+
+            <ModelVisual3D Content="{Binding Path=CurrentModel, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+        </h:HelixViewport3D>
     </Grid>
 </Window>
