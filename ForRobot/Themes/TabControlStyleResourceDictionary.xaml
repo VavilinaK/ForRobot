@@ -1335,7 +1335,7 @@
             </Style>
         </DataTemplate.Resources>
 
-        <Grid DataContext="{Binding Path=DataContext.SelectedFile.Detal, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}">            
+        <Grid DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}, Mode=FindAncestor}}">            
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -1466,7 +1466,9 @@
             </Style>
         </DataTemplate.Resources>
 
-        <Grid Width="{Binding Path=Parent.ActualWidth, RelativeSource={RelativeSource Self}}">
+        <Grid Width="{Binding Path=Parent.ActualWidth, RelativeSource={RelativeSource Self}}" 
+              DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}, Mode=FindAncestor}}">
+            
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -1655,7 +1657,7 @@
             </Style>
         </DataTemplate.Resources>
 
-        <Grid Height="Auto" DataContext="{Binding Path=DataContext.SelectedFile.Detal, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}">
+        <Grid Height="Auto" DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}, Mode=FindAncestor}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -1679,8 +1681,7 @@
                       VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
                       FontSize="{DynamicResource FontSizeNP2}" TextElement.FontWeight="Bold"
                       ItemsSource="{Binding Source={x:Static detals:ScoseTypes.Descriptions}, Mode=OneTime}"
-                      SelectedItem="{Binding Path=DataContext.SelectedFile.Detal.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor},
-                                             Converter={StaticResource DescriptionsStaticClassConvert}, Mode=TwoWay}"
+                      SelectedItem="{Binding Path=ScoseType, Converter={StaticResource DescriptionsStaticClassConvert}, Mode=TwoWay}"
                       SelectedIndex="0">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
@@ -1690,7 +1691,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             
-                            <TextBlock x:Name="scoseT" Grid.Column="0" Text="{Binding}" VerticalAlignment="Center" Padding="0, 6" Margin="6, 0"/>
+                            <TextBlock x:Name="scoseT" Grid.Column="0" Text="{Binding}" TextWrapping="Wrap" VerticalAlignment="Center" Padding="0, 3" Margin="6, 0"/>
                             
                             <Path Grid.Column="1" Stretch="Uniform">
                                 <Path.Style>

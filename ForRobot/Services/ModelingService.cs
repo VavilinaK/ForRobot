@@ -50,6 +50,8 @@ namespace ForRobot.Services
 
         #region Private Methods
 
+        private Model3DGroup LoadMan3DModel() => new ModelImporter().Load("pack://application:,,,/InterfaceOfRobots;component/3DModels/stickman.stl");
+
         /// <summary>
         /// Выгрузка модели наблюдателя из компонентов сборки
         /// </summary>
@@ -63,9 +65,9 @@ namespace ForRobot.Services
 
             Vector3D manATranslate = new Vector3D(halfLength + 7, 0, 0);
             Vector3D manBTranslate = new Vector3D(0, halfWidth + 15, 0);
-            
-            var manModelA = new ModelImporter().Load("pack://application:,,,/InterfaceOfRobots;component/3DModels/stickman.stl"); // По ширине
-            var manModelB = new ModelImporter().Load("pack://application:,,,/InterfaceOfRobots;component/3DModels/stickman.stl"); // По длине
+
+            var manModelA = this.LoadMan3DModel(); // По ширине
+            var manModelB = this.LoadMan3DModel(); // По длине
 
             Transform3DGroup modelTransformA = new Transform3DGroup();
             modelTransformA.Children.Add(new ScaleTransform3D((double)ScaleFactor, (double)ScaleFactor, (double)ScaleFactor));
@@ -80,6 +82,9 @@ namespace ForRobot.Services
 
             manModelA.Transform = modelTransformA;
             manModelB.Transform = modelTransformB;
+
+            manModelA.SetName("Mam 1");
+            manModelB.SetName("Mam 2");
             
             mans.Children.Add(manModelA);
             mans.Children.Add(manModelB);

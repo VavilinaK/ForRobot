@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Media.Media3D;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -24,6 +25,7 @@ namespace ForRobot.ViewModels
         private string _plitaStringerProgramName = App.Current.Settings.PlitaStringerProgramName;
         private string _plitaTreugolnikProgramName = App.Current.Settings.PlitaTreugolnikProgramName;
         private Detal _detalObject;
+        private event EventHandler<object> _detalChange;
 
         #endregion Private variables
 
@@ -83,6 +85,8 @@ namespace ForRobot.ViewModels
         }
 
         public string FilePath { get => this._filePath; set => Set(ref this._filePath, value); }
+
+        public Model3DGroup DetalModel { get; set; }
 
         /// <summary>
         /// Объект детали
