@@ -165,7 +165,7 @@ namespace ForRobot
             {
                 if (Settings.SaveDetalProperties)
                 {
-                    Services.FileService.SaveFiles(OpenedFiles.Where(item => new List<string>() { ForRobot.Properties.Settings.Default.PlitaProgramm,
+                    Services.File3DService.SaveFiles(OpenedFiles.Where(item => new List<string>() { ForRobot.Properties.Settings.Default.PlitaProgramm,
                                                                                                   ForRobot.Properties.Settings.Default.PlitaStringerProgramm,
                                                                                                   ForRobot.Properties.Settings.Default.PlitaTreugolnikProgramm
                                                                                                 }.Contains(item.NameWithoutExtension)));

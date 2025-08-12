@@ -28,6 +28,18 @@ namespace ForRobot.Model.Detals
             Edit = 1
         }
 
+        /// <summary>
+        /// Коллекция описаний схем сварки
+        /// </summary>
+        public static IEnumerable<string> WeldingSchemasCollection { get; } = GetSchemasCollection();
+
+        private static IEnumerable<string> GetSchemasCollection()
+        {
+            var Descriptions = typeof(SchemasTypes).GetFields().Select(field => field.GetCustomAttributes(typeof(System.ComponentModel.DescriptionAttribute), false).SingleOrDefault() as System.ComponentModel.DescriptionAttribute);
+            List<string> DescriptionList = Descriptions.Where(item => item != null).Select(item => item.Description).ToList<string>();
+            return DescriptionList;
+        }
+
         public class SchemaRib : INotifyPropertyChanged
         {
             #region Private variables

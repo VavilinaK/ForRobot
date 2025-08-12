@@ -212,18 +212,6 @@ namespace ForRobot.ViewModels
             }
         }
         /// <summary>
-        /// Коллекция возможных схем сварки
-        /// </summary>
-        public ObservableCollection<string> WeldingSchemaCollection
-        {
-            get
-            {
-                var Descriptions = typeof(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes).GetFields().Select(field => field.GetCustomAttributes(typeof(System.ComponentModel.DescriptionAttribute), false).SingleOrDefault() as System.ComponentModel.DescriptionAttribute);
-                List<string> DescriptionList = Descriptions.Where(item => item != null).Select(item => item.Description).ToList<string>();
-                return new ObservableCollection<string>(DescriptionList);
-            }
-        }
-        /// <summary>
         /// Коллекция всех добаленнных роботов
         /// </summary>
         public ObservableCollection<Robot> RobotsCollection { get => this._robotsCollection; set => Set(ref this._robotsCollection, value); }

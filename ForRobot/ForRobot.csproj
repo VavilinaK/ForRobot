@@ -357,7 +357,7 @@
     <Compile Include="Services\ExporterService.cs" />
     <Compile Include="Services\File3DImportService.cs" />
     <Compile Include="Services\FileDialogService.cs" />
-    <Compile Include="Services\FileService.cs" />
+    <Compile Include="Services\File3DService.cs" />
     <Compile Include="Services\GenerationService.cs" />
     <Compile Include="Services\ModelingService.cs" />
     <Compile Include="Services\WeldService.cs" />
@@ -575,6 +575,7 @@
     <Resource Include="3DModels\stickman.stl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <None Include="ClassDiagram2.cd" />
     <None Include="InterfaceOfRobots.pfx" />
     <Resource Include="Themes\Images\settings.png" />
     <Resource Include="robot_icon.ico" />

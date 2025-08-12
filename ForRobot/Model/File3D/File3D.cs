@@ -25,7 +25,7 @@ using ForRobot.Model.Detals;
 
 namespace ForRobot.Model.File3D
 {
-    public class File3D : BaseClass
+    public class File3D
     {
         #region Private variables
 
@@ -73,7 +73,7 @@ namespace ForRobot.Model.File3D
         /// <summary>
         /// Путь к файлу
         /// </summary>
-        public string Path { get; private set; } = string.Empty;
+        public string Path { get; set; } = string.Empty;
         /// <summary>
         /// Имя с расширением
         /// </summary>
@@ -96,9 +96,10 @@ namespace ForRobot.Model.File3D
         {
             get => this._currentModel;
             set
-            {                
-                Set(ref this._currentModel, value);
-                SceneUpdate();
+            {
+                this._currentModel = value;
+                //Set(ref this._currentModel, value);
+                //SceneUpdate();
             }
         }
 
@@ -107,32 +108,33 @@ namespace ForRobot.Model.File3D
             get => this._detal;
             set
             {
-                Set(ref this._detal, value, false);
-                this.OnModelChanged();
-                this._detal.ChangePropertyEvent += (s, o) =>
-                {
-                    this.OnModelChanged();
-                    this.ChangePropertyAnnotations(s as Detal, o as string);
+                this._detal = value;
+                //Set(ref this._detal, value, false);
+                this.OnDetalChanged();
+                //this._detal.ChangePropertyEvent += (s, o) =>
+                //{
+                //    this.OnModelChanged();
+                //    this.ChangePropertyAnnotations(s as Detal, o as string);
 
-                    if (this._detal.NotSaveProperties.Contains(o as string))
-                        return;
+                //    if (this._detal.NotSaveProperties.Contains(o as string))
+                //        return;
 
-                    this.TrackUndo(this._detalCopy, (Detal)this._detal.Clone());
-                    this.CloneDetal();
-                };
-                switch (this._detal.DetalType)
-                {
-                    case string a when a == DetalTypes.Plita:
-                        var plita = (Plita)this._detal;
-                        plita.RibsCollection.ItemPropertyChanged += (s, o) =>
-                        {
-                            this.OnModelChanged();
-                            //this.TrackUndo(this._detalCopy, plita.Clone());
-                            //this.CloneDetal();
-                            //this.ChangePropertyAnnotations(s as Detal, o as string);
-                        };
-                        break;
-                }
+                //    this.TrackUndo(this._detalCopy, (Detal)this._detal.Clone());
+                //    this.CloneDetal();
+                //};
+                //switch (this._detal.DetalType)
+                //{
+                //    case string a when a == DetalTypes.Plita:
+                //        var plita = (Plita)this._detal;
+                //        plita.RibsCollection.ItemPropertyChanged += (s, o) =>
+                //        {
+                //            this.OnModelChanged();
+                //            //this.TrackUndo(this._detalCopy, plita.Clone());
+                //            //this.CloneDetal();
+                //            //this.ChangePropertyAnnotations(s as Detal, o as string);
+                //        };
+                //        break;
+                //}
                 this.CloneDetal();
             }
         }
@@ -157,16 +159,16 @@ namespace ForRobot.Model.File3D
             this.IsCreated = true;
         }
 
-        public File3D(string sPath) : this()
+        public File3D(string path) : this()
         {
-            if (!File.Exists(sPath))
-                throw new FileNotFoundException("Файл не найден по пути", sPath);
+            if (!File.Exists(path))
+                throw new FileNotFoundException("Файл не найден по пути", path);
 
             //if (ExtensionsFilter.Count(item => System.IO.Path.GetExtension(sPath) == item) == 0)
             //    throw new FileFormatException("Неверный формат файла");
 
-            this.Path = sPath;
-            this.Load(sPath);
+            this.Path = path;
+            this.Load(path);
             //this.CurrentModel = Task.Run(async () => await this.LoadAsync(Path, true)).Result;
         }
 
@@ -203,14 +205,14 @@ namespace ForRobot.Model.File3D
         private void AddDetal(Detal detal)
         {
             this.Detal = detal;
-            this.ModelChangedEvent += (s, o) => this.CurrentModel.Children.Clear();
+            this.DetalChangedEvent += (s, o) => this.CurrentModel.Children.Clear();
             this.AnnotationsCollection = this._annotationService.GetAnnotations(this.Detal);
             switch (this.Detal.DetalType)
             {
                 case DetalTypes.Plita:
                     this.CurrentModel.Children.Add(this._modelingService.ModelBuilding((Plita)this.Detal));
                     this.FillWeldsCollection(this.Detal as Plita);
-                    this.ModelChangedEvent += (s, o) =>
+                    this.DetalChangedEvent += (s, o) =>
                     {
                         var plita = (s as File3D).Detal as Plita;
                         this.CurrentModel.Children.Add(this._modelingService.ModelBuilding((Plita)this.Detal));
@@ -224,7 +226,7 @@ namespace ForRobot.Model.File3D
                 case DetalTypes.Treygolnik:
                     break;
             }
-            this.ModelChangedEvent += (s, o) => SceneUpdate();
+            this.DetalChangedEvent += (s, o) => SceneUpdate();
         }
 
         private void CloneDetal()
@@ -627,7 +629,7 @@ namespace ForRobot.Model.File3D
 
         #region Event
 
-        public event EventHandler ModelChangedEvent;
+        public event EventHandler DetalChangedEvent;
         public event EventHandler FileChangedEvent;
 
         #endregion
@@ -677,9 +679,9 @@ namespace ForRobot.Model.File3D
             //}
         }
 
-        public void OnModelChanged()
+        public void OnDetalChanged()
         {
-            this.ModelChangedEvent?.Invoke(this, null);
+            this.DetalChangedEvent?.Invoke(this, null);
             this.FileChangedEvent?.Invoke(this, null);
         }
         public void OnFileChanged() => this.FileChangedEvent?.Invoke(this, null);

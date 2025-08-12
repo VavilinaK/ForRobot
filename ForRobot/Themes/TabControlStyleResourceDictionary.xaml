@@ -1335,7 +1335,9 @@
             </Style>
         </DataTemplate.Resources>
 
-        <Grid DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}, Mode=FindAncestor}}">            
+        <Grid Width="{Binding Path=Parent.ActualWidth, RelativeSource={RelativeSource Self}}"
+              DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}, Mode=FindAncestor}}">   
+            
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -1352,7 +1354,7 @@
             <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=WildingSpead, Mode=TwoWay, ConverterCulture='en-us', StringFormat=F0, UpdateSourceTrigger=LostFocus}"/>
             <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=ProgramNom, Mode=TwoWay, ConverterCulture='en-us', StringFormat=F0, UpdateSourceTrigger=LostFocus}"/>
 
-            <GroupBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Header="Схема сварки">
+            <GroupBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Header="Схема сварки" HorizontalContentAlignment="Stretch">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -1360,7 +1362,7 @@
                     </Grid.RowDefinitions>
 
                     <ComboBox Grid.Row="0" Margin="0, 10"
-                              ItemsSource="{Binding Path=DataContext.WeldingSchemaCollection, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
+                              ItemsSource="{x:Static detals:WeldingSchemas.WeldingSchemasCollection}"
                               SelectedItem="{Binding Path=SelectedWeldingSchema, Mode=TwoWay}"
                               SelectedIndex="0">
 
@@ -1381,8 +1383,10 @@
                     </ComboBox>
 
                     <DataGrid Grid.Row="1" TextElement.FontWeight="Normal"
-                              Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type Grid}, Mode=FindAncestor}}"
-                              ItemsSource="{Binding Path=WeldingSchema, Mode=OneWay}">
+                              HorizontalAlignment="Stretch"
+                              HorizontalScrollBarVisibility="Disabled"
+                              ItemsSource="{Binding Path=WeldingSchema, Mode=OneWay}"
+                              SizeChanged="DataGrid_SizeChanged">
 
                         <DataGrid.Resources>
                             <Style TargetType="{x:Type ComboBox}">
@@ -1418,7 +1422,7 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <DataGridTextColumn Header="№ ребра"
+                            <DataGridTextColumn Header="№ ребра" Width="Auto"
                                                 Binding="{Binding Path=., Mode=OneWay, RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={StaticResource RowNumberConvert}}"/>
 
                             <DataGridTemplateColumn Header="Справа" Width="*">
@@ -1657,7 +1661,9 @@
             </Style>
         </DataTemplate.Resources>
 
-        <Grid Height="Auto" DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}, Mode=FindAncestor}}">
+        <Grid Width="{Binding Path=Parent.ActualWidth, RelativeSource={RelativeSource Self}}"
+              DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}, Mode=FindAncestor}}">
+            
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -1691,7 +1697,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             
-                            <TextBlock x:Name="scoseT" Grid.Column="0" Text="{Binding}" TextWrapping="Wrap" VerticalAlignment="Center" Padding="0, 3" Margin="6, 0"/>
+                            <TextBlock x:Name="scoseT" Grid.Column="0" Text="{Binding}" TextWrapping="Wrap" VerticalAlignment="Center" Padding="0, 4" Margin="6, 0"/>
                             
                             <Path Grid.Column="1" Stretch="Uniform">
                                 <Path.Style>

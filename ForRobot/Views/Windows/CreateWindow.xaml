@@ -10,7 +10,7 @@
         mc:Ignorable="d"
         Title="Создание модели генерации" 
         Background="#cfcfcf"
-        Height="600" Width="920"
+        Height="600" Width="950"
         ShowInTaskbar="True" WindowStartupLocation="CenterScreen">
 
     <Window.DataContext>
@@ -133,7 +133,7 @@
 
                 <TabControl Grid.Row="1" Grid.ColumnSpan="2" TabStripPlacement="Bottom"
                             FontSize="{StaticResource FontSizeNP2}"
-                            DataContext="{Binding Path=DetalObject, Mode=TwoWay}">
+                            DataContext="{Binding Path=File3D.Detal, Mode=TwoWay}">
 
                     <TabControl.Resources>
                         <Style TargetType="{x:Type ContentControl}">

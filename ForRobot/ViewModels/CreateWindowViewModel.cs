@@ -19,12 +19,12 @@ namespace ForRobot.ViewModels
         #region Private variables
 
         private string _selectedDetalType;
-        private string _filePath;
+        private string _filePath = string.Empty;
 
         private string _plitaProgramName = App.Current.Settings.PlitaProgramName;
         private string _plitaStringerProgramName = App.Current.Settings.PlitaStringerProgramName;
         private string _plitaTreugolnikProgramName = App.Current.Settings.PlitaTreugolnikProgramName;
-        private Detal _detalObject;
+        private Model.File3D.File3D _file3D;
         private event EventHandler<object> _detalChange;
 
         #endregion Private variables
@@ -40,7 +40,13 @@ namespace ForRobot.ViewModels
             set
             {
                 this._selectedDetalType = value;
-                this.DetalObject = Detal.GetDetal(this._selectedDetalType);
+                this.File3D = new Model.File3D.File3D(Detal.GetDetal(this._selectedDetalType), string.Empty);
+                this.File3D.DetalChangedEvent += (s, o) => 
+                {
+                    Model.File3D.File3D file3D = s as Model.File3D.File3D;
+                    RaisePropertyChanged(nameof(file3D));
+                };
+                this.File3D.OnDetalChanged();
                 RaisePropertyChanged(nameof(this.SelectedDetalType), nameof(this.FileName));
             }
         }
@@ -86,13 +92,8 @@ namespace ForRobot.ViewModels
 
         public string FilePath { get => this._filePath; set => Set(ref this._filePath, value); }
 
-        public Model3DGroup DetalModel { get; set; }
-
-        /// <summary>
-        /// Объект детали
-        /// </summary>
-        public Detal DetalObject { get => this._detalObject; set => Set(ref this._detalObject, value); }
-
+        public Model.File3D.File3D File3D { get => this._file3D; set => Set(ref this._file3D, value, false); }
+        
         /// <summary>
         /// Коллекция видов деталей
         /// </summary>
@@ -157,7 +158,9 @@ namespace ForRobot.ViewModels
             if (string.IsNullOrEmpty(this.FilePath) || string.IsNullOrEmpty(this.FileName))
                 return;
 
-            App.Current.OpenedFiles.Add(new Model.File3D.File3D(this.DetalObject, Path.Combine(this.FilePath, this.FileName)));
+            this.File3D.Path = Path.Combine(this.FileName, this.FilePath);
+
+            App.Current.OpenedFiles.Add(this.File3D);
             App.Current.WindowsAppService.CloseCreateWindow();
         }
 
