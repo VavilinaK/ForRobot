@@ -14,7 +14,7 @@ using ForRobot.Libr.Json;
 
 namespace ForRobot.Model.Detals
 {
-    public class Detal : BaseClass, ICloneable
+    public class Detal : ICloneable
     {
         #region Private variables
 

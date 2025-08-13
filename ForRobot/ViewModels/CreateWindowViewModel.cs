@@ -40,11 +40,16 @@ namespace ForRobot.ViewModels
             set
             {
                 this._selectedDetalType = value;
-                this.File3D = new Model.File3D.File3D(Detal.GetDetal(this._selectedDetalType), string.Empty);
-                this.File3D.DetalChangedEvent += (s, o) => 
+                this.File3D = new Model.File3D.File3D(Detal.GetDetal(this._selectedDetalType));
+                this.File3D.DetalChangedEvent += (s, o) =>
                 {
                     Model.File3D.File3D file3D = s as Model.File3D.File3D;
-                    RaisePropertyChanged(nameof(file3D));
+                    RaisePropertyChanged(nameof(file3D.Detal));
+                };
+                this.File3D.ModelChangedEvent += (s, o) =>
+                {
+                    Model.File3D.File3D file3D = s as Model.File3D.File3D;
+                    RaisePropertyChanged(nameof(file3D.CurrentModel));
                 };
                 this.File3D.OnDetalChanged();
                 RaisePropertyChanged(nameof(this.SelectedDetalType), nameof(this.FileName));

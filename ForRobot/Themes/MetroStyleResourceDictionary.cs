@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace ForRobot.Themes
 {
@@ -46,12 +47,20 @@ namespace ForRobot.Themes
             if (!e.WidthChanged) return;
 
             DataGrid dataGrid = sender as DataGrid;
-            
-            dataGrid.Columns[0].Width = new DataGridLength(1, DataGridLengthUnitType.Star);
-            dataGrid.Columns[1].Width = new DataGridLength(1, DataGridLengthUnitType.Auto);
-            dataGrid.Columns[2].Width = new DataGridLength(1, DataGridLengthUnitType.Star);
 
-            dataGrid.UpdateLayout();
+            System.Windows.Application.Current.Dispatcher.BeginInvoke((Action)(() =>
+            {
+                // Рассчитываем доступное пространство для пропорциональных столбцов
+                double totalWidth = dataGrid.ActualWidth - SystemParameters.VerticalScrollBarWidth;
+                double centerWidth = dataGrid.Columns[1].ActualWidth; // Текущая ширина центрального столбца
+
+                // Вычитаем ширину центрального столбца
+                double availableWidth = totalWidth - centerWidth;
+
+                // Устанавливаем пропорции для левого и правого столбцов
+                dataGrid.Columns[0].Width = new DataGridLength(availableWidth / 2, DataGridLengthUnitType.Pixel);
+                dataGrid.Columns[2].Width = new DataGridLength(availableWidth / 2, DataGridLengthUnitType.Pixel);
+            }), DispatcherPriority.Render);
         }
     }
 }

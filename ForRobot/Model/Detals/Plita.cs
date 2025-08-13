@@ -101,8 +101,9 @@ namespace ForRobot.Model.Detals
             get => this._scoseType ?? (this._scoseType = ScoseTypes.Rect);
             set
             {
-                Set(ref this._scoseType, value, false);
-                RaisePropertyChanged(nameof(this.DiferentDistance), nameof(this.PlateWidth), nameof(this.BevelToLeft), nameof(this.BevelToRight), nameof(this.GenericImage), nameof(this.RebraImage));
+                this._scoseType = value;
+                //Set(ref this._scoseType, value, false);
+                //RaisePropertyChanged(nameof(this.DiferentDistance), nameof(this.PlateWidth), nameof(this.BevelToLeft), nameof(this.BevelToRight), nameof(this.GenericImage), nameof(this.RebraImage));
                 this.OnChangeProperty(nameof(this.ScoseType));
             }
         }
@@ -117,12 +118,13 @@ namespace ForRobot.Model.Detals
             get => this._selectedWeldingSchema;
             set
             {
-                Set(ref this._selectedWeldingSchema, value, false);
+                this._selectedWeldingSchema = value;
+                //Set(ref this._selectedWeldingSchema, value, false);
 
                 if (this._selectedWeldingSchema != ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit))
                     this.WeldingSchema = this.FillWeldingSchema();
 
-                RaisePropertyChanged(nameof(this.WeldingSchema));
+                //RaisePropertyChanged(nameof(this.WeldingSchema));
                 this.OnChangeProperty(nameof(this.SelectedWeldingSchema));
             }
         }
@@ -138,8 +140,8 @@ namespace ForRobot.Model.Detals
             get => this._diferentDistance;
             set
             {
-                Set(ref this._diferentDistance, value, false);
-
+                //Set(ref this._diferentDistance, value, false);
+                this._diferentDistance = value;
                 if (!this._diferentDistance && this.RibsCollection?.Count > 0)
                 {
                     for (int i = 0; i < this.RibsCollection.Count; i++)
@@ -174,8 +176,7 @@ namespace ForRobot.Model.Detals
             get => this.DiferentDistance ? this._paralleleRibs : true;
             set
             {
-                Set(ref this._paralleleRibs, value, false);
-
+                this._paralleleRibs = value;
                 if (this._paralleleRibs && this.RibsCollection?.Count > 0) // Изменение расстояния для параллельных рёбер.
                     for (int i = 0; i < this.RibsCollection.Count; i++)
                     {
@@ -196,12 +197,13 @@ namespace ForRobot.Model.Detals
             get => this._diferentDissolutionLeft;
             set
             {
-                if (!value && this.RibsCollection?.Count > 0)
+                this._diferentDissolutionLeft = value;
+                if (!_diferentDissolutionLeft && this.RibsCollection?.Count > 0)
                     for (int i = 0; i < this.RibsCollection.Count; i++)
                     {
                         this.RibsCollection[i].DissolutionLeft = this.DissolutionLeft;
                     }
-                Set(ref this._diferentDissolutionLeft, value, false);
+                //Set(ref this._diferentDissolutionLeft, value, false);
                 this.OnChangeProperty(nameof(this.DiferentDissolutionLeft));
             }
         }
@@ -217,13 +219,14 @@ namespace ForRobot.Model.Detals
             get => this._diferentDissolutionRight;
             set
             {
-                if (!value && this.RibsCollection?.Count > 0)
+                this._diferentDissolutionRight = value;
+                if (!_diferentDissolutionRight && this.RibsCollection?.Count > 0)
                     for (int i = 0; i < this.RibsCollection.Count; i++)
                     {
                         this.RibsCollection[i].DissolutionRight = this.DissolutionRight;
                     }
 
-                Set(ref this._diferentDissolutionRight, value, false);
+                //Set(ref this._diferentDissolutionRight, value, false);
                 this.OnChangeProperty(nameof(this.DiferentDissolutionRight));
             }
         }
@@ -284,7 +287,6 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.PlateLength = value;
-                RaisePropertyChanged(nameof(this.RebraImage), nameof(this.GenericImage));
                 this.OnChangeProperty(nameof(this.PlateLength));
             }
         }
@@ -315,7 +317,6 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.PlateThickness = value;
-                RaisePropertyChanged(nameof(this.RebraImage));
                 this.OnChangeProperty(nameof(this.PlateThickness));
             }
         }
@@ -339,7 +340,6 @@ namespace ForRobot.Model.Detals
                 //        this.RibsCollection[i].HightRight = base.RibHeight;
                 //    }
                 //}
-                RaisePropertyChanged(nameof(this.RebraImage));
                 this.OnChangeProperty(nameof(this.RibHeight));
             }
         }
@@ -361,7 +361,6 @@ namespace ForRobot.Model.Detals
                     this.RibsCollection[0].DistanceLeft = base.DistanceToFirst;
                     this.RibsCollection[0].DistanceRight = base.DistanceToFirst;
                 }
-                RaisePropertyChanged(nameof(this.GenericImage));
                 this.OnChangeProperty();
             }
         }
@@ -384,7 +383,6 @@ namespace ForRobot.Model.Detals
                         this.RibsCollection[i].DistanceLeft = base.DistanceBetween;
                         this.RibsCollection[i].DistanceRight = base.DistanceBetween;
                     }
-                RaisePropertyChanged(nameof(this.RebraImage), nameof(this.GenericImage));
                 this.OnChangeProperty();
             }
         }
@@ -406,7 +404,6 @@ namespace ForRobot.Model.Detals
                     {
                         this.RibsCollection[i].IdentToLeft = base.IdentToLeft;
                     }
-                RaisePropertyChanged(nameof(this.GenericImage));
                 this.OnChangeProperty();
             }
         }
@@ -428,7 +425,6 @@ namespace ForRobot.Model.Detals
                     {
                         this.RibsCollection[i].IdentToRight = base.IdentToRight;
                     }
-                RaisePropertyChanged(nameof(this.GenericImage));
                 this.OnChangeProperty();
             }
         }
@@ -450,7 +446,6 @@ namespace ForRobot.Model.Detals
                     {
                         this.RibsCollection[i].DissolutionLeft = base.DissolutionLeft;
                     }
-                RaisePropertyChanged(nameof(this.GenericImage));
                 this.OnChangeProperty();
             }
         }
@@ -472,7 +467,6 @@ namespace ForRobot.Model.Detals
                     {
                         this.RibsCollection[i].DissolutionRight = base.DissolutionRight;
                     }
-                RaisePropertyChanged(nameof(this.GenericImage));
                 this.OnChangeProperty();
             }
         }
@@ -488,7 +482,6 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.RibThickness = value;
-                RaisePropertyChanged(nameof(this.GenericImage));
                 this.OnChangeProperty(nameof(this.RibThickness));
             }
         }
@@ -504,7 +497,6 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.SearchOffsetStart = value;
-                RaisePropertyChanged(nameof(this.RebraImage));
                 this.OnChangeProperty(nameof(this.SearchOffsetStart));
             }
         }
@@ -520,7 +512,6 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.SearchOffsetEnd = value;
-                RaisePropertyChanged(nameof(this.RebraImage));
                 this.OnChangeProperty(nameof(this.SearchOffsetEnd));
             }
         }
@@ -581,7 +572,6 @@ namespace ForRobot.Model.Detals
             set
             {
                 this._bevelToLeft = value;
-                RaisePropertyChanged(nameof(this.GenericImage));
                 this.OnChangeProperty(nameof(this.BevelToLeft));
             }
         }
@@ -597,7 +587,6 @@ namespace ForRobot.Model.Detals
             set
             {
                 this._bevelToRight = value;
-                RaisePropertyChanged(nameof(this.GenericImage));
                 this.OnChangeProperty(nameof(this.BevelToRight));
             }
         }
@@ -754,7 +743,6 @@ namespace ForRobot.Model.Detals
                 if (this.WeldingSchema != null)
                     this.ChangeWeldingSchema(this.WeldingSchema, this.SelectedWeldingSchema, RibCount);
 
-                this.RaisePropertyChanged(nameof(this.RebraImage), nameof(this.GenericImage));
                 this.OnChangeProperty(nameof(this.RibCount));
             }
         }
@@ -790,14 +778,14 @@ namespace ForRobot.Model.Detals
         public override sealed BitmapImage RebraImage
         {
             get => Equals(this.ScoseType, ScoseTypes.Rect) ? (this._rebraImage = JoinRebra(GetStartRebraImage(), GetBodyRebraImage(), GetEndRebraImage())) : null;
-            set => Set(ref this._rebraImage, value, false);
+            set => this._rebraImage = value;
         }
 
         [JsonIgnore]
         /// <summary>
         /// Общее изображение плиты
         /// </summary>
-        public override sealed BitmapImage GenericImage { get => this.GetGenericImage(); set => Set(ref this._plitaImage, value, false); }
+        public override sealed BitmapImage GenericImage { get => this.GetGenericImage(); set => this._plitaImage = value; }
 
         #endregion
 
@@ -1346,6 +1334,8 @@ namespace ForRobot.Model.Detals
                     return JoinPlita(new Bitmap(ForRobot.Libr.Converters.ImageConverter.BitmapImagetoBitmap((BitmapImage)Application.Current.TryFindResource("ImagePlitaStart"))),
                                      new Bitmap(ForRobot.Libr.Converters.ImageConverter.BitmapImagetoBitmap((BitmapImage)Application.Current.TryFindResource("ImagePlitaBody"))),
                                      new Bitmap(ForRobot.Libr.Converters.ImageConverter.BitmapImagetoBitmap((BitmapImage)Application.Current.TryFindResource("ImagePlitaEnd"))));
+                //new Bitmap(ForRobot.Libr.Converters.ImageConverter.BitmapImagetoBitmap(new BitmapImage(new Uri("pack://application:,,,/InterfaceOfRobots;component/Themes/Images/EndPlita.png")))));
+                //new Bitmap(ForRobot.Libr.Converters.ImageConverter.BitmapImagetoBitmap((BitmapImage)Application.Current.TryFindResource("ImagePlitaEnd"))));
 
                 case ScoseTypes.SlopeLeft:
                     return ForRobot.Libr.Converters.ImageConverter.BitmapToBitmapImage(GetTextSlopeLeft(new Bitmap(ForRobot.Libr.Converters.ImageConverter.BitmapImagetoBitmap((BitmapImage)Application.Current.TryFindResource("ImageSlopeLeft")), new System.Drawing.Size(1280, 720))));

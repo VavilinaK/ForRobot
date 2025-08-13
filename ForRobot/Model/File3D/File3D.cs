@@ -98,8 +98,8 @@ namespace ForRobot.Model.File3D
             set
             {
                 this._currentModel = value;
-                //Set(ref this._currentModel, value);
-                //SceneUpdate();
+                this._currentModel.Changed += (s, o) => this.OnModelChanged();
+                this.OnModelChanged();
             }
         }
 
@@ -111,6 +111,22 @@ namespace ForRobot.Model.File3D
                 this._detal = value;
                 //Set(ref this._detal, value, false);
                 this.OnDetalChanged();
+                this._detal.ChangePropertyEvent += (s, o) =>
+                {
+                    this.OnDetalChanged();
+                    this.ChangePropertyAnnotations(s as Detal, o as string);
+
+                    if (this._detal.NotSaveProperties.Contains(o as string))
+                        return;
+                };
+                switch (this._detal.DetalType)
+                {
+                    case DetalTypes.Plita:
+                        var plita = (Plita)this._detal;
+                        plita.RibsCollection.ItemPropertyChanged += (s, o) => { };
+                        break;
+                }
+
                 //this._detal.ChangePropertyEvent += (s, o) =>
                 //{
                 //    this.OnModelChanged();
@@ -141,6 +157,14 @@ namespace ForRobot.Model.File3D
 
         public static readonly string FilterForFileDialog = "3D model files (*.3ds;*.obj;*.off;*.lwo;*.stl;*.ply;)|*.3ds;*.obj;*.objz;*.off;*.lwo;*.stl;*.ply;";
 
+        #region Events
+
+        public event EventHandler DetalChangedEvent;
+        public event EventHandler ModelChangedEvent;
+        public event EventHandler FileChangedEvent;
+
+        #endregion
+
         #endregion
 
         #region Constructor
@@ -151,9 +175,10 @@ namespace ForRobot.Model.File3D
             this.FileChangedEvent += (s, o) => this.IsSaved = false;
         }
 
-        public File3D(Detal detal, string path) : this()
+        public File3D(Detal detal, string path = null) : this()
         {
-            this.AddDetal(detal);
+            this.ModelChangedEvent += (s, o) => GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Behavior.HelixSceneTrackerMessage());
+            this.SetDetal(detal);
 
             this.Path = path;
             this.IsCreated = true;
@@ -202,9 +227,9 @@ namespace ForRobot.Model.File3D
         //    return JsonConvert.DeserializeObject<Detal>(JObject.Parse(stringDetalProperties, _jsonLoadSettings).ToString(), this._jsonSettings);
         //}
 
-        private void AddDetal(Detal detal)
+        private void SetDetal(object value)
         {
-            this.Detal = detal;
+            this.Detal = value as Detal;
             this.DetalChangedEvent += (s, o) => this.CurrentModel.Children.Clear();
             this.AnnotationsCollection = this._annotationService.GetAnnotations(this.Detal);
             switch (this.Detal.DetalType)
@@ -226,7 +251,7 @@ namespace ForRobot.Model.File3D
                 case DetalTypes.Treygolnik:
                     break;
             }
-            this.DetalChangedEvent += (s, o) => SceneUpdate();
+            //this.DetalChangedEvent += (s, o) => SceneUpdate();
         }
 
         private void CloneDetal()
@@ -355,7 +380,7 @@ namespace ForRobot.Model.File3D
                 switch (detalType)
                 {
                     case DetalTypes.Plita:
-                        this.AddDetal(new Detals.Plita(DetalType.Plita).DeserializeDetal(jsonString) as Plita);
+                        this.SetDetal(new Detals.Plita(DetalType.Plita).DeserializeDetal(jsonString) as Plita);
                         break;
 
                     case DetalTypes.Stringer:
@@ -370,7 +395,7 @@ namespace ForRobot.Model.File3D
                 switch (detalType)
                 {
                     case DetalTypes.Plita:
-                        this.AddDetal(new Detals.Plita(DetalType.Plita));
+                        this.SetDetal(new Detals.Plita(DetalType.Plita));
                         break;
 
                     case DetalTypes.Stringer:
@@ -627,17 +652,9 @@ namespace ForRobot.Model.File3D
 
         #endregion Private functions
 
-        #region Event
-
-        public event EventHandler DetalChangedEvent;
-        public event EventHandler FileChangedEvent;
-
-        #endregion
 
         #region Public functions
 
-        public static void SceneUpdate() => GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Behavior.HelixSceneTrackerMessage());
-        
         public void Load(string sPath)
         {
             // Проверка соответстия разрешения файла на доступность загрузки
@@ -679,11 +696,25 @@ namespace ForRobot.Model.File3D
             //}
         }
 
+        /// <summary>
+        /// Вызов события изменения свойства <see cref="Detal"/>
+        /// </summary>
         public void OnDetalChanged()
         {
             this.DetalChangedEvent?.Invoke(this, null);
             this.FileChangedEvent?.Invoke(this, null);
         }
+        /// <summary>
+        /// Вызов события изменения свойства <see cref="CurrentModel"/>
+        /// </summary>
+        public void OnModelChanged()
+        {
+            this.ModelChangedEvent?.Invoke(this, null);
+            this.FileChangedEvent?.Invoke(this, null);
+        }
+        /// <summary>
+        /// Вызов события оповещающего, что было измененно свойство класса <see cref="File3D"/>
+        /// </summary>
         public void OnFileChanged() => this.FileChangedEvent?.Invoke(this, null);
 
         #region Static
