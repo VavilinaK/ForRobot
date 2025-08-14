@@ -45,13 +45,13 @@ namespace ForRobot.ViewModels
                 {
                     Model.File3D.File3D file3D = s as Model.File3D.File3D;
                     RaisePropertyChanged(nameof(file3D.Detal));
+                    //this.TrackUndo(this._detalCopy, (Detal)this._detal.Clone());
                 };
                 this.File3D.ModelChangedEvent += (s, o) =>
                 {
                     Model.File3D.File3D file3D = s as Model.File3D.File3D;
                     RaisePropertyChanged(nameof(file3D.CurrentModel));
                 };
-                this.File3D.OnDetalChanged();
                 RaisePropertyChanged(nameof(this.SelectedDetalType), nameof(this.FileName));
             }
         }

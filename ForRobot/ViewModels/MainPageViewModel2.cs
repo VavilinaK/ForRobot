@@ -195,8 +195,10 @@ namespace ForRobot.ViewModels
                 {
                     case string a when a == DetalTypes.Plita:
                         this.DetalObject = GetSavePlita();
-                        ((Plita)this.DetalObject).RibsCollection.ItemPropertyChanged += (o, e) => this.SaveDetal();
-                        //foreach (var item in ((Plita)this.DetalObject).WeldingSchema) item.Change += (o, e) => 
+                        ((Plita)this.DetalObject).RibsCollection.ItemPropertyChanged += (s, e) => this.SaveDetal();
+                        ((Plita)this.DetalObject).WeldingSchema.ItemPropertyChanged += (s, e) => this.SaveDetal();
+
+                        //foreach (var item in ((Plita)this.DetalObject).WeldingSchema) item.Change += (o, e) =>
                         //                                                                          {
                         //                                                                              if (((Plita)this.DetalObject).SelectedWeldingSchema != ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit))
                         //                                                                                  ((Plita)this.DetalObject).SelectedWeldingSchema = ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit);
@@ -212,7 +214,11 @@ namespace ForRobot.ViewModels
                         DetalObject = GetSavePlitaTreygolnik();
                         break;
                 }
-                this.DetalObject.ChangePropertyEvent += (s, o) => { SaveDetal(); }; // Обределение события изменения свойств
+                this.DetalObject.ChangePropertyEvent += (s, o) => 
+                {
+                    this.SaveDetal();
+                    this.RaisePropertyChanged(o as string ?? nameof(this.DetalObject));
+                }; // Обределение события изменения свойств
                 //foreach (var item in this.DetalObject.WeldingSchema) item.Change += (s, o) => { SaveDetal(); };
                 RaisePropertyChanged(nameof(this.SelectedDetalType), nameof(this.ProgrammName));
             }
@@ -676,9 +682,9 @@ namespace ForRobot.ViewModels
 
                             //int[] sumRobots;
                             //if (this.SelectedNameRobot == "Все")
-                            //{ 
+                            //{
                             //    sumRobots = new int[this.RobotsCollection.Count];
-                            //    for (int i=0; i<this.RobotsCollection.Count(); i++)
+                            //    for (int i = 0; i < this.RobotsCollection.Count(); i++)
                             //    {
                             //        sumRobots[i] = i + 1;
                             //    }
@@ -808,6 +814,7 @@ namespace ForRobot.ViewModels
                         catch(Exception e)
                         {
                             App.Current.Logger.Error(e, e.Message);
+                            System.Windows.MessageBox.Show(e.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly);
                         }
                     }, _exceptionCallback));
             }

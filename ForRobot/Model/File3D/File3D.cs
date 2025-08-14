@@ -109,21 +109,20 @@ namespace ForRobot.Model.File3D
             set
             {
                 this._detal = value;
-                //Set(ref this._detal, value, false);
                 this.OnDetalChanged();
-                this._detal.ChangePropertyEvent += (s, o) =>
+                this._detal.ChangePropertyEvent += (s, e) =>
                 {
                     this.OnDetalChanged();
-                    this.ChangePropertyAnnotations(s as Detal, o as string);
+                    this.ChangePropertyAnnotations(s as Detal, e as string);
 
-                    if (this._detal.NotSaveProperties.Contains(o as string))
+                    if (this._detal.NotSaveProperties.Contains(e as string))
                         return;
                 };
                 switch (this._detal.DetalType)
                 {
                     case DetalTypes.Plita:
                         var plita = (Plita)this._detal;
-                        plita.RibsCollection.ItemPropertyChanged += (s, o) => { };
+                        plita.RibsCollection.ItemPropertyChanged += (s, e) => this.OnDetalChanged();
                         break;
                 }
 
@@ -151,7 +150,7 @@ namespace ForRobot.Model.File3D
                 //        };
                 //        break;
                 //}
-                this.CloneDetal();
+                //this.CloneDetal();
             }
         }
 
@@ -159,7 +158,7 @@ namespace ForRobot.Model.File3D
 
         #region Events
 
-        public event EventHandler DetalChangedEvent;
+        public event System.ComponentModel.PropertyChangedEventHandler DetalChangedEvent;
         public event EventHandler ModelChangedEvent;
         public event EventHandler FileChangedEvent;
 
@@ -254,16 +253,24 @@ namespace ForRobot.Model.File3D
             //this.DetalChangedEvent += (s, o) => SceneUpdate();
         }
 
-        private void CloneDetal()
-        {
-            this._detalCopy = (Detal)this.Detal.Clone();
-            //switch (this._detalCopy)
-            //{
-            //    case Plita plita:
-            //        ((Plita)this._detalCopy).SetRibsCollection(((Plita)this.Detal).RibsCollection);
-            //        break;
-            //}
-        }
+        ///// <summary>
+        ///// Сохранение детали в <see cref=""/>
+        ///// </summary>
+        //private void SaveDetal()
+        //{
+
+        //}
+
+        //private void CloneDetal()
+        //{
+        //    this._detalCopy = (Detal)this.Detal.Clone();
+        //    //switch (this._detalCopy)
+        //    //{
+        //    //    case Plita plita:
+        //    //        ((Plita)this._detalCopy).SetRibsCollection(((Plita)this.Detal).RibsCollection);
+        //    //        break;
+        //    //}
+        //}
 
         private void CreateParameterArrow(Point3D start, Point3D end, string label, Color color)
         {
@@ -701,7 +708,7 @@ namespace ForRobot.Model.File3D
         /// </summary>
         public void OnDetalChanged()
         {
-            this.DetalChangedEvent?.Invoke(this, null);
+            //this.DetalChangedEvent?.Invoke(this);
             this.FileChangedEvent?.Invoke(this, null);
         }
         /// <summary>

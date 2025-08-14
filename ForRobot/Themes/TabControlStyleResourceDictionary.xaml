@@ -40,7 +40,7 @@
             </Style>
         </DataTemplate.Resources>
 
-        <Grid Height="Auto" DataContext="{Binding Path=DataContext.DetalObject, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}">
+        <Grid Height="Auto" DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}, Mode=FindAncestor}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -767,7 +767,7 @@
             </Style>
         </DataTemplate.Resources>
 
-        <Grid DataContext="{Binding Path=DataContext.DetalObject, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}">
+        <Grid DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}, Mode=FindAncestor}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -1103,7 +1103,7 @@
             </Style>
         </DataTemplate.Resources>
 
-        <Grid DataContext="{Binding Path=DataContext.DetalObject, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}">
+        <Grid DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}, Mode=FindAncestor}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -1128,8 +1128,8 @@
                     </Grid.RowDefinitions>
 
                     <ComboBox Grid.Row="0" Margin="0, 10"
-                              ItemsSource="{Binding Path=DataContext.WeldingSchemaCollection, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
-                              SelectedItem="{Binding Path=SelectedWeldingSchema, Mode=TwoWay}"
+                              ItemsSource="{x:Static detals:WeldingSchemas.WeldingSchemasCollection}"
+                              SelectedItem="{Binding Path=SelectedWeldingSchema, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                               SelectedIndex="0">
 
                         <ComboBox.ItemTemplate>

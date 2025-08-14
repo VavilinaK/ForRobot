@@ -102,8 +102,6 @@ namespace ForRobot.Model.Detals
             set
             {
                 this._scoseType = value;
-                //Set(ref this._scoseType, value, false);
-                //RaisePropertyChanged(nameof(this.DiferentDistance), nameof(this.PlateWidth), nameof(this.BevelToLeft), nameof(this.BevelToRight), nameof(this.GenericImage), nameof(this.RebraImage));
                 this.OnChangeProperty(nameof(this.ScoseType));
             }
         }
@@ -119,12 +117,10 @@ namespace ForRobot.Model.Detals
             set
             {
                 this._selectedWeldingSchema = value;
-                //Set(ref this._selectedWeldingSchema, value, false);
 
                 if (this._selectedWeldingSchema != ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit))
                     this.WeldingSchema = this.FillWeldingSchema();
-
-                //RaisePropertyChanged(nameof(this.WeldingSchema));
+                
                 this.OnChangeProperty(nameof(this.SelectedWeldingSchema));
             }
         }
@@ -140,7 +136,6 @@ namespace ForRobot.Model.Detals
             get => this._diferentDistance;
             set
             {
-                //Set(ref this._diferentDistance, value, false);
                 this._diferentDistance = value;
                 if (!this._diferentDistance && this.RibsCollection?.Count > 0)
                 {
@@ -203,7 +198,6 @@ namespace ForRobot.Model.Detals
                     {
                         this.RibsCollection[i].DissolutionLeft = this.DissolutionLeft;
                     }
-                //Set(ref this._diferentDissolutionLeft, value, false);
                 this.OnChangeProperty(nameof(this.DiferentDissolutionLeft));
             }
         }
@@ -225,8 +219,6 @@ namespace ForRobot.Model.Detals
                     {
                         this.RibsCollection[i].DissolutionRight = this.DissolutionRight;
                     }
-
-                //Set(ref this._diferentDissolutionRight, value, false);
                 this.OnChangeProperty(nameof(this.DiferentDissolutionRight));
             }
         }
@@ -824,7 +816,7 @@ namespace ForRobot.Model.Detals
         private FullyObservableCollection<Rib> FillRibsCollection()
         {
             Rib rib;
-            List<Rib> ribs = new List<Rib>();
+            List<Rib> ribsList = new List<Rib>();
 
             for (int i = 0; i < this.RibCount; i++)
             {
@@ -849,10 +841,11 @@ namespace ForRobot.Model.Detals
                     rib.DistanceRight = this.DistanceBetween;
                 }
 
-                ribs.Add(rib);
+                ribsList.Add(rib);
             }
-
-            return new FullyObservableCollection<Rib>(ribs);
+            FullyObservableCollection<Rib> ribs = new FullyObservableCollection<Rib>(ribsList);
+            ribs.ItemPropertyChanged += (s, e) => this.OnChangeProperty();
+            return ribs;
         }
 
         private FullyObservableCollection<WeldingSchemas.SchemaRib> FillWeldingSchema()
@@ -861,15 +854,21 @@ namespace ForRobot.Model.Detals
                 return null;
 
             FullyObservableCollection<WeldingSchemas.SchemaRib> schema = ForRobot.Model.Detals.WeldingSchemas.BuildingSchema(ForRobot.Model.Detals.WeldingSchemas.GetSchemaType(this.SelectedWeldingSchema), base.RibCount);
-
-            foreach (var rib in schema)
+            schema.ItemPropertyChanged += (a, e) =>
             {
-                rib.Change += (o, e) => {
-                    if (this.SelectedWeldingSchema != ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit))
-                        this.SelectedWeldingSchema = ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit);
-                    this.OnChangeProperty();
-                };
-            }
+                if (this.SelectedWeldingSchema != WeldingSchemas.GetDescription(WeldingSchemas.SchemasTypes.Edit))
+                    this.SelectedWeldingSchema = ForRobot.Model.Detals.WeldingSchemas.GetDescription(WeldingSchemas.SchemasTypes.Edit);
+
+                this.OnChangeProperty();
+            };
+            //foreach (var rib in schema)
+            //{
+            //    rib.Change += (o, e) => {
+            //        if (this.SelectedWeldingSchema != ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit))
+            //            this.SelectedWeldingSchema = ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit);
+            //        this.OnChangeProperty();
+            //    };
+            //}
             return schema;
         }
 

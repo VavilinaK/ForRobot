@@ -1431,6 +1431,10 @@
                                         SelectedItem="{Binding Path=SelectedItem, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}">
 
                                 <TabControl.Resources>
+                                    <Style TargetType="{x:Type ContentControl}">
+                                        <Setter Property="DataContext" Value="{Binding Path=DetalObject}"/>
+                                    </Style>
+                                    
                                     <Style TargetType="{x:Type TabItem}">
                                         <Setter Property="FontSize" Value="15"/>
                                         <Setter Property="Padding" Value="5"/>

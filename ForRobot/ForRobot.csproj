@@ -575,8 +575,6 @@
     <Resource Include="3DModels\stickman.stl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <None Include="ClassDiagram2.cd" />
-    <None Include="ClassDiagram3.cd" />
     <None Include="InterfaceOfRobots.pfx" />
     <Resource Include="Themes\Images\settings.png" />
     <Resource Include="robot_icon.ico" />
@@ -632,7 +630,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
-    <None Include="ClassDiagram1.cd" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

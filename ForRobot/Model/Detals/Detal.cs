@@ -14,6 +14,18 @@ using ForRobot.Libr.Json;
 
 namespace ForRobot.Model.Detals
 {
+    public class ValueChangedEventArgs<T> : EventArgs
+    {
+        public T OldValue { get; }
+        public T NewValue { get; }
+
+        public ValueChangedEventArgs(T oldValue, T newValue)
+        {
+            OldValue = oldValue;
+            NewValue = newValue;
+        }
+    }
+
     public class Detal : ICloneable
     {
         #region Private variables
