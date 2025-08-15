@@ -2,8 +2,10 @@
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Media.Imaging;
+using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
 using System.Configuration;
+using System.ComponentModel;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -14,18 +16,6 @@ using ForRobot.Libr.Json;
 
 namespace ForRobot.Model.Detals
 {
-    public class ValueChangedEventArgs<T> : EventArgs
-    {
-        public T OldValue { get; }
-        public T NewValue { get; }
-
-        public ValueChangedEventArgs(T oldValue, T newValue)
-        {
-            OldValue = oldValue;
-            NewValue = newValue;
-        }
-    }
-
     public class Detal : ICloneable
     {
         #region Private variables
@@ -211,7 +201,7 @@ namespace ForRobot.Model.Detals
         /// <summary>
         /// Событие изменения параметра детали
         /// </summary>
-        public event EventHandler<object> ChangePropertyEvent;
+        public event PropertyChangedEventHandler ChangePropertyEvent;
 
         /// <summary>
         /// Событие сохранения параметров детали
@@ -314,7 +304,7 @@ namespace ForRobot.Model.Detals
         /// Вызов события изменения свойства
         /// </summary>
         /// <param name="propertyName">Наименование свойства</param>
-        public virtual void OnChangeProperty(string propertyName = null) => this.ChangePropertyEvent?.Invoke(this, propertyName);
+        public virtual void OnChangeProperty([CallerMemberName] string propertyName = null) => this.ChangePropertyEvent?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         /// <summary>
         /// Вызов события сохранения свойств

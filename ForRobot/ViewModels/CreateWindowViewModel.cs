@@ -25,7 +25,6 @@ namespace ForRobot.ViewModels
         private string _plitaStringerProgramName = App.Current.Settings.PlitaStringerProgramName;
         private string _plitaTreugolnikProgramName = App.Current.Settings.PlitaTreugolnikProgramName;
         private Model.File3D.File3D _file3D;
-        private event EventHandler<object> _detalChange;
 
         #endregion Private variables
 
@@ -41,13 +40,13 @@ namespace ForRobot.ViewModels
             {
                 this._selectedDetalType = value;
                 this.File3D = new Model.File3D.File3D(Detal.GetDetal(this._selectedDetalType));
-                this.File3D.DetalChangedEvent += (s, o) =>
+                this.File3D.DetalChangedEvent += (s, e) =>
                 {
                     Model.File3D.File3D file3D = s as Model.File3D.File3D;
                     RaisePropertyChanged(nameof(file3D.Detal));
                     //this.TrackUndo(this._detalCopy, (Detal)this._detal.Clone());
                 };
-                this.File3D.ModelChangedEvent += (s, o) =>
+                this.File3D.ModelChangedEvent += (s, e) =>
                 {
                     Model.File3D.File3D file3D = s as Model.File3D.File3D;
                     RaisePropertyChanged(nameof(file3D.CurrentModel));

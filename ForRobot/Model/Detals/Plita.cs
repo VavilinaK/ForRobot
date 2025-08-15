@@ -762,7 +762,7 @@ namespace ForRobot.Model.Detals
         [JsonIgnore]
         [SaveAttribute]
         public FullyObservableCollection<WeldingSchemas.SchemaRib> WeldingSchema { get; private set; }
-
+        
         [JsonIgnore]
         /// <summary>
         /// Изображение рёбер плиты
@@ -1739,74 +1739,6 @@ namespace ForRobot.Model.Detals
                         new SolidBrush(Color.Black),
                         new PointF(955, 640),
                         stringFormatHorizont);
-                }
-            }
-            return bitmap;
-        }
-
-        private Bitmap GetArrows(Bitmap bitmap)
-        {
-            using (Graphics g = Graphics.FromImage(bitmap))
-            {
-                Pen pen = new Pen(Color.FromArgb(0, 183, 239), 1);
-
-                PointF[] points1 =
-                    {
-                        new PointF(804,  460),
-                        new PointF(804, 462),
-                        new PointF(806,  462),
-                        new PointF(806, 464),
-                        new PointF(808, 464),
-                        new PointF(808, 466),
-                        new PointF(810, 466),
-                        new PointF(810, 468),
-                        new PointF(811, 468),
-                        new PointF(811, 469),
-                        new PointF(812, 469),
-                        new PointF(812, 468),
-                        new PointF(813, 468),
-                        new PointF(813, 466),
-                        new PointF(815, 466),
-                        new PointF(815, 464),
-                        new PointF(817, 464),
-                        new PointF(817, 462),
-                        new PointF(819, 462),
-                        new PointF(819, 460),
-                    };
-
-                PointF[] points2 =
-                    {
-                        new PointF(804,  39),
-                        new PointF(804, 38),
-                        new PointF(806,  38),
-                        new PointF(806, 36),
-                        new PointF(808, 36),
-                        new PointF(808, 34),
-                        new PointF(810, 34),
-                        new PointF(810, 32),
-                        new PointF(811, 32),
-                        new PointF(811, 31),
-                        new PointF(812, 31),
-                        new PointF(812, 32),
-                        new PointF(813, 32),
-                        new PointF(813, 34),
-                        new PointF(815, 34),
-                        new PointF(815, 36),
-                        new PointF(817, 36),
-                        new PointF(817, 38),
-                        new PointF(819, 38),
-                        new PointF(819, 39),
-                    };
-
-                if (TransversePrivyazka == Privyazka.FromRightToLeft)
-                {
-                    g.DrawPolygon(pen, points1);
-                    g.FillPolygon(new SolidBrush(Color.FromArgb(0, 183, 239)), points1);
-                }
-                if (TransversePrivyazka == Privyazka.FromLeftToRight)
-                {
-                    g.DrawPolygon(pen, points2);
-                    g.FillPolygon(new SolidBrush(Color.FromArgb(0, 183, 239)), points2);
                 }
             }
             return bitmap;

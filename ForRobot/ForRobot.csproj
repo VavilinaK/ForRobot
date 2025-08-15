@@ -336,6 +336,7 @@
     <Compile Include="Libr\DocumentPaneHelper.cs" />
     <Compile Include="Libr\Json\PlitaWithRibsAttributesResolver.cs" />
     <Compile Include="Libr\Logger.cs" />
+    <Compile Include="Libr\ValueChangedEventArgs.cs" />
     <Compile Include="Model\File3D\Colors.cs" />
     <Compile Include="Model\Settings\PropertyColor.cs" />
     <Compile Include="Model\Settings\ModeClosingApp.cs" />

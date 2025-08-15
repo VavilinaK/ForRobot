@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -108,23 +109,23 @@ namespace ForRobot.Model.File3D
             get => this._detal;
             set
             {
-                this._detal = value;
-                this.OnDetalChanged();
-                this._detal.ChangePropertyEvent += (s, e) =>
-                {
-                    this.OnDetalChanged();
-                    this.ChangePropertyAnnotations(s as Detal, e as string);
+                this.SetDetal(value);
 
-                    if (this._detal.NotSaveProperties.Contains(e as string))
-                        return;
-                };
-                switch (this._detal.DetalType)
-                {
-                    case DetalTypes.Plita:
-                        var plita = (Plita)this._detal;
-                        plita.RibsCollection.ItemPropertyChanged += (s, e) => this.OnDetalChanged();
-                        break;
-                }
+                //this._detal.ChangePropertyEvent += (s, e) =>
+                //{
+                //    this.OnDetalChanged();
+                //    this.ChangePropertyAnnotations(s as Detal, e as string);
+
+                //    if (this._detal.NotSaveProperties.Contains(e as string))
+                //        return;
+                //};
+                //switch (this._detal.DetalType)
+                //{
+                //    case DetalTypes.Plita:
+                //        var plita = (Plita)this._detal;
+                //        plita.RibsCollection.ItemPropertyChanged += (s, e) => this.OnDetalChanged();
+                //        break;
+                //}
 
                 //this._detal.ChangePropertyEvent += (s, o) =>
                 //{
@@ -158,7 +159,7 @@ namespace ForRobot.Model.File3D
 
         #region Events
 
-        public event System.ComponentModel.PropertyChangedEventHandler DetalChangedEvent;
+        public event EventHandler<Libr.ValueChangedEventArgs<Detal>> DetalChangedEvent;
         public event EventHandler ModelChangedEvent;
         public event EventHandler FileChangedEvent;
 
@@ -177,8 +178,7 @@ namespace ForRobot.Model.File3D
         public File3D(Detal detal, string path = null) : this()
         {
             this.ModelChangedEvent += (s, o) => GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Behavior.HelixSceneTrackerMessage());
-            this.SetDetal(detal);
-
+            this.Detal = detal;
             this.Path = path;
             this.IsCreated = true;
         }
@@ -211,24 +211,19 @@ namespace ForRobot.Model.File3D
             });
         }
 
-        //{
-        //    this.SceneObjects = new ObservableCollection<SceneItem>();
-        //    this.SceneObjects.Add(new SceneItem()
-        //    {
-        //        Name = "Scene"
-        //    });
-        //    //this.CurrentModel.Children.Add(new SunLight());
-        //    SceneItem.AddChildren(this.SceneObjects.First(), this.CurrentModel);
-        //}
-
-        //public Detal GetDetalFromString(string stringDetalProperties)
-        //{
-        //    return JsonConvert.DeserializeObject<Detal>(JObject.Parse(stringDetalProperties, _jsonLoadSettings).ToString(), this._jsonSettings);
-        //}
-
         private void SetDetal(object value)
         {
-            this.Detal = value as Detal;
+            if (_detal == value)
+                return;
+
+            if (this._detal != null) this._detal.ChangePropertyEvent -= HandlePropertyChange;
+
+            Detal oldDetal = this._detal;
+            this._detal = value as Detal;
+
+            if (this._detal != null) this._detal.ChangePropertyEvent += HandlePropertyChange;
+            this.OnDetalChanged(oldDetal, this._detal);
+
             this.DetalChangedEvent += (s, o) => this.CurrentModel.Children.Clear();
             this.AnnotationsCollection = this._annotationService.GetAnnotations(this.Detal);
             switch (this.Detal.DetalType)
@@ -252,14 +247,6 @@ namespace ForRobot.Model.File3D
             }
             //this.DetalChangedEvent += (s, o) => SceneUpdate();
         }
-
-        ///// <summary>
-        ///// Сохранение детали в <see cref=""/>
-        ///// </summary>
-        //private void SaveDetal()
-        //{
-
-        //}
 
         //private void CloneDetal()
         //{
@@ -648,6 +635,13 @@ namespace ForRobot.Model.File3D
 
         #region
 
+        private void HandlePropertyChange(object sender, PropertyChangedEventArgs e)
+        {
+            this.OnDetalChanged(null, sender as Detal);
+            this.OnModelChanged();
+            this.ChangePropertyAnnotations(sender as Detal, e.PropertyName);
+        }
+
         private void SaveJsonFile()
         {
             if (this.Detal.JsonForSave == string.Empty) return;
@@ -706,9 +700,9 @@ namespace ForRobot.Model.File3D
         /// <summary>
         /// Вызов события изменения свойства <see cref="Detal"/>
         /// </summary>
-        public void OnDetalChanged()
+        public void OnDetalChanged(Detal oldDetal, Detal newDetal)
         {
-            //this.DetalChangedEvent?.Invoke(this);
+            this.DetalChangedEvent?.Invoke(this, new Libr.ValueChangedEventArgs<Detal>(oldDetal, newDetal));
             this.FileChangedEvent?.Invoke(this, null);
         }
         /// <summary>

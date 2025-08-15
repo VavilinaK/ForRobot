@@ -217,7 +217,7 @@ namespace ForRobot.ViewModels
                 this.DetalObject.ChangePropertyEvent += (s, o) => 
                 {
                     this.SaveDetal();
-                    this.RaisePropertyChanged(o as string ?? nameof(this.DetalObject));
+                    //this.RaisePropertyChanged(o as string ?? nameof(this.DetalObject));
                 }; // Обределение события изменения свойств
                 //foreach (var item in this.DetalObject.WeldingSchema) item.Change += (s, o) => { SaveDetal(); };
                 RaisePropertyChanged(nameof(this.SelectedDetalType), nameof(this.ProgrammName));
