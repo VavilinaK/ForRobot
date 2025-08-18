@@ -854,16 +854,16 @@ namespace ForRobot.Model.Detals
                 return null;
 
             FullyObservableCollection<WeldingSchemas.SchemaRib> schema = ForRobot.Model.Detals.WeldingSchemas.BuildingSchema(ForRobot.Model.Detals.WeldingSchemas.GetSchemaType(this.SelectedWeldingSchema), base.RibCount);
-            schema.ItemPropertyChanged += (a, e) =>
+            schema.ItemPropertyChanged += (s, e) =>
             {
                 if (this.SelectedWeldingSchema != WeldingSchemas.GetDescription(WeldingSchemas.SchemasTypes.Edit))
                     this.SelectedWeldingSchema = ForRobot.Model.Detals.WeldingSchemas.GetDescription(WeldingSchemas.SchemasTypes.Edit);
 
-                this.OnChangeProperty();
+                this.OnChangeProperty(nameof(this.WeldingSchema));
             };
             //foreach (var rib in schema)
             //{
-            //    rib.Change += (o, e) => {
+            //    rib.Change += (s, e) => {
             //        if (this.SelectedWeldingSchema != ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit))
             //            this.SelectedWeldingSchema = ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit);
             //        this.OnChangeProperty();

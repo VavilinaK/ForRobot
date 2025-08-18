@@ -162,6 +162,7 @@ namespace ForRobot.Model.File3D
         public event EventHandler<Libr.ValueChangedEventArgs<Detal>> DetalChangedEvent;
         public event EventHandler ModelChangedEvent;
         public event EventHandler FileChangedEvent;
+        //public event EventHandler FileChangedEvent;
 
         #endregion
 
