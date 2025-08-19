@@ -315,9 +315,23 @@
                            IsPanEnabled="False"
                            IsMoveEnabled="True"
                            IsRotationEnabled="False"
-                           IsZoomEnabled="True">
+                           IsZoomEnabled="True"
+                           Background="{h:LinearGradientBrush White, Gray}">
 
-            <ModelVisual3D Content="{Binding Path=CurrentModel, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <h:HelixViewport3D.DefaultCamera>
+                <PerspectiveCamera x:Name="CameraControler" 
+                                   Position="3.7, 512.8, 620.5"
+                                   LookDirection="-4.6,-513,-622"
+                                   UpDirection="0, -0.7, 0.7"
+                                   FieldOfView="10"
+                                   NearPlaneDistance="0.001"/>
+            </h:HelixViewport3D.DefaultCamera>
+
+            <h:DefaultLights/>
+
+            <h:CoordinateSystemVisual3D ArrowLengths="3"/>
+
+            <ModelVisual3D Content="{Binding Path=File3D.CurrentModel, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
 
         </h:HelixViewport3D>
     </Grid>
