@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using System.Collections.Generic;
 
 using HelixToolkit.Wpf;
 
@@ -532,10 +533,10 @@ namespace ForRobot.Services
                 default:
                     throw new NotSupportedException($"Ошибка построения модели: тип детали {detal.DetalType} не поддерживается!");
             }
-
-            scene.Children.Add(robotModel);
-            scene.Children.Add(pcModel);
-            scene.Children.Add(mansModel);
+            scene.Children.AddRobot();
+            //scene.Children.Add(robotModel);
+            //scene.Children.Add(pcModel);
+            //scene.Children.Add(mansModel);
             return scene;
         }
 
@@ -642,5 +643,14 @@ namespace ForRobot.Services
         }
 
         #endregion Public Methods
+    }
+
+    public static partial class Model3DCollection
+    {
+        public static bool AddRobot(this IEnumerable<Model3D> source, Detal detal, double)
+        {
+
+            return true;
+        }
     }
 }

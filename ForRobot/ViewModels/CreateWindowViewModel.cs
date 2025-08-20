@@ -40,17 +40,6 @@ namespace ForRobot.ViewModels
             {
                 this._selectedDetalType = value;
                 this.File3D = new Model.File3D.File3D(Detal.GetDetal(this._selectedDetalType));
-                this.File3D.DetalChangedEvent += (s, e) =>
-                {
-                    Model.File3D.File3D file3D = s as Model.File3D.File3D;
-                    RaisePropertyChanged(nameof(file3D.Detal));
-                    //this.TrackUndo(this._detalCopy, (Detal)this._detal.Clone());
-                };
-                this.File3D.ModelChangedEvent += (s, e) =>
-                {
-                    Model.File3D.File3D file3D = s as Model.File3D.File3D;
-                    RaisePropertyChanged(nameof(file3D.CurrentModel));
-                };
                 RaisePropertyChanged(nameof(this.SelectedDetalType), nameof(this.FileName));
             }
         }
@@ -96,7 +85,26 @@ namespace ForRobot.ViewModels
 
         public string FilePath { get => this._filePath; set => Set(ref this._filePath, value); }
 
-        public Model.File3D.File3D File3D { get => this._file3D; set => Set(ref this._file3D, value, false); }
+        public Model.File3D.File3D File3D
+        {
+            get => this._file3D;
+            set
+            {
+                if (this._file3D != null)
+                {
+                    this._file3D.DetalChangedEvent -= HandleDetalChange;
+                    this._file3D.FileChangedEvent -= HandleFileChange;
+                }
+
+                Set(ref this._file3D, value, false);
+
+                if (this._file3D != null)
+                {
+                    this._file3D.DetalChangedEvent += HandleDetalChange;
+                    this._file3D.FileChangedEvent += HandleFileChange;
+                }
+            }
+        }
         
         /// <summary>
         /// Коллекция видов деталей
@@ -146,6 +154,24 @@ namespace ForRobot.ViewModels
         #endregion
 
         #region Private functions
+
+        private void HandleDetalChange(object sender, Libr.ValueChangedEventArgs<Detal> e)
+        {
+            Model.File3D.File3D file3D = sender as Model.File3D.File3D;
+            RaisePropertyChanged(nameof(file3D.Detal));
+            if (file3D.Detal is ForRobot.Model.Detals.Plita)
+            {
+                Plita plita = file3D.Detal as ForRobot.Model.Detals.Plita;
+                RaisePropertyChanged(nameof(plita.SelectedWeldingSchema));
+                RaisePropertyChanged(nameof(plita.WeldingSchema));
+            }
+        }
+
+        private void HandleFileChange(object sender, EventArgs e)
+        {
+            Model.File3D.File3D file3D = sender as Model.File3D.File3D;
+            RaisePropertyChanged(nameof(file3D));
+        }
 
         private void SelectFilePath()
         {

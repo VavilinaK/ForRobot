@@ -1385,7 +1385,7 @@
                     <DataGrid Grid.Row="1" TextElement.FontWeight="Normal"
                               HorizontalAlignment="Stretch"
                               HorizontalScrollBarVisibility="Disabled"
-                              ItemsSource="{Binding Path=WeldingSchema, Mode=OneWay}"
+                              ItemsSource="{Binding Path=WeldingSchema, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                               SizeChanged="DataGrid_SizeChanged">
 
                         <DataGrid.Resources>
