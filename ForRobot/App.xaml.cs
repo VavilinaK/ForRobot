@@ -206,7 +206,7 @@ namespace ForRobot
             }
             else
             {
-                // Проверка скрипта для обновления, если приложение не обновлялось.
+                // Проверка скрипта на обновление, если приложение не обновлялось.
                 foreach (var prop in typeof(ForRobot.Libr.ConfigurationProperties.AppConfigurationSection).GetProperties())
                 {
                     var v = typeof(ForRobot.Libr.ConfigurationProperties.AppConfigurationSection).GetProperty(prop.Name);
@@ -401,8 +401,6 @@ namespace ForRobot
                     if (File.Exists(arg))
                     {
                         this.OpenedFiles.Add(new Model.File3D.File3D(arg));
-                        //((App.Current.MainWindow.DataContext as ViewModels.MainWindowViewModel).NowPage.DataContext as ViewModels.MainPageViewModel3).SelectedFile = this.OpenedFiles.Last();
-                        //(App.Current.MainWindow.DataContext as ViewModels.MainPageViewModel3).SelectedFile = this.OpenedFiles.Last();
                     }
                 }
             }
@@ -460,11 +458,18 @@ namespace ForRobot
         /// </summary>
         public void SelectAppMainWindow()
         {
-            App.Current.MainWindow.Activate();
-            //App.Current.MainWindow.WindowState = System.Windows.WindowState.Normal;
-            App.Current.MainWindow.Topmost = true; // Вывод окна поверх уже открытых окон.
+            if (App.Current.MainWindow.WindowState == WindowState.Minimized)
+            {
+                App.Current.MainWindow.WindowState = WindowState.Normal;
+            }
+            App.Current.MainWindow.Topmost = true;
             App.Current.MainWindow.Topmost = false;
+
+            App.Current.MainWindow.Activate();
+
             App.Current.MainWindow.Focus();
+            App.Current.MainWindow.Left = SystemParameters.WorkArea.Left;
+            App.Current.MainWindow.Top = SystemParameters.WorkArea.Top;
         }
 
         #endregion

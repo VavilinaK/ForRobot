@@ -145,7 +145,11 @@ namespace ForRobot.ViewModels
         public Model.File3D.File3D SelectedFile
         {
             get => this._selectedFile;
-            set => Set(ref this._selectedFile, value, false);
+            set
+            {
+                Set(ref this._selectedFile, value, false);
+                this.SetActiveContent(this.SelectedFile, true);
+            }
         }
 
         /// <summary>
@@ -158,13 +162,21 @@ namespace ForRobot.ViewModels
         /// </summary>
         public string SelectedRobotsName { get; set; }
         
-        public object ActiveContent
+        public object ActiveContent  { get => this._activeContent; set => this.SetActiveContent(value); }
+
+        /// <summary>
+        /// Обновление выбранного LayoutDocumentPane.
+        /// </summary>
+        private void SetActiveContent(object value, bool isInside = false)
         {
-            get => this._activeContent;
-            set
+            Set(ref this._activeContent, value, false);
+
+            if (isInside) return;
+
+            if (ActiveContent is Model.File3D.File3D file)
             {
-                this._activeContent = value;
-                this.UpdateSelectedDocument();
+                this.SelectedFile = file;
+                this.SelectedObject = null; // Снимает выделение с объекта HelixViewport3D.
             }
         }
 
@@ -393,6 +405,16 @@ namespace ForRobot.ViewModels
 
             this.SelectedRobot = this.RobotsCollection[0];
 
+            App.Current.OpenedFiles.CollectionChanged += (s, e) =>
+            {
+                switch (e.Action)
+                {
+                    case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+                        this.SelectedFile = e.NewItems[0] as ForRobot.Model.File3D.File3D;
+                        break;
+                }
+            };
+
             // Если нет открываемых файлов, проверяет - нужно ли создать файл детали.
             if (App.Current.OpenedFiles.Count == 0 && App.Current.Settings.CreatedDetalFile)
             {
@@ -613,18 +635,6 @@ namespace ForRobot.ViewModels
                         this.RobotsCollection.ToList<Robot>()[i].PathProgramm = Path.Combine(fbd.SelectedPath, $"R{i + 1}");
                     }
                 }
-            }
-        }
-
-        /// <summary>
-        /// Обновление выбранного LayoutDocumentPane.
-        /// </summary>
-        private void UpdateSelectedDocument()
-        {
-            if (ActiveContent is Model.File3D.File3D file)
-            {
-                this.SelectedFile = file;
-                this.SelectedObject = null; // Снимает выделение с объекта HelixViewport3D.
             }
         }
 

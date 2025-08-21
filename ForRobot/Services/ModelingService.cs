@@ -514,13 +514,13 @@ namespace ForRobot.Services
         {
             Model3DGroup scene = new Model3DGroup();
 
-            double modelPlateLength = (double)detal.PlateLength * (double)ScaleFactor;
-            double modelPlateWidth = (double)detal.PlateWidth * (double)ScaleFactor;
-            double modelPlateHeight = (double)detal.PlateThickness * (double)ScaleFactor;
+            //double modelPlateLength = (double)detal.PlateLength * (double)ScaleFactor;
+            //double modelPlateWidth = (double)detal.PlateWidth * (double)ScaleFactor;
+            //double modelPlateHeight = (double)detal.PlateThickness * (double)ScaleFactor;
 
-            var robotModel = GetRobotModel(modelPlateLength, modelPlateWidth, modelPlateHeight);
-            var pcModel = GetPCModel(modelPlateLength, modelPlateWidth, modelPlateHeight);
-            var mansModel = GetMansModel(modelPlateLength, modelPlateWidth, modelPlateHeight);
+            //var robotModel = GetRobotModel(modelPlateLength, modelPlateWidth, modelPlateHeight);
+            //var pcModel = GetPCModel(modelPlateLength, modelPlateWidth, modelPlateHeight);
+            //var mansModel = GetMansModel(modelPlateLength, modelPlateWidth, modelPlateHeight);
 
             switch (detal.DetalType)
             {
@@ -533,7 +533,7 @@ namespace ForRobot.Services
                 default:
                     throw new NotSupportedException($"Ошибка построения модели: тип детали {detal.DetalType} не поддерживается!");
             }
-            scene.Children.AddRobot();
+            scene.Children.AddRobot(detal, (double)ScaleFactor);
             //scene.Children.Add(robotModel);
             //scene.Children.Add(pcModel);
             //scene.Children.Add(mansModel);
@@ -647,10 +647,11 @@ namespace ForRobot.Services
 
     public static partial class Model3DCollection
     {
-        public static bool AddRobot(this IEnumerable<Model3D> source, Detal detal, double)
+        public static void AddRobot(this IEnumerable<Model3D> source, Detal detal, double scaleFactor = 10)
         {
-
-            return true;
+            double halfLength = (double)detal.PlateLength * scaleFactor / 2;
+            double halfWidth = (double)detal.PlateWidth * scaleFactor / 2;
+            double halfHeight = (double)detal.PlateThickness * scaleFactor / 2;
         }
     }
 }
