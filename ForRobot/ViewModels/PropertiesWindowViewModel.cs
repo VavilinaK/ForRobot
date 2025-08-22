@@ -308,18 +308,93 @@ namespace ForRobot.ViewModels
                 case System.Windows.Controls.TreeView tree when tree.ToString() == control.ToString():
                     break;
 
-                case System.Windows.Controls.TreeViewItem treeItem when treeItem.ToString() == control.ToString():
-                    var treeViewItem = control as System.Windows.Controls.TreeViewItem;
+                case System.Windows.Controls.TreeViewItem treeViewItem when treeViewItem.ToString() == control.ToString():
+                    treeViewItem = control as System.Windows.Controls.TreeViewItem;
                     treeViewItem.IsExpanded = false;
                     treeViewItem.IsSelected = false;
                     break;
 
-                case System.Windows.Controls.CheckBox check when check.ToString() == control.ToString():
-                    var checkBox = control as System.Windows.Controls.CheckBox;
+                case System.Windows.Controls.CheckBox checkBox when checkBox.ToString() == control.ToString():
+                    checkBox = control as System.Windows.Controls.CheckBox;
                     checkBox.IsChecked = !checkBox.IsChecked;
+                    break;
+
+                case System.Windows.Controls.TextBox textBox when textBox.ToString() == control.ToString():
+                    textBox = control as System.Windows.Controls.TextBox;
+                    if (textBox == null) return;
+
+                    textBox.Dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        var parent = textBox.Parent as UIElement;
+                        if (parent != null && parent.Focusable)
+                        {
+                            parent.Focus();
+                        }
+                        else
+                        {
+                            Keyboard.ClearFocus();
+                        }
+                    }), System.Windows.Threading.DispatcherPriority.ContextIdle);
+                    break;
+
+                default:
+                    if (control == null) return;
+
+                    // Сброс фокуса для всех областей фокуса
+                    var focusScope = FocusManager.GetFocusScope(control);
+                    FocusManager.SetFocusedElement(focusScope, null);
+
+                    // Дополнительно: поиск и сброс фокуса во всех дочерних элементах
+                    var children = FindVisualChildren<UIElement>(control);
+                    foreach (var child in children)
+                    {
+                        if (child.IsKeyboardFocused)
+                        {
+                            Keyboard.ClearFocus();
+                            break;
+                        }
+                    }
+
+                    //FocusManager.SetFocusedElement(FocusManager.GetFocusScope(control), null);
+                    //control.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+
+
+                    //control?.Dispatcher.BeginInvoke(new Action(() =>
+                    //{
+                    //    System.Windows.Input.Keyboard.ClearFocus();
+                    //    System.Windows.Input.FocusManager.SetFocusedElement(System.Windows.Input.FocusManager.GetFocusScope(control), null);
+                    //}), System.Windows.Threading.DispatcherPriority.ContextIdle);
+
+
+                    //FocusManager.SetFocusedElement(FocusManager.GetFocusScope(control), null);
+                    //Keyboard.ClearFocus();
+                    //textbox = control as System.Windows.Controls.TextBox;
+                    ////System.Windows.Input.Keyboard.ClearFocus();
+                    //textbox.Foc
+                    ////textbox.Focusable = false;
                     break;
             }
             _isSelectClosedControl = true;
+        }
+
+        private static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj != null)
+            {
+                for (int i = 0; i < System.Windows.Media.VisualTreeHelper.GetChildrenCount(depObj); i++)
+                {
+                    DependencyObject child = System.Windows.Media.VisualTreeHelper.GetChild(depObj, i);
+                    if (child != null && child is T)
+                    {
+                        yield return (T)child;
+                    }
+
+                    foreach (T childOfChild in FindVisualChildren<T>(child))
+                    {
+                        yield return childOfChild;
+                    }
+                }
+            }
         }
 
         /// <summary>

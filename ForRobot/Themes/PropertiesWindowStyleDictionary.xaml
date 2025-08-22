@@ -825,7 +825,13 @@
                               SelectedItem="{Binding Path=SelectedDetalTypeName, Mode=TwoWay}"
                               SelectedIndex="0"/>
 
-                    <TextBox Grid.Column="1" Text="{Binding StandartNameFile, Mode=TwoWay}"/>
+                    <TextBox Grid.Column="1" Text="{Binding StandartNameFile, Mode=TwoWay}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="GotFocus">
+                                <i:InvokeCommandAction Command="{Binding Path=SelectClosedControlCommand}" CommandParameter="{Binding Path=., RelativeSource={RelativeSource AncestorType={x:Type CheckBox}, Mode=FindAncestor}}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </TextBox>
                 </Grid>
             </GroupBox>
             

@@ -142,15 +142,7 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Выбранный файл
         /// </summary>
-        public Model.File3D.File3D SelectedFile
-        {
-            get => this._selectedFile;
-            set
-            {
-                Set(ref this._selectedFile, value, false);
-                this.SetActiveContent(this.SelectedFile, true);
-            }
-        }
+        public Model.File3D.File3D SelectedFile {  get => this._selectedFile; set => Set(ref this._selectedFile, value, false); }
 
         /// <summary>
         /// Выбранный робот
@@ -163,22 +155,6 @@ namespace ForRobot.ViewModels
         public string SelectedRobotsName { get; set; }
         
         public object ActiveContent  { get => this._activeContent; set => this.SetActiveContent(value); }
-
-        /// <summary>
-        /// Обновление выбранного LayoutDocumentPane.
-        /// </summary>
-        private void SetActiveContent(object value, bool isInside = false)
-        {
-            Set(ref this._activeContent, value, false);
-
-            if (isInside) return;
-
-            if (ActiveContent is Model.File3D.File3D file)
-            {
-                this.SelectedFile = file;
-                this.SelectedObject = null; // Снимает выделение с объекта HelixViewport3D.
-            }
-        }
 
         /// <summary>
         /// Выбранный 3D объект
@@ -226,7 +202,7 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Коллекция всех добаленнных роботов
         /// </summary>
-        public ObservableCollection<Robot> RobotsCollection { get => this._robotsCollection; set => Set(ref this._robotsCollection, value); }
+        public ObservableCollection<Robot> RobotsCollection { get => this._robotsCollection; set => Set(ref this._robotsCollection, value, false); }
         /// <summary>
         /// Коллекция названияй роботов для генерации
         /// </summary>
@@ -238,7 +214,7 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Коллекция сообщений
         /// </summary>
-        public ObservableCollection<AppMessage> MessagesCollection { get => this._messagesCollection; set => Set(ref this._messagesCollection, value); }
+        public ObservableCollection<AppMessage> MessagesCollection { get => this._messagesCollection; set => Set(ref this._messagesCollection, value, false); }
 
         #endregion
 
@@ -410,7 +386,7 @@ namespace ForRobot.ViewModels
                 switch (e.Action)
                 {
                     case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
-                        this.SelectedFile = e.NewItems[0] as ForRobot.Model.File3D.File3D;
+                        this.ActiveContent = e.NewItems[0] as ForRobot.Model.File3D.File3D;
                         break;
                 }
             };
@@ -558,7 +534,27 @@ namespace ForRobot.ViewModels
             programName = string.Format("{0}.json", programName);
             return programName;
         }
-        
+
+        /// <summary>
+        /// Обновление выбранного LayoutDocumentPane.
+        /// </summary>
+        private void SetActiveContent(object value)
+        {
+            System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                Set(ref this._activeContent, value, false);
+
+                if (ActiveContent is Model.File3D.File3D file3D)
+                    Task.Run(() => GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Behavior.SelectLayoutDocumentPane(file3D)));
+            }), System.Windows.Threading.DispatcherPriority.Background);
+
+            if (ActiveContent is Model.File3D.File3D file)
+            {
+                this.SelectedFile = file;
+                this.SelectedObject = null; // Снимает выделение с объекта HelixViewport3D.
+            }
+        }
+
         private void SaveFileAs(Model.File3D.File3D file)
         {
             try
@@ -587,7 +583,6 @@ namespace ForRobot.ViewModels
 
             var file = new Model.File3D.File3D(filePath);
             App.Current.OpenedFiles.Add(file);
-            this.SelectedFile = file;
         }
 
         /// <summary>

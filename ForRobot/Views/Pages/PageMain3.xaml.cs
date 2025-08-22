@@ -39,6 +39,8 @@ namespace ForRobot.Views.Pages
         {
             InitializeComponent();
 
+            this.Loaded += OnPageLoaded;
+
             Messenger.Default.Register<FindElementByTagMessage>(this, message => 
             {
                 DockingManager dockingManager = FindChild<DockingManager>(this);
@@ -71,10 +73,35 @@ namespace ForRobot.Views.Pages
                     }
                 }));
             }); // Сообщение получения фокуса TextBox при нажатии на соответствующий параметр модели.
+
             Messenger.Default.Register<SaveLayoutMessage>(this, _ => SaveLayout()); // Сообщение сохранения макета интерфейса.
             Messenger.Default.Register<LoadLayoutMessage>(this, _ => LoadLayout()); // Сообщение выгрузки макета интерфейса.
 
             if (this.DataContext == null) { this.DataContext = ViewModel; }
+        }
+
+        private void OnPageLoaded(object sender, RoutedEventArgs e)
+        {
+            this.Loaded -= OnPageLoaded;
+
+            Messenger.Default.Register<SelectLayoutDocumentPane>(this, HandleSelectLayoutDocument);
+        }
+
+        private void HandleSelectLayoutDocument(SelectLayoutDocumentPane message)
+        {
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                DockingManager dockingManager = FindChild<DockingManager>(this);
+                var layoutDocument = dockingManager?.Layout.Descendents()
+                                                           .OfType<LayoutDocument>()
+                                                           .FirstOrDefault(d => d.Content == message.SelectedFile);
+
+                if (layoutDocument != null)
+                {
+                    layoutDocument.IsActive = true;
+                }
+            }), System.Windows.Threading.DispatcherPriority.Background);
+
         }
 
         private void Expander_Expanded(object sender, RoutedEventArgs e)
@@ -220,6 +247,14 @@ namespace ForRobot.Views.Pages
                     ExpandAllTreeViewItems(container);
                 }
             }
+        }
+
+        ~PageMain3()
+        {
+            Messenger.Default.Unregister<FindElementByTagMessage>(this); // Отмена подписки на сообщение.
+            Messenger.Default.Unregister<SelectLayoutDocumentPane>(this);
+            Messenger.Default.Unregister<SaveLayoutMessage>(this);
+            Messenger.Default.Unregister<LoadLayoutMessage>(this);
         }
     }
 }

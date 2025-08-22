@@ -310,6 +310,7 @@
     <Compile Include="Libr\Behavior\BehaviorAttacher.cs" />
     <Compile Include="Libr\Behavior\CollapedLayoutAnchorableBehavior.cs" />
     <Compile Include="Libr\Behavior\CollapedLayoutAnchorableMessage.cs" />
+    <Compile Include="Libr\Behavior\FocusBehavior.cs" />
     <Compile Include="Libr\Behavior\HelixAddCollectionBehavior.cs" />
     <Compile Include="Libr\Behavior\DataGridStretchLastColumn.cs" />
     <Compile Include="Libr\Behavior\FindElementByTagMessage.cs" />
@@ -317,6 +318,7 @@
     <Compile Include="Libr\Behavior\HelixSceneTrackerBehavior.cs" />
     <Compile Include="Libr\Behavior\LayoutMessage.cs" />
     <Compile Include="Libr\Behavior\HelixWeldsBehavior.cs" />
+    <Compile Include="Libr\Behavior\SelectLayoutDocumentPane.cs" />
     <Compile Include="Libr\Behavior\ZoomBehavior.cs" />
     <Compile Include="Libr\Behavior\ZoomMessage.cs" />
     <Compile Include="Libr\ConfigurationProperties\AppConfigurationSection.cs" />
