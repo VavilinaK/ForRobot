@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using System.IO.Pipes;
 using System.Threading.Tasks;
 
-//using Newtonsoft.Json;
+using Newtonsoft.Json;
 
 using ForRobot.Libr;
 
@@ -34,7 +34,6 @@ namespace ForRobot
         private bool _isNewInstance;
         private const string _mutexName = "InterfaceOfRobots_UniqueAppMutex";
         private const string _pipeName = "InterfaceOfRobots_UniqueAppPipe";
-        private CancellationTokenSource _pipeServerCts;
 
         /// <summary>
         /// Путь к программе на сервере
@@ -101,11 +100,6 @@ namespace ForRobot
         /// </summary>
         public System.Collections.ObjectModel.ObservableCollection<Model.File3D.File3D> OpenedFiles { get; set; } = new System.Collections.ObjectModel.ObservableCollection<Model.File3D.File3D>();
 
-        /// <summary>
-        /// Обработчик сохранения настроек
-        /// </summary>
-        public EventHandler SaveAppSettings;
-
         #endregion Public variables
 
         #region Private functions
@@ -163,18 +157,9 @@ namespace ForRobot
             if (((Application.Current.Windows.Count == 0) && (Application.Current.ShutdownMode == ShutdownMode.OnLastWindowClose))
                 || (Application.Current.ShutdownMode == ShutdownMode.OnMainWindowClose))
             {
-                if (Settings.SaveDetalProperties)
-                {
-                    Services.File3DService.SaveFiles(OpenedFiles.Where(item => new List<string>() { ForRobot.Properties.Settings.Default.PlitaProgramm,
-                                                                                                  ForRobot.Properties.Settings.Default.PlitaStringerProgramm,
-                                                                                                  ForRobot.Properties.Settings.Default.PlitaTreugolnikProgramm
-                                                                                                }.Contains(item.NameWithoutExtension)));
-                }
-
                 if (this._isNewInstance)
                     this.Logger.Trace("Закрытие приложения\n\n");
 
-                _pipeServerCts?.Cancel(); // Отмена сервера каналов.
                 this._mutex?.Dispose();
                 Application.Current.Shutdown(0);
             }
@@ -206,7 +191,7 @@ namespace ForRobot
             }
             else
             {
-                // Проверка скрипта на обновление, если приложение не обновлялось.
+                // Проверка скрипта для обновления, если приложение не обновлялось.
                 foreach (var prop in typeof(ForRobot.Libr.ConfigurationProperties.AppConfigurationSection).GetProperties())
                 {
                     var v = typeof(ForRobot.Libr.ConfigurationProperties.AppConfigurationSection).GetProperty(prop.Name);
@@ -229,10 +214,13 @@ namespace ForRobot
             }
 
             Application.Current.MainWindow = WindowsAppService.AppMainWindow;
-            SaveAppSettings += (s, o) => Settings.Save();
-            Settings.ChangePropertyEvent += SaveAppSettings;
-
+            
             // Вход в приложение по пин-коду
+            //if (this.Settings.LoginByPINCode && !ForRobot.App.EqualsPinCode())
+            //{
+            //    this.Logger.Error("Ошибка при входе: неверный пин-код!");
+            //    Application.Current.Shutdown(1);
+            //}
             if (this.Settings.LoginByPINCode)
             {
                 bool pinResult = false;
@@ -252,7 +240,6 @@ namespace ForRobot
             }
 
             WindowsAppService.AppMainWindow.Show();
-            SelectAppMainWindow();
         }
 
         /// <summary>
@@ -323,72 +310,22 @@ namespace ForRobot
         /// </summary>
         private void StartPipeServer()
         {
-            _pipeServerCts = new CancellationTokenSource();
-            while (!_pipeServerCts.IsCancellationRequested)
+            while (true)
             {
-                try
+                using (var server = new NamedPipeServerStream(_pipeName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous))
                 {
-                    using (var server = new NamedPipeServerStream(_pipeName, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous))
+                    server.WaitForConnection();
+                    using (var reader = new StreamReader(server))
                     {
-                        // Асинхронное ожидание соединения с возможностью отмены
-                        var asyncResult = server.BeginWaitForConnection(null, null);
-                        WaitHandle.WaitAny(new[] { asyncResult.AsyncWaitHandle, _pipeServerCts.Token.WaitHandle });
-
-                        if (_pipeServerCts.IsCancellationRequested)
+                        var args = new List<string>();
+                        while (!reader.EndOfStream)
                         {
-                            server.Close();
-                            return;
+                            args.Add(reader.ReadLine());
                         }
-
-                        server.EndWaitForConnection(asyncResult);
-
-                        if (Application.Current == null || Application.Current.Dispatcher == null || Application.Current.Dispatcher.HasShutdownStarted) return;
-
-                        using (var reader = new StreamReader(server))
-                        {
-                            var args = reader.ReadToEnd().Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
-
-                            if (args.Length == 0) continue;
-
-                            bool isMainWindowReady = false; // Готовность главного окна.
-                            Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                isMainWindowReady = MainWindow != null && MainWindow.IsInitialized;
-                            });
-
-                            if (!isMainWindowReady)
-                            {
-                                var readyWait = new System.Threading.ManualResetEventSlim();
-                                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-                                {
-                                    HandleArguments(args);
-                                    readyWait.Set();
-                                }));
-
-                                if (!readyWait.Wait(TimeSpan.FromSeconds(5))) Logger.Warn("Таймаут ожидания главного окна");
-                            }
-                            else
-                            {
-                                Application.Current.Dispatcher.BeginInvoke((Action)(() =>
-                                {
-                                    try
-                                    {
-                                        HandleArguments(args);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Logger.Error(ex, "Ошибка обработки аргументов");
-                                    }
-                                }));
-                            }
-                        }
+                        // Обновляем UI через Dispatcher
+                        Application.Current.Dispatcher.Invoke(() => HandleArguments(args.ToArray()));
                     }
                 }
-                catch (Exception ex)
-                {
-                    Logger.Error(ex, "Ошибка в сервере каналов");
-                    Thread.Sleep(1000); // Пауза перед повторной попыткой
-                }                
             }
         }
 
@@ -396,31 +333,28 @@ namespace ForRobot
         {
             if (args.Length > 0)
             {
-                foreach (var arg in args)
+                for (int i = 0; i < args.Length; i++)
                 {
-                    if (File.Exists(arg))
-                    {
-                        this.OpenedFiles.Add(new Model.File3D.File3D(arg));
-                    }
+                    this.OpenedFiles.Add(new Model.File3D.File3D(args[i]));
                 }
             }
-
-            if (MainWindow?.IsVisible == true)
+            Dispatcher.Invoke(() =>
             {
-                Dispatcher.Invoke(() =>
-                {
-                    try
-                    {
-                        this.SelectAppMainWindow();
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Error(ex, "Ошибка активации окна");
-                    }
-                });
-            }
+                this.SelectAppMainWindow();
+            });
         }
-        
+
+        /// <summary>
+        /// Вывод и вокусировка главного окна приложения
+        /// </summary>
+        private void SelectAppMainWindow()
+        {
+            App.Current.MainWindow.Activate();
+            App.Current.MainWindow.WindowState = System.Windows.WindowState.Normal;
+            App.Current.MainWindow.Topmost = true;
+            App.Current.MainWindow.Focus();
+        }
+
         #endregion Private functions
 
         #region Public Static functions
@@ -446,31 +380,21 @@ namespace ForRobot
         /// <summary>
         /// Ввод и сравнение пин-кодов
         /// </summary>
+        /// <param name="sInputBoxText">Question, текст в InputBox</param>
         /// <returns>Верный ли введенный пользователем пин-код</returns>
-        public static bool EqualsPinCode()
-        {
-            string pin = new ForRobot.Services.WindowsAppService().InputWindowShow();
-            return !string.IsNullOrEmpty(pin) && Sha256(pin) == ForRobot.Properties.Settings.Default.PinCode;
-        }
+        public static bool EqualsPinCode() => Sha256(new ForRobot.Services.WindowsAppService().InputWindowShow()) == ForRobot.Properties.Settings.Default.PinCode;
 
-        /// <summary>
-        /// Вывод и вокусировка главного окна приложения
-        /// </summary>
-        public void SelectAppMainWindow()
-        {
-            if (App.Current.MainWindow.WindowState == WindowState.Minimized)
-            {
-                App.Current.MainWindow.WindowState = WindowState.Normal;
-            }
-            App.Current.MainWindow.Topmost = true;
-            App.Current.MainWindow.Topmost = false;
-
-            App.Current.MainWindow.Activate();
-
-            App.Current.MainWindow.Focus();
-            App.Current.MainWindow.Left = SystemParameters.WorkArea.Left;
-            App.Current.MainWindow.Top = SystemParameters.WorkArea.Top;
-        }
+        ///// <summary>
+        ///// Ввод пин-кода пользователем
+        ///// </summary>
+        ///// <param name="sInputBoxText">Question, текст в InputBox</param>
+        ///// <returns>Верный ли введенный пользователем пин-код</returns>
+        //public static bool EqualsPinCode(string sInputBoxText = "Введите пин-код")
+        //{
+        //    ForRobot.Views.Windows.InputWindow inputWindow = new ForRobot.Views.Windows.InputWindow(sInputBoxText);
+        //    inputWindow.ShowDialog();
+        //    return Sha256(inputWindow.Answer) == ForRobot.Properties.Settings.Default.PinCode;
+        //}
 
         #endregion
     }

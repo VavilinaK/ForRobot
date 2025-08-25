@@ -101,7 +101,8 @@ namespace ForRobot.Model.Detals
             get => this._scoseType ?? (this._scoseType = ScoseTypes.Rect);
             set
             {
-                this._scoseType = value;
+                Set(ref this._scoseType, value, false);
+                RaisePropertyChanged(nameof(this.DiferentDistance), nameof(this.PlateWidth), nameof(this.BevelToLeft), nameof(this.BevelToRight), nameof(this.GenericImage), nameof(this.RebraImage));
                 this.OnChangeProperty(nameof(this.ScoseType));
             }
         }
@@ -116,11 +117,12 @@ namespace ForRobot.Model.Detals
             get => this._selectedWeldingSchema;
             set
             {
-                this._selectedWeldingSchema = value;
+                Set(ref this._selectedWeldingSchema, value, false);
 
                 if (this._selectedWeldingSchema != ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit))
                     this.WeldingSchema = this.FillWeldingSchema();
 
+                RaisePropertyChanged(nameof(this.WeldingSchema));
                 this.OnChangeProperty(nameof(this.SelectedWeldingSchema));
             }
         }
@@ -136,7 +138,8 @@ namespace ForRobot.Model.Detals
             get => this._diferentDistance;
             set
             {
-                this._diferentDistance = value;
+                Set(ref this._diferentDistance, value, false);
+
                 if (!this._diferentDistance && this.RibsCollection?.Count > 0)
                 {
                     for (int i = 0; i < this.RibsCollection.Count; i++)
@@ -171,7 +174,8 @@ namespace ForRobot.Model.Detals
             get => this.DiferentDistance ? this._paralleleRibs : true;
             set
             {
-                this._paralleleRibs = value;
+                Set(ref this._paralleleRibs, value, false);
+
                 if (this._paralleleRibs && this.RibsCollection?.Count > 0) // Изменение расстояния для параллельных рёбер.
                     for (int i = 0; i < this.RibsCollection.Count; i++)
                     {
@@ -192,12 +196,12 @@ namespace ForRobot.Model.Detals
             get => this._diferentDissolutionLeft;
             set
             {
-                this._diferentDissolutionLeft = value;
-                if (!_diferentDissolutionLeft && this.RibsCollection?.Count > 0)
+                if (!value && this.RibsCollection?.Count > 0)
                     for (int i = 0; i < this.RibsCollection.Count; i++)
                     {
                         this.RibsCollection[i].DissolutionLeft = this.DissolutionLeft;
                     }
+                Set(ref this._diferentDissolutionLeft, value, false);
                 this.OnChangeProperty(nameof(this.DiferentDissolutionLeft));
             }
         }
@@ -213,12 +217,13 @@ namespace ForRobot.Model.Detals
             get => this._diferentDissolutionRight;
             set
             {
-                this._diferentDissolutionRight = value;
-                if (!_diferentDissolutionRight && this.RibsCollection?.Count > 0)
+                if (!value && this.RibsCollection?.Count > 0)
                     for (int i = 0; i < this.RibsCollection.Count; i++)
                     {
                         this.RibsCollection[i].DissolutionRight = this.DissolutionRight;
                     }
+
+                Set(ref this._diferentDissolutionRight, value, false);
                 this.OnChangeProperty(nameof(this.DiferentDissolutionRight));
             }
         }
@@ -279,6 +284,7 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.PlateLength = value;
+                RaisePropertyChanged(nameof(this.RebraImage), nameof(this.GenericImage));
                 this.OnChangeProperty(nameof(this.PlateLength));
             }
         }
@@ -309,6 +315,7 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.PlateThickness = value;
+                RaisePropertyChanged(nameof(this.RebraImage));
                 this.OnChangeProperty(nameof(this.PlateThickness));
             }
         }
@@ -332,6 +339,7 @@ namespace ForRobot.Model.Detals
                 //        this.RibsCollection[i].HightRight = base.RibHeight;
                 //    }
                 //}
+                RaisePropertyChanged(nameof(this.RebraImage));
                 this.OnChangeProperty(nameof(this.RibHeight));
             }
         }
@@ -353,6 +361,7 @@ namespace ForRobot.Model.Detals
                     this.RibsCollection[0].DistanceLeft = base.DistanceToFirst;
                     this.RibsCollection[0].DistanceRight = base.DistanceToFirst;
                 }
+                RaisePropertyChanged(nameof(this.GenericImage));
                 this.OnChangeProperty();
             }
         }
@@ -375,6 +384,7 @@ namespace ForRobot.Model.Detals
                         this.RibsCollection[i].DistanceLeft = base.DistanceBetween;
                         this.RibsCollection[i].DistanceRight = base.DistanceBetween;
                     }
+                RaisePropertyChanged(nameof(this.RebraImage), nameof(this.GenericImage));
                 this.OnChangeProperty();
             }
         }
@@ -396,6 +406,7 @@ namespace ForRobot.Model.Detals
                     {
                         this.RibsCollection[i].IdentToLeft = base.IdentToLeft;
                     }
+                RaisePropertyChanged(nameof(this.GenericImage));
                 this.OnChangeProperty();
             }
         }
@@ -417,6 +428,7 @@ namespace ForRobot.Model.Detals
                     {
                         this.RibsCollection[i].IdentToRight = base.IdentToRight;
                     }
+                RaisePropertyChanged(nameof(this.GenericImage));
                 this.OnChangeProperty();
             }
         }
@@ -438,6 +450,7 @@ namespace ForRobot.Model.Detals
                     {
                         this.RibsCollection[i].DissolutionLeft = base.DissolutionLeft;
                     }
+                RaisePropertyChanged(nameof(this.GenericImage));
                 this.OnChangeProperty();
             }
         }
@@ -459,6 +472,7 @@ namespace ForRobot.Model.Detals
                     {
                         this.RibsCollection[i].DissolutionRight = base.DissolutionRight;
                     }
+                RaisePropertyChanged(nameof(this.GenericImage));
                 this.OnChangeProperty();
             }
         }
@@ -474,6 +488,7 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.RibThickness = value;
+                RaisePropertyChanged(nameof(this.GenericImage));
                 this.OnChangeProperty(nameof(this.RibThickness));
             }
         }
@@ -489,6 +504,7 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.SearchOffsetStart = value;
+                RaisePropertyChanged(nameof(this.RebraImage));
                 this.OnChangeProperty(nameof(this.SearchOffsetStart));
             }
         }
@@ -504,6 +520,7 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.SearchOffsetEnd = value;
+                RaisePropertyChanged(nameof(this.RebraImage));
                 this.OnChangeProperty(nameof(this.SearchOffsetEnd));
             }
         }
@@ -564,6 +581,7 @@ namespace ForRobot.Model.Detals
             set
             {
                 this._bevelToLeft = value;
+                RaisePropertyChanged(nameof(this.GenericImage));
                 this.OnChangeProperty(nameof(this.BevelToLeft));
             }
         }
@@ -579,6 +597,7 @@ namespace ForRobot.Model.Detals
             set
             {
                 this._bevelToRight = value;
+                RaisePropertyChanged(nameof(this.GenericImage));
                 this.OnChangeProperty(nameof(this.BevelToRight));
             }
         }
@@ -724,9 +743,6 @@ namespace ForRobot.Model.Detals
             get => base.RibCount;
             set
             {
-                if (value < MIN_RIB_COUNT)
-                    return;
-
                 base.RibCount = value;
 
                 if (this.RibsCollection != null)
@@ -735,6 +751,7 @@ namespace ForRobot.Model.Detals
                 if (this.WeldingSchema != null)
                     this.ChangeWeldingSchema(this.WeldingSchema, this.SelectedWeldingSchema, RibCount);
 
+                this.RaisePropertyChanged(nameof(this.RebraImage), nameof(this.GenericImage));
                 this.OnChangeProperty(nameof(this.RibCount));
             }
         }
@@ -762,7 +779,7 @@ namespace ForRobot.Model.Detals
         [JsonIgnore]
         [SaveAttribute]
         public FullyObservableCollection<WeldingSchemas.SchemaRib> WeldingSchema { get; private set; }
-        
+
         [JsonIgnore]
         /// <summary>
         /// Изображение рёбер плиты
@@ -770,14 +787,14 @@ namespace ForRobot.Model.Detals
         public override sealed BitmapImage RebraImage
         {
             get => Equals(this.ScoseType, ScoseTypes.Rect) ? (this._rebraImage = JoinRebra(GetStartRebraImage(), GetBodyRebraImage(), GetEndRebraImage())) : null;
-            set => this._rebraImage = value;
+            set => Set(ref this._rebraImage, value, false);
         }
 
         [JsonIgnore]
         /// <summary>
         /// Общее изображение плиты
         /// </summary>
-        public override sealed BitmapImage GenericImage { get => this.GetGenericImage(); set => this._plitaImage = value; }
+        public override sealed BitmapImage GenericImage { get => this.GetGenericImage(); set => Set(ref this._plitaImage, value, false); }
 
         #endregion
 
@@ -816,7 +833,7 @@ namespace ForRobot.Model.Detals
         private FullyObservableCollection<Rib> FillRibsCollection()
         {
             Rib rib;
-            List<Rib> ribsList = new List<Rib>();
+            List<Rib> ribs = new List<Rib>();
 
             for (int i = 0; i < this.RibCount; i++)
             {
@@ -841,11 +858,10 @@ namespace ForRobot.Model.Detals
                     rib.DistanceRight = this.DistanceBetween;
                 }
 
-                ribsList.Add(rib);
+                ribs.Add(rib);
             }
-            FullyObservableCollection<Rib> ribs = new FullyObservableCollection<Rib>(ribsList);
-            ribs.ItemPropertyChanged += (s, e) => this.OnChangeProperty();
-            return ribs;
+
+            return new FullyObservableCollection<Rib>(ribs);
         }
 
         private FullyObservableCollection<WeldingSchemas.SchemaRib> FillWeldingSchema()
@@ -854,21 +870,15 @@ namespace ForRobot.Model.Detals
                 return null;
 
             FullyObservableCollection<WeldingSchemas.SchemaRib> schema = ForRobot.Model.Detals.WeldingSchemas.BuildingSchema(ForRobot.Model.Detals.WeldingSchemas.GetSchemaType(this.SelectedWeldingSchema), base.RibCount);
-            schema.ItemPropertyChanged += (s, e) =>
-            {
-                if (this.SelectedWeldingSchema != WeldingSchemas.GetDescription(WeldingSchemas.SchemasTypes.Edit))
-                    this.SelectedWeldingSchema = ForRobot.Model.Detals.WeldingSchemas.GetDescription(WeldingSchemas.SchemasTypes.Edit);
 
-                this.OnChangeProperty(nameof(this.WeldingSchema));
-            };
-            //foreach (var rib in schema)
-            //{
-            //    rib.Change += (s, e) => {
-            //        if (this.SelectedWeldingSchema != ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit))
-            //            this.SelectedWeldingSchema = ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit);
-            //        this.OnChangeProperty();
-            //    };
-            //}
+            foreach (var rib in schema)
+            {
+                rib.Change += (o, e) => {
+                    if (this.SelectedWeldingSchema != ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit))
+                        this.SelectedWeldingSchema = ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit);
+                    this.OnChangeProperty();
+                };
+            }
             return schema;
         }
 
@@ -1333,8 +1343,6 @@ namespace ForRobot.Model.Detals
                     return JoinPlita(new Bitmap(ForRobot.Libr.Converters.ImageConverter.BitmapImagetoBitmap((BitmapImage)Application.Current.TryFindResource("ImagePlitaStart"))),
                                      new Bitmap(ForRobot.Libr.Converters.ImageConverter.BitmapImagetoBitmap((BitmapImage)Application.Current.TryFindResource("ImagePlitaBody"))),
                                      new Bitmap(ForRobot.Libr.Converters.ImageConverter.BitmapImagetoBitmap((BitmapImage)Application.Current.TryFindResource("ImagePlitaEnd"))));
-                //new Bitmap(ForRobot.Libr.Converters.ImageConverter.BitmapImagetoBitmap(new BitmapImage(new Uri("pack://application:,,,/InterfaceOfRobots;component/Themes/Images/EndPlita.png")))));
-                //new Bitmap(ForRobot.Libr.Converters.ImageConverter.BitmapImagetoBitmap((BitmapImage)Application.Current.TryFindResource("ImagePlitaEnd"))));
 
                 case ScoseTypes.SlopeLeft:
                     return ForRobot.Libr.Converters.ImageConverter.BitmapToBitmapImage(GetTextSlopeLeft(new Bitmap(ForRobot.Libr.Converters.ImageConverter.BitmapImagetoBitmap((BitmapImage)Application.Current.TryFindResource("ImageSlopeLeft")), new System.Drawing.Size(1280, 720))));
@@ -1381,7 +1389,7 @@ namespace ForRobot.Model.Detals
                     graphics.DrawString(PlateLength.ToString(),
                                         FontLibr.FindFont(graphics, PlateLength.ToString(), new System.Drawing.Size(100, 30), font),
                                         new SolidBrush(Color.Black),
-                                        new PointF(420, 475),
+                                        new PointF(420, 480),
                                         stringFormat2);
 
                     //graphics.DrawString(PlateWidth.ToString(),
@@ -1393,13 +1401,13 @@ namespace ForRobot.Model.Detals
                     graphics.DrawString(DissolutionLeft.ToString(),
                                         FontLibr.FindFont(graphics, DissolutionLeft.ToString(), new System.Drawing.Size(48, 22), font),
                                         new SolidBrush(Color.Black),
-                                        new PointF(95, 420),
+                                        new PointF(710, 430),
                                         stringFormat2);
 
                     graphics.DrawString(DissolutionRight.ToString(),
                                         FontLibr.FindFont(graphics, DissolutionRight.ToString(), new System.Drawing.Size(48, 22), font),
                                         new SolidBrush(Color.Black),
-                                        new PointF(710, 420),
+                                        new PointF(95, 430),
                                         stringFormat2);
 
                     graphics.DrawString(RibThickness.ToString(),
@@ -1744,6 +1752,64 @@ namespace ForRobot.Model.Detals
             return bitmap;
         }
 
+        private Bitmap GetArrows(Bitmap bitmap)
+        {
+            using (Graphics g = Graphics.FromImage(bitmap))
+            {
+                Pen pen = new Pen(Color.FromArgb(0, 183, 239), 1);
+
+                PointF[] points1 =
+                    {
+                        new PointF(804,  460),
+                        new PointF(804, 462),
+                        new PointF(806,  462),
+                        new PointF(806, 464),
+                        new PointF(808, 464),
+                        new PointF(808, 466),
+                        new PointF(810, 466),
+                        new PointF(810, 468),
+                        new PointF(811, 468),
+                        new PointF(811, 469),
+                        new PointF(812, 469),
+                        new PointF(812, 468),
+                        new PointF(813, 468),
+                        new PointF(813, 466),
+                        new PointF(815, 466),
+                        new PointF(815, 464),
+                        new PointF(817, 464),
+                        new PointF(817, 462),
+                        new PointF(819, 462),
+                        new PointF(819, 460),
+                    };
+
+                PointF[] points2 =
+                    {
+                        new PointF(804,  39),
+                        new PointF(804, 38),
+                        new PointF(806,  38),
+                        new PointF(806, 36),
+                        new PointF(808, 36),
+                        new PointF(808, 34),
+                        new PointF(810, 34),
+                        new PointF(810, 32),
+                        new PointF(811, 32),
+                        new PointF(811, 31),
+                        new PointF(812, 31),
+                        new PointF(812, 32),
+                        new PointF(813, 32),
+                        new PointF(813, 34),
+                        new PointF(815, 34),
+                        new PointF(815, 36),
+                        new PointF(817, 36),
+                        new PointF(817, 38),
+                        new PointF(819, 38),
+                        new PointF(819, 39),
+                    };
+
+            }
+            return bitmap;
+        }
+
         /// <summary>
         /// Объединение изображений плиты
         /// </summary>
@@ -1754,7 +1820,7 @@ namespace ForRobot.Model.Detals
         private BitmapImage JoinPlita(Bitmap png1, Bitmap png2, Bitmap png3)
         {
             BitmapImage imageSource = new BitmapImage();
-            using (Bitmap result = new Bitmap(980, png1.Height + png2.Height * 2 + png3.Height ))
+            using (Bitmap result = new Bitmap(980, png1.Height + png2.Height * 2 + png3.Height + 10))
             {
                 using (Graphics g = Graphics.FromImage(result))
                 {
@@ -1766,11 +1832,22 @@ namespace ForRobot.Model.Detals
                             g.DrawImage(png2, 0, 150);
                         else
                             g.DrawImage(png2, 0, (i - 1) * 88 + 150);
+
+                        //    else if (RibCount % 2 == 0 && i == (RibCount / 2) + 1)
+                        //        g.DrawImage(PaintDistanceBetween_And_WightImage(png2), i * 150, 0);
+                        //    else if (RibCount % 2 == 1 && i == Math.Ceiling((decimal)RibCount / 2))
+                        //        g.DrawImage(PaintDistanceBetween_And_WightImage(png2), i * 150, 0);
+                        //    else
+                        //        g.DrawImage(png2, i * 150, 0);
                     }
 
                     g.DrawImage(png3, 0, 2 * 88 + 150);
+
+                    //Font font = new Font("Lucida Console", 18, System.Drawing.FontStyle.Regular);
+                    //StringFormat stringFormat = new StringFormat(StringFormatFlags.DirectionVertical);
+                    //g.DrawString(PlateLength.ToString(), font, new SolidBrush(Color.Black), new PointF(835, result.Height/2 - PlateLength.ToString().Length * (font.Size - 8)), stringFormat);
                 }
-                imageSource = ForRobot.Libr.Converters.ImageConverter.BitmapToBitmapImage(GetText(result));
+                imageSource = ForRobot.Libr.Converters.ImageConverter.BitmapToBitmapImage(GetText(GetArrows(result)));
             }
             return imageSource;
         }
@@ -1780,19 +1857,6 @@ namespace ForRobot.Model.Detals
         #endregion Private functions
 
         #region Public functions
-
-        /// <summary>
-        /// Десериализация класса <see cref="Plita"/> из JSON-строки
-        /// </summary>
-        /// <param name="sJsonString">JSON-строка</param>
-        /// <returns></returns>
-        public override object DeserializeDetal(string sJsonString)
-        {
-            if (string.IsNullOrEmpty(sJsonString))
-                return new Plita(Detals.DetalType.Plita);
-            else
-                return JsonConvert.DeserializeObject<Plita>(JObject.Parse(sJsonString, this._jsonLoadSettings).ToString(), this._jsonDeserializerSettings);
-        }
 
         public FullyObservableCollection<Rib> SetRibsCollection(FullyObservableCollection<Rib> collection) => this.RibsCollection = collection;
         

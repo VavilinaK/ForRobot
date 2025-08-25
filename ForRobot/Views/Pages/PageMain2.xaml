@@ -1431,10 +1431,6 @@
                                         SelectedItem="{Binding Path=SelectedItem, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}">
 
                                 <TabControl.Resources>
-                                    <Style TargetType="{x:Type ContentControl}">
-                                        <Setter Property="DataContext" Value="{Binding Path=DetalObject}"/>
-                                    </Style>
-                                    
                                     <Style TargetType="{x:Type TabItem}">
                                         <Setter Property="FontSize" Value="15"/>
                                         <Setter Property="Padding" Value="5"/>
@@ -1643,7 +1639,7 @@
                         </Style>
                     </Grid.Style>
 
-                    <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="15, 5"
+                    <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="10"
                                       HorizontalAlignment="Center" VerticalAlignment="Center"
                                       Height="{Binding RelativeSource={RelativeSource Self}, Path=Child.ActualHeight}"
                                       Width="{Binding RelativeSource={RelativeSource Self}, Path=Child.ActualWidth}">
@@ -1654,7 +1650,7 @@
 
                             <control:Image2D.Style>
                                 <Style TargetType="{x:Type control:Image2D}">
-                                    <Setter Property="MaxHeight" Value="600"/>
+                                    <Setter Property="MaxHeight" Value="700"/>
 
                                     <Style.Triggers>
                                         <MultiDataTrigger>
@@ -1663,7 +1659,7 @@
                                                 <Condition Binding="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="d_rect"/>
                                             </MultiDataTrigger.Conditions>
 
-                                            <Setter Property="MaxHeight" Value="400"/>
+                                            <Setter Property="MaxHeight" Value="480"/>
                                         </MultiDataTrigger>
                                     </Style.Triggers>
                                 </Style>
