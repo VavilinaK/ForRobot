@@ -120,7 +120,7 @@ namespace ForRobot.Model.Detals
 
                 if (this._selectedWeldingSchema != ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit))
                     this.WeldingSchema = this.FillWeldingSchema();
-                
+
                 this.OnChangeProperty(nameof(this.SelectedWeldingSchema));
             }
         }

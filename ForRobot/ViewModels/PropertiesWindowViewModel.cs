@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Input;
 using System.Diagnostics;
 using System.Configuration;
@@ -335,6 +336,33 @@ namespace ForRobot.ViewModels
                             Keyboard.ClearFocus();
                         }
                     }), System.Windows.Threading.DispatcherPriority.ContextIdle);
+
+                    //var parent = textBox.Parent as UIElement;
+                    //if (parent != null && parent.Focusable)
+                    //{
+                    //    parent.Focus();
+                    //}
+                    //else
+                    //{
+                    //    var page = FindParent<Window>(textBox);
+                    //    if (page != null)
+                    //    {
+                    //        page.Focus();
+                    //    }
+                    //}
+
+                    //textBox.Dispatcher.BeginInvoke(new Action(() =>
+                    //{
+                    //    var parent = textBox.Parent as UIElement;
+                    //    if (parent != null && parent.Focusable)
+                    //    {
+                    //        parent.Focus();
+                    //    }
+                    //    else
+                    //    {
+                    //        Keyboard.ClearFocus();
+                    //    }
+                    //}), System.Windows.Threading.DispatcherPriority.ContextIdle);
                     break;
 
                 default:
@@ -377,6 +405,18 @@ namespace ForRobot.ViewModels
             _isSelectClosedControl = true;
         }
 
+        // Поиск родительского элемента определенного типа
+        private static T FindParent<T>(DependencyObject child) where T : DependencyObject
+        {
+            DependencyObject parent = VisualTreeHelper.GetParent(child);
+            while (parent != null && !(parent is T))
+            {
+                parent = VisualTreeHelper.GetParent(parent);
+            }
+            return parent as T;
+        }
+
+        // Поиск дочерниго элемента определенного типа
         private static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
         {
             if (depObj != null)
