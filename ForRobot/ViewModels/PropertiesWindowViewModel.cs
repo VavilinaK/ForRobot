@@ -33,6 +33,7 @@ namespace ForRobot.ViewModels
         
         private RelayCommand _standartSettingsCommand;  
         private RelayCommand _editPathForUpdateCommand;
+        private RelayCommand _editAppForOpenFile;
         private RelayCommand _checkBoxAvailableFolderCommand;
 
         #endregion
@@ -227,6 +228,34 @@ namespace ForRobot.ViewModels
         /// Команда изменения директивы каталога с новой версией программы
         /// </summary>
         public ICommand EditPathForUpdateCommand { get => this._editPathForUpdateCommand ?? (this._editPathForUpdateCommand = new RelayCommand(_ => this.EditPathForUpdat())); }
+        public ICommand EditAppForOpenFile { get => this._editAppForOpenFile ?? (this._editAppForOpenFile = new RelayCommand(_ => 
+        {
+            System.Collections.IEnumerable selectedItems = null;
+            using (ForRobot.Views.Windows.SelectWindow selectWindow = new ForRobot.Views.Windows.SelectWindow(AppsForOpenFile.GetInstalledApplications(), this.Settings.SavedAppsForOpened))
+            {
+                ResourceDictionary resource = (ResourceDictionary)Application.Current.Resources["SelectAppsWindowResource"];
+
+                if(resource == null)
+                    throw new Exception("Не найден словарь ресурсов SelectAppsWindowResource.");
+
+                selectWindow.Resources.MergedDictionaries.Clear();
+                selectWindow.Resources.MergedDictionaries.Add(resource);
+
+                //selectWindow.Resources = (ResourceDictionary)Application.Current.Resources["SelectAppsWindowResource"];
+                //selectWindow.Resources.MergedDictionaries.Clear();
+                //selectWindow.Resources.MergedDictionaries.Add((ResourceDictionary)Application.Current.Resources["SelectAppsWindowResource"]);
+                //selectWindow.InvalidateVisual();
+
+                if (selectWindow.ShowDialog() == true)
+                    selectedItems = selectWindow.SelectedItems;
+            }
+
+            if (selectedItems == null)
+                return;
+
+            this.Settings.SavedAppsForOpened = selectedItems.Cast<ApplicationInfo>().ToList<ApplicationInfo>();
+            RaisePropertyChanged(nameof(this.Settings));
+        })); }
         /// <summary>
         /// Изменение ПИН-кода
         /// </summary>
@@ -268,16 +297,15 @@ namespace ForRobot.ViewModels
             if (!ForRobot.App.EqualsPinCode())
                 return;
 
-            //ForRobot.Properties.Settings.Default.UpdatePath
-
-            //                using (ForRobot.Views.Windows.InputWindow inputWindow = new ForRobot.Views.Windows.InputWindow("Введите путь к новой папке с обновлениями"))
-            //                {
-            //                    if (inputWindow.ShowDialog() == true && Directory.Exists(inputWindow.Answer))
-            //                    {
-            //                        Properties.Settings.Default.UpdatePath = inputWindow.Answer;
-            //                        Properties.Settings.Default.Save();
-            //                    }
-            //                }
+            using (var fbd = new System.Windows.Forms.FolderBrowserDialog() { SelectedPath = Properties.Settings.Default.UpdatePath })
+            {
+                System.Windows.Forms.DialogResult result = fbd.ShowDialog();
+                if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
+                    Properties.Settings.Default.UpdatePath = fbd.SelectedPath;
+                    Properties.Settings.Default.Save();
+                }
+            }
         }
 
         /// <summary>
@@ -324,45 +352,20 @@ namespace ForRobot.ViewModels
                     textBox = control as System.Windows.Controls.TextBox;
                     if (textBox == null) return;
 
-                    textBox.Dispatcher.BeginInvoke(new Action(() =>
+                    var parent = textBox.Parent as UIElement;
+                    if (parent != null && parent.Focusable)
                     {
-                        var parent = textBox.Parent as UIElement;
-                        if (parent != null && parent.Focusable)
+                        parent.Focus();
+                    }
+                    else
+                    {
+                        var page = FindParent<Window>(textBox);
+                        if (page != null)
                         {
-                            parent.Focus();
+                            page.Focus();
                         }
-                        else
-                        {
-                            Keyboard.ClearFocus();
-                        }
-                    }), System.Windows.Threading.DispatcherPriority.ContextIdle);
-
-                    //var parent = textBox.Parent as UIElement;
-                    //if (parent != null && parent.Focusable)
-                    //{
-                    //    parent.Focus();
-                    //}
-                    //else
-                    //{
-                    //    var page = FindParent<Window>(textBox);
-                    //    if (page != null)
-                    //    {
-                    //        page.Focus();
-                    //    }
-                    //}
-
-                    //textBox.Dispatcher.BeginInvoke(new Action(() =>
-                    //{
-                    //    var parent = textBox.Parent as UIElement;
-                    //    if (parent != null && parent.Focusable)
-                    //    {
-                    //        parent.Focus();
-                    //    }
-                    //    else
-                    //    {
-                    //        Keyboard.ClearFocus();
-                    //    }
-                    //}), System.Windows.Threading.DispatcherPriority.ContextIdle);
+                    }
+                    Keyboard.ClearFocus();
                     break;
 
                 default:
@@ -382,24 +385,6 @@ namespace ForRobot.ViewModels
                             break;
                         }
                     }
-
-                    //FocusManager.SetFocusedElement(FocusManager.GetFocusScope(control), null);
-                    //control.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
-
-
-                    //control?.Dispatcher.BeginInvoke(new Action(() =>
-                    //{
-                    //    System.Windows.Input.Keyboard.ClearFocus();
-                    //    System.Windows.Input.FocusManager.SetFocusedElement(System.Windows.Input.FocusManager.GetFocusScope(control), null);
-                    //}), System.Windows.Threading.DispatcherPriority.ContextIdle);
-
-
-                    //FocusManager.SetFocusedElement(FocusManager.GetFocusScope(control), null);
-                    //Keyboard.ClearFocus();
-                    //textbox = control as System.Windows.Controls.TextBox;
-                    ////System.Windows.Input.Keyboard.ClearFocus();
-                    //textbox.Foc
-                    ////textbox.Focusable = false;
                     break;
             }
             _isSelectClosedControl = true;

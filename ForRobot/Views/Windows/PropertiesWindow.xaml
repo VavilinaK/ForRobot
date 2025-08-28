@@ -9,7 +9,7 @@
         xmlns:vm="clr-namespace:ForRobot.ViewModels"
         mc:Ignorable="d"
         Title="Настройки программы"
-        Height="450" Width="700" ResizeMode="NoResize"
+        Height="450" Width="700"
         ShowInTaskbar="True"  WindowStartupLocation="CenterScreen"
         Background="#cfcfcf"
         Icon="/InterfaceOfRobots;component/Themes/Images/settings.png">

@@ -170,7 +170,8 @@ namespace ForRobot.Views.Controls
         {
             NavigationTreeView navigationTreeView = (NavigationTreeView)d;
             navigationTreeView.Robot = (Robot)e.NewValue;
-            navigationTreeView.Robot.LoadedFilesEvent += (s, o) => navigationTreeView.OnPropertyChanged(nameof(FileCollection));
+            if(navigationTreeView.Robot != null)
+                navigationTreeView.Robot.LoadedFilesEvent += (s, o) => navigationTreeView.OnPropertyChanged(nameof(FileCollection));
             navigationTreeView.OnPropertyChanged(nameof(Robot));
         }
 

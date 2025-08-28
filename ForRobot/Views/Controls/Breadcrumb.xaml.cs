@@ -134,7 +134,7 @@ namespace ForRobot.Views.Controls
         /// </summary>
         public List<String> FoldersCollection
         {
-            get => this.Robot.PathControllerFolder.Split('\\').Where(item => item != string.Empty).Select((item, index) => index == 0 ? item + "\\" : item).ToList<string>();
+            get => this.Robot?.PathControllerFolder.Split('\\').Where(item => item != string.Empty).Select((item, index) => index == 0 ? item + "\\" : item).ToList<string>();
         }
 
         /// <summary>
@@ -247,7 +247,10 @@ namespace ForRobot.Views.Controls
         {
             Breadcrumb breadcrumb = (Breadcrumb)d;
             breadcrumb.Robot = (Robot)e.NewValue;
-            breadcrumb.Robot.ChangedControllerPathEvent += (s, o) => breadcrumb.OnPropertyChanged(nameof(FoldersCollection));
+
+            if(breadcrumb.Robot != null)
+                breadcrumb.Robot.ChangedControllerPathEvent += (s, o) => breadcrumb.OnPropertyChanged(nameof(FoldersCollection));
+
             breadcrumb.OnPropertyChanged(nameof(breadcrumb.Robot), nameof(breadcrumb.FoldersCollection));
         }
 

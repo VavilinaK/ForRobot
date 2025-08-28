@@ -8,6 +8,80 @@
                     xmlns:conv="clr-namespace:ForRobot.Libr.Converters"
                     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
                     xmlns:pt="clr-namespace:PropertyTools.Wpf;assembly=PropertyTools.Wpf">
+
+    <ResourceDictionary x:Key="SelectAppsWindowResource"
+                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+        <Style x:Key="textBase" TargetType="{x:Type FrameworkElement}">
+            <Setter Property="TextElement.FontSize" Value="{StaticResource FontSizeNP2}"/>
+            <Setter Property="TextElement.FontFamily" Value="DefaultFont"/>
+            <Setter Property="TextElement.Foreground" Value="{StaticResource ThemeFgP2Brush}"/>
+        </Style>
+
+        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource textBase}">
+            <Setter Property="Margin" Value="20, 5"/>
+            <Setter Property="MinWidth" Value="60"/>
+            <Setter Property="Padding" Value="5, 3"/>
+        </Style>
+
+        <Style TargetType="{x:Type ContentControl}" BasedOn="{StaticResource textBase}">
+            <Setter Property="ContentTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <!--<StackPanel Background="AliceBlue"/>-->
+
+                        <Grid DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}, Mode=FindAncestor}}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <TextBlock Grid.Column="1" Text="{Binding Path=Name}" Width="100"/>
+                        </Grid>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type Window}" BasedOn="{StaticResource textBase}">
+            <Setter Property="Height" Value="200"/>
+            <Setter Property="Width" Value="200"/>
+            <Setter Property="ResizeMode" Value="NoResize"/>
+        </Style>
+    </ResourceDictionary>
+    
+    <Style x:Key="SelectAppsWindowStyle" TargetType="{x:Type Window}">
+        <Setter Property="Height" Value="500"/>
+        <Setter Property="Width" Value="200"/>
+
+        <Setter Property="FrameworkElement.Style">
+            <Setter.Value>
+                <Style TargetType="{x:Type FrameworkElement}">
+                    <Setter Property="TextElement.FontSize" Value="{StaticResource FontSizeNP1}"/>
+                    <Setter Property="TextElement.FontFamily" Value="DefaultFont"/>
+                    <Setter Property="TextElement.Foreground" Value="{StaticResource ThemeFgP2Brush}"/>
+                </Style>
+            </Setter.Value>
+        </Setter>
+
+        <Setter Property="ContentTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <StackPanel Background="AliceBlue" Width="100"/>
+
+                    <!--<Grid DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}, Mode=FindAncestor}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="Tttt" Width="100"/>
+                    </Grid>-->
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
     
     <!--Вкладка "Общии"-->
     <DataTemplate x:Key="GeneralProperiesTemplate" DataType="{x:Type ContentControl}">
@@ -55,6 +129,7 @@
 
         <Grid Background="Transparent" DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -163,30 +238,27 @@
                     </ComboBox>
                 </Grid>
             </GroupBox>
-           
-            <Button Grid.Row="3" Content="Изменить пин-код" Margin="15" Command="{Binding Path=EditPinCodeCommand}" 
+
+            <Grid Grid.Row="3" Margin="0,10,10,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Label Grid.Column="0" Content="Приложение для открытия файлов"/>
+
+                <ComboBox Grid.Column="1">
+                    
+                </ComboBox>
+
+                <Button Grid.Column="3" Content="Изменить" Padding="10, 5"
+                        Command="{Binding Path=EditAppForOpenFile}"/>
+            </Grid>
+
+            <Button Grid.Row="4" Content="Изменить пин-код" Margin="15" Command="{Binding Path=EditPinCodeCommand}" 
                     VerticalAlignment="Bottom"/>
-
-            <!--<GroupBox Grid.Row="2" Header="Делать запрос пользователю перед закрытием окна">
-                <Grid Margin="10">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <RadioButton Grid.Column="0" GroupName="CloseWindow" Content="Всегда" IsChecked="{Binding Path=Settings.
-            , Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static settings:ModeClosingApp.Ever}, Mode=TwoWay, TargetNullValue={StaticResource False}, FallbackValue={StaticResource False}}"/>
-
-                    <RadioButton Grid.Column="1" GroupName="CloseWindow" Content="Никогда" IsChecked="{Binding Path=Settings.ModeClosingApp, Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static settings:ModeClosingApp.Never}, Mode=TwoWay, TargetNullValue={StaticResource False}, FallbackValue={StaticResource False}}"/>
-
-                    <RadioButton Grid.Column="2" GroupName="CloseWindow" IsChecked="{Binding Path=Settings.ModeClosingApp, Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={x:Static settings:ModeClosingApp.HaveConnected}, Mode=TwoWay, TargetNullValue={StaticResource False}, FallbackValue={StaticResource False}}">
-                        <RadioButton.Content>
-                            <TextBlock Text="Если есть активное соединение" TextWrapping="Wrap"/>
-                        </RadioButton.Content>
-                    </RadioButton>
-                </Grid>
-            </GroupBox>-->
         </Grid>        
     </DataTemplate>
 
@@ -828,7 +900,7 @@
                     <TextBox Grid.Column="1" Text="{Binding StandartNameFile, Mode=TwoWay}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="GotFocus">
-                                <i:InvokeCommandAction Command="{Binding Path=SelectClosedControlCommand}" CommandParameter="{Binding Path=., RelativeSource={RelativeSource AncestorType={x:Type CheckBox}, Mode=FindAncestor}}"/>
+                                <i:InvokeCommandAction Command="{Binding Path=SelectClosedControlCommand}" CommandParameter="{Binding Path=., RelativeSource={RelativeSource AncestorType={x:Type TextBox}, Mode=FindAncestor}}"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </TextBox>
@@ -847,7 +919,13 @@
                               SelectedItem="{Binding Path=SelectedDetalTypeScript, Mode=TwoWay}"
                               SelectedIndex="0"/>
 
-                    <TextBox Grid.Column="1" Text="{Binding ScriptName, Mode=TwoWay}"/>
+                    <TextBox Grid.Column="1" Text="{Binding ScriptName, Mode=TwoWay}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="GotFocus">
+                                <i:InvokeCommandAction Command="{Binding Path=SelectClosedControlCommand}" CommandParameter="{Binding Path=., RelativeSource={RelativeSource AncestorType={x:Type TextBox}, Mode=FindAncestor}}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </TextBox>
                 </Grid>
             </GroupBox>
 

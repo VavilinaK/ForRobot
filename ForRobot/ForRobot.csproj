@@ -340,6 +340,7 @@
     <Compile Include="Libr\Logger.cs" />
     <Compile Include="Libr\ValueChangedEventArgs.cs" />
     <Compile Include="Model\File3D\Colors.cs" />
+    <Compile Include="Model\Settings\AppsForOpenFile.cs" />
     <Compile Include="Model\Settings\PropertyColor.cs" />
     <Compile Include="Model\Settings\ModeClosingApp.cs" />
     <Compile Include="Model\Settings\Settings.cs" />
@@ -395,6 +396,9 @@
     </Compile>
     <Compile Include="Views\Windows\PropertiesWindow.xaml.cs">
       <DependentUpon>PropertiesWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Windows\SelectWindow.xaml.cs">
+      <DependentUpon>SelectWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="Themes\PropertiesWindowStyleDictionary.xaml">
       <SubType>Designer</SubType>
@@ -524,6 +528,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Windows\PropertiesWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Windows\SelectWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

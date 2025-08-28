@@ -58,7 +58,7 @@ namespace ForRobot.Views.Windows
 
         #region IDisposable Support
 
-        private bool _disposedValue = false; // Для определения избыточных вызовов
+        private bool _disposedValue = false;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -70,8 +70,7 @@ namespace ForRobot.Views.Windows
         }
 
         ~InputWindow() => Dispose(false);
-
-        // Этот код добавлен для правильной реализации шаблона высвобождаемого класса.
+        
         public void Dispose()
         {
             Dispose(true);

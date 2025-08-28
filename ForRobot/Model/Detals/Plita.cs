@@ -120,7 +120,7 @@ namespace ForRobot.Model.Detals
 
                 if (this._selectedWeldingSchema != ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit))
                     this.WeldingSchema = this.FillWeldingSchema();
-
+                
                 this.OnChangeProperty(nameof(this.SelectedWeldingSchema));
             }
         }
@@ -734,7 +734,6 @@ namespace ForRobot.Model.Detals
 
                 if (this.WeldingSchema != null)
                     this.ChangeWeldingSchema(this.WeldingSchema, this.SelectedWeldingSchema, RibCount);
-
                 this.OnChangeProperty(nameof(this.RibCount));
             }
         }
@@ -861,14 +860,6 @@ namespace ForRobot.Model.Detals
 
                 this.OnChangeProperty(nameof(this.WeldingSchema));
             };
-            //foreach (var rib in schema)
-            //{
-            //    rib.Change += (s, e) => {
-            //        if (this.SelectedWeldingSchema != ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit))
-            //            this.SelectedWeldingSchema = ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit);
-            //        this.OnChangeProperty();
-            //    };
-            //}
             return schema;
         }
 

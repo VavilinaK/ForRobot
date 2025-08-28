@@ -104,6 +104,16 @@ namespace ForRobot.Model.Settings
         /// </summary>
         public ModeClosingApp ModeClosingApp { get; set; } = ModeClosingApp.HaveConnected; // Устарело
 
+        /// <summary>
+        /// Выбранное приложение для открытия файлов
+        /// </summary>
+        public ApplicationInfo SelectedAppForOpened { get; set; }
+
+        /// <summary>
+        /// Сохранённые приложения для открытия файлов
+        /// </summary>
+        public List<ApplicationInfo> SavedAppsForOpened { get; set; }
+
         #endregion Generic
 
         #region Navigation
