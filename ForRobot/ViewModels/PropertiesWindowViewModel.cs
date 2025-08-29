@@ -231,7 +231,7 @@ namespace ForRobot.ViewModels
         public ICommand EditAppForOpenFile { get => this._editAppForOpenFile ?? (this._editAppForOpenFile = new RelayCommand(_ => 
         {
             System.Collections.IEnumerable selectedItems = null;
-            using (ForRobot.Views.Windows.SelectWindow selectWindow = new ForRobot.Views.Windows.SelectWindow(AppsForOpenFile.GetInstalledApplications(), this.Settings.SavedAppsForOpened))
+            using (ForRobot.Views.Windows.SelectWindow selectWindow = new ForRobot.Views.Windows.SelectWindow(ForRobot.Services.SelectAppsOnDeviceService.GetAllApplicationsOnDevice(), this.Settings.SavedAppsForOpened))
             {
                 ResourceDictionary resource = (ResourceDictionary)Application.Current.Resources["SelectAppsWindowResource"];
 
@@ -240,11 +240,6 @@ namespace ForRobot.ViewModels
 
                 selectWindow.Resources.MergedDictionaries.Clear();
                 selectWindow.Resources.MergedDictionaries.Add(resource);
-
-                //selectWindow.Resources = (ResourceDictionary)Application.Current.Resources["SelectAppsWindowResource"];
-                //selectWindow.Resources.MergedDictionaries.Clear();
-                //selectWindow.Resources.MergedDictionaries.Add((ResourceDictionary)Application.Current.Resources["SelectAppsWindowResource"]);
-                //selectWindow.InvalidateVisual();
 
                 if (selectWindow.ShowDialog() == true)
                     selectedItems = selectWindow.SelectedItems;
