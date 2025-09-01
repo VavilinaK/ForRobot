@@ -241,8 +241,24 @@
 
                 <Label Grid.Column="0" Content="Приложение для открытия файлов"/>
 
-                <ComboBox Grid.Column="1">
+                <ComboBox Grid.Column="1"
+                          ItemsSource="{Binding Path=Settings.SavedAppsForOpened, Mode=OneWay}"
+                          SelectedItem="{Binding Path=Settings.SelectedAppForOpened, Mode=TwoWay}"
+                          SelectedIndex="0">
                     
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!--<Image Grid.Column="0" Source="{Binding Icon}" Width="20" Height="20" Margin="5"/>-->
+                                <TextBlock Grid.Column="1" Text="{Binding Path=Name}" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
                 </ComboBox>
 
                 <Button Grid.Column="3" Content="Изменить" Padding="10, 5"

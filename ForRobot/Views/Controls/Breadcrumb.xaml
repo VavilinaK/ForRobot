@@ -249,22 +249,23 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <Grid.Style>                                
+                            <Grid.Style>
                                 <Style TargetType="{x:Type Grid}">
                                     <Setter Property="Background" Value="{Binding Path=Background, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}"/>
 
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Path=Background, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}"
                                                      Value="{x:Null}">
-                                            
+
                                             <Setter Property="Background" Value="White"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </Grid.Style>
-
+                            
                             <Button Grid.Column="0" ToolTip="Возврат к начальной папке"
                                     Command="{Binding Path=HomeCommand, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}">
 
@@ -390,14 +391,23 @@
                                 <Path Data="{StaticResource UpdateIcon}"/>
                             </Button>
 
-                            <Button Grid.Column="3" Width="35" ToolTip="Отправление файла/ов на робота"                                    
+                            <Button Grid.Column="3" Width="35" ToolTip="Скачать файлы">
+
+                                <Path Data="{StaticResource SendIcon}">
+                                    <Path.LayoutTransform>
+                                        <RotateTransform Angle="180"/>
+                                    </Path.LayoutTransform>
+                                </Path>
+                            </Button>
+
+                            <Button Grid.Column="4" Width="35" ToolTip="Передача файлов"                                    
                                     Command="{Binding Path=DropFilesCommandAsync, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}"
                                     CommandParameter="{Binding Path=Robot, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}">
 
                                 <Path Data="{StaticResource SendIcon}"/>
                             </Button>
 
-                            <Button Grid.Column="4" ToolTip="Удаление файла/ов"
+                            <Button Grid.Column="5" ToolTip="Удаление файла/ов"
                                     Command="{Binding Path=DeleteFilesCommandAsync, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}"
                                     CommandParameter="{Binding Path=Robot, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}">
 

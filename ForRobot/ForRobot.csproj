@@ -337,6 +337,7 @@
     <Compile Include="Libr\Converters\StringToVisibilityConverter.cs" />
     <Compile Include="Libr\DocumentPaneHelper.cs" />
     <Compile Include="Libr\Json\PlitaWithRibsAttributesResolver.cs" />
+    <Compile Include="Libr\Json\SettingsResolver.cs" />
     <Compile Include="Libr\Logger.cs" />
     <Compile Include="Libr\ValueChangedEventArgs.cs" />
     <Compile Include="Model\File3D\Colors.cs" />

@@ -29,7 +29,6 @@ namespace ForRobot.Model.Detals
         {
             ContractResolver = new ForRobot.Libr.Json.SaveAttributesResolver(),
             Formatting = Formatting.Indented,
-
         };
         protected readonly JsonLoadSettings _jsonLoadSettings = new JsonLoadSettings()
         {

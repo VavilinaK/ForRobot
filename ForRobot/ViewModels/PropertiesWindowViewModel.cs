@@ -42,9 +42,9 @@ namespace ForRobot.ViewModels
 
         #region Public variables
 
-        public Settings Settings { get => this._settings; set => Set(ref this._settings, value); }
+        public Settings Settings { get => this._settings; set => Set(ref this._settings, value, false); }
 
-        public System.Windows.Controls.TreeViewItem SelectedItem { get => this._selectedItem; set => Set(ref this._selectedItem, value); }
+        public System.Windows.Controls.TreeViewItem SelectedItem { get => this._selectedItem; set => Set(ref this._selectedItem, value, false); }
 
         /// <summary>
         /// Выбранный тип детали для названия программы
@@ -54,7 +54,7 @@ namespace ForRobot.ViewModels
             get => this._selectedDetalTypeName ?? (this._selectedDetalTypeName = ForRobot.Model.Detals.DetalTypes.Plita);
             set
             {
-                Set(ref this._selectedDetalTypeName, value);
+                Set(ref this._selectedDetalTypeName, value, false);
                 this.RaisePropertyChanged(nameof(this.StandartNameFile));
             }
         }
@@ -67,7 +67,7 @@ namespace ForRobot.ViewModels
             get => this._selectedDetalTypeScript ?? (this._selectedDetalTypeScript = ForRobot.Model.Detals.DetalTypes.Plita);
             set
             {
-                Set(ref this._selectedDetalTypeScript, value);
+                Set(ref this._selectedDetalTypeScript, value, false);
                 this.RaisePropertyChanged(nameof(this.ScriptName));
             }
         }
@@ -249,7 +249,7 @@ namespace ForRobot.ViewModels
                 return;
 
             this.Settings.SavedAppsForOpened = selectedItems.Cast<ApplicationInfo>().ToList<ApplicationInfo>();
-            RaisePropertyChanged(nameof(this.Settings));
+            RaisePropertyChanged(nameof(this.Settings.SavedAppsForOpened));
         })); }
         /// <summary>
         /// Изменение ПИН-кода

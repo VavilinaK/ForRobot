@@ -49,9 +49,9 @@ namespace ForRobot.Services
         /// </summary>
         public static string[] StandardLocations = new[]
         {
-                Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
-                Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "System32")
+            (Environment.Is64BitProcess ? Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) : Environment.GetEnvironmentVariable("ProgramW6432")), // Для 32 бит всегда будет выводить Program Files X86.
+            Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "System32")
         };
 
         #endregion Public variables
@@ -219,11 +219,9 @@ namespace ForRobot.Services
             foreach (var location in StandardLocations)
             {
                 if (!Directory.Exists(location)) continue;
-
                 try
                 {
                     var exeFiles = Directory.EnumerateFiles(location, "*.exe", SearchOption.AllDirectories);
-
                     foreach (var exeFile in exeFiles)
                     {
                         try

@@ -15,7 +15,7 @@ namespace ForRobot.Views.Windows
         public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(nameof(ItemsSource),
                                                                                                     typeof(IEnumerable),
                                                                                                     typeof(SelectWindow),
-                                                                                                    new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnSelectedItemsChanged));
+                                                                                                    new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnItemsSourceChanged));
 
         public IEnumerable ItemsSource
         {

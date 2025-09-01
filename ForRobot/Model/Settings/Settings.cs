@@ -25,6 +25,7 @@ namespace ForRobot.Model.Settings
 
         private static readonly JsonSerializerSettings _jsonSettings = new JsonSerializerSettings()
         {
+            ContractResolver = ,
             Formatting = Formatting.Indented
         };
 
