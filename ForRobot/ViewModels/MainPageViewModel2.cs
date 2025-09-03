@@ -1114,7 +1114,7 @@ namespace ForRobot.ViewModels
             robot.Log += new EventHandler<ForRobot.Libr.LogEventArgs>(this.WreteLog);
             robot.LogError += new EventHandler<ForRobot.Libr.LogErrorEventArgs>(WreteLogError);
 
-            robot.ChangeRobot += (s, e) =>
+            robot.PropertyChanged += (s, e) =>
             {
                 Properties.Settings.Default.SaveRobots.Clear();
                 foreach (var r in this.RobotsCollection)

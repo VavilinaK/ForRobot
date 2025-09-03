@@ -37,7 +37,6 @@ namespace ForRobot.Model.File3D
         private Model3DGroup _currentModel = new Model3DGroup();
 
         private Detal _detal;
-        private Detal _detalCopy; // Копия для возврата.
         private ObservableCollection<Weld> _weldsCollection = new ObservableCollection<Weld>();
 
         private readonly Dispatcher dispatcher;

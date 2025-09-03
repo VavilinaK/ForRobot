@@ -105,6 +105,10 @@ namespace ForRobot.Services
 
         #region Async
 
+        private static ValueTask<bool> ShouldIncludeApplicationAsunc(string filePath) => new ValueTask<bool>(Task.Run(() => ShouldIncludeApplication(filePath)));
+
+        private static ValueTask<ImageSource> ExtractIconFromFileAsync(string filePath) => new ValueTask<ImageSource>(Task.Run(() => ExtractIconFromFile(filePath)));
+
         #endregion
 
         #endregion Private functions

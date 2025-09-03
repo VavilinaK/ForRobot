@@ -321,6 +321,7 @@
     <Compile Include="Libr\Behavior\SelectLayoutDocumentPane.cs" />
     <Compile Include="Libr\Behavior\ZoomBehavior.cs" />
     <Compile Include="Libr\Behavior\ZoomMessage.cs" />
+    <Compile Include="Libr\Collections\ItemPropertyChangedEventArgs.cs" />
     <Compile Include="Libr\ConfigurationProperties\AppConfigurationSection.cs" />
     <Compile Include="Libr\Converters\ArrayMultiValueConverter.cs" />
     <Compile Include="Libr\Converters\BindingToTagConverter.cs" />
@@ -336,6 +337,7 @@
     <Compile Include="Libr\Converters\ScaleFactorConverter.cs" />
     <Compile Include="Libr\Converters\StringToVisibilityConverter.cs" />
     <Compile Include="Libr\DocumentPaneHelper.cs" />
+    <Compile Include="Libr\Json\ImageSourceConverter.cs" />
     <Compile Include="Libr\Json\PlitaWithRibsAttributesResolver.cs" />
     <Compile Include="Libr\Json\SettingsResolver.cs" />
     <Compile Include="Libr\Logger.cs" />
@@ -371,6 +373,7 @@
     <Compile Include="ViewModels\CreateWindowViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel3.cs" />
     <Compile Include="ViewModels\MainPageViewModel4.cs" />
+    <Compile Include="ViewModels\NavigationTreeViewModel.cs" />
     <Compile Include="ViewModels\PropertiesWindowViewModel.cs" />
     <Compile Include="Views\Controls\Breadcrumb.xaml.cs">
       <DependentUpon>Breadcrumb.xaml</DependentUpon>
@@ -463,7 +466,7 @@
     <Compile Include="Libr\Converters\RadioButtonConverter.cs" />
     <Compile Include="Libr\Converters\ThicknessConverter.cs" />
     <Compile Include="Libr\FileCollection.cs" />
-    <Compile Include="Libr\FullyObservableCollection.cs" />
+    <Compile Include="Libr\Collections\FullyObservableCollection.cs" />
     <Compile Include="Libr\Generation.cs" />
     <Compile Include="Libr\Behavior\AutoScrollBehavior.cs" />
     <Compile Include="Libr\ItemPropertyChangedEventArgs.cs" />

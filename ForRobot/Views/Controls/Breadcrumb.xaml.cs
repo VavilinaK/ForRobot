@@ -248,8 +248,8 @@ namespace ForRobot.Views.Controls
             Breadcrumb breadcrumb = (Breadcrumb)d;
             breadcrumb.Robot = (Robot)e.NewValue;
 
-            if(breadcrumb.Robot != null)
-                breadcrumb.Robot.ChangedControllerPathEvent += (s, o) => breadcrumb.OnPropertyChanged(nameof(FoldersCollection));
+            //if(breadcrumb.Robot != null)
+            //    breadcrumb.Robot.ChangedControllerPathEvent += (s, o) => breadcrumb.OnPropertyChanged(nameof(FoldersCollection));
 
             breadcrumb.OnPropertyChanged(nameof(breadcrumb.Robot), nameof(breadcrumb.FoldersCollection));
         }

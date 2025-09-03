@@ -25,8 +25,9 @@ namespace ForRobot.Model.Settings
 
         private static readonly JsonSerializerSettings _jsonSettings = new JsonSerializerSettings()
         {
-            ContractResolver = ,
-            Formatting = Formatting.Indented
+            //ContractResolver = new ForRobot.Libr.Json.SettingsResolver(),
+            Formatting = Formatting.Indented,
+            NullValueHandling = NullValueHandling.Ignore
         };
 
         private Tuple<string, Theme> _selectedTheme;

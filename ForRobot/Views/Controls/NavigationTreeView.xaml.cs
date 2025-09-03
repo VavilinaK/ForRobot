@@ -20,12 +20,30 @@ namespace ForRobot.Views.Controls
     {
         #region Properties
 
-        public static readonly DependencyProperty DataFileIsHiddenProperty = DependencyProperty.Register(nameof(DataFileIsHidden), typeof(bool), typeof(NavigationTreeView));
-
-        public static readonly DependencyProperty RobotProperty = DependencyProperty.Register(nameof(Robot),
+        public static readonly DependencyProperty RobotSourceProperty = DependencyProperty.Register(nameof(RobotSource),
                                                                                               typeof(Robot),
                                                                                               typeof(NavigationTreeView),
                                                                                               new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, new PropertyChangedCallback(OnRobotChanged)));
+
+        public Robot RobotSource
+        {
+            get => (Robot)GetValue(RobotSourceProperty);
+            set => SetValue(RobotSourceProperty, value);
+        }
+
+        public static readonly DependencyProperty AccessDataFileProperty = DependencyProperty.Register(nameof(AccessDataFile),
+                                                                                                       typeof(bool), 
+                                                                                                       typeof(NavigationTreeView),
+                                                                                                       new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, new PropertyChangedCallback(OnAccessDataFileChanged)));
+
+        /// <summary>
+        /// Доступны ли файлы расширения .dat
+        /// </summary>
+        public bool AccessDataFile
+        {
+            get => (bool)GetValue(AccessDataFileProperty);
+            set => SetValue(AccessDataFileProperty, value);
+        }
 
         public static readonly DependencyProperty BlockedFolderProperty = DependencyProperty.Register(nameof(BlockedFolder),
                                                                                                       typeof(IDictionary<string, bool>),
@@ -36,9 +54,9 @@ namespace ForRobot.Views.Controls
 
         #region Private variables
 
-        private ICommand _selectFileCommand;
-        private ICommand _selectControllerFolderCommand;
-        private ICommand _deleteFileCommand;
+        //private ICommand _selectFileCommand;
+        //private ICommand _selectControllerFolderCommand;
+        //private ICommand _deleteFileCommand;
 
         /// <summary>
         /// Обработчик исключений асинхронных комманд
@@ -67,18 +85,6 @@ namespace ForRobot.Views.Controls
 
         #region Public variables
 
-        public bool DataFileIsHidden
-        {
-            get => (bool)GetValue(DataFileIsHiddenProperty);
-            set => SetValue(DataFileIsHiddenProperty, value);
-        }
-
-        public Robot Robot
-        {
-            get => (Robot)GetValue(RobotProperty);
-            set => SetValue(RobotProperty, value);
-        }
-
         /// <summary>
         /// Скрытие папки
         /// </summary>
@@ -88,16 +94,24 @@ namespace ForRobot.Views.Controls
             set => SetValue(BlockedFolderProperty, value);
         }
 
-        public ObservableCollection<IFile> FileCollection { get => this.DeleteFolder(); }
+        /// <summary>
+        /// Коллекция имен папок составляющих директорию
+        /// </summary>
+        public List<String> FoldersCollection
+        {
+            get => this.RobotSource?.PathControllerFolder.Split('\\').Where(item => item != string.Empty).Select((item, index) => index == 0 ? item + "\\" : item).ToList<string>();
+        }
+
+        //public ObservableCollection<IFile> FileCollection { get => this.DeleteFolder(); }
 
         #region Commands
 
-        public ICommand SelectFileCommandAsync { get => this._selectFileCommand ?? (this._selectFileCommand = new RelayCommand(obj => this.SelectFile(obj as string))); }
+        //public ICommand SelectFileCommandAsync { get => this._selectFileCommand ?? (this._selectFileCommand = new RelayCommand(obj => this.SelectFile(obj as string))); }
 
-        public ICommand SelectControllerFolderCommand { get => this._selectControllerFolderCommand ?? (this._selectControllerFolderCommand = new RelayCommand(obj => this.SelectControllerFolder(obj as string))); }
+        //public ICommand SelectControllerFolderCommand { get => this._selectControllerFolderCommand ?? (this._selectControllerFolderCommand = new RelayCommand(obj => this.SelectControllerFolder(obj as string))); }
 
-        public ICommand DeleteFileCommandAsync { get => this._deleteFileCommand ?? (this._deleteFileCommand = new AsyncRelayCommand(async obj => await this.DeleteFileAsync(obj as string), _exceptionCallback)); }
-        
+        //public ICommand DeleteFileCommandAsync { get => this._deleteFileCommand ?? (this._deleteFileCommand = new AsyncRelayCommand(async obj => await this.DeleteFileAsync(obj as string), _exceptionCallback)); }
+
         #endregion
 
         #endregion Public variables
@@ -109,77 +123,85 @@ namespace ForRobot.Views.Controls
 
         #region Private function
 
-        /// <summary>
-        /// Удаление скрытых папок из файлов робота
-        /// </summary>
-        /// <param name="pairs"></param>
-        private ObservableCollection<IFile> DeleteFolder()
-        {
-            if (this.Robot?.Files == null || this.BlockedFolder == null)
-                return this.Robot?.Files.Children;
+        ///// <summary>
+        ///// Удаление скрытых папок из файлов робота
+        ///// </summary>
+        ///// <param name="pairs"></param>
+        //private ObservableCollection<IFile> DeleteFolder()
+        //{
+        //    if (this.Robot?.Files == null || this.BlockedFolder == null)
+        //        return this.Robot?.Files.Children;
 
-            File files = this.Robot.Files;
+        //    File files = this.Robot.Files;
 
-            var set = this.BlockedFolder.Where(x => !x.Value).Select(s => s.Key).ToList<string>();
-            for (int i = 0; i < files.Children.Count(); i++)
-            {
-                var file = files.Children.ToArray()[i];
-                if (set.Contains(file.Name))
-                {
-                    files.Children.Remove(file);
-                    i--;
-                    continue;
-                }
+        //    var set = this.BlockedFolder.Where(x => !x.Value).Select(s => s.Key).ToList<string>();
+        //    for (int i = 0; i < files.Children.Count(); i++)
+        //    {
+        //        var file = files.Children.ToArray()[i];
+        //        if (set.Contains(file.Name))
+        //        {
+        //            files.Children.Remove(file);
+        //            i--;
+        //            continue;
+        //        }
 
-                var q = new Queue<IFile>();
-                q.Enqueue(file);
+        //        var q = new Queue<IFile>();
+        //        q.Enqueue(file);
 
-                while (q.Count > 0)
-                {
-                    var node = q.Dequeue();
+        //        while (q.Count > 0)
+        //        {
+        //            var node = q.Dequeue();
 
-                    for (int y = 0; y < node.Children.Count; y++)
-                    {
-                        q.Enqueue(node.Children[y] as ForRobot.Model.Controls.File);
+        //            for (int y = 0; y < node.Children.Count; y++)
+        //            {
+        //                q.Enqueue(node.Children[y] as ForRobot.Model.Controls.File);
 
-                        if (set.Contains(node.Children[y].Name))
-                        {
-                            node.Children.Remove(node.Children[y] as ForRobot.Model.Controls.File);
-                            y--;
-                        }
-                    }
-                }
-            }
-            return files.Children;
-        }
+        //                if (set.Contains(node.Children[y].Name))
+        //                {
+        //                    node.Children.Remove(node.Children[y] as ForRobot.Model.Controls.File);
+        //                    y--;
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return files.Children;
+        //}
 
-        private void SelectControllerFolder(string path) => this.Robot.PathControllerFolder = path;
+        //private void SelectControllerFolder(string path) => this.Robot.PathControllerFolder = path;
 
-        private void SelectFile(string filePath) => this.Robot.SelectProgramByPath(filePath);
+        //private void SelectFile(string filePath) => this.Robot.SelectProgramByPath(filePath);
 
-        private async Task DeleteFileAsync(string filePath)
-        {
-            if (string.IsNullOrEmpty(filePath))
-                return;
+        //private async Task DeleteFileAsync(string filePath)
+        //{
+        //    if (string.IsNullOrEmpty(filePath))
+        //        return;
 
-            this.Robot.DeleteFile(filePath);
-            await this.Robot.GetFilesAsync();
-        }
+        //    this.Robot.DeleteFile(filePath);
+        //    await this.Robot.GetFilesAsync();
+        //}
 
         private static void OnRobotChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             NavigationTreeView navigationTreeView = (NavigationTreeView)d;
-            navigationTreeView.Robot = (Robot)e.NewValue;
-            if(navigationTreeView.Robot != null)
-                navigationTreeView.Robot.LoadedFilesEvent += (s, o) => navigationTreeView.OnPropertyChanged(nameof(FileCollection));
+            navigationTreeView.RobotSource = (Robot)e.NewValue;
+
+            if (navigationTreeView.RobotSource != null)
+                navigationTreeView.OnPropertyChanged(nameof(FoldersCollection));
+
+            //    navigationTreeView.RobotSource.LoadedFilesEvent += (s, o) => navigationTreeView.OnPropertyChanged(nameof(FileCollection));
             navigationTreeView.OnPropertyChanged(nameof(Robot));
+        }
+
+        private static void OnAccessDataFileChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+
         }
 
         private static void OnBlockedFolderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             NavigationTreeView navigationTreeView = (NavigationTreeView)d;
             navigationTreeView.BlockedFolder = (IDictionary<string, bool>)e.NewValue;
-            navigationTreeView.OnPropertyChanged(nameof(navigationTreeView.BlockedFolder), nameof(navigationTreeView.FileCollection));
+            //navigationTreeView.OnPropertyChanged(nameof(navigationTreeView.BlockedFolder), nameof(navigationTreeView.FileCollection));
         }
 
         #endregion Private function

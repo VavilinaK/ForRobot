@@ -89,7 +89,7 @@ namespace ForRobot.ViewModels
 
         private Robot _selectedRobot;
 
-        private ObservableCollection<Robot> _robotsCollection = new ObservableCollection<Robot>();
+        private FullyObservableCollection<Robot> _robotsCollection;
         private ObservableCollection<Model.File3D.SceneItem> _sceneItemsCollection = new ObservableCollection<Model.File3D.SceneItem>();
         private ObservableCollection<AppMessage> _messagesCollection = new ObservableCollection<AppMessage>();
 
@@ -147,7 +147,20 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Выбранный робот
         /// </summary>
-        public Robot SelectedRobot { get => this._selectedRobot; set => Set(ref this._selectedRobot, value, false); }
+        public Robot SelectedRobot
+        {
+            get => this._selectedRobot;
+            set
+            {
+                if (this._selectedRobot != null)
+                    this._selectedRobot.PropertyChanged -= HandleSelectedRobotChangeEvent;
+
+                Set(ref this._selectedRobot, value, false);
+
+                if (this._selectedRobot != null)
+                    this._selectedRobot.PropertyChanged += HandleSelectedRobotChangeEvent;
+            }
+        }
 
         /// <summary>
         /// Имя выбранного робота для генерации
@@ -202,7 +215,26 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Коллекция всех добаленнных роботов
         /// </summary>
-        public ObservableCollection<Robot> RobotsCollection { get => this._robotsCollection; set => Set(ref this._robotsCollection, value, false); }
+        public FullyObservableCollection<Robot> RobotsCollection
+        {
+            get => this._robotsCollection;
+            set
+            {
+                if (this._robotsCollection != null)
+                {
+                    this._robotsCollection.ItemPropertyChanged -= HandleRobotPropertyChanged;
+                    this._robotsCollection.CollectionChanged -= HandleRobotsCollectionChanged;
+                }
+
+                Set(ref this._robotsCollection, value, false);
+
+                if (this._robotsCollection != null)
+                {
+                    this._robotsCollection.ItemPropertyChanged += HandleRobotPropertyChanged;
+                    this._robotsCollection.CollectionChanged += HandleRobotsCollectionChanged;
+                }
+            }
+        }
         /// <summary>
         /// Коллекция названияй роботов для генерации
         /// </summary>
@@ -293,7 +325,11 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Переименование робота
         /// </summary>
-        public ICommand RenameRobotCommand { get; } = new RelayCommand(obj => RenameRobot(obj as Robot));
+        public ICommand RenameRobotCommand { get => new RelayCommand(obj => {
+            RenameRobot(obj as Robot);
+            this.SaveRobots();
+        }); }
+            //= new RelayCommand(obj => RenameRobot(obj as Robot));
 
         /// <summary>
         /// Изменение папки робота
@@ -369,6 +405,7 @@ namespace ForRobot.ViewModels
                 System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() => this.MessagesCollection.Add(new Model.AppMessage(o))));
             };
 
+            this.RobotsCollection = new FullyObservableCollection<Robot>();
             if (Properties.Settings.Default.SaveRobots.Count > 0)
             {
                 for (int i = 0; i < Properties.Settings.Default.SaveRobots.Count; i++)
@@ -513,17 +550,14 @@ namespace ForRobot.ViewModels
             switch (startedDetalType)
             {
                 case DetalTypes.Plita:
-                //case string a when a == DetalTypes.Plita:
                     programName = App.Current.Settings.PlitaProgramName;
                     break;
 
                 case DetalTypes.Stringer:
-                //case string b when b == DetalTypes.Stringer:
                     programName = App.Current.Settings.PlitaStringerProgramName;
                     break;
                     
                 case DetalTypes.Treygolnik:
-                    //case string c when c == DetalTypes.Treygolnik:
                     programName = App.Current.Settings.PlitaTreugolnikProgramName;
                     break;
 
@@ -703,18 +737,43 @@ namespace ForRobot.ViewModels
             robot.Log += new EventHandler<ForRobot.Libr.LogEventArgs>(this.WreteLog);
             robot.LogError += new EventHandler<ForRobot.Libr.LogErrorEventArgs>(WreteLogError);
 
-            robot.ChangeRobot += (s, e) =>
-            {
-                Properties.Settings.Default.SaveRobots.Clear();
-                foreach (var r in this.RobotsCollection)
-                {
-                    Properties.Settings.Default.SaveRobots.Add(r.Json);
-                    Properties.Settings.Default.Save();
-                }
-            };
             return robot;
         }
-                
+
+        /// <summary>
+        /// Сохранение роботов в настройках App, в виде коллекции JSON-строк
+        /// </summary>
+        private void SaveRobots()
+        {
+            Properties.Settings.Default.SaveRobots.Clear();
+            foreach (var r in this.RobotsCollection)
+            {
+                Properties.Settings.Default.SaveRobots.Add(r.Json);
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        private void HandleSelectedRobotChangeEvent(object sender, PropertyChangedEventArgs e)
+        {
+            RaisePropertyChanged(nameof(this.SelectedRobot));
+            this.SaveRobots();
+        }
+
+        private void HandleRobotPropertyChanged(object sender, ItemPropertyChangedEventArgs e)
+        {
+            Robot robot = this.RobotsCollection[e.CollectionIndex];
+            RaisePropertyChanged(nameof(this.RobotsCollection));
+
+            if(e.PropertyName == nameof(Robot.Name))
+                RaisePropertyChanged(nameof(this.RobotNamesCollection));
+        }
+
+        private void HandleRobotsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            RaisePropertyChanged(nameof(this.RobotsCollection));
+            RaisePropertyChanged(nameof(this.RobotNamesCollection));
+        }
+        
         #region Async
 
         private async Task Generation()

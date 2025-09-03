@@ -1127,8 +1127,6 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="10"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
 
@@ -1301,16 +1299,17 @@
                                         </Button>
                                     </Grid>
 
-                                    <control:Breadcrumb Grid.Row="3" FontSize="{StaticResource FontSizeNP2}"
+                                    <!--<control:Breadcrumb Grid.Row="3" FontSize="{StaticResource FontSizeNP2}"
                                                         Robot="{Binding Path=SelectedRobot, Mode=TwoWay}"
-                                                        Root="{x:Static client:JsonRpcConnection.DefaulRoot}"/>
+                                                        Root="{x:Static client:JsonRpcConnection.DefaulRoot}"/>-->
 
-                                    <control:NavigationTreeView Grid.Row="5" FontSize="{StaticResource FontSizeNP2}"
-                                                                Robot="{Binding Path=SelectedRobot, Mode=TwoWay}"
-                                                                DataFileIsHidden="{Binding Path=Settings.AccessDataFile, Source={x:Static Application.Current}}"
+                                    <control:NavigationTreeView Grid.Row="3" 
+                                                                FontSize="{StaticResource FontSizeNP2}" Background="White"
+                                                                RobotSource="{Binding Path=SelectedRobot, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                AccessDataFile="{Binding Path=Settings.AccessDataFile, Source={x:Static Application.Current}}"
                                                                 BlockedFolder="{Binding Path=Settings.AvailableFolders, Source={x:Static Application.Current}}"
                                                                 Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type RowDefinition}, Mode=FindAncestor}}"
-                                                                ScrollViewer.CanContentScroll="False" ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
+                                                                BorderBrush="{StaticResource ThemeNotActiveToggleButBordBrush}"/>
                                 </Grid>
                             </avalonDock:LayoutAnchorable>
 
@@ -1321,7 +1320,7 @@
                                               ScrollViewer.CanContentScroll="True"
                                               ScrollViewer.VerticalScrollBarVisibility="Auto"
                                               ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                                              ItemsSource="{Binding Path=RobotsCollection, Mode=OneWay}">
+                                              ItemsSource="{Binding Path=RobotsCollection, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
 
                                         <ListView.Resources>
                                             <Style x:Key="LvTextBase" TargetType="{x:Type FrameworkElement}" BasedOn="{StaticResource TextBase}">
@@ -1682,7 +1681,7 @@
                                         <i:Interaction.Triggers>
                                             <i:EventTrigger EventName="MouseDoubleClick">
                                                 <i:InvokeCommandAction Command="{Binding Path=SelectRobotCommand}"
-                                                   CommandParameter="{Binding Path=., RelativeSource={RelativeSource AncestorType={x:Type ListView}, Mode=FindAncestor}}"/>
+                                                                       CommandParameter="{Binding Path=., RelativeSource={RelativeSource AncestorType={x:Type ListView}, Mode=FindAncestor}}"/>
                                             </i:EventTrigger>
                                         </i:Interaction.Triggers>
                                     </ListView>

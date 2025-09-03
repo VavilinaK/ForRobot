@@ -135,9 +135,7 @@ namespace ForRobot.Libr.Client
         private void _onConnected()
         {
             if (this.Connected == null)
-            {
                 return;
-            }
 
             this.Connected(this, null);
         }
@@ -148,9 +146,7 @@ namespace ForRobot.Libr.Client
         private void _onAborted()
         {
             if (this.Aborted == null)
-            {
                 return;
-            }
 
             this.Aborted(this, null);
         }
@@ -258,10 +254,12 @@ namespace ForRobot.Libr.Client
             bool closed = false;
             if (this.Client.Connected)
             {
+                this.LogMessage($"Закрытие соединения . . .");
                 try
                 {
                     this.Client.Client.Disconnect(false);
                     closed = true;
+                    this.LogMessage($"Соединение закрыто");
                 }
                 catch (Exception ex)
                 {

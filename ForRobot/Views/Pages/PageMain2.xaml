@@ -1192,7 +1192,7 @@
                                         </Button>
                                     </Grid>
 
-                                    <control:Breadcrumb Grid.Row="4" Height="40"
+                                    <!--<control:Breadcrumb Grid.Row="4" Height="40"
                                                         FontSize="{StaticResource FontSizeNP2}"
                                                         Robot="{Binding Path=SelectedRobot, Mode=TwoWay}"
                                                         Root="{x:Static client:JsonRpcConnection.DefaulRoot}"/>
@@ -1202,7 +1202,7 @@
                                                                 DataFileIsHidden="{Binding Path=Settings.AccessDataFile, Source={x:Static Application.Current}}"
                                                                 BlockedFolder="{Binding Path=Settings.AvailableFolders, Source={x:Static Application.Current}}"
                                                                 Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type RowDefinition}, Mode=FindAncestor}}"
-                                                                ScrollViewer.CanContentScroll="False" ScrollViewer.VerticalScrollBarVisibility="Disabled"/>
+                                                                ScrollViewer.CanContentScroll="False" ScrollViewer.VerticalScrollBarVisibility="Disabled"/>-->
                                 </Grid>
                             </TabItem>
 

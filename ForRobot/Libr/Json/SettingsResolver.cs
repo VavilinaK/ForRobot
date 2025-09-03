@@ -12,12 +12,20 @@ namespace ForRobot.Libr.Json
 {
     public class SettingsResolver : DefaultContractResolver
     {
-        protected override IList<Newtonsoft.Json.Serialization.JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
+        protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
-            switch (type)
+            JsonProperty property = base.CreateProperty(member, memberSerialization);
+            if (typeof(System.Windows.Media.ImageSource).IsAssignableFrom(property.PropertyType))
             {
-                case typeof(System.Windows.Interop.InteropBitmap)
+
             }
+            //switch (property.PropertyType.FullName)
+            //{
+            //    case System.Windows.Media.ImageSource:
+            //        break;
+            //}
+
+            return property;
         }
     }
 }
