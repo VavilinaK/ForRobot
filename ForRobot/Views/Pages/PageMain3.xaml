@@ -1331,9 +1331,33 @@
                                             <Style x:Key="UprControlButtonBase" TargetType="{x:Type Button}">
                                                 <Setter Property="Height" Value="40"/>
                                                 <Setter Property="Margin" Value="5"/>
+                                                <Setter Property="Template" Value="{DynamicResource ButtonTemplate}"/>
+                                                <!--<Setter Property="BorderThickness" Value="0"/>-->
                                             </Style>
 
                                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource UprControlButtonBase}"></Style>
+
+                                            <ControlTemplate x:Key="ButtonTemplate" TargetType="{x:Type Button}">
+                                                <Border Name="Panel" BorderThickness="{TemplateBinding BorderThickness}"
+                                                        BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}">
+
+                                                    <ContentPresenter x:Name="Content"
+                                                                      VerticalAlignment="Center" HorizontalAlignment="Center"
+                                                                      ContentSource="Content" Margin="5"/>
+                                                </Border>
+
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="Panel" Property="Background" Value="{DynamicResource ActiveBackround}"/>
+                                                        <Setter TargetName="Panel" Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                                                    </Trigger>
+
+                                                    <Trigger Property="IsPressed" Value="True">
+                                                        <Setter TargetName="Panel" Property="Background" Value="{DynamicResource IsSelectedBackround}"/>
+                                                        <Setter TargetName="Panel" Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
 
                                             <DataTemplate x:Key="PanelLvDelete">
                                                 <Button ToolTip="Удалить робота"

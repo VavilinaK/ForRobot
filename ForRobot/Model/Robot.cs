@@ -206,22 +206,8 @@ namespace ForRobot.Model
             get => this._connection ?? (this._connection = new JsonRpcConnection());
             set
             {
-                if (this._connection != null)
-                {
-                    this._connection.Connected -= (s, e) => this.OnChangeProperty();
-                    this._connection.Aborted -= (s, e) => this.OnChangeProperty();
-                    this._connection.Disconnected -= (s, e) => this.OnChangeProperty();
-                }
-
                 this._connection = value;
                 this.OnChangeProperty();
-
-                if (this._connection != null)
-                {
-                    this._connection.Connected += (s, e) => this.OnChangeProperty();
-                    this._connection.Aborted += (s, e) => this.OnChangeProperty();
-                    this._connection.Disconnected += (s, e) => this.OnChangeProperty();
-                }
             }
         }
 

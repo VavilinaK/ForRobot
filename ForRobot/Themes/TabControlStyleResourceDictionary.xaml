@@ -3,7 +3,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:ForRobot.Themes"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib"
-                    xmlns:detals="clr-namespace:ForRobot.Model.Detals">
+                    xmlns:detals="clr-namespace:ForRobot.Model.Detals"
+                    xmlns:behavior="clr-namespace:ForRobot.Libr.Behavior">
 
     <BitmapImage x:Key="ImageRectangular" UriSource="/InterfaceOfRobots;component/Themes/Images/Rectangular.png"/>
     <BitmapImage x:Key="ImageParallelogramLeft" UriSource="/InterfaceOfRobots;component/Themes/Images/ParallelogramLeft.png"/>
@@ -1302,6 +1303,7 @@
                 <Setter Property="EnableRowVirtualization" Value="False"/>
                 <Setter Property="SelectionMode" Value="Single"/>
                 <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+                <Setter Property="behavior:DataGridAutoSizeColumns.IsEnabled" Value="True"/>
             </Style>
 
             <Style TargetType="DataGridColumnHeader">
@@ -1385,8 +1387,7 @@
                     <DataGrid Grid.Row="1" TextElement.FontWeight="Normal"
                               HorizontalAlignment="Stretch"
                               HorizontalScrollBarVisibility="Disabled"
-                              ItemsSource="{Binding Path=WeldingSchema, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                              SizeChanged="DataGrid_SizeChanged">
+                              ItemsSource="{Binding Path=WeldingSchema, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
 
                         <DataGrid.Resources>
                             <Style TargetType="{x:Type ComboBox}">
@@ -1617,6 +1618,7 @@
                 <Setter Property="ItemsSource" Value="{Binding Path=RibsCollection, Mode=OneWay}"/>
                 <Setter Property="FontSize" Value="{StaticResource FontSizeNP2}"/>
                 <Setter Property="AutoGenerateColumns" Value="False"/>
+                <Setter Property="HorizontalAlignment"  Value="Stretch"/>
                 <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                 <Setter Property="CanUserAddRows" Value="False"/>
@@ -1628,6 +1630,7 @@
                 <Setter Property="EnableRowVirtualization" Value="False"/>
                 <Setter Property="SelectionMode" Value="Single"/>
                 <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+                <Setter Property="behavior:DataGridAutoSizeColumns.IsEnabled" Value="True"/>
 
                 <Setter Property="RowHeaderTemplate">
                     <Setter.Value>
@@ -1643,7 +1646,7 @@
                 <Setter Property="ContentTemplate">
                     <Setter.Value>
                         <DataTemplate>
-                            <TextBlock TextWrapping="Wrap" Text="{Binding}" TextAlignment="Center"/>
+                            <TextBlock Text="{Binding}" TextWrapping="Wrap" TextAlignment="Center"/>
                         </DataTemplate>
                     </Setter.Value>
                 </Setter>
@@ -1866,8 +1869,9 @@
                                          IsChecked="{Binding Path=ParalleleRibs, Converter={StaticResource ResourceKey=RadioButtonConvert}, ConverterParameter={StaticResource False}, Mode=TwoWay, TargetNullValue={StaticResource False}}"/>
                         </Grid>
                     </GroupBox>
-
-                    <ContentControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+                                        
+                    <ContentControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                    HorizontalAlignment="Stretch">
                         <ContentControl.Resources>
                             <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource textBoxBase}">
                                 <Setter Property="TextElement.FontWeight" Value="Normal"/>

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using System.Collections.Generic;
 
 namespace ForRobot.Themes
 {
@@ -47,20 +49,70 @@ namespace ForRobot.Themes
             if (!e.WidthChanged) return;
 
             DataGrid dataGrid = sender as DataGrid;
+            if (dataGrid == null || dataGrid.Columns.Count == 0) return;
 
             System.Windows.Application.Current.Dispatcher.BeginInvoke((Action)(() =>
             {
+                AdjustDataGridColumns(dataGrid);
                 // Рассчитываем доступное пространство для пропорциональных столбцов
-                double totalWidth = dataGrid.ActualWidth - SystemParameters.VerticalScrollBarWidth;
-                double centerWidth = dataGrid.Columns[1].ActualWidth; // Текущая ширина центрального столбца
+                //double totalWidth = dataGrid.ActualWidth - SystemParameters.VerticalScrollBarWidth;
 
-                // Вычитаем ширину центрального столбца
-                double availableWidth = totalWidth - centerWidth;
+                //double centerWidth = dataGrid.Columns[1].ActualWidth; // Текущая ширина центрального столбца
 
-                // Устанавливаем пропорции для левого и правого столбцов
-                dataGrid.Columns[0].Width = new DataGridLength(availableWidth / 2, DataGridLengthUnitType.Pixel);
-                dataGrid.Columns[2].Width = new DataGridLength(availableWidth / 2, DataGridLengthUnitType.Pixel);
+                //// Вычитаем ширину центрального столбца
+                //double availableWidth = totalWidth - centerWidth;
+
+                //// Устанавливаем пропорции для левого и правого столбцов
+                //dataGrid.Columns[0].Width = new DataGridLength(availableWidth / 2, DataGridLengthUnitType.Pixel);
+                //dataGrid.Columns[2].Width = new DataGridLength(availableWidth / 2, DataGridLengthUnitType.Pixel);
             }), DispatcherPriority.Render);
+        }
+
+        private void AdjustDataGridColumns(DataGrid dataGrid)
+        {
+            double scrollbarWidth = dataGrid.VerticalScrollBarVisibility == ScrollBarVisibility.Visible ? SystemParameters.VerticalScrollBarWidth : 0;
+
+            double totalWidth = dataGrid.ActualWidth - scrollbarWidth - dataGrid.RowHeaderActualWidth;
+
+            //var fixedColumns = new List<DataGridColumn>();
+            //var proportionalColumns = new List<DataGridColumn>();
+            var proportionalColumns = new List<int>();
+
+            foreach (var column in dataGrid.Columns)
+            {
+                if (dataGrid.Tag != null)
+                    break;
+
+                if (column.Width.IsAbsolute || column.Width.IsSizeToCells || column.Width.IsSizeToHeader)
+                {
+                    //fixedColumns.Add(column);
+                }
+                else
+                {
+                    proportionalColumns.Add(column.DisplayIndex);
+                }
+            }
+
+            foreach(int index in proportionalColumns)
+            {
+                double proportionalWidth = totalWidth / proportionalColumns.Count;
+                //dataGrid.Columns[index].Width = new DataGridLength(proportionalWidth, DataGridLengthUnitType.Pixel);
+                dataGrid.Columns[index].Width = new DataGridLength(proportionalWidth, DataGridLengthUnitType.Star);
+            }
+
+            //double fixedWidth = fixedColumns.Sum(c => c.ActualWidth); // Общая ширина фиксированных столбцов
+                        
+            //double availableWidth = Math.Max(0, totalWidth - fixedWidth); // Доступная ширина для пропорциональных столбцов
+            
+            //if (proportionalColumns.Count > 0)
+            //{
+            //    double proportionalWidth = availableWidth / proportionalColumns.Count;
+
+            //    foreach (var column in proportionalColumns)
+            //    {
+            //        column.Width = new DataGridLength(proportionalWidth, DataGridLengthUnitType.Pixel);
+            //    }
+            //}
         }
     }
 }
