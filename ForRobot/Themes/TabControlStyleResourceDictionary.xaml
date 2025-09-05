@@ -1303,7 +1303,7 @@
                 <Setter Property="EnableRowVirtualization" Value="False"/>
                 <Setter Property="SelectionMode" Value="Single"/>
                 <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
-                <Setter Property="behavior:DataGridAutoSizeColumns.IsEnabled" Value="True"/>
+                <Setter Property="behavior:DataGridAutoSizeColumns.IsDynamicWith" Value="True"/>
             </Style>
 
             <Style TargetType="DataGridColumnHeader">
@@ -1630,7 +1630,7 @@
                 <Setter Property="EnableRowVirtualization" Value="False"/>
                 <Setter Property="SelectionMode" Value="Single"/>
                 <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
-                <Setter Property="behavior:DataGridAutoSizeColumns.IsEnabled" Value="True"/>
+                <Setter Property="behavior:DataGridAutoSizeColumns.IsDynamicWith" Value="True"/>
 
                 <Setter Property="RowHeaderTemplate">
                     <Setter.Value>
@@ -1871,7 +1871,7 @@
                     </GroupBox>
                                         
                     <ContentControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
-                                    HorizontalAlignment="Stretch">
+                                    HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
                         <ContentControl.Resources>
                             <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource textBoxBase}">
                                 <Setter Property="TextElement.FontWeight" Value="Normal"/>
