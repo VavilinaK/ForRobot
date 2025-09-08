@@ -14,15 +14,12 @@
     </UserControl.DataContext>
 
     <UserControl.Resources>
-        <!--Converters-->
-        <conv:ArrayMultiValueConverter x:Key="ArrayMultiValueConvert"/>
-        
         <!--Colors-->
         <Color x:Key="DarkGrayColor">#FF707070</Color>
         <Color x:Key="BlackColor">#FF000000</Color>
         <Color x:Key="LightBlue">#b5eaff</Color>
         <Color x:Key="LightMediumBlue">#85caff</Color>
-        <Color x:Key="Yellow">#FFCB42</Color>
+        <Color x:Key="Yellow">#FFBF1C</Color>
 
         <!--SolidColorBrushs-->
         <SolidColorBrush x:Key="WhiteBrush" Color="White"/>
@@ -44,8 +41,8 @@
         <Geometry x:Key="HomeIcon">M 9, 20 V 14 H 13 V 20 H 19 V 12 H 22 L 11, 2 L 0,12 H 3 V 20 Z</Geometry>
         <Geometry x:Key="UpdateIcon">M 10,3 H 4 L 6,5 A 12,12 180 1,0 17,3 C 17,3 16,3 16,6 A 9,9 180 1,1 8.5,7 L 11,9 V 3 Z</Geometry>
         <Geometry x:Key="SendIcon">M 0 0 V 1 H 8 v-1 h-8 Z M 4 2l-3 3 h 2 v 3 h 2 v-3 h 2l-3-3 Z</Geometry>
-        <Geometry x:Key="DeleteIcon">M 10.6 34 c -0.7 0 -1.2 -0.2 -1.7 -0.7 -0.5 -0.5 -0.7 -1 -0.7 -1.7 V 8.5 H 7.7 c -0.3 0 -0.634700625 -0.11756875 -0.86815625 -0.352625C6.616861875 7.943812499999999 6.5 7.652669375 6.5 7.3051875c0 -0.34720562499999996 0.116861875 -0.635919375 0.35059375 -0.866125C7.084049375 6.208856875 7.3734375 6.09375 7.71875 6.09375h6.41875c0 -0.352080625 0.11683750000000001 -0.643231875 0.35059375 -0.8734375C14.721525 4.990106875 15.0109375 4.875 15.35625 4.875h8.2875c0.34531249999999997 0 0.63480625 0.116731875 0.8685624999999999 0.3501875 0.23343125 0.23373187499999998 0.3501875 0.52325 0.3501875 0.8685624999999999h6.41875c0.34531249999999997 0 0.63480625 0.11754437499999999 0.8685624999999999 0.352625 0.23343125 0.23481249999999998 0.3501875 0.5259556249999999 0.3501875 0.8734375 0 0.34720562499999996 -0.11675624999999999 0.635919375 -0.3501875 0.866125 -0.23375625 0.23018125 -0.52325 0.34531249999999997 -0.8685624999999999 0.34531249999999997h-0.446875V31.6875c0 0.6703125 -0.23863125000000002 1.2441 -0.7158125 1.72128125 -0.47750625 0.47750625 -1.051375 0.7162187499999999 -1.7216875000000003 0.7162187499999999h-17.79375Zm17.79375 -25.59375h-17.79375V31.6875h17.79375V8.53125ZM16.135437500000002 28.19375c0.34718125 0 0.6359437499999999 -0.11683750000000001 0.866125 -0.35059375 0.23018125 -0.23343125 0.34531249999999997 -0.5228437499999999 0.34531249999999997 -0.86815625V13.203125c0 -0.34531249999999997 -0.11756875 -0.63480625 -0.352625 -0.8685624999999999 -0.23481249999999998 -0.23343125 -0.52593125 -0.3501875 -0.8734375 -0.3501875 -0.34718125 0 -0.6359437499999999 0.11675624999999999 -0.866125 0.3501875 -0.23018125 0.23375625 -0.34531249999999997 0.52325 -0.34531249999999997 0.8685624999999999V26.975c0 0.34531249999999997 0.11756875 0.634725 0.352625 0.86815625 0.23481249999999998 0.23375625 0.52593125 0.35059375 0.8734375 0.35059375Zm6.74375 0c0.34718125 0 0.6359437499999999 -0.11683750000000001 0.866125 -0.35059375 0.23018125 -0.23343125 0.34531249999999997 -0.5228437499999999 0.34531249999999997 -0.86815625V13.203125c0 -0.34531249999999997 -0.11756875 -0.63480625 -0.352625 -0.8685624999999999 -0.23481249999999998 -0.23343125 -0.52593125 -0.3501875 -0.8734375 -0.3501875 -0.34718125 0 -0.6359437499999999 0.11675624999999999 -0.866125 0.3501875 -0.23018125 0.23375625 -0.34531249999999997 0.52325 -0.34531249999999997 0.8685624999999999V26.975c0 0.34531249999999997 0.11756875 0.634725 0.352625 0.86815625 0.23481249999999998 0.23375625 0.52593125 0.35059375 0.8734375 0.35059375Z</Geometry>
-     
+        <Geometry x:Key="DeleteIcon">M9,3V4H4V6H5V19A2,2 0 0,0 7,21H17A2,2 0 0,0 19,19V6H20V4H15V3H9M9,8H11V17H9V8M13,8H15V17H13V8Z</Geometry>
+
         <Geometry x:Key="NormalArrow">M0,0 L4,3.5 0,7 z</Geometry>
         <Geometry x:Key="ExpandedArrow">M0,3 L7,3 3.5,7 z</Geometry>
         
@@ -69,7 +66,7 @@
         <ControlTemplate x:Key="ButtonTemplate" TargetType="{x:Type Button}">
             <Border Name="Panel" BorderThickness="{TemplateBinding BorderThickness}"
                     BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}">
-                
+
                 <ContentPresenter x:Name="Content"
                                   VerticalAlignment="Center" HorizontalAlignment="Center"
                                   ContentSource="Content" Margin="5"/>
@@ -87,6 +84,33 @@
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
+
+        <ControlTemplate x:Key="ToggleButtonTemplate" TargetType="{x:Type ToggleButton}">
+            <Border Name="Panel" BorderThickness="{TemplateBinding BorderThickness}"
+                    BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}">
+
+                <ContentPresenter x:Name="Content"
+                                  VerticalAlignment="Center" HorizontalAlignment="Center"
+                                  ContentSource="Content" Margin="5"/>
+            </Border>
+
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="Panel" Property="Background" Value="{DynamicResource ActiveBackround}"/>
+                    <Setter TargetName="Panel" Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                </Trigger>
+
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter TargetName="Panel" Property="Background" Value="{DynamicResource IsSelectedBackround}"/>
+                    <Setter TargetName="Panel" Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                </Trigger>
+
+                <Trigger Property="IsChecked"  Value="True">
+                    <Setter TargetName="Panel" Property="Background" Value="{DynamicResource IsSelectedBackround}"/>
+                    <Setter TargetName="Panel" Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate> 
 
         <ControlTemplate x:Key="ListBoxItemTemplate" TargetType="{x:Type ListBoxItem}">
             <Border BorderThickness="0">
@@ -150,8 +174,9 @@
 
                         <Border BorderBrush="Black" BorderThickness="1">
                             <ListBox SelectionMode="Single" Margin="{Binding Padding}"
-                                     ItemsSource="{Binding Path=ChildrenFolder, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}"
-                                     SelectedItem="{Binding Path=SelectedPopupItem, Mode=OneWayToSource, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}">
+                                     ItemsSource="{Binding Path=ChildrenFolder, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}"
+                                     SelectedItem="{Binding Path=SelectedFolder, Mode=OneWayToSource, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}"
+                                     SelectedValuePath="Path">
 
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
@@ -388,15 +413,15 @@
 
                             <Button Grid.Column="0" ToolTip="Возврат к начальной папке"
                                     Command="{Binding Path=HomeCommand}"
-                                    CommandParameter="{Binding Path=RobotSource, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}">
+                                    CommandParameter="{Binding Path=RobotSource, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}">
 
                                 <Path Data="{StaticResource HomeIcon}"/>
                             </Button>
 
                             <Border Grid.Column="1" BorderThickness="0"
-                                Background="{TemplateBinding Background}"
-                                Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}"
-                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                    Background="{TemplateBinding Background}"
+                                    Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}"
+                                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
                                 <Border.Style>
                                     <Style TargetType="{x:Type Border}">
@@ -423,12 +448,10 @@
 
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <ProgressBar x:Name="progressBar" Grid.ColumnSpan="4" Panel.ZIndex="1" Background="Transparent" BorderThickness="0"
+                                    <ProgressBar x:Name="progressBar" Grid.ColumnSpan="2" Panel.ZIndex="1" Background="Transparent" BorderThickness="0"
                                                  Foreground="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}"
                                                  Minimum="0" Maximum="100" IsIndeterminate="True" 
                                                  Value="{Binding ElementName=BreadcrumbControl, Path=Progress}">
@@ -446,16 +469,16 @@
                                         </ProgressBar.Style>
                                     </ProgressBar>
 
-                                    <ToggleButton x:Name="togglePath" Grid.Column="0" IsChecked="False"
-                                                  BorderThickness="0"
-                                                  Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}">
+                                    <ToggleButton x:Name="togglePath" Grid.Column="0" IsChecked="False" BorderThickness="0"
+                                                  Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"
+                                                  Template="{StaticResource ToggleButtonTemplate}">
 
                                         <Path Fill="{StaticResource FolderIconStroke}" Stretch="None"
                                               Data="{StaticResource FolderIcon}"/>
                                     </ToggleButton>
 
                                     <ContentControl Grid.Column="1"
-                                                    HorizontalAlignment="Stretch"
+                                                    HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
                                                     FontFamily="{Binding Path=FontFamily, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}"
                                                     Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}"
                                                     FontSize="{Binding Path=FontSize, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}"
@@ -466,16 +489,15 @@
                                                 <Setter Property="Template">
                                                     <Setter.Value>
                                                         <ControlTemplate TargetType="{x:Type ContentControl}">
-                                                            <ListBox Height="{TemplateBinding Height}" Width="200"
+                                                            <ListBox SelectionMode="Single" Height="{TemplateBinding Height}"
                                                                      FontSize="{TemplateBinding FontSize}" Foreground="{TemplateBinding Foreground}"
                                                                      Background="{TemplateBinding Background}"
                                                                      BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1"
-                                                                     HorizontalContentAlignment="Stretch" VerticalContentAlignment="Center"
+                                                                     HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
                                                                      HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                                                                      ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden"
                                                                      ItemsSource="{Binding Path=FoldersCollection, Mode=OneWay, UpdateSourceTrigger=PropertyChanged,
-                                                                                           RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}"                                                                         
-                                                                     SelectedItem="{Binding Path=SelectedFolder, Mode=OneWayToSource, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}">
+                                                                                           RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}">
 
                                                                 <ListBox.ItemContainerStyle>
                                                                     <Style TargetType="{x:Type ListBoxItem}">
@@ -499,7 +521,7 @@
                                                         <Setter Property="Template">
                                                             <Setter.Value>
                                                                 <ControlTemplate TargetType="{x:Type ContentControl}">
-                                                                    <TextBox Text="{Binding Path=Robot.PathControllerFolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}"
+                                                                    <TextBox Text="{Binding Path=RobotSource.PathControllerFolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}"
                                                                              Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
                                                                              Foreground="{TemplateBinding Foreground}" FontSize="{TemplateBinding FontSize}"
                                                                              VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
@@ -515,12 +537,14 @@
                             </Border>
 
                             <Button Grid.Column="2" ToolTip="Обновить дерево файлов"
-                                    Command="{Binding Path=UpdateFilesCommandAsync, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}">
+                                    Command="{Binding Path=UpdateFilesCommandAsync}"
+                                    CommandParameter="{Binding Path=RobotSource, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}">
 
                                 <Path Data="{StaticResource UpdateIcon}"/>
                             </Button>
 
-                            <Button Grid.Column="3" ToolTip="Скачать файлы">
+                            <Button Grid.Column="3" ToolTip="Скачать файлы"
+                                    CommandParameter="{Binding Path=RobotSource, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}">
 
                                 <Path Data="{StaticResource SendIcon}" Stretch="UniformToFill">
                                     <Path.LayoutTransform>
@@ -540,65 +564,60 @@
                                     Command="{Binding Path=DeleteFilesCommandAsync, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}"
                                     CommandParameter="{Binding Path=Robot, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}">
 
-                                <Path Data="{StaticResource DeleteIcon}"/>
+                                <Path Data="{StaticResource DeleteIcon}" Stretch="Uniform"/>
                             </Button>
                         </Grid>
                     </Border>
                 </ControlTemplate>
             </ComboBox.Template>
         </ComboBox>
-        <!--ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto"  ScrollViewer.HorizontalScrollBarVisibility="Auto"-->
-        <!--<ScrollViewer Grid.Row="1" CanContentScroll="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
-                      Height="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type RowDefinition}, Mode=FindAncestor}}">-->
-            
-            <TreeView Grid.Row="1"
-                IsEnabled="{Binding Path=Robot.IsConnection, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}"
-                      FontSize="{Binding Path=FontSize, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}" 
-                      BorderBrush="{Binding Path=BorderBrush, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}" BorderThickness="1"
-                      VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                      Background="{Binding Path=Background, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}"
-                      Padding="{Binding Path=Padding, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}"
-                      Height="{Binding Path=Height, RelativeSource={RelativeSource AncestorType={x:Type RowDefinition}, Mode=FindAncestor}, UpdateSourceTrigger=PropertyChanged}"       
-                      ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto"  ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                      ItemsSource="{Binding Path=FileCollection, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}"
-                      ItemTemplate="{StaticResource NavTreeItemTemplate}">
 
-                <TreeView.ItemContainerStyle>
-                    <Style TargetType="{x:Type TreeViewItem}">
-                        <Setter Property="Focusable" Value="False"/>
-                        <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}"/>
 
-                        <Style.Triggers>
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding Path=Type}" Value="{x:Static model:FileTypes.DataList}"/>
-                                    <Condition Binding="{Binding Path=DataFileIsHidden, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}" Value="False"/>
-                                </MultiDataTrigger.Conditions>
+        <TreeView IsEnabled="{Binding Path=RobotSource.IsConnection, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}"
+                  FontSize="{Binding Path=FontSize, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}" 
+                  BorderBrush="{Binding Path=BorderBrush, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}" BorderThickness="1"
+                  VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                  Background="{Binding Path=Background, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}"
+                  Padding="{Binding Path=Padding, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}"   
+                  ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto"  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                  ItemsSource="{Binding Path=RobotSource.Files.Children, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}"
+                  ItemTemplate="{StaticResource NavTreeItemTemplate}">
 
-                                <MultiDataTrigger.Setters>
-                                    <Setter Property="Visibility" Value="Hidden"/>
-                                    <Setter Property="Height" Value="0"/>
-                                </MultiDataTrigger.Setters>
-                            </MultiDataTrigger>
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="Focusable" Value="False"/>
+                    <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}"/>
 
-                            <DataTrigger Value="True">
-                                <DataTrigger.Binding>
-                                    <MultiBinding Converter="{StaticResource SelectProgramConvert}">
-                                        <Binding Path="Name"/>
-                                        <Binding Path="Robot.RobotProgramName" RelativeSource="{RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}"/>
-                                    </MultiBinding>
-                                </DataTrigger.Binding>
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding Path=Type}" Value="{x:Static model:FileTypes.DataList}"/>
+                                <Condition Binding="{Binding Path=AccessDataFile, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}" Value="False"/>
+                            </MultiDataTrigger.Conditions>
 
-                                <Setter Property="TextBlock.FontWeight" Value="Bold"/>
-                            </DataTrigger>
+                            <MultiDataTrigger.Setters>
+                                <Setter Property="Visibility" Value="Hidden"/>
+                                <Setter Property="Height" Value="0"/>
+                            </MultiDataTrigger.Setters>
+                        </MultiDataTrigger>
 
-                            <DataTrigger Binding="{Binding Path=Robot.IsLoadFiles, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}" Value="True">
-                                <Setter Property="IsEnabled" Value="False"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TreeView.ItemContainerStyle>
-            </TreeView>
-        <!--</ScrollViewer>-->
+                        <DataTrigger Value="True">
+                            <DataTrigger.Binding>
+                                <MultiBinding Converter="{StaticResource SelectProgramConvert}">
+                                    <Binding Path="Name"/>
+                                    <Binding Path="RobotSource.RobotProgramName" RelativeSource="{RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}"/>
+                                </MultiBinding>
+                            </DataTrigger.Binding>
+
+                            <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                        </DataTrigger>
+
+                        <DataTrigger Binding="{Binding Path=RobotSource.IsLoadFiles, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}" Value="True">
+                            <Setter Property="IsEnabled" Value="False"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TreeView.ItemContainerStyle>
+        </TreeView>
     </Grid>
 </UserControl>

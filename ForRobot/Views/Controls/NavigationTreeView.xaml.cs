@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -45,10 +46,43 @@ namespace ForRobot.Views.Controls
             set => SetValue(AccessDataFileProperty, value);
         }
 
+        //public static readonly DependencyProperty SelectedFolderProperty = DependencyProperty.Register(nameof(SelectedFolder),
+        //                                                                                               typeof(string),
+        //                                                                                               typeof(NavigationTreeView),
+        //                                                                                               new PropertyMetadata(false));
+        
+        /// <summary>
+        /// Выбранная папка
+        /// </summary>
+        //public string SelectedFolder
+        //{
+        //    get => (string)GetValue(SelectedFolderProperty);
+        //    set => SetValue(SelectedFolderProperty, value);
+        //}
+
+        /// <summary>
+        /// Дочернии папки выбранного каталога
+        /// </summary>
+        public List<ForRobot.Model.Controls.File> ChildrenFolder
+        {
+            get;
+            //get => (this.SelectedFolder != null && this.RobotSource.Files.Children.Count > 0) ?
+            //        this.RobotSource.Files?.Search(this.SelectedFolder)?.Children.Where(item => item.Type == FileTypes.Folder).Cast<ForRobot.Model.Controls.File>().ToList() : null;
+        }
+
         public static readonly DependencyProperty BlockedFolderProperty = DependencyProperty.Register(nameof(BlockedFolder),
                                                                                                       typeof(IDictionary<string, bool>),
                                                                                                       typeof(NavigationTreeView),
                                                                                                       new PropertyMetadata(null, new PropertyChangedCallback(OnBlockedFolderChanged)));
+
+        /// <summary>
+        /// Скрытие папки
+        /// </summary>
+        public IDictionary<string, bool> BlockedFolder
+        {
+            get => (IDictionary<string, bool>)GetValue(BlockedFolderProperty);
+            set => SetValue(BlockedFolderProperty, value);
+        }
 
         #endregion Properties
 
@@ -85,14 +119,14 @@ namespace ForRobot.Views.Controls
 
         #region Public variables
 
-        /// <summary>
-        /// Скрытие папки
-        /// </summary>
-        public IDictionary<string, bool> BlockedFolder
-        {
-            get => (IDictionary<string, bool>)GetValue(BlockedFolderProperty);
-            set => SetValue(BlockedFolderProperty, value);
-        }
+        ///// <summary>
+        ///// Скрытие папки
+        ///// </summary>
+        //public IDictionary<string, bool> BlockedFolder
+        //{
+        //    get => (IDictionary<string, bool>)GetValue(BlockedFolderProperty);
+        //    set => SetValue(BlockedFolderProperty, value);
+        //}
 
         /// <summary>
         /// Коллекция имен папок составляющих директорию
@@ -186,10 +220,12 @@ namespace ForRobot.Views.Controls
             navigationTreeView.RobotSource = (Robot)e.NewValue;
 
             if (navigationTreeView.RobotSource != null)
-                navigationTreeView.OnPropertyChanged(nameof(FoldersCollection));
+                navigationTreeView.RobotSource.LoadedFilesEvent += (s, o) => navigationTreeView.OnPropertyChanged(nameof(Robot), nameof(FoldersCollection));
+
+            //navigationTreeView.OnPropertyChanged(nameof(FoldersCollection));
 
             //    navigationTreeView.RobotSource.LoadedFilesEvent += (s, o) => navigationTreeView.OnPropertyChanged(nameof(FileCollection));
-            navigationTreeView.OnPropertyChanged(nameof(Robot));
+            //navigationTreeView.OnPropertyChanged(nameof(Robot), nameof(FoldersCollection));
         }
 
         private static void OnAccessDataFileChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -197,10 +233,19 @@ namespace ForRobot.Views.Controls
 
         }
 
-        private static void OnBlockedFolderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnSelectedFolderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             NavigationTreeView navigationTreeView = (NavigationTreeView)d;
-            navigationTreeView.BlockedFolder = (IDictionary<string, bool>)e.NewValue;
+
+
+            //navigationTreeView.SelectedFolder = (string)e.NewValue;
+            //navigationTreeView.OnPropertyChanged(nameof(navigationTreeView.SelectedFolder), nameof(navigationTreeView.ChildrenFolder), nameof(navigationTreeView.CanOpenMenu));
+        }
+
+        private static void OnBlockedFolderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            //NavigationTreeView navigationTreeView = (NavigationTreeView)d;
+            //navigationTreeView.BlockedFolder = (IDictionary<string, bool>)e.NewValue;
             //navigationTreeView.OnPropertyChanged(nameof(navigationTreeView.BlockedFolder), nameof(navigationTreeView.FileCollection));
         }
 

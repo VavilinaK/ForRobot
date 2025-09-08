@@ -1303,7 +1303,7 @@
                 <Setter Property="EnableRowVirtualization" Value="False"/>
                 <Setter Property="SelectionMode" Value="Single"/>
                 <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
-                <Setter Property="behavior:DataGridAutoSizeColumns.IsDynamicWith" Value="True"/>
+                <!--<Setter Property="behavior:DataGridAutoSizeColumns.IsDynamicWith" Value="True"/>-->
             </Style>
 
             <Style TargetType="DataGridColumnHeader">
@@ -1630,7 +1630,7 @@
                 <Setter Property="EnableRowVirtualization" Value="False"/>
                 <Setter Property="SelectionMode" Value="Single"/>
                 <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
-                <Setter Property="behavior:DataGridAutoSizeColumns.IsDynamicWith" Value="True"/>
+                <!--<Setter Property="behavior:DataGridAutoSizeColumns.IsDynamicWith" Value="True"/>-->
 
                 <Setter Property="RowHeaderTemplate">
                     <Setter.Value>
@@ -1661,6 +1661,15 @@
             <Style TargetType="{x:Type DataGridCell}">
                 <Setter Property="TextBlock.TextWrapping" Value="Wrap"/>
                 <Setter Property="TextBlock.TextAlignment" Value="Center"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type DataGridCell}">
+                            <Grid Background="{TemplateBinding Background}">
+                                <ContentPresenter VerticalAlignment="Center" />
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
             </Style>
         </DataTemplate.Resources>
 

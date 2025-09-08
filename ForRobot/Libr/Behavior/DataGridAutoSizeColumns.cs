@@ -4,14 +4,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace ForRobot.Libr.Behavior
 {
     public static class DataGridAutoSizeColumns
     {
-        private static List<Tuple<int, DataGridLength>> _fixedColumns;
-        private static List<int> _autoColumns;
-        private static List<int> _proportionalColumns;
+        private static readonly ConditionalWeakTable<DataGrid, DataGridColumnInfo> DataGridInfos = new ConditionalWeakTable<DataGrid, DataGridColumnInfo>();
 
         public static readonly DependencyProperty IsDynamicWithProperty = DependencyProperty.RegisterAttached("IsDynamicWith",
                                                                                                               typeof(bool),
@@ -19,6 +18,7 @@ namespace ForRobot.Libr.Behavior
                                                                                                               new PropertyMetadata(false, OnIsDynamicWithChanged));
 
         public static void SetIsDynamicWith(DependencyObject element, bool value) => element.SetValue(IsDynamicWithProperty, value);
+
         public static bool GetIsDynamicWith(DependencyObject element) => (bool)element.GetValue(IsDynamicWithProperty);
 
         private static void OnIsDynamicWithChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -27,109 +27,173 @@ namespace ForRobot.Libr.Behavior
             {
                 if ((bool)e.NewValue)
                 {
+                    var info = new DataGridColumnInfo(dataGrid);
+                    DataGridInfos.Add(dataGrid, info);
+
                     dataGrid.Loaded += DataGrid_Loaded;
                     dataGrid.SizeChanged += DataGrid_SizeChanged;
+                    dataGrid.Unloaded += DataGrid_Unloaded;
                 }
                 else
                 {
                     dataGrid.Loaded -= DataGrid_Loaded;
                     dataGrid.SizeChanged -= DataGrid_SizeChanged;
+                    dataGrid.Unloaded -= DataGrid_Unloaded;
+
+                    if (DataGridInfos.TryGetValue(dataGrid, out var info))
+                    {
+                        info.Dispose();
+                        DataGridInfos.Remove(dataGrid);
+                    }
                 }
             }
         }
 
         private static void DataGrid_Loaded(object sender, RoutedEventArgs e)
         {
-            if (sender is DataGrid dataGrid)
+            if (sender is DataGrid dataGrid && DataGridInfos.TryGetValue(dataGrid, out var info))
             {
-                SaveDataGridColumnsWidth(dataGrid);
-                UpdateDataGridColumnsWidth(dataGrid);
+                info.SaveDataGridColumnsWidth();
+                info.UpdateDataGridColumnsWidth();
             }
         }
 
         private static void DataGrid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (sender is DataGrid dataGrid && e.WidthChanged)
-                UpdateDataGridColumnsWidth(dataGrid);
-        }
-
-        private static void SaveDataGridColumnsWidth(DataGrid dataGrid)
-        {
-            _fixedColumns = new List<Tuple<int, DataGridLength>>();
-            _autoColumns = new List<int>();
-            _proportionalColumns = new List<int>();
-
-            for(int i=0; i<dataGrid.Columns.Count; i++)
+            if (sender is DataGrid dataGrid && e.WidthChanged && DataGridInfos.TryGetValue(dataGrid, out var info))
             {
-                var column = dataGrid.Columns[i];
-
-                if (column.Width.IsAbsolute)
-                {
-                    _fixedColumns.Add(Tuple.Create<int, DataGridLength>(i, column.Width));
-
-                }
-                else if(column.Width.IsAuto)
-                {
-                    _autoColumns.Add(i);
-                }
-                else if(column.Width.IsStar)
-                {
-                    _proportionalColumns.Add(i);
-                }
+                info.UpdateDataGridColumnsWidth();
             }
         }
 
-        private static void UpdateDataGridColumnsWidth(DataGrid dataGrid)
+        private static void DataGrid_Unloaded(object sender, RoutedEventArgs e)
         {
-            Application.Current.Dispatcher.BeginInvoke((Action)(() => 
+            if (sender is DataGrid dataGrid && DataGridInfos.TryGetValue(dataGrid, out var info))
             {
-                double scrollbarWidth = dataGrid.VerticalScrollBarVisibility == ScrollBarVisibility.Visible ? SystemParameters.VerticalScrollBarWidth : 0;
-                double totalWidth = Math.Max(0, dataGrid.ActualWidth - scrollbarWidth - dataGrid.RowHeaderActualWidth);
+                info.Dispose();
+                DataGridInfos.Remove(dataGrid);
+            }
+        }
+        
+        private class DataGridColumnInfo : IDisposable
+        {
+            private readonly DataGrid _dataGrid;
+            private List<Tuple<int, double>> _fixedColumns;
+            private List<int> _autoColumns;
+            private List<int> _proportionalColumns;
+            private bool _isUpdating;
+            private double _lastProcessedWidth = -1;
 
-                double fixedWidth = _fixedColumns.Sum(x => x.Item1); // Общая ширина фиксированных столбцов
+            public DataGridColumnInfo(DataGrid dataGrid)
+            {
+                _dataGrid = dataGrid;
+            }
 
-                double autoWidth = 0;
-                foreach (int columnIndex in _autoColumns)
+            public void SaveDataGridColumnsWidth()
+            {
+                _fixedColumns = new List<Tuple<int, double>>();
+                _autoColumns = new List<int>();
+                _proportionalColumns = new List<int>();
+
+                for (int i = 0; i < _dataGrid.Columns.Count; i++)
                 {
-                    autoWidth += dataGrid.Columns[columnIndex].ActualWidth;
+                    var column = _dataGrid.Columns[i];
+
+                    if (column.Width.IsAbsolute)
+                    {
+                        _fixedColumns.Add(Tuple.Create(i, column.Width.Value));
+                    }
+                    else if (column.Width.IsAuto)
+                    {
+                        _autoColumns.Add(i);
+                    }
+                    else if (column.Width.IsStar)
+                    {
+                        _proportionalColumns.Add(i);
+                    }
                 }
+            }
 
-                double availableWidth = Math.Max(0, totalWidth - fixedWidth - autoWidth); // Ширина пропорцеональных столбцов
+            public void UpdateDataGridColumnsWidth()
+            {
+                if (_isUpdating || _fixedColumns == null) return;
 
-                foreach(int i in _proportionalColumns)
+                _isUpdating = true;
+
+                try
                 {
-                    dataGrid.Columns[i].Width = new DataGridLength(availableWidth / _proportionalColumns.Count, DataGridLengthUnitType.Pixel);
-                }
+                    if (Math.Abs(_lastProcessedWidth - _dataGrid.ActualWidth) < 1.0) return;
 
-            }), DispatcherPriority.Render);
+                    _lastProcessedWidth = _dataGrid.ActualWidth;
+
+                    Application.Current.Dispatcher.BeginInvoke((Action)(() =>
+                    {
+                        try
+                        {
+                            double scrollbarWidth = _dataGrid.VerticalScrollBarVisibility == ScrollBarVisibility.Visible ?
+                                SystemParameters.VerticalScrollBarWidth : 0;
+                            double totalWidth = Math.Max(0, _dataGrid.ActualWidth - scrollbarWidth - _dataGrid.RowHeaderActualWidth);
+                            
+                            double fixedWidth = _fixedColumns.Sum(x => x.Item2);
+
+                            double autoWidth = 0;
+                            foreach (int columnIndex in _autoColumns)
+                            {
+                                autoWidth += _dataGrid.Columns[columnIndex].ActualWidth;
+                            }
+
+                            double availableWidth = Math.Max(0, totalWidth - fixedWidth - autoWidth);
+
+                            if (_proportionalColumns.Count > 0)
+                            {
+                                double columnWidth = availableWidth / _proportionalColumns.Count;
+                                
+                                columnWidth = Math.Max(50, columnWidth);
+
+                                foreach (int i in _proportionalColumns)
+                                {
+                                    _dataGrid.Columns[i].Width = new DataGridLength(columnWidth, DataGridLengthUnitType.Pixel);
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Error updating DataGrid columns: {ex.Message}");
+                        }
+                        finally
+                        {
+                            _isUpdating = false;
+                        }
+                    }), DispatcherPriority.Render);
+                }
+                catch (Exception ex)
+                {
+                    _isUpdating = false;
+                    System.Diagnostics.Debug.WriteLine($"Error in UpdateDataGridColumnsWidth: {ex.Message}");
+                }
+            }
+
+            public void Dispose()
+            {
+                _fixedColumns = null;
+                _autoColumns = null;
+                _proportionalColumns = null;
+            }
         }
 
-        //public static readonly DependencyProperty WidthRatioProperty = DependencyProperty.RegisterAttached(
-        //   "WidthRatio",
-        //   typeof(double),
-        //   typeof(DataGridColumnWidthHelper),
-        //   new PropertyMetadata(1.0, OnWidthRatioChanged));
+        //private static List<Tuple<int, DataGridLength>> _fixedColumns;
+        //private static List<int> _autoColumns;
+        //private static List<int> _proportionalColumns;
 
-        //public static void SetWidthRatio(DependencyObject element, double value) => element.SetValue(WidthRatioProperty, value);
-        //public static double GetWidthRatio(DependencyObject element) => (double)element.GetValue(WidthRatioProperty);
+        //public static readonly DependencyProperty IsDynamicWithProperty = DependencyProperty.RegisterAttached("IsDynamicWith",
+        //                                                                                                      typeof(bool),
+        //                                                                                                      typeof(DataGridAutoSizeColumns),
+        //                                                                                                      new PropertyMetadata(false, OnIsDynamicWithChanged));
 
-        //public static readonly DependencyProperty IsEnabledProperty =
-        //    DependencyProperty.RegisterAttached(
-        //        "IsEnabled",
-        //        typeof(bool),
-        //        typeof(DataGridColumnWidthHelper),
-        //        new PropertyMetadata(false, OnIsEnabledChanged));
+        //public static void SetIsDynamicWith(DependencyObject element, bool value) => element.SetValue(IsDynamicWithProperty, value);
+        //public static bool GetIsDynamicWith(DependencyObject element) => (bool)element.GetValue(IsDynamicWithProperty);
 
-        //public static void SetIsEnabled(DependencyObject element, bool value) => element.SetValue(IsEnabledProperty, value);
-        //public static bool GetIsEnabled(DependencyObject element) => (bool)element.GetValue(IsEnabledProperty);
-
-        //private static void OnWidthRatioChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        //{
-        //    if (d is DataGridColumn column && GetIsEnabled(column))
-        //        UpdateColumnWidths(column);
-        //}
-
-        //private static void OnIsEnabledChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        //private static void OnIsDynamicWithChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         //{
         //    if (d is DataGrid dataGrid)
         //    {
@@ -149,7 +213,10 @@ namespace ForRobot.Libr.Behavior
         //private static void DataGrid_Loaded(object sender, RoutedEventArgs e)
         //{
         //    if (sender is DataGrid dataGrid)
+        //    {
+        //        SaveDataGridColumnsWidth(dataGrid);
         //        UpdateDataGridColumnsWidth(dataGrid);
+        //    }
         //}
 
         //private static void DataGrid_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -158,49 +225,54 @@ namespace ForRobot.Libr.Behavior
         //        UpdateDataGridColumnsWidth(dataGrid);
         //}
 
-        //private static void UpdateDataGridColumnsWidth(DataGrid dataGrid)
+        //private static void SaveDataGridColumnsWidth(DataGrid dataGrid)
         //{
-        //    // Временно отключаем обновление для избежания рекурсии
-        //    dataGrid.SizeChanged -= DataGrid_SizeChanged;
+        //    _fixedColumns = new List<Tuple<int, DataGridLength>>();
+        //    _autoColumns = new List<int>();
+        //    _proportionalColumns = new List<int>();
 
-        //    double totalRatio = dataGrid.Columns
-        //        .Where(c => GetIsEnabled(c))
-        //        .Sum(GetWidthRatio);
-
-        //    double availableWidth = dataGrid.ActualWidth - GetNonStarWidth(dataGrid);
-
-        //    foreach (var column in dataGrid.Columns)
+        //    for(int i=0; i<dataGrid.Columns.Count; i++)
         //    {
-        //        if (GetIsEnabled(column))
+        //        var column = dataGrid.Columns[i];
+
+        //        if (column.Width.IsAbsolute)
         //        {
-        //            double newWidth = availableWidth * (GetWidthRatio(column) / totalRatio);
-        //            column.Width = newWidth;
+        //            _fixedColumns.Add(Tuple.Create<int, DataGridLength>(i, column.Width));
+        //        }
+        //        else if(column.Width.IsAuto)
+        //        {
+        //            _autoColumns.Add(i);
+        //        }
+        //        else if(column.Width.IsStar)
+        //        {
+        //            _proportionalColumns.Add(i);
         //        }
         //    }
-
-        //    dataGrid.SizeChanged += DataGrid_SizeChanged;
         //}
 
-        //private static double GetNonStarWidth(DataGrid dataGrid)
+        //private static void UpdateDataGridColumnsWidth(DataGrid dataGrid)
         //{
-        //    // Учитываем ширину не-* колонок и вертикального скроллбара
-        //    double nonStarWidth = dataGrid.Columns
-        //        .Where(c => !GetIsEnabled(c))
-        //        .Sum(c => c.ActualWidth);
-
-        //    if (dataGrid.VerticalScrollBarVisibility == ScrollBarVisibility.Auto ||
-        //        dataGrid.VerticalScrollBarVisibility == ScrollBarVisibility.Visible)
+        //    Application.Current.Dispatcher.BeginInvoke((Action)(() => 
         //    {
-        //        nonStarWidth += SystemParameters.VerticalScrollBarWidth;
-        //    }
+        //        double scrollbarWidth = dataGrid.VerticalScrollBarVisibility == ScrollBarVisibility.Visible ? SystemParameters.VerticalScrollBarWidth : 0;
+        //        double totalWidth = Math.Max(0, dataGrid.ActualWidth - scrollbarWidth - dataGrid.RowHeaderActualWidth);
 
-        //    return nonStarWidth;
-        //}
+        //        double fixedWidth = _fixedColumns.Sum(x => x.Item1); // Общая ширина фиксированных столбцов
 
-        //private static void UpdateColumnWidths(DataGridColumn column)
-        //{
-        //    if (column.DataGridOwner is DataGrid dataGrid)
-        //        UpdateDataGridColumnsWidth(dataGrid);
-        //}
+        //        double autoWidth = 0;
+        //        foreach (int columnIndex in _autoColumns)
+        //        {
+        //            autoWidth += dataGrid.Columns[columnIndex].ActualWidth;
+        //        }
+
+        //        double availableWidth = Math.Max(0, totalWidth - fixedWidth - autoWidth); // Ширина пропорцеональных столбцов
+
+        //        foreach(int i in _proportionalColumns)
+        //        {
+        //            dataGrid.Columns[i].Width = new DataGridLength(availableWidth / _proportionalColumns.Count, DataGridLengthUnitType.Pixel);
+        //        }
+
+        //    }), DispatcherPriority.Render);
+        //}        
     }
 }
