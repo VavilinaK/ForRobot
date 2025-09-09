@@ -46,28 +46,27 @@ namespace ForRobot.Views.Controls
             set => SetValue(AccessDataFileProperty, value);
         }
 
-        //public static readonly DependencyProperty SelectedFolderProperty = DependencyProperty.Register(nameof(SelectedFolder),
-        //                                                                                               typeof(string),
-        //                                                                                               typeof(NavigationTreeView),
-        //                                                                                               new PropertyMetadata(false));
-        
+        public static readonly DependencyProperty SelectedFolderProperty = DependencyProperty.Register(nameof(SelectedFolder),
+                                                                                                       typeof(string),
+                                                                                                       typeof(NavigationTreeView),
+                                                                                                       new PropertyMetadata(string.Empty, new PropertyChangedCallback(OnSelectedFolderChanged)));
+
         /// <summary>
         /// Выбранная папка
         /// </summary>
-        //public string SelectedFolder
-        //{
-        //    get => (string)GetValue(SelectedFolderProperty);
-        //    set => SetValue(SelectedFolderProperty, value);
-        //}
+        public string SelectedFolder
+        {
+            get => (string)GetValue(SelectedFolderProperty);
+            set => SetValue(SelectedFolderProperty, value);
+        }
 
         /// <summary>
         /// Дочернии папки выбранного каталога
         /// </summary>
         public List<ForRobot.Model.Controls.File> ChildrenFolder
         {
-            get;
-            //get => (this.SelectedFolder != null && this.RobotSource.Files.Children.Count > 0) ?
-            //        this.RobotSource.Files?.Search(this.SelectedFolder)?.Children.Where(item => item.Type == FileTypes.Folder).Cast<ForRobot.Model.Controls.File>().ToList() : null;
+            get => (this.SelectedFolder != null && this.RobotSource.Files.Children.Count > 0) ?
+                    this.RobotSource.Files?.Search(this.SelectedFolder)?.Children.Where(item => item.Type == FileTypes.Folder).Cast<ForRobot.Model.Controls.File>().ToList() : null;
         }
 
         public static readonly DependencyProperty BlockedFolderProperty = DependencyProperty.Register(nameof(BlockedFolder),
@@ -82,6 +81,21 @@ namespace ForRobot.Views.Controls
         {
             get => (IDictionary<string, bool>)GetValue(BlockedFolderProperty);
             set => SetValue(BlockedFolderProperty, value);
+        }
+
+        private ForRobot.Model.Controls.File _selectedPopupItem;
+        public ForRobot.Model.Controls.File SelectedPopupItem
+        {
+            get => this._selectedPopupItem;
+            set
+            {
+                if (value == null)
+                    return;
+
+                this._selectedPopupItem = value;
+                this.RobotSource.PathControllerFolder = this._selectedPopupItem.Path.TrimEnd(new char[] { '\\' });
+                this.OnPropertyChanged(nameof(this.RobotSource), nameof(this.FoldersCollection));
+            }
         }
 
         #endregion Properties
@@ -131,7 +145,7 @@ namespace ForRobot.Views.Controls
         /// <summary>
         /// Коллекция имен папок составляющих директорию
         /// </summary>
-        public List<String> FoldersCollection
+        public List<string> FoldersCollection
         {
             get => this.RobotSource?.PathControllerFolder.Split('\\').Where(item => item != string.Empty).Select((item, index) => index == 0 ? item + "\\" : item).ToList<string>();
         }
@@ -236,10 +250,11 @@ namespace ForRobot.Views.Controls
         private static void OnSelectedFolderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             NavigationTreeView navigationTreeView = (NavigationTreeView)d;
-
-
-            //navigationTreeView.SelectedFolder = (string)e.NewValue;
-            //navigationTreeView.OnPropertyChanged(nameof(navigationTreeView.SelectedFolder), nameof(navigationTreeView.ChildrenFolder), nameof(navigationTreeView.CanOpenMenu));
+            //var newPath = navigationTreeView.RobotSource.Files.Search((string)e.NewValue);
+            //navigationTreeView.SelectedFolder = newPath?.Path;
+            //navigationTreeView.SelectedFolder = newPath?.Path.TrimEnd(new char[] { '\\' });
+            navigationTreeView.SelectedFolder = (string)e.NewValue;
+            navigationTreeView.OnPropertyChanged(nameof(navigationTreeView.SelectedFolder), nameof(navigationTreeView.ChildrenFolder));
         }
 
         private static void OnBlockedFolderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

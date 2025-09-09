@@ -1309,7 +1309,8 @@
                                                                 RobotSource="{Binding Path=DataContext.SelectedRobot, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, UpdateSourceTrigger=PropertyChanged}"
                                                                 AccessDataFile="{Binding Path=Settings.AccessDataFile, Source={x:Static Application.Current}}"
                                                                 BlockedFolder="{Binding Path=Settings.AvailableFolders, Source={x:Static Application.Current}}"
-                                                                BorderBrush="{StaticResource ThemeNotActiveToggleButBordBrush}"/>
+                                                                BorderBrush="{StaticResource ThemeNotActiveToggleButBordBrush}"
+                                                                Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type RowDefinition}, Mode=FindAncestor}}"/>
                                 </Grid>
                             </avalonDock:LayoutAnchorable>
 
