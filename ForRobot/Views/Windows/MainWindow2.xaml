@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Height="800" Width="1500"
         Background="#FFCBCBCB"
-        Icon="/InterfaceOfRobots;component/Themes/Images/robot_icon.ico"
+        Icon="/InterfaceOfRobots;component/Themes/Icons/robot-arm_512.ico"
         Style="{StaticResource WindowStyle}">
 
     <Window.Title>

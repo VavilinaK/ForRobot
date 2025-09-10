@@ -10,7 +10,8 @@
         Background="Gainsboro"
         Height="400"
         Width="300"
-        ResizeMode="NoResize">
+        ResizeMode="NoResize"
+        Icon="/InterfaceOfRobots;component/Themes/Icons/checkbox.ico">
 
     <Window.Resources>
         <Style TargetType="{x:Type Button}">

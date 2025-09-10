@@ -358,6 +358,14 @@
                                     <Setter Property="ContextMenu">
                                         <Setter.Value>
                                             <ContextMenu>
+                                                <MenuItem Header="Открыть"
+                                                          Command="{Binding Path=PlacementTarget.Tag.DownladeFileCommandAsync, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
+                                                          CommandParameter="{Binding Path=Path}"/>
+
+                                                <MenuItem Header="Скачать"
+                                                          Command="{Binding Path=PlacementTarget.Tag.OpenFileCommandAsync, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
+                                                          CommandParameter="{Binding Path=Path}"/>
+
                                                 <MenuItem Header="Удалить"
                                                           Command="{Binding Path=PlacementTarget.Tag.DeleteFileCommandAsync, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ContextMenu}}}"
                                                           CommandParameter="{Binding Path=Path}"/>

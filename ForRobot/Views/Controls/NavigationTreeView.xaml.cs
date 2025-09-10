@@ -102,9 +102,11 @@ namespace ForRobot.Views.Controls
 
         #region Private variables
 
-        //private ICommand _selectFileCommand;
+        private ICommand _selectFileCommand;
+        private ICommand _openCommand;
+        private ICommand _downladeFileCommand;
         //private ICommand _selectControllerFolderCommand;
-        //private ICommand _deleteFileCommand;
+        private ICommand _deleteFileCommand;
 
         /// <summary>
         /// Обработчик исключений асинхронных комманд
@@ -154,11 +156,15 @@ namespace ForRobot.Views.Controls
 
         #region Commands
 
-        //public ICommand SelectFileCommandAsync { get => this._selectFileCommand ?? (this._selectFileCommand = new RelayCommand(obj => this.SelectFile(obj as string))); }
+        public ICommand SelectFileCommandAsync { get => this._selectFileCommand ?? (this._selectFileCommand = new AsyncRelayCommand(async obj => await this.SelectFile(obj as string), _exceptionCallback)); }
+
+        public ICommand OpenFileCommandAsync { get => this._openCommand ?? (this._openCommand = new AsyncRelayCommand(async obj => await this.OpenFile(obj as string), _exceptionCallback)); }
+
+        public ICommand DownladeFileCommandAsync { get => this._downladeFileCommand ?? (this._downladeFileCommand = new AsyncRelayCommand(async obj => await this.DownladeFile(obj as string), _exceptionCallback)); }
 
         //public ICommand SelectControllerFolderCommand { get => this._selectControllerFolderCommand ?? (this._selectControllerFolderCommand = new RelayCommand(obj => this.SelectControllerFolder(obj as string))); }
 
-        //public ICommand DeleteFileCommandAsync { get => this._deleteFileCommand ?? (this._deleteFileCommand = new AsyncRelayCommand(async obj => await this.DeleteFileAsync(obj as string), _exceptionCallback)); }
+        public ICommand DeleteFileCommandAsync { get => this._deleteFileCommand ?? (this._deleteFileCommand = new AsyncRelayCommand(async obj => await this.DeleteFileAsync(obj as string), _exceptionCallback)); }
 
         #endregion
 
@@ -217,29 +223,55 @@ namespace ForRobot.Views.Controls
 
         //private void SelectControllerFolder(string path) => this.Robot.PathControllerFolder = path;
 
-        //private void SelectFile(string filePath) => this.Robot.SelectProgramByPath(filePath);
+        private async Task SelectFile(string filePath) => await this.RobotSource.SelectProgramByPathAsync(filePath);
 
-        //private async Task DeleteFileAsync(string filePath)
-        //{
-        //    if (string.IsNullOrEmpty(filePath))
-        //        return;
+        private async Task OpenFile(string filePath)
+        {
 
-        //    this.Robot.DeleteFile(filePath);
-        //    await this.Robot.GetFilesAsync();
-        //}
+        }
+
+        private async Task DownladeFile(string filePath)
+        {
+
+        }
+
+        private async Task DeleteFileAsync(string filePath)
+        {
+            if (string.IsNullOrEmpty(filePath))
+                return;
+
+            await this.RobotSource.DeleteFileAsync(filePath);
+            await this.RobotSource.GetFilesAsync();
+        }
 
         private static void OnRobotChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             NavigationTreeView navigationTreeView = (NavigationTreeView)d;
+
+            if(navigationTreeView.RobotSource != null)
+            {
+                navigationTreeView.RobotSource.LoadedFilesEvent -= (s, o) => navigationTreeView.OnPropertyChanged(nameof(RobotSource), nameof(FoldersCollection));
+            }
+
             navigationTreeView.RobotSource = (Robot)e.NewValue;
 
             if (navigationTreeView.RobotSource != null)
-                navigationTreeView.RobotSource.LoadedFilesEvent += (s, o) => navigationTreeView.OnPropertyChanged(nameof(Robot), nameof(FoldersCollection));
+            {
+                navigationTreeView.RobotSource.PropertyChanged += (s, o) =>
+                {
+                    navigationTreeView.OnPropertyChanged(nameof(RobotSource));
+                    if(o.PropertyName == nameof(navigationTreeView.RobotSource.PathControllerFolder))
+                    {
+                        navigationTreeView.OnPropertyChanged(nameof(FoldersCollection));
+                    }
+                };
+                navigationTreeView.RobotSource.LoadedFilesEvent += (s, o) => navigationTreeView.OnPropertyChanged(nameof(RobotSource), nameof(FoldersCollection));
+            }
+        }
 
-            //navigationTreeView.OnPropertyChanged(nameof(FoldersCollection));
+        private static void HandleRobotChange(object sender, EventArgs e)
+        {
 
-            //    navigationTreeView.RobotSource.LoadedFilesEvent += (s, o) => navigationTreeView.OnPropertyChanged(nameof(FileCollection));
-            //navigationTreeView.OnPropertyChanged(nameof(Robot), nameof(FoldersCollection));
         }
 
         private static void OnAccessDataFileChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

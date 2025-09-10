@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Net.Sockets;
 
 using ForRobot.Libr.Client;
 
@@ -12,7 +13,9 @@ namespace ConnectionUnitTests
     [TestClass]
     public class UnitTestsJsonRpcConnection
     {
-        private JsonRpcConnection _connection = new JsonRpcConnection("192.168.92.143", 3333);
+        //private JsonRpcConnection connection = new JsonRpcConnection("192.168.92.185", 3333);
+        string Host = "192.168.92.185";
+        int Port = 3333;
 
         [TestMethod]
         /// <summary>
@@ -116,10 +119,10 @@ namespace ConnectionUnitTests
             try
             {
                 CancellationTokenSource cancelTokenSource = new CancellationTokenSource();
-                JsonRpcConnection connection = new JsonRpcConnection("192.168.92.167", 3333);
                 //connection.Open();
+                JsonRpcConnection connection = new JsonRpcConnection(Host, Port);
 
-                string s = Task.Run(() => _connection.Process_StateAsync(), cancelTokenSource.Token).Result;
+                string s = Task.Run(() => connection.Process_StateAsync(), cancelTokenSource.Token).Result;
 
                 Thread.Sleep(10000);
 
@@ -129,6 +132,33 @@ namespace ConnectionUnitTests
                 //Assert.AreEqual(answer, true);
             }
             catch (Exception ex)
+            {
+                string mess = ex.Message;
+            }
+        }
+
+        [TestMethod]
+        public void TestDownlade()
+        {
+            try
+            {
+                string path = "D:\\ForRobot\\Test";
+                string downladePath = "KRC:\\R1\\Program\\gen\\edge_0_left_ste.dat";
+                JsonRpcConnection connection = new JsonRpcConnection(Host, Port);
+                connection.Open(1000);
+                string result = Task.Run(async () => await connection.CopyFile2MemAsync(downladePath)).Result;
+                //Assert.AreEqual(answer, true);
+                connection.Close();
+
+                string newPath = Path.Combine(path, Path.GetFileName(downladePath));
+
+                //File.Create(newPath);
+                using (var sw = new StreamWriter(newPath, true))
+                {
+                    sw.WriteLine(result);
+                }
+            }
+            catch(Exception ex)
             {
                 string mess = ex.Message;
             }

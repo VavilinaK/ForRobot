@@ -62,17 +62,11 @@ namespace ForRobot.Model
         #endregion
 
         #region Events
-
-        //public event EventHandler ChangeRobot;
-        //public event PropertyChangedEventHandler PropertyChangedEvent;
+        
         /// <summary>
         /// Событие выгрузки файлов
         /// </summary>
         public event EventHandler LoadedFilesEvent;
-        /// <summary>
-        /// Событие изменения пути на контроллере
-        /// </summary>
-        //public event EventHandler ChangedControllerPathEvent;
         /// <summary>
         /// Событие логирования действия
         /// </summary>
@@ -159,8 +153,6 @@ namespace ForRobot.Model
             {
                 this._pathControllerFolder = value;
                 this.OnChangeProperty();
-                //this.ChangeRobot?.Invoke(this, null);
-                //this.ChangedControllerPathEvent?.Invoke(this, null);
             }
         }
 
@@ -969,11 +961,48 @@ namespace ForRobot.Model
         }
 
         /// <summary>
+        /// Скачивание файла
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public bool DownladeFile(string filePath, string finalPath)
+        {
+            try
+            {
+                string result = Task.Run(async () => await this.Connection.CopyFile2MemAsync(filePath)).Result;
+                string newPath = Path.Combine(finalPath, Path.GetFileName(filePath));
+                using (var sw = new StreamWriter(newPath, true))
+                {
+                    sw.WriteLine(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                this.LogErrorMessage(ex.Message, ex);
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
         /// Запуск события по окончанию выгрузки файлов
         /// </summary>
         private void OnLoadedFile() => this.LoadedFilesEvent?.Invoke(this, null);
 
         #region Asunc
+
+        /// <summary>
+        /// Асинхронный выбор программы по пути
+        /// </summary>
+        /// <param name="sProgramPath">Путь к выбираемой программе</param>
+        public async Task SelectProgramByPathAsync(string sProgramPath) => await Task.Run(() => SelectProgramByPath(sProgramPath));
+
+        /// <summary>
+        /// Асинхронное удаление файла с контроллера по пути
+        /// </summary>
+        /// <param name="sPathToFile">Путь к файлу</param>
+        /// <returns></returns>
+        public async Task<bool> DeleteFileAsync(string sPathToFile) => await Task.Run<bool>(() => DeleteFile(sPathToFile));
 
         /// <summary>
         /// Переодическое выполнение задачи

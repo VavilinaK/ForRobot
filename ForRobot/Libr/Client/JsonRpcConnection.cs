@@ -306,14 +306,14 @@ namespace ForRobot.Libr.Client
         }
 
         /// <summary>
-        /// Копирование содержание файла в дерективу робота
+        /// Копирование содержание файла
         /// </summary>
         /// <param name="sFilePath">Директория файла</param>
-        /// <param name="sControllerPath">Путь для файла на роботе</param>
+        /// <param name="sFinalPath">Конечный путь для</param>
         /// <returns></returns>
-        public async Task<bool> CopyMem2FileAsync(string sFilePath, string sControllerPath)
+        public async Task<bool> CopyMem2FileAsync(string sFilePath, string sFinalPath)
         {
-            this.LogMessage($"Копирование содержание файла {sFilePath} в {sControllerPath} . . .");
+            this.LogMessage($"Копирование содержание файла {sFilePath} в {sFinalPath} . . .");
 
             if (!File.Exists(Path.Combine(sFilePath)))
                 this.LogErrorMessage($"Не существует файла {sFilePath}");
@@ -324,13 +324,20 @@ namespace ForRobot.Libr.Client
                 content = await reader.ReadToEndAsync();
             }
 
-            object[] args = { content, sControllerPath, 64 };
+            object[] args = { content, sFinalPath, 64 };
             string result = await this.JsonRpc.InvokeAsync<string>("File_CopyMem2File", args);
 
             if (result == OkResponse)
                 return true;
             return false;
         }
+
+        /// <summary>
+        /// Вывод содержимого файла
+        /// </summary>
+        /// <param name="sFilePath">Путь файла</param>
+        /// <returns></returns>
+        public async Task<string> CopyFile2MemAsync(string sFilePath) => await this.JsonRpc.InvokeAsync<string>("File_CopyFile2Mem", sFilePath);
 
         /// <summary>
         /// Выбор файла программы

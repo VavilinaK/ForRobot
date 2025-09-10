@@ -53,7 +53,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>robot_icon.ico</ApplicationIcon>
+    <ApplicationIcon>Themes\Icons\robot-arm_158.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>ForRobot.App</StartupObject>
@@ -552,6 +552,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Resource Include="Themes\Icons\robot-arm_158.ico" />
+    <Resource Include="Themes\Icons\checkbox.ico" />
+    <Resource Include="Themes\Icons\input.ico" />
     <Resource Include="Themes\Images\EndPlita.png" />
     <Resource Include="Themes\Images\Plita.png" />
     <Resource Include="Themes\Images\StartPlita.png" />
@@ -594,7 +597,6 @@
     </Resource>
     <None Include="InterfaceOfRobots.pfx" />
     <Resource Include="Themes\Images\settings.png" />
-    <Resource Include="robot_icon.ico" />
     <Resource Include="Themes\Images\settingsWhite.png" />
     <Resource Include="Themes\Images\up.png" />
     <Resource Include="Themes\Images\repeat.png" />
@@ -620,7 +622,6 @@
     <Resource Include="Themes\Images\update.png" />
     <Resource Include="Themes\Images\Start.png" />
     <Resource Include="Themes\Images\Stop.png" />
-    <Resource Include="Themes\Images\robot_icon.ico" />
     <Resource Include="Themes\Images\positionOn.png" />
     <Resource Include="Themes\Images\positionOff.png" />
     <Resource Include="Themes\Images\weldingOff.png" />

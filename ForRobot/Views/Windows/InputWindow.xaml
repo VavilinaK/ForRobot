@@ -10,7 +10,8 @@
         WindowStartupLocation="CenterScreen"
         Background="Gainsboro"
         ResizeMode="NoResize"
-        ContentRendered="Window_ContentRendered">
+        ContentRendered="Window_ContentRendered"
+        Icon="/InterfaceOfRobots;component/Themes/Icons/input.ico">
 
     <Window.Resources>
         <Style TargetType="{x:Type Button}">

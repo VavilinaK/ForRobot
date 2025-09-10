@@ -55,7 +55,11 @@ namespace ForRobot.ViewModels
 
         #region Private functions
 
-        private static void SelectHomeDirection(Robot robot) => robot.PathControllerFolder = ForRobot.Libr.Client.JsonRpcConnection.DefaulRoot;
+        private static void SelectHomeDirection(Robot robot)
+        {
+            robot.PathControllerFolder = ForRobot.Libr.Client.JsonRpcConnection.DefaulRoot;
+            //RaisePropertyChanged()
+        }
 
         /// <summary>
         /// Выборка отмеченных файлов
@@ -147,7 +151,7 @@ namespace ForRobot.ViewModels
         private static async Task DownladeFiles(Robot robot)
         {
             string path;
-            using (var fbd = new FolderBrowserDialog())
+            using (var fbd = new FolderBrowserDialog() { Description = "Сохранить файлы в:" })
             {
                 DialogResult result = fbd.ShowDialog();
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
@@ -157,7 +161,15 @@ namespace ForRobot.ViewModels
                 else
                     return;
             }
+
             var checkedFiles = await SelectCheckedFilesAsync(robot.Files);
+
+            foreach(var file in checkedFiles)
+            {
+                var searchFile = robot.Files.Search(Path.GetFileName(file.Path));
+                if (searchFile == null) continue;
+                robot.DownladeFile(file.Path, path);
+            }
         }
 
         /// <summary>

@@ -11,7 +11,8 @@
         Title="Создание модели генерации" 
         Background="#cfcfcf"
         Height="600" Width="1100"
-        ShowInTaskbar="True" WindowStartupLocation="CenterScreen">
+        ShowInTaskbar="True" WindowStartupLocation="CenterScreen"
+        Icon="/InterfaceOfRobots;component/Themes/Icons/robot-arm_158.ico">
 
     <Window.DataContext>
         <vm:CreateWindowViewModel/>
