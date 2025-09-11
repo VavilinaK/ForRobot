@@ -1005,6 +1005,13 @@ namespace ForRobot.Model
         public async Task<bool> DeleteFileAsync(string sPathToFile) => await Task.Run<bool>(() => DeleteFile(sPathToFile));
 
         /// <summary>
+        /// Асинхронное скачивание файла
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public async ValueTask<bool> DownladeFileAsync(string filePath, string finalPath) => await Task.Run<bool>(() => DownladeFile(filePath, finalPath));
+
+        /// <summary>
         /// Переодическое выполнение задачи
         /// </summary>
         /// <param name="action">Выполняемое действие</param>

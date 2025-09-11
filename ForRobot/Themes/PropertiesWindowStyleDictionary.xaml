@@ -105,6 +105,8 @@
                 <Setter Property="HorizontalAlignment" Value="Left"/>
             </Style>
 
+            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource textBase}"></Style>
+            
             <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource CheckBoxBase}"></Style>
 
             <Style TargetType="{x:Type RadioButton}" BasedOn="{StaticResource textBase}"></Style>
@@ -254,8 +256,8 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <!--<Image Grid.Column="0" Source="{Binding Icon}" Width="20" Height="20" Margin="5"/>-->
-                                <TextBlock Grid.Column="1" Text="{Binding Path=Name}" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                                <Image Grid.Column="0" Source="{Binding Icon}" Width="20" Height="20" Margin="5"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Path=Name}" VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="Wrap"/>
                             </Grid>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>

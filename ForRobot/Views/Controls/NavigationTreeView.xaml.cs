@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Controls;
 using System.Threading.Tasks;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -127,7 +128,8 @@ namespace ForRobot.Views.Controls
             }
             catch (Exception ex)
             {
-                throw ex;
+                App.Current.Logger.Error(ex, ex.Message);
+                System.Windows.MessageBox.Show(ex.Message);
             }
         });
 
@@ -156,11 +158,11 @@ namespace ForRobot.Views.Controls
 
         #region Commands
 
-        public ICommand SelectFileCommandAsync { get => this._selectFileCommand ?? (this._selectFileCommand = new AsyncRelayCommand(async obj => await this.SelectFile(obj as string), _exceptionCallback)); }
+        public ICommand SelectFileCommandAsync { get => this._selectFileCommand ?? (this._selectFileCommand = new AsyncRelayCommand(async obj => await this.SelectFileAsync(obj as string), _exceptionCallback)); }
 
-        public ICommand OpenFileCommandAsync { get => this._openCommand ?? (this._openCommand = new AsyncRelayCommand(async obj => await this.OpenFile(obj as string), _exceptionCallback)); }
+        public ICommand OpenFileCommandAsync { get => this._openCommand ?? (this._openCommand = new AsyncRelayCommand(async obj => await this.OpenFileAsync(obj as string), _exceptionCallback)); }
 
-        public ICommand DownladeFileCommandAsync { get => this._downladeFileCommand ?? (this._downladeFileCommand = new AsyncRelayCommand(async obj => await this.DownladeFile(obj as string), _exceptionCallback)); }
+        public ICommand DownladeFileCommandAsync { get => this._downladeFileCommand ?? (this._downladeFileCommand = new AsyncRelayCommand(async obj => await this.DownladeFileAsync(obj as string), _exceptionCallback)); }
 
         //public ICommand SelectControllerFolderCommand { get => this._selectControllerFolderCommand ?? (this._selectControllerFolderCommand = new RelayCommand(obj => this.SelectControllerFolder(obj as string))); }
 
@@ -223,16 +225,63 @@ namespace ForRobot.Views.Controls
 
         //private void SelectControllerFolder(string path) => this.Robot.PathControllerFolder = path;
 
-        private async Task SelectFile(string filePath) => await this.RobotSource.SelectProgramByPathAsync(filePath);
+        private async Task SelectFileAsync(string filePath) => await this.RobotSource.SelectProgramByPathAsync(filePath);
 
-        private async Task OpenFile(string filePath)
+        private async Task OpenFileAsync(string path)
         {
+            string finalPath = Path.GetTempPath();
 
+            await DownladeFileAsync(path, finalPath);
+
+            var app = App.Current.Settings.SelectedAppForOpened;
+            if (app == null)
+                throw new Exception("В настройках не выбранно приложение для открытия файлов.");
+
+            string newPath = Path.Combine(finalPath, Path.GetFileName(path));
+            newPath = Uri.UnescapeDataString(newPath);
+
+            if (!System.IO.File.Exists(newPath))
+                return;
+
+            Process process = new Process()
+            {
+                StartInfo = new ProcessStartInfo()
+                {
+                    UseShellExecute = false,
+                    RedirectStandardInput = false,
+                    RedirectStandardOutput = false,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true,
+                    WorkingDirectory = new FileInfo(app.Path).DirectoryName,
+                    FileName = app.Path,
+                    Arguments = newPath
+                }
+            };
+            process.ErrorDataReceived += (s, e) => { throw new Exception(e.Data); };
+            process.Start();
         }
 
-        private async Task DownladeFile(string filePath)
+        private async Task DownladeFileAsync(string filePath, string finalPath = null)
         {
+            if (finalPath == null)
+                await App.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    using (var fbd = new System.Windows.Forms.FolderBrowserDialog() { Description = "Сохранить файлы в:" })
+                    {
+                        System.Windows.Forms.DialogResult result = fbd.ShowDialog();
+                        if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                        {
+                            finalPath = fbd.SelectedPath;
+                        }
+                        else
+                            return;
+                    }
+                });
 
+            if (!(await this.RobotSource.DownladeFileAsync(filePath, finalPath)))
+                throw new Exception($"Ошибка скачивания {filePath} в {finalPath}");
+
+            App.Current.Logger.Info(string.Format("Скачен файл {0} в {1}", finalPath, finalPath));
         }
 
         private async Task DeleteFileAsync(string filePath)
@@ -243,7 +292,7 @@ namespace ForRobot.Views.Controls
             await this.RobotSource.DeleteFileAsync(filePath);
             await this.RobotSource.GetFilesAsync();
         }
-
+        
         private static void OnRobotChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             NavigationTreeView navigationTreeView = (NavigationTreeView)d;
@@ -267,11 +316,6 @@ namespace ForRobot.Views.Controls
                 };
                 navigationTreeView.RobotSource.LoadedFilesEvent += (s, o) => navigationTreeView.OnPropertyChanged(nameof(RobotSource), nameof(FoldersCollection));
             }
-        }
-
-        private static void HandleRobotChange(object sender, EventArgs e)
-        {
-
         }
 
         private static void OnAccessDataFileChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

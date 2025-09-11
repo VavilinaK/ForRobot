@@ -31,7 +31,8 @@ namespace ForRobot.ViewModels
             }
             catch (Exception ex)
             {
-                throw ex;
+                App.Current.Logger.Error(ex, ex.Message);
+                System.Windows.MessageBox.Show(ex.Message);
             }
         });
 
