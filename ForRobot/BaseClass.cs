@@ -47,6 +47,9 @@ namespace ForRobot
 
         #region Private functions
 
+        /// <summary>
+        /// Отмена изменения
+        /// </summary>
         private void Undo()
         {
             var command = _undoStack.Pop();
@@ -55,6 +58,9 @@ namespace ForRobot
             CommandManager.InvalidateRequerySuggested();
         }
 
+        /// <summary>
+        /// Возврат изменения
+        /// </summary>
         private void Redo()
         {
             var command = _redoStack.Pop();

@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-using ForRobot.Libr;
+using ForRobot.Libr.Collections;
 
 namespace ForRobot.Model.Detals
 {

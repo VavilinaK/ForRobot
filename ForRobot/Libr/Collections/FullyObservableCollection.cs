@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
-namespace ForRobot.Libr
+namespace ForRobot.Libr.Collections
 {
     public class FullyObservableCollection<T> : ObservableCollection<T> where T : INotifyPropertyChanged
     {

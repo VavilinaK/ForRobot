@@ -25,7 +25,7 @@ namespace ForRobot.Model.Controls
 
         IFile this[int index] { get; set; }
 
-        ObservableCollection<IFile> Children { get; }
+        ForRobot.Libr.Collections.FullyObservableCollection<IFile> Children { get; }
 
         IFile Search(string nameToSearchFor);
     }

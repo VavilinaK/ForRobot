@@ -1303,14 +1303,13 @@
                                                         Robot="{Binding Path=SelectedRobot, Mode=TwoWay}"
                                                         Root="{x:Static client:JsonRpcConnection.DefaulRoot}"/>-->
 
-                                    <control:NavigationTreeView Grid.Row="3" 
+                                    <control:NavigationTreeView Grid.Row="3"
                                                                 Background="White"
                                                                 FontSize="{StaticResource FontSizeNP2}"
                                                                 RobotSource="{Binding Path=DataContext.SelectedRobot, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, UpdateSourceTrigger=PropertyChanged}"
                                                                 AccessDataFile="{Binding Path=Settings.AccessDataFile, Source={x:Static Application.Current}}"
                                                                 BlockedFolder="{Binding Path=Settings.AvailableFolders, Source={x:Static Application.Current}}"
-                                                                BorderBrush="{StaticResource ThemeNotActiveToggleButBordBrush}"
-                                                                Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type RowDefinition}, Mode=FindAncestor}}"/>
+                                                                BorderBrush="{StaticResource ThemeNotActiveToggleButBordBrush}"/>
                                 </Grid>
                             </avalonDock:LayoutAnchorable>
 
@@ -1628,13 +1627,12 @@
                                                     </Ellipse>
 
                                                     <TextBlock Grid.Column="1" x:Name="statusString" FontWeight="Bold" FontSize="{StaticResource FontSizeNP4}" 
-                                                               HorizontalAlignment="Left" TextAlignment="Left" Margin="5,0"
+                                                               HorizontalAlignment="Left" TextAlignment="Left" TextWrapping="Wrap" Margin="5,0"
                                                                Foreground="{Binding Path=Text, RelativeSource={RelativeSource Self}, Converter={StaticResource StatusColorConvert}}">
 
                                                         <TextBlock.Style>
                                                             <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource LvTextBase}">
                                                                 <Setter Property="Text" Value="Нет соединения"/>
-                                                                <Setter Property="TextWrapping" Value="Wrap"/>
 
                                                                 <Style.Triggers>
                                                                     <DataTrigger Binding="{Binding Path=Pro_State}" Value="{x:Static model:ProcessStatuses.Free}">
@@ -1695,7 +1693,7 @@
                                         </ListView.ItemContainerStyle>
 
                                         <ListView.View>
-                                            <GridView>
+                                            <GridView behavior:DataGridAutoSizeColumns.IsDynamicWith="True">
                                                 <GridViewColumn CellTemplate="{StaticResource PanelLvDelete}" Width="Auto"></GridViewColumn>
                                                 <GridViewColumn CellTemplate="{StaticResource PanelLvRobot}" Width="Auto"></GridViewColumn>
                                                 <GridViewColumn CellTemplate="{StaticResource PanelLvControl}" Width="Auto"></GridViewColumn>

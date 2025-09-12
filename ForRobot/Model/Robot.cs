@@ -15,6 +15,7 @@ using System.Text.Json.Serialization;
 
 using ForRobot.Libr;
 using ForRobot.Libr.Client;
+using ForRobot.Libr.Collections;
 
 namespace ForRobot.Model
 {
@@ -139,7 +140,6 @@ namespace ForRobot.Model
             {
                 this._pathProgram = value;
                 this.OnChangeProperty();
-                //this.ChangeRobot?.Invoke(this, null);
             }
         }
 
@@ -166,7 +166,6 @@ namespace ForRobot.Model
                     return;
                 this.OpenConnection();
                 this.OnChangeProperty();
-                //this.ChangeRobot?.Invoke(this, null);
             }
         }
 
@@ -180,7 +179,6 @@ namespace ForRobot.Model
                     return;
                 this.OpenConnection();
                 this.OnChangeProperty();
-                //this.ChangeRobot?.Invoke(this, null);
             }
         }
 
@@ -212,7 +210,7 @@ namespace ForRobot.Model
         /// <summary>
         /// Активно ли соединение
         /// </summary>
-        public bool IsConnection { get => (this.Connection is null) || (this.Connection.Client is null) ? false : this.Connection.Client.Connected; }
+        public bool IsConnection { get; private set; }
 
         [JsonIgnore]
         /// <summary>
@@ -248,7 +246,7 @@ namespace ForRobot.Model
             set
             {
                 this._pro_state = value;
-                this.OnChangeProperty();
+                this.OnChangeProperty(nameof(this.Pro_State));
             }
         }
 
@@ -328,12 +326,12 @@ namespace ForRobot.Model
                 this.OnChangeProperty();
             }
         }
-
+        
         [JsonIgnore]
         /// <summary>
         /// Файлы роботов
         /// </summary>
-        public ForRobot.Model.Controls.File Files { get; } = new Controls.File(JsonRpcConnection.DefaulRoot);
+        public ForRobot.Model.Controls.File Files { get; }
 
         //[JsonIgnore]
         ///// <summary>
@@ -355,11 +353,25 @@ namespace ForRobot.Model
         {
             this.Host = hostname;
             this.Port = port;
+
+            this.Files = new Controls.File(JsonRpcConnection.DefaulRoot);
+            //this.Files.Children.ItemPropertyChanged += (s, e) => this.OnChangeProperty(nameof(this.Files));
+            //this.Files.Children.CollectionChanged += (s, e) =>
+            //{
+            //    this.OnChangeProperty(nameof(this.Files));
+            //};
         }
 
         #endregion
 
         #region Private function
+
+        private void SetIsConnection()
+        {
+            this.IsConnection = (this.Connection is null) || (this.Connection.Client is null) ? false : this.Connection.Client.Connected;
+            this.Pro_State = null;
+            this.OnChangeProperty(nameof(this.IsConnection));
+        }
 
         private void LogMessage(string message)
         {
@@ -385,7 +397,7 @@ namespace ForRobot.Model
         private void BeginConnect()
         {
             try
-            {
+            { 
                 this.Connection = new JsonRpcConnection(this.Host, this.Port);
                 this.Connection.Log += this.Log;
                 this.Connection.LogError += this.LogError;
@@ -393,17 +405,22 @@ namespace ForRobot.Model
                 this.Connection.Aborted += (sender, e) =>
                 {
                     this.LogMessage("Соединение разорвано со стороны сервера");
+                    this.SetIsConnection();
                     this.OnChangeProperty();
                 };
                 this.Connection.Disconnected += (sender, e) =>
                 {
                     this.CloseConnection();
+                    this.SetIsConnection();
                     this.OnChangeProperty();
                 };
 
                 this.LogMessage($"Открытие соединения с сервером . . .");
                 if (this.Connection.Open(this.ConnectionTimeOutMilliseconds))
+                {
                     this.LogMessage($"Открыто соединение");
+                    this.SetIsConnection();
+                }
 
                 if (this.IsConnection)
                 {
@@ -448,6 +465,10 @@ namespace ForRobot.Model
                     {
                         ForRobot.Model.Controls.File fileData = new ForRobot.Model.Controls.File(file.Key.TrimEnd(new char[] { '\\' }), file.Value.TrimStart(';').TrimEnd(';'));
                         fileData.Path = Path.Combine(JsonRpcConnection.DefaulRoot, fileData.Path);
+                        //fileData.Children.ItemPropertyChanged += (s, e) =>
+                        //{
+                        //    this.OnChangeProperty(nameof(this.Files));
+                        //};
                         fileDatas.Add(fileData);
                     }
                 }
@@ -475,49 +496,6 @@ namespace ForRobot.Model
                 }
             }
         }
-        //{
-        //    if (!this.IsConnection)
-        //        return;
-
-        //    if (data == null)
-        //    {
-        //        this.FilesCollection = new List<ForRobot.Model.Controls.IFile>() { new Controls.File(JsonRpcConnection.DefaulRoot) };
-        //        List<ForRobot.Model.Controls.File> fileDatas = new List<ForRobot.Model.Controls.File>();
-        //        try
-        //        {
-        //            var files = Task.Run<Dictionary<string, string>>(async () => await this.Connection.File_NameListAsync()).Result;
-
-        //            foreach (var file in files)
-        //            {
-        //                ForRobot.Model.Controls.File fileData = new ForRobot.Model.Controls.File(file.Key.TrimEnd(new char[] { '\\' }), file.Value.TrimStart(';').TrimEnd(';'));
-        //                fileData.Path = Path.Combine(JsonRpcConnection.DefaulRoot, fileData.Path);
-        //                fileDatas.Add(fileData);
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            this.LogErrorMessage(ex.Message, ex);
-        //        }
-        //        LoadFiles(fileDatas.OrderBy(item => item.Path).ToList<ForRobot.Model.Controls.IFile>(), node, index);
-        //    }
-        //    else
-        //    {
-        //        var groupData = data.Where(x => x.Path.Split(new char[] { '\\' }).ToArray().Length > index).GroupBy(x => x.Path.Split(new char[] { '\\' }).ToArray()[index]).ToList();
-        //        foreach (var group in groupData)
-        //        {
-        //            ForRobot.Model.Controls.File newNode = data.Where(x => x.Name == group.Key).ToList().First();
-        //            if (node == null)
-        //            {
-        //                this.FilesCollection.Add(newNode);
-        //            }
-        //            else
-        //            {
-        //                node.Children.Add(newNode);
-        //            }
-        //            LoadFiles(group.ToList(), newNode, index + 1);
-        //        }
-        //    }
-        //}
 
         /// <summary>
         /// Поиск пути файла по его имени
@@ -902,7 +880,7 @@ namespace ForRobot.Model
                         return false;
                 }
 
-                if (!Task.Run<bool>(async () => await this.Connection.DeletAsync(sPathToFile)).Result)
+                if (!Task.Run<bool>(async () => await this.Connection.FileDeleteAsync(sPathToFile)).Result)
                     throw new Exception($"Ошибка удаления файла {sPathToFile}");
                 else
                     this.LogMessage($"Файл программы {sPathToFile} удалён");                
@@ -929,7 +907,7 @@ namespace ForRobot.Model
                     throw new Exception($"Не удалось найти папку {sPathOnFolder} или она пустая");
                 foreach (var file in files.Keys)
                 {
-                    if (!Task.Run<bool>(async () => await this.Connection.DeletAsync(Path.Combine(this.PathProgramm, file))).Result)
+                    if (!Task.Run<bool>(async () => await this.Connection.FileDeleteAsync(Path.Combine(this.PathProgramm, file))).Result)
                         throw new Exception($"Ошибка удаления файла {file}");
                     else
                         this.LogMessage($"Файл {file} удалён");
@@ -1051,8 +1029,8 @@ namespace ForRobot.Model
                 this.LoadFilesTask.Start();
                 this.OnChangeProperty(nameof(this.IsLoadFiles));
                 this.LoadFilesTask.Wait();
-                this.Files.Children = new ObservableCollection<Controls.IFile>(this.FilesCollection);
-                this.OnChangeProperty();
+                this.Files.Children = new FullyObservableCollection<Controls.IFile>(this.FilesCollection);
+                this.OnChangeProperty(nameof(this.IsLoadFiles));
                 this.OnLoadedFile();
             });
         }

@@ -24,6 +24,7 @@ using GalaSoft.MvvmLight.Messaging;
 using HelixToolkit.Wpf;
 
 using ForRobot.Libr;
+using ForRobot.Libr.Collections;
 using ForRobot.Services;
 using ForRobot.Model;
 using ForRobot.Model.Detals;
@@ -733,7 +734,7 @@ namespace ForRobot.ViewModels
 
             if (string.IsNullOrEmpty(robot.Name))
                 robot.Name = $"Соединение {this.RobotsCollection.Count + 1}";
-
+            
             robot.Log += new EventHandler<ForRobot.Libr.LogEventArgs>(this.WreteLog);
             robot.LogError += new EventHandler<ForRobot.Libr.LogErrorEventArgs>(WreteLogError);
 

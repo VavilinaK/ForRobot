@@ -50,7 +50,7 @@ namespace ForRobot.Libr.Client
                     throw new Exception("Не удалось определить состояние TCP-сокета", ex);
                 }
 
-                if (this._key())
+                if (this.CheckKey())
                     actived = true;
 
                 return actived;
@@ -121,7 +121,7 @@ namespace ForRobot.Libr.Client
         /// Запрос ключа с сервера
         /// </summary>
         /// <returns></returns>
-        private bool _key()
+        private bool CheckKey()
         {
             Task<string> task = Task.Run(() => this.JsonRpc.InvokeAsync<string>("auth", "My_example_KEY"));
             if (task.Result == OkResponse)
@@ -132,7 +132,7 @@ namespace ForRobot.Libr.Client
         /// <summary>
         /// Срабатывание события подключения
         /// </summary>
-        private void _onConnected()
+        private void OnConnected()
         {
             if (this.Connected == null)
                 return;
@@ -143,7 +143,7 @@ namespace ForRobot.Libr.Client
         /// <summary>
         /// Срабатывание события прерывания подключения
         /// </summary>
-        private void _onAborted()
+        private void OnAborted()
         {
             if (this.Aborted == null)
                 return;
@@ -154,7 +154,7 @@ namespace ForRobot.Libr.Client
         /// <summary>
         /// Срабатывание события отключения соединения
         /// </summary>
-        private void _onDisconnected()
+        private void OnDisconnected()
         {
             if (this.Disconnected == null)
                 return;
@@ -167,14 +167,14 @@ namespace ForRobot.Libr.Client
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void _onLog(object sender, LogEventArgs e) => this.Log?.Invoke(this, e);
+        private void OnLog(object sender, LogEventArgs e) => this.Log?.Invoke(this, e);
 
         /// <summary>
         /// Вызов события записи ошибки в журнал логгирования
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void _onLogError(object sender, LogErrorEventArgs e) => this.LogError?.Invoke(this, e);
+        private void OnLogError(object sender, LogErrorEventArgs e) => this.LogError?.Invoke(this, e);
 
         #endregion
 
@@ -225,9 +225,9 @@ namespace ForRobot.Libr.Client
                 this.JsonRpc.Disconnected += (sender, e) =>
                 {
                     if (this._disposed == 0)
-                        this._onAborted();
+                        this.OnAborted();
                     else
-                        this._onDisconnected();
+                        this.OnDisconnected();
                 };
 
                 if (!this._isActive)
@@ -236,7 +236,7 @@ namespace ForRobot.Libr.Client
                     return opened;
                 }
 
-                this._onConnected();
+                this.OnConnected();
                 opened = true;
             }
             catch (SocketException ex)
@@ -371,7 +371,7 @@ namespace ForRobot.Libr.Client
         /// </summary>
         /// <param name="sFilePath">Директория файла</param>
         /// <returns></returns>
-        public async Task<bool> DeletAsync(string sFilePath)
+        public async Task<bool> FileDeleteAsync(string sFilePath)
         {
             this.LogMessage($"Удаление файла {sFilePath} . . .");
 

@@ -47,13 +47,6 @@
         <Geometry x:Key="NormalArrow">M0,0 L4,3.5 0,7 z</Geometry>
         <Geometry x:Key="ExpandedArrow">M0,3 L7,3 3.5,7 z</Geometry>
 
-        <!--<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" fill="#000000" aria-hidden="true" id="Folder-Streamline-Heroicons" height="40" width="40">
-            <desc>
-                Folder Streamline Icon: https://streamlinehq.com
-            </desc>
-            <path d="M32.5 35a5 5 0 0 0 5 -5v-7.5a5 5 0 0 0 -5 -5h-25a5 5 0 0 0 -5 5V30a5 5 0 0 0 5 5h25Zm-30 -18.09V10a5 5 0 0 1 5 -5h8.965a3.75 3.75 0 0 1 2.6500000000000004 1.0983333333333334l3.5366666666666666 3.535c0.23333333333333336 0.235 0.5516666666666667 0.3666666666666667 0.8833333333333334 0.3666666666666667H32.5a5 5 0 0 1 5 5v1.91A7.471666666666667 7.471666666666667 0 0 0 32.5 15h-25a7.471666666666667 7.471666666666667 0 0 0 -5 1.91Z" stroke-width="1.6667"></path>
-        </svg>-->
-
         <!--Styles-->
         <Style x:Key="ButtonBase" TargetType="{x:Type Button}">
             <Setter Property="Width" Value="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"/>
@@ -293,7 +286,8 @@
                                 </Grid.ColumnDefinitions>
 
                                 <Viewbox Grid.Column="0" Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type Grid}, Mode=FindAncestor}}"
-                                             HorizontalAlignment="Left" VerticalAlignment="Center" Margin="6,0,0,0">
+                                         HorizontalAlignment="Left" VerticalAlignment="Center" Margin="6,0,0,0">
+                                    
                                     <CheckBox IsChecked="{Binding Path=IsCheck, Mode=TwoWay}" Margin="0, 5"/>
                                 </Viewbox>
 
@@ -625,7 +619,6 @@
             </ComboBox.Template>
         </ComboBox>
 
-
         <TreeView Grid.Row="1"
                   IsEnabled="{Binding Path=RobotSource.IsConnection, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}"
                   FontSize="{Binding Path=FontSize, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}" 
@@ -666,7 +659,7 @@
                             <Setter Property="TextBlock.FontWeight" Value="Bold"/>
                         </DataTrigger>
 
-                        <DataTrigger Binding="{Binding Path=RobotSource.IsLoadFiles, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}" Value="True">
+                        <DataTrigger Binding="{Binding Path=RobotSource.IsLoadFiles, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}, UpdateSourceTrigger=PropertyChanged}" Value="True">
                             <Setter Property="IsEnabled" Value="False"/>
                         </DataTrigger>
                     </Style.Triggers>

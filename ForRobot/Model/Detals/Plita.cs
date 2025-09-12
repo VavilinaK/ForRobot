@@ -18,6 +18,7 @@ using HelixToolkit.Wpf;
 using ForRobot.Libr;
 using ForRobot.Libr.Json;
 using ForRobot.Libr.Converters;
+using ForRobot.Libr.Collections;
 using ForRobot.Libr.ConfigurationProperties;
 
 namespace ForRobot.Model.Detals

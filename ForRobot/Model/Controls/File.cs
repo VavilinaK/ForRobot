@@ -1,19 +1,24 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+
+using ForRobot.Libr.Collections;
 
 namespace ForRobot.Model.Controls
 {
-    public class File : BaseClass, IFile, ICloneable
+    /// <summary>
+    /// Модель представления файла на роботе
+    /// </summary>
+    public class File : IFile, ICloneable
     {
         #region Private variables
 
         private bool _isCheck = false;
         private bool _isCopy = false;
         private bool _isExpanded = true;
-
-        private ObservableCollection<IFile> _children = new ObservableCollection<IFile>();
 
         #endregion
 
@@ -28,14 +33,34 @@ namespace ForRobot.Model.Controls
             get => this._isCheck;
             set
             {
-                Set(ref this._isCheck, value);
+                this._isCheck = value;
 
                 foreach (var file in this.Children)
                     file.IsCheck = true;
+
+                this.OnChangeProperty();
             }
         }
-        public bool IsCopy { get => this._isCopy; set => Set(ref this._isCopy, value); }
-        public bool IsExpanded { get => this._isExpanded; set => Set(ref this._isExpanded, value); }
+
+        public bool IsCopy
+        {
+            get => this._isCopy;
+            set
+            {
+                this._isCopy = value;
+                this.OnChangeProperty();
+            }
+        }
+
+        public bool IsExpanded
+        {
+            get => this._isExpanded;
+            set
+            {
+                this._isExpanded = value;
+                this.OnChangeProperty();
+            }
+        }
 
         public FileTypes Type
         {
@@ -62,11 +87,9 @@ namespace ForRobot.Model.Controls
 
         public IFile this[int index] { get => this.Children[index]; set => this.Children[index] = value; }
 
-        public ObservableCollection<IFile> Children
-        {
-            get => this._children;
-            set => Set(ref this._children, value);
-        }
+        public FullyObservableCollection<IFile> Children { get; set; } = new FullyObservableCollection<IFile>();
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         #endregion
 
@@ -116,11 +139,17 @@ namespace ForRobot.Model.Controls
 
         #endregion
 
+        /// <summary>
+        /// Вызов события изменения свойства
+        /// </summary>
+        /// <param name="propertyName">Наименование свойства</param>
+        public virtual void OnChangeProperty([CallerMemberName] string propertyName = null) => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
         #region Prublic function
 
         public object Clone() => (File)this.MemberwiseClone();
 
-        public IFile Search(string nameToSearchFor)
+        public IFile Search(string nameToSearch)
         {
             Queue<File> Q = new Queue<File>();
             HashSet<File> S = new HashSet<File>();
@@ -130,7 +159,7 @@ namespace ForRobot.Model.Controls
             while (Q.Count > 0)
             {
                 File e = Q.Dequeue();
-                if (e.Name == nameToSearchFor)
+                if (e.Name == nameToSearch)
                     return e;
                 foreach (File friend in e.Children)
                 {
@@ -142,27 +171,6 @@ namespace ForRobot.Model.Controls
                 }
             }
             return null;
-
-            //Queue<IFile> Q = new Queue<IFile>();
-            //HashSet<IFile> S = new HashSet<IFile>();
-            //Q.Enqueue(this);
-            //S.Add(this);
-
-            //while (Q.Count > 0)
-            //{
-            //    IFile e = Q.Dequeue();
-            //    if (e.Name == nameToSearchFor)
-            //        return e;
-            //    foreach (IFile friend in e.Children)
-            //    {
-            //        if (!S.Contains(friend))
-            //        {
-            //            Q.Enqueue(friend);
-            //            S.Add(friend);
-            //        }
-            //    }
-            //}
-            //return null;
         }
 
         #endregion

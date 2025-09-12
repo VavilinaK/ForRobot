@@ -179,51 +179,49 @@ namespace ForRobot.Views.Controls
 
         #region Private function
 
-        ///// <summary>
-        ///// Удаление скрытых папок из файлов робота
-        ///// </summary>
-        ///// <param name="pairs"></param>
-        //private ObservableCollection<IFile> DeleteFolder()
-        //{
-        //    if (this.Robot?.Files == null || this.BlockedFolder == null)
-        //        return this.Robot?.Files.Children;
+        /// <summary>
+        /// Удаление скрытых папок из файлов робота
+        /// </summary>
+        /// <param name="pairs"></param>
+        private void DeleteFolder()
+        {
+            if (this.RobotSource?.Files == null || this.BlockedFolder == null)
+                return;
 
-        //    File files = this.Robot.Files;
+            ForRobot.Model.Controls.File files = this.RobotSource.Files;
 
-        //    var set = this.BlockedFolder.Where(x => !x.Value).Select(s => s.Key).ToList<string>();
-        //    for (int i = 0; i < files.Children.Count(); i++)
-        //    {
-        //        var file = files.Children.ToArray()[i];
-        //        if (set.Contains(file.Name))
-        //        {
-        //            files.Children.Remove(file);
-        //            i--;
-        //            continue;
-        //        }
+            var set = this.BlockedFolder.Where(x => !x.Value).Select(s => s.Key).ToList<string>();
+            for (int i = 0; i < files.Children.Count(); i++)
+            {
+                var file = files.Children.ToArray()[i];
+                if (set.Contains(file.Name))
+                {
+                    files.Children.Remove(file);
+                    i--;
+                    continue;
+                }
 
-        //        var q = new Queue<IFile>();
-        //        q.Enqueue(file);
+                var q = new Queue<IFile>();
+                q.Enqueue(file);
 
-        //        while (q.Count > 0)
-        //        {
-        //            var node = q.Dequeue();
+                while (q.Count > 0)
+                {
+                    var node = q.Dequeue();
 
-        //            for (int y = 0; y < node.Children.Count; y++)
-        //            {
-        //                q.Enqueue(node.Children[y] as ForRobot.Model.Controls.File);
+                    for (int y = 0; y < node.Children.Count; y++)
+                    {
+                        q.Enqueue(node.Children[y] as ForRobot.Model.Controls.File);
 
-        //                if (set.Contains(node.Children[y].Name))
-        //                {
-        //                    node.Children.Remove(node.Children[y] as ForRobot.Model.Controls.File);
-        //                    y--;
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return files.Children;
-        //}
-
-        //private void SelectControllerFolder(string path) => this.Robot.PathControllerFolder = path;
+                        if (set.Contains(node.Children[y].Name))
+                        {
+                            node.Children.Remove(node.Children[y] as ForRobot.Model.Controls.File);
+                            y--;
+                        }
+                    }
+                }
+            }
+            this.RobotSource.Files.Children = files.Children;
+        }
 
         private async Task SelectFileAsync(string filePath) => await this.RobotSource.SelectProgramByPathAsync(filePath);
 
@@ -335,9 +333,9 @@ namespace ForRobot.Views.Controls
 
         private static void OnBlockedFolderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            //NavigationTreeView navigationTreeView = (NavigationTreeView)d;
-            //navigationTreeView.BlockedFolder = (IDictionary<string, bool>)e.NewValue;
-            //navigationTreeView.OnPropertyChanged(nameof(navigationTreeView.BlockedFolder), nameof(navigationTreeView.FileCollection));
+            NavigationTreeView navigationTreeView = (NavigationTreeView)d;
+            navigationTreeView.BlockedFolder = (IDictionary<string, bool>)e.NewValue;
+            navigationTreeView.OnPropertyChanged(nameof(navigationTreeView.BlockedFolder), nameof(navigationTreeView.RobotSource));
         }
 
         #endregion Private function

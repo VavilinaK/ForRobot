@@ -3,15 +3,32 @@ using System.ComponentModel;
 
 namespace ForRobot.Libr.Collections
 {
-    public class ItemPropertyChangedEventArgs : EventArgs
+    public class ItemPropertyChangedEventArgs : PropertyChangedEventArgs
     {
-        public int Index { get; }
-        public PropertyChangedEventArgs PropertyChangedEventArgs { get; }
+        /// <summary>
+        /// Индекс элемента в родительской коллекции
+        /// </summary>
+        public int CollectionIndex { get; }
 
-        public ItemPropertyChangedEventArgs(int index, PropertyChangedEventArgs e)
+        #region Constructors
+
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="ItemPropertyChangedEventArgs"/>.
+        /// </summary>
+        /// <param name="index">Индекс изменённого элемента.</param>
+        /// <param name="name">Имя изменённого свойства.</param>
+        public ItemPropertyChangedEventArgs(int index, string name) : base(name)
         {
-            Index = index;
-            PropertyChangedEventArgs = e;
+            CollectionIndex = index;
         }
+
+        /// <summary>
+        /// Инициализирует новый экземпляр класса <see cref="ItemPropertyChangedEventArgs"/>.
+        /// </summary>
+        /// <param name="index">Индекс</param>
+        /// <param name="args">Экземпляр <see cref="PropertyChangedEventArgs"/> содержащий данные о событии</param>
+        public ItemPropertyChangedEventArgs(int index, PropertyChangedEventArgs args) : this(index, args.PropertyName) { }
+
+        #endregion
     }
 }
