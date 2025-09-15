@@ -29,11 +29,7 @@ namespace ForRobot.Model.File3D
     public class File3D
     {
         #region Private variables
-
-        //MeshElement3D _object3D;
-
-        //private readonly IHelixViewport3D viewport;
-        //private bool _isSaved = false;
+        
         private Model3DGroup _currentModel = new Model3DGroup();
 
         private Detal _detal;
@@ -99,60 +95,12 @@ namespace ForRobot.Model.File3D
             {
                 this._currentModel = value;
                 this._currentModel.Changed += (s, o) => this.OnModelChanged();
+                this._currentModel.Children.Changed += (s, o) => this.OnModelChanged();
                 this.OnModelChanged();
             }
         }
 
-        public Detal Detal
-        {
-            get => this._detal;
-            set
-            {
-                this.SetDetal(value);
-
-                //this._detal.ChangePropertyEvent += (s, e) =>
-                //{
-                //    this.OnDetalChanged();
-                //    this.ChangePropertyAnnotations(s as Detal, e as string);
-
-                //    if (this._detal.NotSaveProperties.Contains(e as string))
-                //        return;
-                //};
-                //switch (this._detal.DetalType)
-                //{
-                //    case DetalTypes.Plita:
-                //        var plita = (Plita)this._detal;
-                //        plita.RibsCollection.ItemPropertyChanged += (s, e) => this.OnDetalChanged();
-                //        break;
-                //}
-
-                //this._detal.ChangePropertyEvent += (s, o) =>
-                //{
-                //    this.OnModelChanged();
-                //    this.ChangePropertyAnnotations(s as Detal, o as string);
-
-                //    if (this._detal.NotSaveProperties.Contains(o as string))
-                //        return;
-
-                //    this.TrackUndo(this._detalCopy, (Detal)this._detal.Clone());
-                //    this.CloneDetal();
-                //};
-                //switch (this._detal.DetalType)
-                //{
-                //    case string a when a == DetalTypes.Plita:
-                //        var plita = (Plita)this._detal;
-                //        plita.RibsCollection.ItemPropertyChanged += (s, o) =>
-                //        {
-                //            this.OnModelChanged();
-                //            //this.TrackUndo(this._detalCopy, plita.Clone());
-                //            //this.CloneDetal();
-                //            //this.ChangePropertyAnnotations(s as Detal, o as string);
-                //        };
-                //        break;
-                //}
-                //this.CloneDetal();
-            }
-        }
+        public Detal Detal { get => this._detal; set => this.SetDetal(value); }
 
         public static readonly string FilterForFileDialog = "3D model files (*.3ds;*.obj;*.off;*.lwo;*.stl;*.ply;)|*.3ds;*.obj;*.objz;*.off;*.lwo;*.stl;*.ply;";
 
@@ -183,10 +131,12 @@ namespace ForRobot.Model.File3D
             this.IsCreated = true;
         }
 
-        public File3D(string path) : this()
+        public File3D(string path)
         {
             if (!File.Exists(path))
                 throw new FileNotFoundException("Файл не найден по пути", path);
+
+            this.dispatcher = Dispatcher.CurrentDispatcher;
 
             //if (ExtensionsFilter.Count(item => System.IO.Path.GetExtension(sPath) == item) == 0)
             //    throw new FileFormatException("Неверный формат файла");
@@ -216,16 +166,24 @@ namespace ForRobot.Model.File3D
             if (_detal == value)
                 return;
 
-            if (this._detal != null) this._detal.ChangePropertyEvent -= HandlePropertyChange;
+            if (this._detal != null)
+            {
+                this._detal.ChangePropertyEvent -= HandlePropertyChange;
+            }
 
             Detal oldDetal = this._detal;
             this._detal = value as Detal;
 
-            if (this._detal != null) this._detal.ChangePropertyEvent += HandlePropertyChange;
+            if (this._detal != null)
+            {
+                this._detal.ChangePropertyEvent += HandlePropertyChange;
+            }
+
             this.OnDetalChanged(oldDetal, this._detal);
 
             this.DetalChangedEvent += (s, o) => this.CurrentModel.Children.Clear();
             this.AnnotationsCollection = this._annotationService.GetAnnotations(this.Detal);
+
             switch (this.Detal.DetalType)
             {
                 case DetalTypes.Plita:
@@ -638,7 +596,6 @@ namespace ForRobot.Model.File3D
         private void HandlePropertyChange(object sender, PropertyChangedEventArgs e)
         {
             this.OnDetalChanged(null, sender as Detal);
-            this.OnModelChanged();
             this.ChangePropertyAnnotations(sender as Detal, e.PropertyName);
         }
 
@@ -703,7 +660,7 @@ namespace ForRobot.Model.File3D
         public void OnDetalChanged(Detal oldDetal, Detal newDetal)
         {
             this.DetalChangedEvent?.Invoke(this, new Libr.ValueChangedEventArgs<Detal>(oldDetal, newDetal));
-            this.FileChangedEvent?.Invoke(this, null);
+            this.OnFileChanged();
         }
         /// <summary>
         /// Вызов события изменения свойства <see cref="CurrentModel"/>
@@ -711,7 +668,7 @@ namespace ForRobot.Model.File3D
         public void OnModelChanged()
         {
             this.ModelChangedEvent?.Invoke(this, null);
-            this.FileChangedEvent?.Invoke(this, null);
+            this.OnFileChanged();
         }
         /// <summary>
         /// Вызов события оповещающего, что было измененно свойство класса <see cref="File3D"/>

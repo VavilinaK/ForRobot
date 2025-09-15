@@ -362,6 +362,7 @@
     <Compile Include="Model\ProcessStatuses.cs" />
     <Compile Include="PropertyChangeCommand.cs" />
     <Compile Include="Services\AnnotationService.cs" />
+    <Compile Include="Services\ChangeService.cs" />
     <Compile Include="Services\ExporterService.cs" />
     <Compile Include="Services\File3DImportService.cs" />
     <Compile Include="Services\FileDialogService.cs" />

@@ -355,11 +355,16 @@ namespace ForRobot.Model
             this.Port = port;
 
             this.Files = new Controls.File(JsonRpcConnection.DefaulRoot);
+            this.Files.Children.CollectionChanged += (s, e) =>
+            {
+                this.OnChangeProperty(nameof(this.Files));
+            };
+            this.Files.PropertyChanged += (s, e) =>
+            {
+                this.OnChangeProperty(nameof(this.Files));
+            };
             //this.Files.Children.ItemPropertyChanged += (s, e) => this.OnChangeProperty(nameof(this.Files));
-            //this.Files.Children.CollectionChanged += (s, e) =>
-            //{
-            //    this.OnChangeProperty(nameof(this.Files));
-            //};
+
         }
 
         #endregion
@@ -465,10 +470,6 @@ namespace ForRobot.Model
                     {
                         ForRobot.Model.Controls.File fileData = new ForRobot.Model.Controls.File(file.Key.TrimEnd(new char[] { '\\' }), file.Value.TrimStart(';').TrimEnd(';'));
                         fileData.Path = Path.Combine(JsonRpcConnection.DefaulRoot, fileData.Path);
-                        //fileData.Children.ItemPropertyChanged += (s, e) =>
-                        //{
-                        //    this.OnChangeProperty(nameof(this.Files));
-                        //};
                         fileDatas.Add(fileData);
                     }
                 }
@@ -1029,7 +1030,13 @@ namespace ForRobot.Model
                 this.LoadFilesTask.Start();
                 this.OnChangeProperty(nameof(this.IsLoadFiles));
                 this.LoadFilesTask.Wait();
-                this.Files.Children = new FullyObservableCollection<Controls.IFile>(this.FilesCollection);
+
+                System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() => 
+                {
+                    foreach (var file in this.FilesCollection)
+                        this.Files.Children.Add(file);
+                }));
+
                 this.OnChangeProperty(nameof(this.IsLoadFiles));
                 this.OnLoadedFile();
             });

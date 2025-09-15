@@ -435,15 +435,16 @@ namespace ForRobot.ViewModels
                 string programName = this.GetStandartProgramName(App.Current.Settings.StartedDetalType);
                 string path = Path.Combine(Path.GetTempPath(), programName);
 
+                Model.File3D.File3D file3D;
                 if (App.Current.Settings.SaveDetalProperties && File.Exists(path))
-                {
-                    App.Current.OpenedFiles.Add(new Model.File3D.File3D(path));
-                }
+                    file3D = new Model.File3D.File3D(path);
                 else
-                {
+                    file3D = new Model.File3D.File3D(Detal.GetDetal(App.Current.Settings.StartedDetalType), path);
 
-                    App.Current.OpenedFiles.Add(new Model.File3D.File3D(Detal.GetDetal(App.Current.Settings.StartedDetalType), path));
-                }
+                file3D.DetalChangedEvent += new ChangeService().HandleDetalPropertyChange;
+                file3D.FileChangedEvent += new ChangeService().HandleFileChange;
+                
+                App.Current.OpenedFiles.Add(file3D);
             }
         }
 
@@ -491,7 +492,10 @@ namespace ForRobot.ViewModels
         /// Возврат к стандартным параметрам детали
         /// </summary>
         /// <param name="file">Выбранный файл</param>
-        private static void GetStandartParametrs(Model.File3D.File3D file) => file.Detal = Model.File3D.File3D.StandartParamertrs(file.Detal);
+        private static void GetStandartParametrs(Model.File3D.File3D file)
+        {
+            file.Detal = Model.File3D.File3D.StandartParamertrs(file.Detal);
+        }
 
         /// <summary>
         /// Приближение/отдаление камеры в HelixViewport3D

@@ -87,7 +87,7 @@ namespace ForRobot.Model.Controls
 
         public IFile this[int index] { get => this.Children[index]; set => this.Children[index] = value; }
 
-        public FullyObservableCollection<IFile> Children { get; set; } = new FullyObservableCollection<IFile>();
+        public FullyObservableCollection<IFile> Children { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -95,9 +95,17 @@ namespace ForRobot.Model.Controls
 
         #region Constructors
 
-        public File() { }
+        public File()
+        {
+            this.Children = new FullyObservableCollection<IFile>();
+            this.Children.ItemPropertyChanged += (s, e) =>
+            {
+                this.OnChangeProperty();
+            };
+            this.Children.CollectionChanged += (s, e) => this.OnChangeProperty();
+        }
 
-        public File(string path)
+        public File(string path) : this()
         {
             this.Path = path;
             this.Name = path == Libr.Client.JsonRpcConnection.DefaulRoot ? path : System.IO.Path.GetFileName(path);
@@ -139,13 +147,17 @@ namespace ForRobot.Model.Controls
 
         #endregion
 
+        #region Private function
+
+        #endregion
+
+        #region Prublic function
+
         /// <summary>
         /// Вызов события изменения свойства
         /// </summary>
         /// <param name="propertyName">Наименование свойства</param>
         public virtual void OnChangeProperty([CallerMemberName] string propertyName = null) => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
-        #region Prublic function
 
         public object Clone() => (File)this.MemberwiseClone();
 

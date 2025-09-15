@@ -458,7 +458,7 @@
                                     <Grid.Style>
                                         <Style TargetType="{x:Type Grid}">
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Path=Visibility, ElementName=progressBar}" Value="Visible">
+                                                <DataTrigger Binding="{Binding Path=Visibility, ElementName=ProgressBar}" Value="Visible">
                                                     <Setter Property="IsEnabled" Value="False"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -470,17 +470,16 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <ProgressBar x:Name="progressBar" Grid.ColumnSpan="2" Panel.ZIndex="1" Background="Transparent" BorderThickness="0"
+                                    <ProgressBar x:Name="ProgressBar" Grid.ColumnSpan="2" Panel.ZIndex="1" Background="Transparent" BorderThickness="0"
                                                  Foreground="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}"
-                                                 Minimum="0" Maximum="100" IsIndeterminate="True" 
-                                                 Value="{Binding ElementName=BreadcrumbControl, Path=Progress}">
+                                                 Minimum="0" Maximum="100" IsIndeterminate="True">
 
                                         <ProgressBar.Style>
                                             <Style TargetType="{x:Type ProgressBar}">
                                                 <Setter Property="Visibility" Value="Hidden"/>
 
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Path=Robot.IsLoadFiles, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}" Value="True">
+                                                    <DataTrigger Binding="{Binding Path=RobotSource.IsLoadFiles, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}" Value="True">
                                                         <Setter Property="Visibility" Value="Visible"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
