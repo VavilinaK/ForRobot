@@ -163,13 +163,13 @@ namespace ForRobot
             if (((Application.Current.Windows.Count == 0) && (Application.Current.ShutdownMode == ShutdownMode.OnLastWindowClose))
                 || (Application.Current.ShutdownMode == ShutdownMode.OnMainWindowClose))
             {
-                if (Settings.SaveDetalProperties)
-                {
-                    Services.File3DService.SaveFiles(OpenedFiles.Where(item => new List<string>() { ForRobot.Properties.Settings.Default.PlitaProgramm,
-                                                                                                  ForRobot.Properties.Settings.Default.PlitaStringerProgramm,
-                                                                                                  ForRobot.Properties.Settings.Default.PlitaTreugolnikProgramm
-                                                                                                }.Contains(item.NameWithoutExtension)));
-                }
+                //if (Settings.SaveDetalProperties)
+                //{
+                //    Services.File3DService.SaveFiles(OpenedFiles.Where(item => new List<string>() { ForRobot.Properties.Settings.Default.PlitaProgramm,
+                //                                                                                  ForRobot.Properties.Settings.Default.PlitaStringerProgramm,
+                //                                                                                  ForRobot.Properties.Settings.Default.PlitaTreugolnikProgramm
+                //                                                                                }.Contains(item.NameWithoutExtension)));
+                //}
 
                 if (this._isNewInstance)
                     this.Logger.Trace("Закрытие приложения\n\n");

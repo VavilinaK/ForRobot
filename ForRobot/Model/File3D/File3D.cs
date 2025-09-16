@@ -23,16 +23,19 @@ using CommunityToolkit.Diagnostics;
 //using CommunityToolkit.Mvvm.Input;
 
 using ForRobot.Model.Detals;
+using ForRobot.Services;
 
 namespace ForRobot.Model.File3D
 {
-    public class File3D
+    public class File3D : IDisposable
     {
         #region Private variables
         
         private Model3DGroup _currentModel = new Model3DGroup();
 
         private Detal _detal;
+        private Detal _oldDetal;
+
         private ObservableCollection<Weld> _weldsCollection = new ObservableCollection<Weld>();
 
         private readonly Dispatcher dispatcher;
@@ -45,7 +48,6 @@ namespace ForRobot.Model.File3D
         /// </summary>
         private static readonly string[] FileTextExtensions = new string[] { ".txt", ".json" };
 
-        private readonly ForRobot.Services.IModelingService _modelingService = new ForRobot.Services.ModelingService(ForRobot.Model.Settings.Settings.ScaleFactor);
         private readonly ForRobot.Services.IAnnotationService _annotationService = new ForRobot.Services.AnnotationService(ForRobot.Model.Settings.Settings.ScaleFactor);
         private readonly ForRobot.Services.IWeldService _weldService = new ForRobot.Services.WeldService(ForRobot.Model.Settings.Settings.ScaleFactor);
 
@@ -57,10 +59,6 @@ namespace ForRobot.Model.File3D
         /// Файл был открыт
         /// </summary>
         public bool IsOpened { get; private set; } = false;
-        /// <summary>
-        /// Файл был создан
-        /// </summary>
-        public bool IsCreated { get; private set; } = false;
         /// <summary>
         /// Сохранены ли последнии изменения
         /// </summary>
@@ -109,7 +107,6 @@ namespace ForRobot.Model.File3D
         public event EventHandler<Libr.ValueChangedEventArgs<Detal>> DetalChangedEvent;
         public event EventHandler ModelChangedEvent;
         public event EventHandler FileChangedEvent;
-        //public event EventHandler FileChangedEvent;
 
         #endregion
 
@@ -126,9 +123,13 @@ namespace ForRobot.Model.File3D
         public File3D(Detal detal, string path = null) : this()
         {
             this.ModelChangedEvent += (s, o) => GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Behavior.HelixSceneTrackerMessage());
+            this.ModelChangedEvent += new ChangeService().HandleModelChanged;
+            this.DetalChangedEvent += new ChangeService().HandleDetalChanged_Properties;
+            this.DetalChangedEvent += new ChangeService().HandleDetalChanged_Modeling;
+            this.FileChangedEvent += new ChangeService().HandleFileChange;
+
             this.Detal = detal;
             this.Path = path;
-            this.IsCreated = true;
         }
 
         public File3D(string path)
@@ -160,7 +161,7 @@ namespace ForRobot.Model.File3D
                 return new ModelImporter().Load(model3DPath, this.dispatcher);
             });
         }
-
+        
         private void SetDetal(object value)
         {
             if (_detal == value)
@@ -169,53 +170,26 @@ namespace ForRobot.Model.File3D
             if (this._detal != null)
             {
                 this._detal.ChangePropertyEvent -= HandlePropertyChange;
+                this._oldDetal = this._detal.Clone() as Detal;
             }
 
-            Detal oldDetal = this._detal;
             this._detal = value as Detal;
 
-            if (this._detal != null)
-            {
-                this._detal.ChangePropertyEvent += HandlePropertyChange;
-            }
+            if (this._detal == null)
+                return;
 
-            this.OnDetalChanged(oldDetal, this._detal);
+            this._detal.ChangePropertyEvent += HandlePropertyChange;
 
-            this.DetalChangedEvent += (s, o) => this.CurrentModel.Children.Clear();
-            this.AnnotationsCollection = this._annotationService.GetAnnotations(this.Detal);
+            this.OnDetalChanged(this._oldDetal, this._detal);
 
-            switch (this.Detal.DetalType)
-            {
-                case DetalTypes.Plita:
-                    this.CurrentModel.Children.Add(this._modelingService.ModelBuilding((Plita)this.Detal));
-                    this.FillWeldsCollection(this.Detal as Plita);
-                    this.DetalChangedEvent += (s, o) =>
-                    {
-                        var plita = (s as File3D).Detal as Plita;
-                        this.CurrentModel.Children.Add(this._modelingService.ModelBuilding((Plita)this.Detal));
-                        this.FillWeldsCollection(plita);
-                    };
-                    break;
+            if (this._oldDetal == null)
+                this._oldDetal = this._detal.Clone() as Detal;
 
-                case DetalTypes.Stringer:
-                    break;
+            this.OnModelChanged();
+            this.AnnotationsCollection = this._annotationService.GetAnnotations(this._detal);
 
-                case DetalTypes.Treygolnik:
-                    break;
-            }
             //this.DetalChangedEvent += (s, o) => SceneUpdate();
         }
-
-        //private void CloneDetal()
-        //{
-        //    this._detalCopy = (Detal)this.Detal.Clone();
-        //    //switch (this._detalCopy)
-        //    //{
-        //    //    case Plita plita:
-        //    //        ((Plita)this._detalCopy).SetRibsCollection(((Plita)this.Detal).RibsCollection);
-        //    //        break;
-        //    //}
-        //}
 
         private void CreateParameterArrow(Point3D start, Point3D end, string label, Color color)
         {
@@ -400,14 +374,7 @@ namespace ForRobot.Model.File3D
             //    ProcessNode(scene.RootNode, scene, this.CurrentModel);
             //}
         }
-
-        private void FillWeldsCollection(Detal detal)
-        {
-            foreach (var item in this.WeldsCollection) item.Children.Clear();
-            this.WeldsCollection.Clear();
-            foreach (var item in this._weldService.GetWelds(detal)) this.WeldsCollection.Add(item);
-        }
-
+               
         //private void ProcessNode(Node node, Scene scene, Model3DGroup modelGroup)
         //{
         //    // Обрабатываем все меши в текущем узле
@@ -591,12 +558,12 @@ namespace ForRobot.Model.File3D
 
         #endregion Model
 
-        #region
-
         private void HandlePropertyChange(object sender, PropertyChangedEventArgs e)
         {
-            this.OnDetalChanged(null, sender as Detal);
-            this.ChangePropertyAnnotations(sender as Detal, e.PropertyName);
+            Detal detal = sender as Detal;
+            this.OnDetalChanged(this._oldDetal, detal);
+            this._oldDetal = detal.Clone() as Detal;
+            this.ChangePropertyAnnotations(detal, e.PropertyName);
         }
 
         private void SaveJsonFile()
@@ -605,8 +572,27 @@ namespace ForRobot.Model.File3D
             File.WriteAllText(this.Path, this.Detal.JsonForSave);
             this.IsSaved = true;
         }
-
-        #endregion
+        
+        /// <summary>
+        /// Вызов события изменения свойства <see cref="Detal"/>
+        /// </summary>
+        private void OnDetalChanged(Detal oldDetal, Detal newDetal)
+        {
+            this.DetalChangedEvent?.Invoke(this, new Libr.ValueChangedEventArgs<Detal>(oldDetal, newDetal));
+            this.OnFileChanged();
+        }
+        /// <summary>
+        /// Вызов события изменения свойства <see cref="CurrentModel"/>
+        /// </summary>
+        private void OnModelChanged()
+        {
+            this.ModelChangedEvent?.Invoke(this, null);
+            this.OnFileChanged();
+        }
+        /// <summary>
+        /// Вызов события оповещающего, что было измененно свойство класса <see cref="File3D"/>
+        /// </summary>
+        private void OnFileChanged() => this.FileChangedEvent?.Invoke(this, null);
 
         #endregion Private functions
 
@@ -654,27 +640,6 @@ namespace ForRobot.Model.File3D
             //}
         }
 
-        /// <summary>
-        /// Вызов события изменения свойства <see cref="Detal"/>
-        /// </summary>
-        public void OnDetalChanged(Detal oldDetal, Detal newDetal)
-        {
-            this.DetalChangedEvent?.Invoke(this, new Libr.ValueChangedEventArgs<Detal>(oldDetal, newDetal));
-            this.OnFileChanged();
-        }
-        /// <summary>
-        /// Вызов события изменения свойства <see cref="CurrentModel"/>
-        /// </summary>
-        public void OnModelChanged()
-        {
-            this.ModelChangedEvent?.Invoke(this, null);
-            this.OnFileChanged();
-        }
-        /// <summary>
-        /// Вызов события оповещающего, что было измененно свойство класса <see cref="File3D"/>
-        /// </summary>
-        public void OnFileChanged() => this.FileChangedEvent?.Invoke(this, null);
-
         #region Static
 
         public static File3D Open()
@@ -720,6 +685,31 @@ namespace ForRobot.Model.File3D
         }
 
         #endregion
+
+        #endregion
+
+        #region Implementations of IDisposable
+
+        private volatile bool _disposed = false;
+
+        ~File3D() => Dispose(false);
+
+        public void Dispose() => this.Dispose(true);
+
+        public void Dispose(bool disposing)
+        {
+            if (this._disposed)
+                return;
+
+            if (disposing)
+            {
+                this.DetalChangedEvent -= new ForRobot.Services.ChangeService().HandleDetalChanged_Properties;
+                this.DetalChangedEvent -= new ForRobot.Services.ChangeService().HandleDetalChanged_Modeling;
+                this.FileChangedEvent -= new ForRobot.Services.ChangeService().HandleFileChange;
+            }
+            this._disposed = true;
+            GC.SuppressFinalize(this);
+        }
 
         #endregion
     }

@@ -85,26 +85,7 @@ namespace ForRobot.ViewModels
 
         public string FilePath { get => this._filePath; set => Set(ref this._filePath, value); }
 
-        public Model.File3D.File3D File3D
-        {
-            get => this._file3D;
-            set
-            {
-                if (this._file3D != null)
-                {
-                    this._file3D.DetalChangedEvent -= new ForRobot.Services.ChangeService().HandleDetalPropertyChange;
-                    this._file3D.FileChangedEvent -= new ForRobot.Services.ChangeService().HandleFileChange;
-                }
-
-                Set(ref this._file3D, value, false);
-
-                if (this._file3D != null)
-                {
-                    this._file3D.DetalChangedEvent += new ForRobot.Services.ChangeService().HandleDetalPropertyChange;
-                    this._file3D.FileChangedEvent += new ForRobot.Services.ChangeService().HandleFileChange;
-                }
-            }
-        }
+        public Model.File3D.File3D File3D { get => this._file3D; set => Set(ref this._file3D, value, false); }
         
         /// <summary>
         /// Коллекция видов деталей
@@ -175,28 +156,6 @@ namespace ForRobot.ViewModels
             App.Current.OpenedFiles.Add(this.File3D);
             App.Current.WindowsAppService.CloseCreateWindow();
         }
-
-        ///// <summary>
-        ///// Сохранение изменений Detal
-        ///// </summary>
-        //private void SaveDetal(Detal detal)
-        //{
-        //    switch (detal)
-        //    {
-        //        case Plita plita:
-        //            Properties.Settings.Default.SavePlita = detal.JsonForSave;
-        //            break;
-
-        //        case PlitaStringer plitaStringer:
-        //            Properties.Settings.Default.SavePlitaStringer = "";
-        //            break;
-
-        //        case PlitaTreygolnik plitaTreygolnik:
-        //            Properties.Settings.Default.SavePlita = "";
-        //            break;
-        //    }
-        //    Properties.Settings.Default.Save();
-        //}
 
         #endregion Private functions
     }

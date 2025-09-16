@@ -16,14 +16,27 @@ namespace ForRobot
             _oldValue = oldValue;
             _newValue = newValue;
         }
-
+              
         public void Execute() => SetValue(_newValue);
         public void Undo() => SetValue(_oldValue);
 
         private void SetValue(T value)
         {
-            var property = _target.GetType().GetProperty(_propertyName);
+            //var property = _target.GetType().GetProperty(_propertyName);
+            var property = GetPropertyInfo(_propertyName);
             property?.SetValue(_target, value);
+        }
+
+        private System.Reflection.PropertyInfo GetPropertyInfo(string propertyName)
+        {
+            System.Reflection.PropertyInfo property = null;
+            Type type = this._target.GetType();
+            foreach (var item in propertyName.Split('.'))
+            {
+                property = type.GetProperty(item);
+                type = property.PropertyType;
+            }
+            return property;
         }
     }
 }

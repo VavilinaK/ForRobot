@@ -20,7 +20,7 @@ namespace ForRobot.Services
             PropertyChanged?.Invoke(null, new PropertyChangedEventArgs(name));
         }
 
-        public static void SaveFiles(IEnumerable<File3D> files)
+        public static void SaveFiles(params File3D[] files)
         {
             foreach (File3D file in files) file.Save();
         }

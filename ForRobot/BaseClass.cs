@@ -131,7 +131,7 @@ namespace ForRobot
         protected virtual void OnPropertyChanged(string propertyName, object oldValue, object newValue) { }
 
         /// <summary>
-        /// ОТслеживание изменения свойства
+        /// Отслеживание изменения свойства
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="oldValue"></param>

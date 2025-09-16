@@ -143,7 +143,20 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Выбранный файл
         /// </summary>
-        public Model.File3D.File3D SelectedFile {  get => this._selectedFile; set => Set(ref this._selectedFile, value, false); }
+        public Model.File3D.File3D SelectedFile
+        {
+            get => this._selectedFile;
+            set
+            {
+                if (this._selectedFile != null)
+                    this._selectedFile.DetalChangedEvent -= HandleSelectFileDetalChanged;
+
+                Set(ref this._selectedFile, value, false);
+
+                if (this._selectedFile != null)
+                    this._selectedFile.DetalChangedEvent += HandleSelectFileDetalChanged;
+            }
+        }
 
         /// <summary>
         /// Выбранный робот
@@ -406,6 +419,7 @@ namespace ForRobot.ViewModels
                 System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() => this.MessagesCollection.Add(new Model.AppMessage(o))));
             };
 
+            // Выгрузка сохранённых соединений
             this.RobotsCollection = new FullyObservableCollection<Robot>();
             if (Properties.Settings.Default.SaveRobots.Count > 0)
             {
@@ -419,12 +433,13 @@ namespace ForRobot.ViewModels
 
             this.SelectedRobot = this.RobotsCollection[0];
 
+            // Добавдение делегатов событий изменения коллекции App.Current.OpenedFiles.CollectionChanged
             App.Current.OpenedFiles.CollectionChanged += (s, e) =>
             {
                 switch (e.Action)
                 {
                     case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
-                        this.ActiveContent = e.NewItems[0] as ForRobot.Model.File3D.File3D;
+                        this.ActiveContent = e.NewItems[0] as ForRobot.Model.File3D.File3D; // При открытии нового файла, он выбирается как активный
                         break;
                 }
             };
@@ -437,13 +452,20 @@ namespace ForRobot.ViewModels
 
                 Model.File3D.File3D file3D;
                 if (App.Current.Settings.SaveDetalProperties && File.Exists(path))
-                    file3D = new Model.File3D.File3D(path);
+                {
+                    file3D = new Model.File3D.File3D();
+                    file3D.Load(path);
+                    file3D = new Model.File3D.File3D(file3D.Detal, path);
+                }
                 else
                     file3D = new Model.File3D.File3D(Detal.GetDetal(App.Current.Settings.StartedDetalType), path);
 
-                file3D.DetalChangedEvent += new ChangeService().HandleDetalPropertyChange;
-                file3D.FileChangedEvent += new ChangeService().HandleFileChange;
-                
+                if (App.Current.Settings.SaveDetalProperties)
+                    file3D.DetalChangedEvent += (s, e) =>
+                     {
+                         Services.File3DService.SaveFiles(s as ForRobot.Model.File3D.File3D);
+                     };
+
                 App.Current.OpenedFiles.Add(file3D);
             }
         }
@@ -756,6 +778,23 @@ namespace ForRobot.ViewModels
                 Properties.Settings.Default.SaveRobots.Add(r.Json);
                 Properties.Settings.Default.Save();
             }
+        }
+
+        public void HandleSelectFileDetalChanged(object sender, Libr.ValueChangedEventArgs<Detal> e)
+        {
+            ////Model.File3D.File3D file3D = sender as Model.File3D.File3D;
+            ////RaisePropertyChanged(nameof(file3D.Detal));
+            //////RaisePropertyChanged(nameof(file3D.CurrentModel));
+
+            ////if (file3D.Detal is ForRobot.Model.Detals.Plita)
+            ////{
+            ////    Plita plita = file3D.Detal as ForRobot.Model.Detals.Plita;
+            ////    RaisePropertyChanged(nameof(plita.SelectedWeldingSchema));
+            ////    RaisePropertyChanged(nameof(plita.WeldingSchema));
+            ////}
+
+            if (e.OldValue != null)
+                this.TrackUndo(e.OldValue, e.NewValue, "SelectedFile.Detal");
         }
 
         private void HandleSelectedRobotChangeEvent(object sender, PropertyChangedEventArgs e)

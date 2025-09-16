@@ -1778,7 +1778,7 @@ namespace ForRobot.Model.Detals
         /// </summary>
         /// <param name="sJsonString">JSON-строка</param>
         /// <returns></returns>
-        public override object DeserializeDetal(string sJsonString)
+        public Plita DeserializeDetal(string sJsonString)
         {
             if (string.IsNullOrEmpty(sJsonString))
                 return new Plita(Detals.DetalType.Plita);
