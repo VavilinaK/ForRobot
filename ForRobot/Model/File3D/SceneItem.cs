@@ -39,7 +39,7 @@ namespace ForRobot.Model.File3D
         public DependencyObject SceneObject
         {
             get => this._element;
-            set => Set(ref this._element, value, false);
+            set => Set(ref this._element, value);
         }
         //public object SceneObject { get => this._element; set => Set(ref this._element, value); }
         //public MeshGeometry3D SceneObject { get => this._element; set => Set(ref this._element, value); }
@@ -74,7 +74,7 @@ namespace ForRobot.Model.File3D
             get => this._isVisible;
             set
             {
-                Set(ref this._isVisible, value, false);
+                Set(ref this._isVisible, value);
 
                 if(this._isVisible)
                     this.VisibleEvent?.Invoke(this, null);

@@ -85,7 +85,7 @@ namespace ForRobot.ViewModels
 
         public string FilePath { get => this._filePath; set => Set(ref this._filePath, value); }
 
-        public Model.File3D.File3D File3D { get => this._file3D; set => Set(ref this._file3D, value, false); }
+        public Model.File3D.File3D File3D { get => this._file3D; set => Set(ref this._file3D, value); }
         
         /// <summary>
         /// Коллекция видов деталей

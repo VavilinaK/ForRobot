@@ -10,67 +10,6 @@ namespace ForRobot
     /// <summary>Базовый класс с реализацией <see cref="INotifyPropertyChanged"/>.</summary>
     public abstract class BaseClass : INotifyPropertyChanged
     {
-        #region Private variables
-        
-        private readonly Stack<IUndoableCommand> _undoStack = App.Current.UndoStack;
-        private readonly Stack<IUndoableCommand> _redoStack = App.Current.RedoStack;
-
-        private bool CanUndo() => _undoStack.Count > 0;
-        private bool CanRedo() => _redoStack.Count > 0;
-
-        #endregion Private variables
-
-        #region Public variables
-
-        [JsonIgnore]
-        /// <summary>
-        /// Комманда возврата действия
-        /// </summary>
-        public ICommand UndoCommand { get; }
-        [JsonIgnore]
-        /// <summary>
-        /// Комманда повтора действия
-        /// </summary>
-        public ICommand RedoCommand { get; }
-
-        #endregion Public variables
-
-        #region Constructor
-
-        public BaseClass()
-        {
-            this.UndoCommand = new RelayCommand(_ => Undo(), _ => CanUndo());
-            this.RedoCommand = new RelayCommand(_ => Redo(), _ => CanRedo());
-        }
-
-        #endregion
-
-        #region Private functions
-
-        /// <summary>
-        /// Отмена изменения
-        /// </summary>
-        private void Undo()
-        {
-            var command = _undoStack.Pop();
-            command.Undo();
-            _redoStack.Push(command);
-            CommandManager.InvalidateRequerySuggested();
-        }
-
-        /// <summary>
-        /// Возврат изменения
-        /// </summary>
-        private void Redo()
-        {
-            var command = _redoStack.Pop();
-            command.Execute();
-            _undoStack.Push(command);
-            CommandManager.InvalidateRequerySuggested();
-        }
-
-        #endregion Private functions
-
         /// <inheritdoc cref="INotifyPropertyChanged"/>
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -105,7 +44,7 @@ namespace ForRobot
         /// метода <see cref="RaisePropertyChanged(string)"/>
         /// с передачей ему параметра <paramref name="propertyName"/>.<br/>
         /// После создания события вызывается метод <see cref="OnPropertyChanged(string, object, object)"/>.</remarks>
-        protected void Set<T>(ref T propertyFiled, T newValue, bool trackUndo = true, [CallerMemberName] string propertyName = null)
+        protected void Set<T>(ref T propertyFiled, T newValue, [CallerMemberName] string propertyName = null)
         {
             if (EqualityComparer<T>.Default.Equals(propertyFiled, newValue))
                 return;
@@ -114,7 +53,7 @@ namespace ForRobot
             propertyFiled = newValue;
             RaisePropertyChanged(propertyName);
 
-            if (trackUndo) TrackUndo(oldValue, newValue, propertyName);
+            //if (trackUndo) TrackUndo(oldValue, newValue, propertyName);
 
             OnPropertyChanged(propertyName, oldValue, newValue);
         }
@@ -140,8 +79,8 @@ namespace ForRobot
         protected void TrackUndo<T>(T oldValue, T newValue, [CallerMemberName] string propertyName = null)
         {
             var command = new PropertyChangeCommand<T>(this, propertyName, oldValue, newValue);
-            _undoStack.Push(command);
-            _redoStack.Clear();
+            //_undoStack.Push(command);
+            //_redoStack.Clear();
             CommandManager.InvalidateRequerySuggested();
         }
     }

@@ -7,6 +7,7 @@ namespace ForRobot.Services
     public class ChangeService : BaseClass
     {
         private readonly ForRobot.Services.IModelingService _modelingService = new ForRobot.Services.ModelingService(ForRobot.Model.Settings.Settings.ScaleFactor);
+        private readonly ForRobot.Services.IWeldService _weldService = new ForRobot.Services.WeldService(ForRobot.Model.Settings.Settings.ScaleFactor);
 
         /// <summary>
         /// Делегат изменения <see cref="ForRobot.Model.Detals.Detal"/> оповещающий о изменению его свойств

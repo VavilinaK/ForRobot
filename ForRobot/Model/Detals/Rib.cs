@@ -32,7 +32,7 @@ namespace ForRobot.Model.Detals
             get => this._distanceLeft;
             set
             {
-                Set(ref this._distanceLeft, value, false);
+                Set(ref this._distanceLeft, value);
                 this.ChangeDistance?.Invoke(this, null);
             }
         }
@@ -41,31 +41,31 @@ namespace ForRobot.Model.Detals
         /// <summary>
         /// Расстояние до ребра по правому краю
         /// </summary>
-        public decimal DistanceRight { get => this._distanceRight; set => Set(ref this._distanceRight, value, false); }
+        public decimal DistanceRight { get => this._distanceRight; set => Set(ref this._distanceRight, value); }
 
         [JsonProperty("d_l1")]
         /// <summary>
         /// Отступ слева
         /// </summary>
-        public decimal IdentToLeft { get => this._identToLeft; set => Set(ref this._identToLeft, value, false); }
+        public decimal IdentToLeft { get => this._identToLeft; set => Set(ref this._identToLeft, value); }
 
         [JsonProperty("d_l2")]
         /// <summary>
         /// Отступ справа
         /// </summary>
-        public decimal IdentToRight { get => this._identToRight; set => Set(ref this._identToRight, value, false); }
+        public decimal IdentToRight { get => this._identToRight; set => Set(ref this._identToRight, value); }
 
         [JsonProperty("l_r1")]
         /// <summary>
         /// Роспуск слева
         /// </summary>
-        public decimal DissolutionLeft { get => this._dissolutionLeft; set => Set(ref this._dissolutionLeft, value, false); }
+        public decimal DissolutionLeft { get => this._dissolutionLeft; set => Set(ref this._dissolutionLeft, value); }
 
         [JsonProperty("l_r2")]
         /// <summary>
         /// Роспуск справа
         /// </summary>
-        public decimal DissolutionRight { get => this._dissolutionRight; set => Set(ref this._dissolutionRight, value, false); }
+        public decimal DissolutionRight { get => this._dissolutionRight; set => Set(ref this._dissolutionRight, value); }
 
         //[JsonProperty("h1")]
         ///// <summary>

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Threading;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Collections.Generic;
@@ -27,17 +28,17 @@ using ForRobot.Services;
 
 namespace ForRobot.Model.File3D
 {
-    public class File3D : IDisposable
+    public class File3D : IUndoRedoManager, IDisposable
     {
         #region Private variables
-        
+
         private Model3DGroup _currentModel = new Model3DGroup();
 
         private Detal _detal;
         private Detal _oldDetal;
 
         private ObservableCollection<Weld> _weldsCollection = new ObservableCollection<Weld>();
-
+        
         private readonly Dispatcher dispatcher;
         /// <summary>
         /// Массив допустимых для импорта форматов 3д файлов
@@ -49,7 +50,6 @@ namespace ForRobot.Model.File3D
         private static readonly string[] FileTextExtensions = new string[] { ".txt", ".json" };
 
         private readonly ForRobot.Services.IAnnotationService _annotationService = new ForRobot.Services.AnnotationService(ForRobot.Model.Settings.Settings.ScaleFactor);
-        private readonly ForRobot.Services.IWeldService _weldService = new ForRobot.Services.WeldService(ForRobot.Model.Settings.Settings.ScaleFactor);
 
         #endregion Private variables
 
@@ -63,6 +63,8 @@ namespace ForRobot.Model.File3D
         /// Сохранены ли последнии изменения
         /// </summary>
         public bool IsSaved { get; private set; } = true;
+        private bool CanUndo => this.UndoStack.Count > 0;
+        private bool CanRedo => this.RedoStack.Count > 0;
 
         /// <summary>
         /// Путь к файлу
@@ -102,11 +104,36 @@ namespace ForRobot.Model.File3D
 
         public static readonly string FilterForFileDialog = "3D model files (*.3ds;*.obj;*.off;*.lwo;*.stl;*.ply;)|*.3ds;*.obj;*.objz;*.off;*.lwo;*.stl;*.ply;";
 
+        /// <summary>
+        /// Стек возвращаемых действий (назад)
+        /// </summary>
+        public readonly Stack<ICommand> UndoStack = new Stack<ICommand>();
+        /// <summary>
+        /// Стек повторяемых действий (вперёд)
+        /// </summary>
+        public readonly Stack<ICommand> RedoStack = new Stack<ICommand>();
+
+        #region Commands
+
+        [JsonIgnore]
+        /// <summary>
+        /// Комманда возврата действия
+        /// </summary>
+        public ICommand UndoCommand { get; }
+        [JsonIgnore]
+        /// <summary>
+        /// Комманда повтора действия
+        /// </summary>
+        public ICommand RedoCommand { get; }
+
+        #endregion Commands
+
         #region Events
 
         public event EventHandler<Libr.ValueChangedEventArgs<Detal>> DetalChangedEvent;
         public event EventHandler ModelChangedEvent;
         public event EventHandler FileChangedEvent;
+        public event EventHandler UndoRedoStateChanged;
 
         #endregion
 
@@ -115,9 +142,12 @@ namespace ForRobot.Model.File3D
         #region Constructor
 
         public File3D()
-        {
+        {            
             this.dispatcher = Dispatcher.CurrentDispatcher;
             this.FileChangedEvent += (s, o) => this.IsSaved = false;
+
+            this.UndoCommand = new RelayCommand(_ => Undo(), _ => CanUndo());
+            this.RedoCommand = new RelayCommand(_ => Redo(), _ => CanRedo());
         }
 
         public File3D(Detal detal, string path = null) : this()
@@ -151,6 +181,36 @@ namespace ForRobot.Model.File3D
 
         #region Private functions
         
+        /// <summary>
+        /// Отмена изменения
+        /// </summary>
+        private void Undo()
+        {
+            if (!this.CanUndo) return;
+
+            _isUndoRedoOperation = true;
+            var command = _undoStack.Pop();
+            command.Undo();
+            this.RedoStack.Push(command);
+            _isUndoRedoOperation = false;
+
+            UndoRedoStateChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Возврат изменения
+        /// </summary>
+        private void Redo()
+        {
+            if (!this.CanRedo) return;
+
+
+            var command = RedoStack.Pop();
+            command.Redo();
+            UndoStack.Push(command);
+            CommandManager.InvalidateRequerySuggested();
+        }
+
         private async Task<Model3DGroup> LoadAsync(string model3DPath, bool freeze = false)
         {
             return await Task.Factory.StartNew(() =>
@@ -252,9 +312,7 @@ namespace ForRobot.Model.File3D
             //annotation.Text = detal.GetType().GetProperty(propertyName).GetValue(detal, null).ToString();
             annotation.Text = string.Format("{0}: {1} mm.", propertyName, detal.GetType().GetProperty(propertyName).GetValue(detal, null));
         }
-
-        #region Load
-
+        
         /// <summary>
         /// Выгрузка 3Д модели и файла
         /// </summary>
@@ -334,9 +392,7 @@ namespace ForRobot.Model.File3D
                 }
             }
         }
-
-        #endregion
-
+        
         private void LoadOther(string path)
         {
             //using (var assimpContext = new AssimpContext())
@@ -562,8 +618,18 @@ namespace ForRobot.Model.File3D
         {
             Detal detal = sender as Detal;
             this.OnDetalChanged(this._oldDetal, detal);
+            if(this._oldDetal != null)
+                this.TrackUndo(this._oldDetal, detal);
             this._oldDetal = detal.Clone() as Detal;
             this.ChangePropertyAnnotations(detal, e.PropertyName);
+        }
+
+        private void TrackUndo(Detal oldValue, Detal newValue)
+        {
+            //var command = new PropertyChangeCommand<Detal>(this, propertyName, oldValue, newValue);
+            //this.UndoStack.Push(command);
+            //this.RedoStack.Clear();
+            //CommandManager.InvalidateRequerySuggested();
         }
 
         private void SaveJsonFile()
@@ -595,8 +661,7 @@ namespace ForRobot.Model.File3D
         private void OnFileChanged() => this.FileChangedEvent?.Invoke(this, null);
 
         #endregion Private functions
-
-
+        
         #region Public functions
 
         public void Load(string sPath)

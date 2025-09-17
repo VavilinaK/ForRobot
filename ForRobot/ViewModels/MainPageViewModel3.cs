@@ -136,27 +136,14 @@ namespace ForRobot.ViewModels
 
         #region Public variables
 
-        public bool IsVisibleGridLinesVisual3D { get => this._isVisibleGridLinesVisual3D; set => Set(ref this._isVisibleGridLinesVisual3D, value, false); }
+        public bool IsVisibleGridLinesVisual3D { get => this._isVisibleGridLinesVisual3D; set => Set(ref this._isVisibleGridLinesVisual3D, value); }
 
         public Version Version { get => System.Reflection.Assembly.GetEntryAssembly().GetName().Version; }
 
         /// <summary>
         /// Выбранный файл
         /// </summary>
-        public Model.File3D.File3D SelectedFile
-        {
-            get => this._selectedFile;
-            set
-            {
-                if (this._selectedFile != null)
-                    this._selectedFile.DetalChangedEvent -= HandleSelectFileDetalChanged;
-
-                Set(ref this._selectedFile, value, false);
-
-                if (this._selectedFile != null)
-                    this._selectedFile.DetalChangedEvent += HandleSelectFileDetalChanged;
-            }
-        }
+        public Model.File3D.File3D SelectedFile { get => this._selectedFile; set => Set(ref this._selectedFile, value); }
 
         /// <summary>
         /// Выбранный робот
@@ -169,7 +156,7 @@ namespace ForRobot.ViewModels
                 if (this._selectedRobot != null)
                     this._selectedRobot.PropertyChanged -= HandleSelectedRobotChangeEvent;
 
-                Set(ref this._selectedRobot, value, false);
+                Set(ref this._selectedRobot, value);
 
                 if (this._selectedRobot != null)
                     this._selectedRobot.PropertyChanged += HandleSelectedRobotChangeEvent;
@@ -204,13 +191,13 @@ namespace ForRobot.ViewModels
                         break;
 
                     default:
-                        Set(ref this._selectedObject, value, false);
+                        Set(ref this._selectedObject, value);
                         break;
                 }
             }
         }
 
-        public System.Windows.Controls.TreeViewItem SelectedItem { get => this._selectedItem; set => Set(ref this._selectedItem, value, false); }
+        public System.Windows.Controls.TreeViewItem SelectedItem { get => this._selectedItem; set => Set(ref this._selectedItem, value); }
 
         #region Collections
 
@@ -240,7 +227,7 @@ namespace ForRobot.ViewModels
                     this._robotsCollection.CollectionChanged -= HandleRobotsCollectionChanged;
                 }
 
-                Set(ref this._robotsCollection, value, false);
+                Set(ref this._robotsCollection, value);
 
                 if (this._robotsCollection != null)
                 {
@@ -256,11 +243,11 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Коллекция сообщений
         /// </summary>
-        public ObservableCollection<Model.File3D.SceneItem> SceneItemsCollection { get => this._sceneItemsCollection; set => Set(ref this._sceneItemsCollection, value, false); }
+        public ObservableCollection<Model.File3D.SceneItem> SceneItemsCollection { get => this._sceneItemsCollection; set => Set(ref this._sceneItemsCollection, value); }
         /// <summary>
         /// Коллекция сообщений
         /// </summary>
-        public ObservableCollection<AppMessage> MessagesCollection { get => this._messagesCollection; set => Set(ref this._messagesCollection, value, false); }
+        public ObservableCollection<AppMessage> MessagesCollection { get => this._messagesCollection; set => Set(ref this._messagesCollection, value); }
 
         #endregion
 
@@ -603,7 +590,7 @@ namespace ForRobot.ViewModels
         {
             System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
-                Set(ref this._activeContent, value, false);
+                Set(ref this._activeContent, value);
 
                 if (ActiveContent is Model.File3D.File3D file3D)
                     Task.Run(() => GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Behavior.SelectLayoutDocumentPane(file3D)));
@@ -780,22 +767,24 @@ namespace ForRobot.ViewModels
             }
         }
 
-        public void HandleSelectFileDetalChanged(object sender, Libr.ValueChangedEventArgs<Detal> e)
-        {
-            ////Model.File3D.File3D file3D = sender as Model.File3D.File3D;
-            ////RaisePropertyChanged(nameof(file3D.Detal));
-            //////RaisePropertyChanged(nameof(file3D.CurrentModel));
+        //public void HandleSelectFileDetalChanged(object sender, Libr.ValueChangedEventArgs<Detal> e)
+        //{
+        //    ////Model.File3D.File3D file3D = sender as Model.File3D.File3D;
+        //    ////RaisePropertyChanged(nameof(file3D.Detal));
+        //    //////RaisePropertyChanged(nameof(file3D.CurrentModel));
 
-            ////if (file3D.Detal is ForRobot.Model.Detals.Plita)
-            ////{
-            ////    Plita plita = file3D.Detal as ForRobot.Model.Detals.Plita;
-            ////    RaisePropertyChanged(nameof(plita.SelectedWeldingSchema));
-            ////    RaisePropertyChanged(nameof(plita.WeldingSchema));
-            ////}
+        //    ////if (file3D.Detal is ForRobot.Model.Detals.Plita)
+        //    ////{
+        //    ////    Plita plita = file3D.Detal as ForRobot.Model.Detals.Plita;
+        //    ////    RaisePropertyChanged(nameof(plita.SelectedWeldingSchema));
+        //    ////    RaisePropertyChanged(nameof(plita.WeldingSchema));
+        //    ////}
 
-            if (e.OldValue != null)
-                this.TrackUndo(e.OldValue, e.NewValue, "SelectedFile.Detal");
-        }
+        //    //if (e.OldValue != null)
+        //    //    this.TrackUndo(e.OldValue, e.NewValue, "SelectedFile.Detal");
+        //}
+
+        #region Handles
 
         private void HandleSelectedRobotChangeEvent(object sender, PropertyChangedEventArgs e)
         {
@@ -817,7 +806,9 @@ namespace ForRobot.ViewModels
             RaisePropertyChanged(nameof(this.RobotsCollection));
             RaisePropertyChanged(nameof(this.RobotNamesCollection));
         }
-        
+
+        #endregion Handles
+
         #region Async
 
         private async Task Generation()

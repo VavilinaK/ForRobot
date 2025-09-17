@@ -44,9 +44,9 @@
                     Command="{Binding Path=SaveFileCommand}"                    
                     CommandParameter="{Binding Path=SelectedFile}"/>
 
-        <KeyBinding Gesture="Ctrl+Z" Command="{Binding Path=UndoCommand}"/>
+        <KeyBinding Gesture="Ctrl+Z" Command="{Binding Path=SelectedFile.UndoCommand}"/>
 
-        <KeyBinding Gesture="Ctrl+V" Command="{Binding Path=RedoCommand}"/>
+        <KeyBinding Gesture="Ctrl+V" Command="{Binding Path=SelectedFile.RedoCommand}"/>
         
         <KeyBinding Gesture="Ctrl+F5" 
                     Command="{Binding Path=GenerateProgramCommandAsync}"
@@ -426,7 +426,7 @@
 
             <MenuItem Header="Отменить (Ctrl+Z)"
                       Template="{StaticResource MenuItemTemplate1}" 
-                      Command="{Binding Path=UndoCommand}">
+                      Command="{Binding Path=SelectedFile.UndoCommand}">
                 
                 <MenuItem.Icon>
                     <Path Fill="{StaticResource IconBackBrush}"
@@ -436,7 +436,7 @@
 
             <MenuItem Header="Вернуть (Ctrl+V)"
                       Template="{StaticResource MenuItemTemplate1}"
-                      Command="{Binding Path=RedoCommand}">
+                      Command="{Binding Path=SelectedFile.RedoCommand}">
                 
                 <MenuItem.Icon>
                     <Path Fill="{StaticResource IconReturnBrush}"
