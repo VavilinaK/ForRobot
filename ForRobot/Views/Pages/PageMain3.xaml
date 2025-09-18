@@ -426,7 +426,7 @@
 
             <MenuItem Header="Отменить (Ctrl+Z)"
                       Template="{StaticResource MenuItemTemplate1}" 
-                      Command="{Binding Path=SelectedFile.UndoCommand}">
+                      Command="{Binding Path=UndoCommand}">
                 
                 <MenuItem.Icon>
                     <Path Fill="{StaticResource IconBackBrush}"
@@ -436,7 +436,7 @@
 
             <MenuItem Header="Вернуть (Ctrl+V)"
                       Template="{StaticResource MenuItemTemplate1}"
-                      Command="{Binding Path=SelectedFile.RedoCommand}">
+                      Command="{Binding Path=RedoCommand}">
                 
                 <MenuItem.Icon>
                     <Path Fill="{StaticResource IconReturnBrush}"
@@ -1088,7 +1088,7 @@
 
                                             <Style TargetType="{x:Type ContentControl}">
                                                 <Setter Property="Margin" Value="-25,0,5,5"/>
-                                                <Setter Property="DataContext" Value="{Binding Path=SelectedFile.Detal, Mode=OneWay}"/>
+                                                <Setter Property="DataContext" Value="{Binding Path=SelectedFile.Detal, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
                                             </Style>
                                         </TreeView.Resources>
 

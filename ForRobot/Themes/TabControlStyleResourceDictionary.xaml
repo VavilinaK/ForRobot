@@ -1674,7 +1674,7 @@
         </DataTemplate.Resources>
 
         <Grid Width="{Binding Path=Parent.ActualWidth, RelativeSource={RelativeSource Self}}"
-              DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}, Mode=FindAncestor}}">
+              DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}, Mode=FindAncestor}, UpdateSourceTrigger=PropertyChanged}">
             
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>

@@ -69,19 +69,19 @@ namespace ForRobot
         /// Если в переопределённом методе не будет вызова базового, то возможно нежелательное изменение логики базового класса.</remarks>
         protected virtual void OnPropertyChanged(string propertyName, object oldValue, object newValue) { }
 
-        /// <summary>
-        /// Отслеживание изменения свойства
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="oldValue"></param>
-        /// <param name="newValue"></param>
-        /// <param name="propertyName"></param>
-        protected void TrackUndo<T>(T oldValue, T newValue, [CallerMemberName] string propertyName = null)
-        {
-            var command = new PropertyChangeCommand<T>(this, propertyName, oldValue, newValue);
-            //_undoStack.Push(command);
-            //_redoStack.Clear();
-            CommandManager.InvalidateRequerySuggested();
-        }
+        ///// <summary>
+        ///// Отслеживание изменения свойства
+        ///// </summary>
+        ///// <typeparam name="T"></typeparam>
+        ///// <param name="oldValue"></param>
+        ///// <param name="newValue"></param>
+        ///// <param name="propertyName"></param>
+        //protected void TrackUndo<T>(T oldValue, T newValue, [CallerMemberName] string propertyName = null)
+        //{
+        //    var command = new PropertyChangeCommand<T>(this, propertyName, oldValue, newValue);
+        //    //_undoStack.Push(command);
+        //    //_redoStack.Clear();
+        //    CommandManager.InvalidateRequerySuggested();
+        //}
     }
 }

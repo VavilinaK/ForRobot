@@ -28,7 +28,7 @@ using ForRobot.Services;
 
 namespace ForRobot.Model.File3D
 {
-    public class File3D : IUndoRedoManager, IDisposable
+    public class File3D : IDisposable
     {
         #region Private variables
 
@@ -63,8 +63,9 @@ namespace ForRobot.Model.File3D
         /// Сохранены ли последнии изменения
         /// </summary>
         public bool IsSaved { get; private set; } = true;
-        private bool CanUndo => this.UndoStack.Count > 0;
-        private bool CanRedo => this.RedoStack.Count > 0;
+        public bool CanUndo => _undoStack.Count > 0;
+        public bool CanRedo => _redoStack.Count > 0;
+        public bool _isUndoRedoOperation = false;
 
         /// <summary>
         /// Путь к файлу
@@ -107,26 +108,11 @@ namespace ForRobot.Model.File3D
         /// <summary>
         /// Стек возвращаемых действий (назад)
         /// </summary>
-        public readonly Stack<ICommand> UndoStack = new Stack<ICommand>();
+        private readonly Stack<IUndoableCommand> _undoStack = new Stack<IUndoableCommand>();
         /// <summary>
         /// Стек повторяемых действий (вперёд)
         /// </summary>
-        public readonly Stack<ICommand> RedoStack = new Stack<ICommand>();
-
-        #region Commands
-
-        [JsonIgnore]
-        /// <summary>
-        /// Комманда возврата действия
-        /// </summary>
-        public ICommand UndoCommand { get; }
-        [JsonIgnore]
-        /// <summary>
-        /// Комманда повтора действия
-        /// </summary>
-        public ICommand RedoCommand { get; }
-
-        #endregion Commands
+        private readonly Stack<IUndoableCommand> _redoStack = new Stack<IUndoableCommand>();
 
         #region Events
 
@@ -145,9 +131,6 @@ namespace ForRobot.Model.File3D
         {            
             this.dispatcher = Dispatcher.CurrentDispatcher;
             this.FileChangedEvent += (s, o) => this.IsSaved = false;
-
-            this.UndoCommand = new RelayCommand(_ => Undo(), _ => CanUndo());
-            this.RedoCommand = new RelayCommand(_ => Redo(), _ => CanRedo());
         }
 
         public File3D(Detal detal, string path = null) : this()
@@ -181,36 +164,6 @@ namespace ForRobot.Model.File3D
 
         #region Private functions
         
-        /// <summary>
-        /// Отмена изменения
-        /// </summary>
-        private void Undo()
-        {
-            if (!this.CanUndo) return;
-
-            _isUndoRedoOperation = true;
-            var command = _undoStack.Pop();
-            command.Undo();
-            this.RedoStack.Push(command);
-            _isUndoRedoOperation = false;
-
-            UndoRedoStateChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        /// <summary>
-        /// Возврат изменения
-        /// </summary>
-        private void Redo()
-        {
-            if (!this.CanRedo) return;
-
-
-            var command = RedoStack.Pop();
-            command.Redo();
-            UndoStack.Push(command);
-            CommandManager.InvalidateRequerySuggested();
-        }
-
         private async Task<Model3DGroup> LoadAsync(string model3DPath, bool freeze = false)
         {
             return await Task.Factory.StartNew(() =>
@@ -704,6 +657,58 @@ namespace ForRobot.Model.File3D
 
             //}
         }
+
+        #region Undo/Redo
+
+        /// <summary>
+        /// Отмена изменения
+        /// </summary>
+        public void Undo()
+        {
+            if (!this.CanUndo) return;
+
+            _isUndoRedoOperation = true;
+            var command = _undoStack.Pop();
+            command.Undo();
+            _redoStack.Push(command);
+            _isUndoRedoOperation = false;
+
+            UndoRedoStateChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Возврат изменения
+        /// </summary>
+        public void Redo()
+        {
+            if (!this.CanRedo) return;
+
+            _isUndoRedoOperation = true;
+            var command = _redoStack.Pop();
+            command.Execute();
+            _undoStack.Push(command);
+            _isUndoRedoOperation = false;
+
+            UndoRedoStateChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void AddUndoCommand(IUndoableCommand command)
+        {
+            if (_isUndoRedoOperation) return;
+
+            _undoStack.Push(command);
+            _redoStack.Clear();
+            UndoRedoStateChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void ClearUndoRedoHistory()
+        {
+            _undoStack.Clear();
+            _redoStack.Clear();
+            UndoRedoStateChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        #endregion
 
         #region Static
 

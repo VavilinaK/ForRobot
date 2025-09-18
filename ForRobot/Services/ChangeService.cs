@@ -18,7 +18,6 @@ namespace ForRobot.Services
         {
             Model.File3D.File3D file3D = sender as Model.File3D.File3D;
             RaisePropertyChanged(nameof(file3D.Detal));
-            //RaisePropertyChanged(nameof(file3D.CurrentModel));
 
             if (file3D.Detal is ForRobot.Model.Detals.Plita)
             {
@@ -27,8 +26,17 @@ namespace ForRobot.Services
                 RaisePropertyChanged(nameof(plita.WeldingSchema));
             }
 
-            //if(e.OldValue != null)
-            //    this.TrackUndo(e.OldValue, e.NewValue);
+            if (e.OldValue != null)
+            {
+                var command = new PropertyChangeCommand<Detal>(file3D,
+                                                               nameof(File3D.Detal),
+                                                               e.OldValue,
+                                                               e.NewValue,
+                                                               $"Изменение детали: {e.OldValue?.GetType().Name} -> {e.NewValue?.GetType().Name}"
+                );
+
+                file3D.AddUndoCommand(command);
+            }
         }
 
         //private void FillWeldsCollection(Detal detal)
@@ -73,6 +81,7 @@ namespace ForRobot.Services
         public void HandleFileChange(object sender, EventArgs e)
         {
             Model.File3D.File3D file3D = sender as Model.File3D.File3D;
+            RaisePropertyChanged("SelectedFile.Detal");
             RaisePropertyChanged(nameof(file3D));
         }
     }

@@ -1,42 +1,70 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ForRobot
 {
     public class PropertyChangeCommand<T> : IUndoableCommand
     {
-        private readonly BaseClass _target;
+        private readonly object _target;
         private readonly string _propertyName;
         private readonly T _oldValue;
         private readonly T _newValue;
 
-        public PropertyChangeCommand(BaseClass target, string propertyName, T oldValue, T newValue)
+        public string Description { get; }
+
+        public PropertyChangeCommand(object target, string propertyName, T oldValue, T newValue, string description = "")
         {
             _target = target;
             _propertyName = propertyName;
             _oldValue = oldValue;
             _newValue = newValue;
+            Description = description;
         }
 
         public void Undo() => SetValue(_oldValue);
-        public void Redo() => SetValue(_newValue);
+        public void Execute() => SetValue(_newValue);
 
         private void SetValue(T value)
         {
             var property = _target.GetType().GetProperty(_propertyName);
-            //var property = GetPropertyInfo(_propertyName);
-            property?.SetValue(_target, value);
+            if (property != null && property.CanWrite)
+            {
+                property.SetValue(_target, value);
+            }
+        }
+    }
+
+    public class CompositeCommand : IUndoableCommand
+    {
+        private readonly List<IUndoableCommand> _commands = new List<IUndoableCommand>();
+        private readonly string _description;
+
+        public CompositeCommand(string description = "")
+        {
+            _description = description;
         }
 
-        private System.Reflection.PropertyInfo GetPropertyInfo(string propertyName)
+        public string Description => _description;
+
+        public void AddCommand(IUndoableCommand command)
         {
-            System.Reflection.PropertyInfo property = null;
-            Type type = this._target.GetType();
-            foreach (var item in propertyName.Split('.'))
+            _commands.Add(command);
+        }
+
+        public void Execute()
+        {
+            foreach (var command in _commands)
             {
-                property = type.GetProperty(item);
-                type = property.PropertyType;
+                command.Execute();
             }
-            return property;
+        }
+
+        public void Undo()
+        {
+            for (int i = _commands.Count - 1; i >= 0; i--)
+            {
+                _commands[i].Undo();
+            }
         }
     }
 }

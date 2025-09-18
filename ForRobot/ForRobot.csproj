@@ -348,7 +348,6 @@
     <Compile Include="Model\Settings\PropertyColor.cs" />
     <Compile Include="Model\Settings\ModeClosingApp.cs" />
     <Compile Include="Model\Settings\Settings.cs" />
-    <Compile Include="Libr\SingleGlobalInstance.cs" />
     <Compile Include="Model\AppMessage.cs" />
     <Compile Include="Model\Controls\FileFlags.cs" />
     <Compile Include="Model\Detals\Hole.cs" />

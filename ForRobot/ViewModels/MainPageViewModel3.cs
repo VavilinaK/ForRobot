@@ -288,6 +288,12 @@ namespace ForRobot.ViewModels
         /// </summary>
         public ICommand SaveAllFilesCommand { get; } = new RelayCommand(obj => SaveAllFile(obj as ObservableCollection<Model.File3D.File3D>));
 
+        public bool CanUndo => SelectedFile == null ? false : this.SelectedFile.CanUndo;
+        public bool CanRedo => SelectedFile == null ? false : this.SelectedFile.CanRedo;
+
+        public ICommand UndoCommand { get => new RelayCommand(_ => this.SelectedFile?.Undo(), _ => this.CanUndo); }
+        public ICommand RedoCommand { get => new RelayCommand(_ => this.SelectedFile?.Redo(), _ => this.CanRedo); }
+
         /// <summary>
         /// Сброс параметров детали до стандартных
         /// </summary>
