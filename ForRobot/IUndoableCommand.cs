@@ -6,7 +6,7 @@ namespace ForRobot
     {
         string Description { get; }
 
-        void Undo();        
         void Execute();
+        void Unexecute();
     }
 }

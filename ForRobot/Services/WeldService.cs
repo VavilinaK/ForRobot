@@ -10,7 +10,7 @@ namespace ForRobot.Services
 {
     public interface IWeldService
     {
-        ObservableCollection<Weld> GetWelds(Detal plate);
+        ObservableCollection<Weld> GetWelds(Detal detal);
     }
 
     /// <summary>

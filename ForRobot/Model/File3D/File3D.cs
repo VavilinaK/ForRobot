@@ -83,7 +83,7 @@ namespace ForRobot.Model.File3D
         /// <summary>
         /// Коллекция подписей на 3д моделе
         /// </summary>
-        public ObservableCollection<Annotation> AnnotationsCollection { get; set; } = new ObservableCollection<Annotation>();
+        public ObservableCollection<Annotation> AnnotationsCollection { get; private set; } = new ObservableCollection<Annotation>();
         /// <summary>
         /// Коллекция швов для отображения на модели
         /// </summary>
@@ -669,7 +669,7 @@ namespace ForRobot.Model.File3D
 
             _isUndoRedoOperation = true;
             var command = _undoStack.Pop();
-            command.Undo();
+            command.Unexecute();
             _redoStack.Push(command);
             _isUndoRedoOperation = false;
 
@@ -688,6 +688,13 @@ namespace ForRobot.Model.File3D
             command.Execute();
             _undoStack.Push(command);
             _isUndoRedoOperation = false;
+
+            //_isUndoRedoOperation = true;
+            //var command = _redoStack.Last();
+            //_redoStack.ToList().RemoveAt(_redoStack.Count - 1);
+            //command.Execute();
+            //_undoStack.Push(command);
+            //_isUndoRedoOperation = false;
 
             UndoRedoStateChanged?.Invoke(this, EventArgs.Empty);
         }

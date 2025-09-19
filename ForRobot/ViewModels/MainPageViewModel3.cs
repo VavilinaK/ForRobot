@@ -143,7 +143,20 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Выбранный файл
         /// </summary>
-        public Model.File3D.File3D SelectedFile { get => this._selectedFile; set => Set(ref this._selectedFile, value); }
+        public Model.File3D.File3D SelectedFile
+        {
+            get => this._selectedFile;
+            set
+            {
+                if (this._selectedFile != null)
+                    this._selectedFile.DetalChangedEvent -= (s, e) => RaisePropertyChanged(nameof(this.SelectedFile));
+
+                Set(ref this._selectedFile, value);
+
+                if (this._selectedFile != null)
+                    this._selectedFile.DetalChangedEvent += (s, e) => RaisePropertyChanged(nameof(this.SelectedFile));
+            }
+        }
 
         /// <summary>
         /// Выбранный робот

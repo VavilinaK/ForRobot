@@ -32,19 +32,10 @@ namespace ForRobot.Services
                                                                nameof(File3D.Detal),
                                                                e.OldValue,
                                                                e.NewValue,
-                                                               $"Изменение детали: {e.OldValue?.GetType().Name} -> {e.NewValue?.GetType().Name}"
-                );
-
+                                                               $"Изменение детали: {e.OldValue?.GetType().Name} -> {e.NewValue?.GetType().Name}");
                 file3D.AddUndoCommand(command);
             }
         }
-
-        //private void FillWeldsCollection(Detal detal)
-        //{
-        //    foreach (var item in this.WeldsCollection) item.Children.Clear();
-        //    this.WeldsCollection.Clear();
-        //    foreach (var item in this._weldService.GetWelds(detal)) this.WeldsCollection.Add(item);
-        //}
 
         /// <summary>
         /// Делегат изменения <see cref="ForRobot.Model.Detals.Detal"/>, изменяющий CurrentModel
@@ -61,7 +52,9 @@ namespace ForRobot.Services
                 case DetalTypes.Plita:
                     Plita plita = detal as Plita;
                     file.CurrentModel.Children.Add(this._modelingService.ModelBuilding(plita));
-                    //file.FillWeldsCollection(plita);
+                    foreach (var item in file.WeldsCollection) item.Children.Clear();
+                    file.WeldsCollection.Clear();
+                    foreach (var item in this._weldService.GetWelds(plita)) file.WeldsCollection.Add(item);
                     break;
 
                 case DetalTypes.Stringer:
@@ -72,16 +65,25 @@ namespace ForRobot.Services
             }
         }
 
+        /// <summary>
+        /// Делегат изменения CurrentModel в <see cref="ForRobot.Model.File3D.File3D"/>
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void HandleModelChanged(object sender, EventArgs e)
         {
             Model.File3D.File3D file3D = sender as Model.File3D.File3D;
             RaisePropertyChanged(nameof(file3D.CurrentModel));
         }
 
+        /// <summary>
+        /// Делегат изменения свойств <see cref="ForRobot.Model.File3D.File3D"/>, изменяющий CurrentModel
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void HandleFileChange(object sender, EventArgs e)
         {
             Model.File3D.File3D file3D = sender as Model.File3D.File3D;
-            RaisePropertyChanged("SelectedFile.Detal");
             RaisePropertyChanged(nameof(file3D));
         }
     }

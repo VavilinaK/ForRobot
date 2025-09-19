@@ -726,12 +726,12 @@
                                 </h:HelixViewport3D.DefaultCamera>
 
                                 <h:HelixViewport3D.InputBindings>
-                                    <KeyBinding Key="B" Command="{x:Static h:CameraController.BackViewCommand}"/>
-                                    <KeyBinding Key="F" Command="{x:Static h:CameraController.FrontViewCommand}"/>
+                                    <KeyBinding Key="B" Command="{x:Static h:CameraController.BackViewCommand}"/>  <!--this.ChangeDirection(new Vector3D(0, -1, 0), new Vector3D(0, 0, 1));-->
+                                    <KeyBinding Key="F" Command="{x:Static h:CameraController.FrontViewCommand}"/> <!--this.ChangeDirection(new Vector3D(0, 1, 0), new Vector3D(0, 0, 1));-->
                                     <KeyBinding Key="U" Command="{x:Static h:CameraController.TopViewCommand}"/>
                                     <KeyBinding Key="D" Command="{x:Static h:CameraController.BottomViewCommand}"/>
-                                    <KeyBinding Key="L" Command="{x:Static h:CameraController.LeftViewCommand}"/>
-                                    <KeyBinding Key="R" Command="{x:Static h:CameraController.RightViewCommand}"/>
+                                    <KeyBinding Key="L" Command="{x:Static h:CameraController.LeftViewCommand}"/> <!--this.ChangeDirection(new Vector3D(1, 0, 0), new Vector3D(0, 0, 1));-->
+                                    <KeyBinding Key="R" Command="{x:Static h:CameraController.RightViewCommand}"/> <!--this.ChangeDirection(new Vector3D(-1, 0, 0), new Vector3D(0, 0, 1));-->
 
                                     <MouseBinding Command="{x:Static h:CameraController.RotateCommand}"  Gesture="RightClick" />
                                     <MouseBinding Command="{x:Static h:CameraController.ZoomCommand}" Gesture="MiddleClick" />
