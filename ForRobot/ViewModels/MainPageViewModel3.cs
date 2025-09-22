@@ -137,6 +137,8 @@ namespace ForRobot.ViewModels
         #region Public variables
 
         public bool IsVisibleGridLinesVisual3D { get => this._isVisibleGridLinesVisual3D; set => Set(ref this._isVisibleGridLinesVisual3D, value); }
+        public bool CanUndo => SelectedFile == null ? false : this.SelectedFile.CanUndo;
+        public bool CanRedo => SelectedFile == null ? false : this.SelectedFile.CanRedo;
 
         public Version Version { get => System.Reflection.Assembly.GetEntryAssembly().GetName().Version; }
 
@@ -301,10 +303,14 @@ namespace ForRobot.ViewModels
         /// </summary>
         public ICommand SaveAllFilesCommand { get; } = new RelayCommand(obj => SaveAllFile(obj as ObservableCollection<Model.File3D.File3D>));
 
-        public bool CanUndo => SelectedFile == null ? false : this.SelectedFile.CanUndo;
-        public bool CanRedo => SelectedFile == null ? false : this.SelectedFile.CanRedo;
-
+        /// <summary>
+        /// Команда отмены действия
+        /// </summary>
         public ICommand UndoCommand { get => new RelayCommand(_ => this.SelectedFile?.Undo(), _ => this.CanUndo); }
+
+        /// <summary>
+        /// Команда возврата действия
+        /// </summary>
         public ICommand RedoCommand { get => new RelayCommand(_ => this.SelectedFile?.Redo(), _ => this.CanRedo); }
 
         /// <summary>
@@ -345,11 +351,11 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Переименование робота
         /// </summary>
-        public ICommand RenameRobotCommand { get => new RelayCommand(obj => {
+        public ICommand RenameRobotCommand { get => new RelayCommand(obj =>
+        {
             RenameRobot(obj as Robot);
             this.SaveRobots();
         }); }
-            //= new RelayCommand(obj => RenameRobot(obj as Robot));
 
         /// <summary>
         /// Изменение папки робота

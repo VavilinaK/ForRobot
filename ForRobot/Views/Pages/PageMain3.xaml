@@ -44,9 +44,9 @@
                     Command="{Binding Path=SaveFileCommand}"                    
                     CommandParameter="{Binding Path=SelectedFile}"/>
 
-        <KeyBinding Gesture="Ctrl+Z" Command="{Binding Path=SelectedFile.UndoCommand}"/>
+        <KeyBinding Gesture="Ctrl+Z" Command="{Binding Path=UndoCommand}"/>
 
-        <KeyBinding Gesture="Ctrl+V" Command="{Binding Path=SelectedFile.RedoCommand}"/>
+        <KeyBinding Gesture="Ctrl+V" Command="{Binding Path=RedoCommand}"/>
         
         <KeyBinding Gesture="Ctrl+F5" 
                     Command="{Binding Path=GenerateProgramCommandAsync}"
@@ -573,7 +573,7 @@
 
             <MenuItem Header="Вид сверху (Ctrl+U)"
                       Template="{StaticResource MenuItemTemplate1}"
-                      Command="{x:Static h:CameraController.TopViewCommand}">
+                      Command="{x:Static behavior:CameraControllerBehavior.TopViewCommand}">
 
                 <!--LeftViewCommand-->
 
@@ -584,8 +584,7 @@
 
             <MenuItem Header="Вид снизу (Ctrl+D)"
                       Template="{StaticResource MenuItemTemplate1}"
-                      Command="{x:Static h:CameraController.BottomViewCommand}">
-                <!--RightViewCommand-->
+                      Command="{x:Static behavior:CameraControllerBehavior.BottomViewCommand}">
                 <MenuItem.Icon>
                     <Image Source="/InterfaceOfRobots;component/Themes/Images/bottom_view.png" Height="24" Width="24" Stretch="Uniform"/>
                 </MenuItem.Icon>
@@ -593,7 +592,7 @@
 
             <MenuItem Header="Вид спереди (Ctrl+F)"
                       Template="{StaticResource MenuItemTemplate1}"
-                      Command="{x:Static h:CameraController.FrontViewCommand}">
+                      Command="{x:Static behavior:CameraControllerBehavior.FrontViewCommand}">
 
                 <MenuItem.Icon>
                     <Image Source="/InterfaceOfRobots;component/Themes/Images/front_view.png" Height="24" Width="24" Stretch="Uniform"/>
@@ -602,7 +601,7 @@
 
             <MenuItem Header="Вид сзади (Ctrl+B)" InputGestureText="Ctrl+B"
                       Template="{StaticResource MenuItemTemplate1}"
-                      Command="{x:Static h:CameraController.BackViewCommand}">
+                      Command="{x:Static behavior:CameraControllerBehavior.BackViewCommand}">
 
                 <MenuItem.Icon>
                     <Image Source="/InterfaceOfRobots;component/Themes/Images/back_view.png" Height="24" Width="24" Stretch="Uniform"/>
@@ -611,7 +610,7 @@
 
             <MenuItem Header="Вид с левого бока (Ctrl+L)"
                       Template="{StaticResource MenuItemTemplate1}"
-                      Command="{x:Static h:CameraController.LeftViewCommand}">
+                      Command="{x:Static behavior:CameraControllerBehavior.LeftViewCommand}">
 
                 <MenuItem.Icon>
                     <Image Source="/InterfaceOfRobots;component/Themes/Images/left_side_view.png" Height="24" Width="24" Stretch="Uniform"/>
@@ -620,7 +619,7 @@
 
             <MenuItem Header="Вид с правого бока (Ctrl+R)"
                       Template="{StaticResource MenuItemTemplate1}"
-                      Command="{x:Static h:CameraController.RightViewCommand}">
+                      Command="{x:Static behavior:CameraControllerBehavior.RightViewCommand}">
 
                 <MenuItem.Icon>
                     <Image Source="/InterfaceOfRobots;component/Themes/Images/right_side_view.png" Height="24" Width="24" Stretch="Uniform"/>
@@ -709,7 +708,6 @@
                                                MinimumFieldOfView="10.0" MaximumFieldOfView="120.0">
 
                                 <h:HelixViewport3D.DefaultCamera>
-
                                     <!--<PerspectiveCamera x:Name="CameraControler" 
                                                        Position="-354, 3, 381"
                                                        LookDirection="351,-3,-383"
@@ -724,15 +722,15 @@
                                                        FieldOfView="10"
                                                        NearPlaneDistance="0.001"/>
                                 </h:HelixViewport3D.DefaultCamera>
-
+                                
                                 <h:HelixViewport3D.InputBindings>
-                                    <KeyBinding Key="B" Command="{x:Static h:CameraController.BackViewCommand}"/>  <!--this.ChangeDirection(new Vector3D(0, -1, 0), new Vector3D(0, 0, 1));-->
-                                    <KeyBinding Key="F" Command="{x:Static h:CameraController.FrontViewCommand}"/> <!--this.ChangeDirection(new Vector3D(0, 1, 0), new Vector3D(0, 0, 1));-->
-                                    <KeyBinding Key="U" Command="{x:Static h:CameraController.TopViewCommand}"/>
-                                    <KeyBinding Key="D" Command="{x:Static h:CameraController.BottomViewCommand}"/>
-                                    <KeyBinding Key="L" Command="{x:Static h:CameraController.LeftViewCommand}"/> <!--this.ChangeDirection(new Vector3D(1, 0, 0), new Vector3D(0, 0, 1));-->
-                                    <KeyBinding Key="R" Command="{x:Static h:CameraController.RightViewCommand}"/> <!--this.ChangeDirection(new Vector3D(-1, 0, 0), new Vector3D(0, 0, 1));-->
-
+                                    <KeyBinding Key="B" Modifiers="Ctrl" Command="{x:Static behavior:CameraControllerBehavior.BackViewCommand}"/>
+                                    <KeyBinding Key="F" Modifiers="Ctrl" Command="{x:Static behavior:CameraControllerBehavior.FrontViewCommand}"/>
+                                    <KeyBinding Key="U" Modifiers="Ctrl" Command="{x:Static behavior:CameraControllerBehavior.TopViewCommand}"/>
+                                    <KeyBinding Key="D" Modifiers="Ctrl" Command="{x:Static behavior:CameraControllerBehavior.BottomViewCommand}"/>
+                                    <KeyBinding Key="L" Modifiers="Ctrl" Command="{x:Static behavior:CameraControllerBehavior.LeftViewCommand}"/>
+                                    <KeyBinding Key="R" Modifiers="Ctrl" Command="{x:Static behavior:CameraControllerBehavior.RightViewCommand}"/>
+                                    
                                     <MouseBinding Command="{x:Static h:CameraController.RotateCommand}"  Gesture="RightClick" />
                                     <MouseBinding Command="{x:Static h:CameraController.ZoomCommand}" Gesture="MiddleClick" />
                                     <MouseBinding Command="{x:Static h:CameraController.ZoomExtentsCommand}" Gesture="MiddleDoubleClick" />
@@ -776,6 +774,7 @@
                                 <i:Interaction.Behaviors>
                                     <behavior:ZoomBehavior/>
                                     <behavior:HelixWeldsBehavior Items="{Binding Path=WeldsCollection}" Thickness="{Binding Path=Settings.WeldsThickness, Source={x:Static Application.Current}, Mode=OneWay}"/>
+                                    <behavior:CameraControllerBehavior/>
                                     <!--<behavior:HelixAnnotationsBehavior Items="{Binding Path=AnnotationsCollection}"
                                                                        FontSize="{Binding Path=Settings.ParamsFontSize, Mode=OneWay, Source={x:Static Application.Current}, UpdateSourceTrigger=PropertyChanged}"/>-->
                                     <!--<behavior:HelixSceneTrackerBehavior SceneItems="{Binding Path=DataContext.SceneItemsCollection, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>-->
