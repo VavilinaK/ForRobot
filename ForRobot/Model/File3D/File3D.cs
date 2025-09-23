@@ -580,9 +580,9 @@ namespace ForRobot.Model.File3D
             //        }
             //    });
 
-            //if (this.Detal.JsonForSave == string.Empty) return;
-            //File.WriteAllText(this.Path, this.Detal.JsonForSave);
-            //this.IsSaved = true;
+            if (this.Detal.JsonForSave == string.Empty) return;
+            File.WriteAllText(this.Path, this.Detal.JsonForSave);
+            this.IsSaved = true;
         }
         
         /// <summary>

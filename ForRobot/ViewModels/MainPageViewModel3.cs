@@ -282,7 +282,7 @@ namespace ForRobot.ViewModels
         /// Создание файла
         /// </summary>
         public ICommand CreateNewFileCommand { get; } = new RelayCommand(_ => App.Current.WindowsAppService.OpenCreateWindow());
-
+        
         /// <summary>
         /// Открытие файла программы
         /// </summary>
@@ -291,7 +291,7 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Сохранение файла программы
         /// </summary>
-        public ICommand SaveFileCommand { get => new RelayCommand(obj => SaveFile(obj as Model.File3D.File3D)); }
+        public ICommand SaveFileCommand { get => new RelayCommand(_ => SaveFile(this.SelectedFile)); }
 
         /// <summary>
         /// Сохранение файла программы как
@@ -426,10 +426,7 @@ namespace ForRobot.ViewModels
             if (Properties.Settings.Default.SaveRobots == null)
                 Properties.Settings.Default.SaveRobots = new System.Collections.Specialized.StringCollection();
 
-            Libr.Logger.LoggingEvent += (s, o) =>
-            {
-                System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() => this.MessagesCollection.Add(new Model.AppMessage(o))));
-            };
+            Libr.Logger.LoggingEvent += (s, o) => System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() => this.MessagesCollection.Add(new Model.AppMessage(o))));
 
             // Выгрузка сохранённых соединений
             this.RobotsCollection = new FullyObservableCollection<Robot>();
@@ -502,13 +499,22 @@ namespace ForRobot.ViewModels
             System.Windows.Input.FocusManager.SetFocusedElement(System.Windows.Input.FocusManager.GetFocusScope(frameworkElement), null);
         }
 
-        private static void SaveFile(Model.File3D.File3D file)
+        private void SaveFile(Model.File3D.File3D file)
         {
-            if (file == null)
+            if (file == null || file.IsSaved)
                 return;
 
-            if (!file.IsSaved)
-                file.Save();
+            if (file.Path == System.IO.Path.Combine(System.IO.Path.GetTempPath(), file.Name))
+                using (var fbd = new FolderBrowserDialog())
+                {
+                    DialogResult result = fbd.ShowDialog();
+                    if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                        file.Path = System.IO.Path.Combine(fbd.SelectedPath, file.Name);
+                    else
+                        return;
+                }
+
+            file.Save();
         }
 
         private static void SaveAllFile(IEnumerable<Model.File3D.File3D> files)
