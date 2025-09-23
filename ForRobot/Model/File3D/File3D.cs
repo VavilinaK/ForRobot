@@ -24,11 +24,12 @@ using CommunityToolkit.Diagnostics;
 //using CommunityToolkit.Mvvm.Input;
 
 using ForRobot.Model.Detals;
+using ForRobot.Libr.UndoRedo;
 using ForRobot.Services;
 
 namespace ForRobot.Model.File3D
 {
-    public class File3D : IDisposable
+    public class File3D : IUndoRedo, IDisposable
     {
         #region Private variables
 
@@ -63,9 +64,6 @@ namespace ForRobot.Model.File3D
         /// Сохранены ли последнии изменения
         /// </summary>
         public bool IsSaved { get; private set; } = true;
-        public bool CanUndo => _undoStack.Count > 0;
-        public bool CanRedo => _redoStack.Count > 0;
-        public bool _isUndoRedoOperation = false;
 
         /// <summary>
         /// Путь к файлу
@@ -105,21 +103,11 @@ namespace ForRobot.Model.File3D
 
         public static readonly string FilterForFileDialog = "3D model files (*.3ds;*.obj;*.off;*.lwo;*.stl;*.ply;)|*.3ds;*.obj;*.objz;*.off;*.lwo;*.stl;*.ply;";
 
-        /// <summary>
-        /// Стек возвращаемых действий (назад)
-        /// </summary>
-        private readonly Stack<IUndoableCommand> _undoStack = new Stack<IUndoableCommand>();
-        /// <summary>
-        /// Стек повторяемых действий (вперёд)
-        /// </summary>
-        private readonly Stack<IUndoableCommand> _redoStack = new Stack<IUndoableCommand>();
-
         #region Events
 
         public event EventHandler<Libr.ValueChangedEventArgs<Detal>> DetalChangedEvent;
         public event EventHandler ModelChangedEvent;
         public event EventHandler FileChangedEvent;
-        public event EventHandler UndoRedoStateChanged;
 
         #endregion
 
@@ -140,9 +128,12 @@ namespace ForRobot.Model.File3D
             this.DetalChangedEvent += new ChangeService().HandleDetalChanged_Properties;
             this.DetalChangedEvent += new ChangeService().HandleDetalChanged_Modeling;
             this.FileChangedEvent += new ChangeService().HandleFileChange;
+            this.UndoRedoStateChanged += (s, e) => this._oldDetal = (s as Detal).Clone() as Detal;
 
             this.Detal = detal;
             this.Path = path;
+
+            this.IsSaved = false;
         }
 
         public File3D(string path)
@@ -571,25 +562,27 @@ namespace ForRobot.Model.File3D
         {
             Detal detal = sender as Detal;
             this.OnDetalChanged(this._oldDetal, detal);
-            if(this._oldDetal != null)
-                this.TrackUndo(this._oldDetal, detal);
-            this._oldDetal = detal.Clone() as Detal;
             this.ChangePropertyAnnotations(detal, e.PropertyName);
-        }
-
-        private void TrackUndo(Detal oldValue, Detal newValue)
-        {
-            //var command = new PropertyChangeCommand<Detal>(this, propertyName, oldValue, newValue);
-            //this.UndoStack.Push(command);
-            //this.RedoStack.Clear();
-            //CommandManager.InvalidateRequerySuggested();
         }
 
         private void SaveJsonFile()
         {
-            if (this.Detal.JsonForSave == string.Empty) return;
-            File.WriteAllText(this.Path, this.Detal.JsonForSave);
-            this.IsSaved = true;
+            //if (this.Path == System.IO.Path.Combine(System.IO.Path.GetTempPath(), this.Name))
+            //    System.Windows.Application.Current.Dispatcher.Invoke(() =>
+            //    {
+            //        using (var fbd = new FolderBrowserDialog())
+            //        {
+            //            DialogResult result = fbd.ShowDialog();
+            //            if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+            //                this.Path = System.IO.Path.Combine(fbd.SelectedPath, this.Name);
+            //            else
+            //                return;
+            //        }
+            //    });
+
+            //if (this.Detal.JsonForSave == string.Empty) return;
+            //File.WriteAllText(this.Path, this.Detal.JsonForSave);
+            //this.IsSaved = true;
         }
         
         /// <summary>
@@ -652,70 +645,8 @@ namespace ForRobot.Model.File3D
                     this.SaveJsonFile();
                     break;
             }
-            //if (string.IsNullOrEmpty(this.Path))
-            //{
-
-            //}
+            this.IsSaved = true;
         }
-
-        #region Undo/Redo
-
-        /// <summary>
-        /// Отмена изменения
-        /// </summary>
-        public void Undo()
-        {
-            if (!this.CanUndo) return;
-
-            _isUndoRedoOperation = true;
-            var command = _undoStack.Pop();
-            command.Unexecute();
-            _redoStack.Push(command);
-            _isUndoRedoOperation = false;
-
-            UndoRedoStateChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        /// <summary>
-        /// Возврат изменения
-        /// </summary>
-        public void Redo()
-        {
-            if (!this.CanRedo) return;
-
-            _isUndoRedoOperation = true;
-            var command = _redoStack.Pop();
-            command.Execute();
-            _undoStack.Push(command);
-            _isUndoRedoOperation = false;
-
-            //_isUndoRedoOperation = true;
-            //var command = _redoStack.Last();
-            //_redoStack.ToList().RemoveAt(_redoStack.Count - 1);
-            //command.Execute();
-            //_undoStack.Push(command);
-            //_isUndoRedoOperation = false;
-
-            UndoRedoStateChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        public void AddUndoCommand(IUndoableCommand command)
-        {
-            if (_isUndoRedoOperation) return;
-
-            _undoStack.Push(command);
-            _redoStack.Clear();
-            UndoRedoStateChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        public void ClearUndoRedoHistory()
-        {
-            _undoStack.Clear();
-            _redoStack.Clear();
-            UndoRedoStateChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        #endregion
 
         #region Static
 
@@ -765,6 +696,71 @@ namespace ForRobot.Model.File3D
 
         #endregion
 
+        #region Implementations of IUndoRedo
+
+        private bool _isUndoRedoOperation = false;
+        /// <summary>
+        /// Стек возвращаемых действий (назад)
+        /// </summary>
+        private readonly Stack<IUndoableCommand> _undoStack = new Stack<IUndoableCommand>();
+        /// <summary>
+        /// Стек повторяемых действий (вперёд)
+        /// </summary>
+        private readonly Stack<IUndoableCommand> _redoStack = new Stack<IUndoableCommand>();
+
+        public event EventHandler UndoRedoStateChanged;
+
+        public bool CanUndo => this._undoStack.Count > 0;
+        public bool CanRedo => this._redoStack.Count > 0;
+
+        /// <summary>
+        /// Отмена изменения
+        /// </summary>
+        public void Undo()
+        {
+            if (!this.CanUndo) return;
+
+            _isUndoRedoOperation = true;
+            var command = _undoStack.Pop();
+            command.Unexecute();
+            _redoStack.Push(command);
+            _isUndoRedoOperation = false;
+            UndoRedoStateChanged?.Invoke(this.Detal, EventArgs.Empty);
+        }
+
+        /// <summary>
+        /// Возврат изменения
+        /// </summary>
+        public void Redo()
+        {
+            if (!this.CanRedo) return;
+
+            _isUndoRedoOperation = true;
+            var command = _redoStack.Pop();
+            command.Execute();
+            _undoStack.Push(command);
+            _isUndoRedoOperation = false;
+            UndoRedoStateChanged?.Invoke(this.Detal, EventArgs.Empty);
+        }
+
+        public void AddUndoCommand(IUndoableCommand command)
+        {
+            if (_isUndoRedoOperation) return;
+
+            _undoStack.Push(command);
+            _redoStack.Clear();
+            UndoRedoStateChanged?.Invoke(this.Detal, EventArgs.Empty);
+        }
+
+        public void ClearUndoRedoHistory()
+        {
+            _undoStack.Clear();
+            _redoStack.Clear();
+            UndoRedoStateChanged?.Invoke(this.Detal, EventArgs.Empty);
+        }
+
+        #endregion
+
         #region Implementations of IDisposable
 
         private volatile bool _disposed = false;
@@ -780,6 +776,9 @@ namespace ForRobot.Model.File3D
 
             if (disposing)
             {
+                this.ClearUndoRedoHistory();
+                this.ModelChangedEvent -= (s, o) => GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Behavior.HelixSceneTrackerMessage());
+                this.ModelChangedEvent -= new ChangeService().HandleModelChanged;
                 this.DetalChangedEvent -= new ForRobot.Services.ChangeService().HandleDetalChanged_Properties;
                 this.DetalChangedEvent -= new ForRobot.Services.ChangeService().HandleDetalChanged_Modeling;
                 this.FileChangedEvent -= new ForRobot.Services.ChangeService().HandleFileChange;

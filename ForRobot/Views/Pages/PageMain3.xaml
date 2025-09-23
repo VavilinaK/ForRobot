@@ -402,7 +402,7 @@
 
                 <MenuItem.Header>
                     <MultiBinding Converter="{StaticResource StringFormatMultiConvert}" ConverterParameter="Сохранить {0} (Ctrl+S)">
-                        <Binding Path="SelectedFile.Name" Mode="OneWay"/>
+                        <Binding Path="SelectedFile.Name" Mode="OneWay" UpdateSourceTrigger="PropertyChanged"/>
                     </MultiBinding>
                 </MenuItem.Header>
 
@@ -574,9 +574,6 @@
             <MenuItem Header="Вид сверху (Ctrl+U)"
                       Template="{StaticResource MenuItemTemplate1}"
                       Command="{x:Static behavior:CameraControllerBehavior.TopViewCommand}">
-
-                <!--LeftViewCommand-->
-
                 <MenuItem.Icon>
                     <Image Source="/InterfaceOfRobots;component/Themes/Images/top_view.png" Height="24" Width="24" Stretch="Uniform"/>
                 </MenuItem.Icon>

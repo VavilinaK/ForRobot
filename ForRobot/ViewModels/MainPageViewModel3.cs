@@ -291,7 +291,7 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Сохранение файла программы
         /// </summary>
-        public ICommand SaveFileCommand { get; } = new RelayCommand(obj => SaveFile(obj as Model.File3D.File3D));
+        public ICommand SaveFileCommand { get => new RelayCommand(obj => SaveFile(obj as Model.File3D.File3D)); }
 
         /// <summary>
         /// Сохранение файла программы как

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ForRobot
+namespace ForRobot.Libr.UndoRedo
 {
     public class PropertyChangeCommand<T> : IUndoableCommand
     {

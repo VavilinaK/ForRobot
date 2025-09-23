@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ForRobot
+namespace ForRobot.Libr.UndoRedo
 {
     public interface IUndoableCommand
     {

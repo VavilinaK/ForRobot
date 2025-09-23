@@ -47,11 +47,11 @@ namespace ForRobot.Libr.Behavior
                                                                        OnFrontViewCommandExecuted,
                                                                        CanExecuteCommand));
 
-            this._helixViewport.CommandBindings.Add(new CommandBinding(FrontViewCommand,
+            this._helixViewport.CommandBindings.Add(new CommandBinding(TopViewCommand,
                                                                        OnTopViewCommandExecuted,
                                                                        CanExecuteCommand));
 
-            this._helixViewport.CommandBindings.Add(new CommandBinding(FrontViewCommand,
+            this._helixViewport.CommandBindings.Add(new CommandBinding(BottomViewCommand,
                                                                        OnBottomViewCommandExecuted,
                                                                        CanExecuteCommand));
 
