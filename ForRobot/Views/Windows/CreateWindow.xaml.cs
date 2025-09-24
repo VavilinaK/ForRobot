@@ -72,7 +72,7 @@ namespace ForRobot.Views.Windows
             }
         }
 
-        public string Path { get; set; }
+        public string Path { get; set; } = System.IO.Path.GetTempPath();
 
         public File3D CreationFile { get; set; } = new File3D();
 
@@ -133,6 +133,16 @@ namespace ForRobot.Views.Windows
             }
         }
 
+        private void BnSelectPath_Click(object sender, RoutedEventArgs e)
+        {
+            using (var fbd = new System.Windows.Forms.FolderBrowserDialog())
+            {
+                System.Windows.Forms.DialogResult result = fbd.ShowDialog();
+                if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                    this.Path = fbd.SelectedPath;
+            }
+        }
+
         private void BtnDialogOk_Click(object sender, RoutedEventArgs e)
         {
             this.CreationFile.Path = System.IO.Path.Combine(this.Path, this.FileName);
@@ -161,6 +171,5 @@ namespace ForRobot.Views.Windows
         }
 
         #endregion
-
     }
 }

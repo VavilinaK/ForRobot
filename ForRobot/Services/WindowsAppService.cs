@@ -14,12 +14,7 @@ namespace ForRobot.Services
         /// Главное окно приложения
         /// </summary>
         ForRobot.Views.Windows.MainWindow AppMainWindow { get; }
-
-        /// <summary>
-        /// Окно создания окна
-        /// </summary>
-        ForRobot.Views.Windows.CreateWindow CreateWindow { get; }
-
+        
         /// <summary>
         /// Вывод окна ввода
         /// </summary>
@@ -38,7 +33,7 @@ namespace ForRobot.Services
         /// <summary>
         /// Открытие окна создание файла
         /// </summary>
-        bool? OpenCreateWindow();
+        void OpenCreateWindow();
 
         /// <summary>
         /// Открытие окна настроек
@@ -63,11 +58,11 @@ namespace ForRobot.Services
         /// <summary>
         /// Окно создания окна
         /// </summary>
-        public ForRobot.Views.Windows.CreateWindow CreateWindow { get; private set; }
+        private ForRobot.Views.Windows.CreateWindow CreateWindow;
         /// <summary>
         /// Окно настроек
         /// </summary>
-        private ForRobot.Views.Windows.PropertiesWindow _propertiesWindow { get; set; }
+        private ForRobot.Views.Windows.PropertiesWindow _propertiesWindow;
 
         private ForRobot.Views.Windows.SelectWindow _selectedAppsForOpenedFile { get; set; }
 
@@ -94,12 +89,17 @@ namespace ForRobot.Services
             return selectedItems;
         }
 
-        public bool? OpenCreateWindow()
+        public void OpenCreateWindow()
         {
-            this.CreateWindow = new ForRobot.Views.Windows.CreateWindow();
-            this.CreateWindow.Closed += (a, b) => this.CreateWindow = null;
-            this.CreateWindow.Owner = App.Current.MainWindow;
-            return this.CreateWindow.ShowDialog();
+            using (this.CreateWindow = new ForRobot.Views.Windows.CreateWindow())
+            {
+                this.CreateWindow.Closed += (a, b) => this.CreateWindow = null;
+                this.CreateWindow.Owner = App.Current.MainWindow;
+                if (this.CreateWindow.ShowDialog() == true)
+                {
+                    App.Current.OpenedFiles.Add(this.CreateWindow.CreationFile);
+                }
+            }
         }
         public void OpenPropertiesWindow()
         {
