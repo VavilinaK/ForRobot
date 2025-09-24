@@ -110,15 +110,15 @@ namespace ForRobot.ViewModels
         /// </summary>
         public ICommand ReviewCommand { get => new RelayCommand(_ => this.SelectFilePath()); }
 
-        /// <summary>
-        /// Создание файла
-        /// </summary>
-        public ICommand CreateCommand { get => new RelayCommand(_ => this.CreatedFile()); }
+        ///// <summary>
+        ///// Создание файла
+        ///// </summary>
+        //public ICommand CreateCommand { get => new RelayCommand(_ => this.CreatedFile()); }
 
         /// <summary>
         /// Закрытие окна
         /// </summary>
-        public ICommand CancelCommand { get; } = new RelayCommand(_ => App.Current.WindowsAppService.CloseCreateWindow());
+        //public ICommand CancelCommand { get; } = new RelayCommand(_ => App.Current.WindowsAppService.CloseCreateWindow());
 
         #endregion Commands
 
@@ -154,7 +154,7 @@ namespace ForRobot.ViewModels
             this.File3D.Path = Path.Combine(this.FileName, this.FilePath);
 
             App.Current.OpenedFiles.Add(this.File3D);
-            App.Current.WindowsAppService.CloseCreateWindow();
+            //App.Current.WindowsAppService.CloseCreateWindow();
         }
 
         #endregion Private functions

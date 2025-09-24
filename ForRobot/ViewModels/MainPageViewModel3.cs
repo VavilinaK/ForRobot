@@ -301,7 +301,12 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Сохранение всех файлов
         /// </summary>
-        public ICommand SaveAllFilesCommand { get; } = new RelayCommand(obj => SaveAllFile(obj as ObservableCollection<Model.File3D.File3D>));
+        public ICommand SaveAllFilesCommand { get => new RelayCommand(_ =>
+         {
+             foreach (var file in App.Current.OpenedFiles)
+                 this.SaveFile(file);
+         }); }
+            //= new RelayCommand(obj => SaveAllFile(obj as ObservableCollection<Model.File3D.File3D>));
 
         /// <summary>
         /// Команда отмены действия
@@ -517,16 +522,16 @@ namespace ForRobot.ViewModels
             file.Save();
         }
 
-        private static void SaveAllFile(IEnumerable<Model.File3D.File3D> files)
-        {
-            if (files == null)
-                return;
+        //private static void SaveAllFile(IEnumerable<Model.File3D.File3D> files)
+        //{
+        //    if (files == null)
+        //        return;
 
-            foreach (var file in files.Where(item => !item.IsSaved))
-            {
-                file.Save();
-            }
-        }
+        //    foreach (var file in files.Where(item => !item.IsSaved))
+        //    {
+        //        file.Save();
+        //    }
+        //}
 
         /// <summary>
         /// Возврат к стандартным параметрам детали

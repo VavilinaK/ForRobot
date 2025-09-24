@@ -16,6 +16,11 @@ namespace ForRobot.Services
         ForRobot.Views.Windows.MainWindow AppMainWindow { get; }
 
         /// <summary>
+        /// Окно создания окна
+        /// </summary>
+        ForRobot.Views.Windows.CreateWindow CreateWindow { get; }
+
+        /// <summary>
         /// Вывод окна ввода
         /// </summary>
         /// <param name="sInputBoxText">Question, текст в InputBox</param>
@@ -33,18 +38,13 @@ namespace ForRobot.Services
         /// <summary>
         /// Открытие окна создание файла
         /// </summary>
-        void OpenCreateWindow();
+        bool? OpenCreateWindow();
 
         /// <summary>
         /// Открытие окна настроек
         /// </summary>
         void OpenPropertiesWindow();
-
-        /// <summary>
-        /// Закрытие окна создание файла
-        /// </summary>
-        void CloseCreateWindow();
-
+        
         /// <summary>
         /// Закрытие окна настроек
         /// </summary>
@@ -63,7 +63,7 @@ namespace ForRobot.Services
         /// <summary>
         /// Окно создания окна
         /// </summary>
-        private ForRobot.Views.Windows.CreateWindow _createWindow { get; set; }
+        public ForRobot.Views.Windows.CreateWindow CreateWindow { get; private set; }
         /// <summary>
         /// Окно настроек
         /// </summary>
@@ -94,17 +94,12 @@ namespace ForRobot.Services
             return selectedItems;
         }
 
-        public void OpenCreateWindow()
+        public bool? OpenCreateWindow()
         {
-            if (!object.Equals(this._createWindow, null)) // Блокировка открытия 2-ого окна.
-            {
-                FocusedWindow(this._createWindow);
-                return;
-            }
-            this._createWindow = new ForRobot.Views.Windows.CreateWindow();
-            this._createWindow.Closed += (a, b) => this._createWindow = null;
-            this._createWindow.Owner = App.Current.MainWindow;
-            this._createWindow.Show();
+            this.CreateWindow = new ForRobot.Views.Windows.CreateWindow();
+            this.CreateWindow.Closed += (a, b) => this.CreateWindow = null;
+            this.CreateWindow.Owner = App.Current.MainWindow;
+            return this.CreateWindow.ShowDialog();
         }
         public void OpenPropertiesWindow()
         {
@@ -123,8 +118,7 @@ namespace ForRobot.Services
             this._propertiesWindow.Owner = App.Current.MainWindow;
             this._propertiesWindow.Show();
         }
-
-        public void CloseCreateWindow() => this._createWindow.Close();
+        
         public void ClosePropertiesWindow() => this._propertiesWindow.Close();
 
         private void FocusedWindow(Window window)

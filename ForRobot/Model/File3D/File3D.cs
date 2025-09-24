@@ -59,11 +59,11 @@ namespace ForRobot.Model.File3D
         /// <summary>
         /// Файл был открыт
         /// </summary>
-        public bool IsOpened { get; private set; } = false;
+        public bool IsOpened { get; private set; } = false;        
         /// <summary>
         /// Сохранены ли последнии изменения
         /// </summary>
-        public bool IsSaved { get; private set; } = true;
+        public bool IsSaved { get; private set;} = true;
 
         /// <summary>
         /// Путь к файлу
@@ -108,6 +108,7 @@ namespace ForRobot.Model.File3D
         public event EventHandler<Libr.ValueChangedEventArgs<Detal>> DetalChangedEvent;
         public event EventHandler ModelChangedEvent;
         public event EventHandler FileChangedEvent;
+        public event EventHandler SaveEvent;
 
         #endregion
 
@@ -605,9 +606,10 @@ namespace ForRobot.Model.File3D
         /// Вызов события оповещающего, что было измененно свойство класса <see cref="File3D"/>
         /// </summary>
         private void OnFileChanged() => this.FileChangedEvent?.Invoke(this, null);
+        private void OnSave() => this.SaveEvent?.Invoke(this, null);
 
         #endregion Private functions
-        
+
         #region Public functions
 
         public void Load(string sPath)
@@ -646,6 +648,7 @@ namespace ForRobot.Model.File3D
                     break;
             }
             this.IsSaved = true;
+            this.OnSave();
         }
 
         #region Static

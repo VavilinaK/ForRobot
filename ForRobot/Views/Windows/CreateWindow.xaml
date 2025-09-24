@@ -14,9 +14,9 @@
         ShowInTaskbar="True" WindowStartupLocation="CenterScreen"
         Icon="/InterfaceOfRobots;component/Themes/Icons/robot-arm_158.ico">
 
-    <Window.DataContext>
+    <!--<Window.DataContext>
         <vm:CreateWindowViewModel/>
-    </Window.DataContext>
+    </Window.DataContext>-->
 
     <Window.Resources>
         <Style x:Key="TextBase" TargetType="{x:Type FrameworkElement}">
@@ -120,9 +120,10 @@
                 <ComboBox Grid.Row="0" Grid.Column="1" IsEnabled="False"
                           FontSize="{StaticResource FontSizeNP3}" FontWeight="DemiBold"
                           VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                          ItemsSource="{Binding Path=DetalTypeCollection, Mode=OneWay}"
-                          SelectedItem="{Binding Path=SelectedDetalType, Mode=TwoWay}"
-                          SelectedIndex="0">
+                          ItemsSource="{Binding Path=DetalTypeCollection, RelativeSource={RelativeSource AncestorType={x:Type local:CreateWindow}, Mode=FindAncestor}, Mode=OneTime}"
+                          SelectedItem="{Binding Path=SelectedDetalType, RelativeSource={RelativeSource AncestorType={x:Type local:CreateWindow}, Mode=FindAncestor}, Mode=TwoWay}"
+                          SelectedIndex="0"
+                          Margin="5,5,0,5">
 
                     <ComboBox.ItemContainerStyle>
                         <Style TargetType="{x:Type ComboBoxItem}">
@@ -134,7 +135,7 @@
 
                 <TabControl Grid.Row="1" Grid.ColumnSpan="2" TabStripPlacement="Bottom"
                             FontSize="{StaticResource FontSizeNP2}"
-                            DataContext="{Binding Path=File3D.Detal, Mode=TwoWay}">
+                            DataContext="{Binding Path=CreationFile.Detal, RelativeSource={RelativeSource AncestorType={x:Type local:CreateWindow}, Mode=FindAncestor}, Mode=TwoWay}">
 
                     <TabControl.Resources>
                         <Style TargetType="{x:Type ContentControl}">
@@ -168,9 +169,9 @@
                                             <ScrollViewer CanContentScroll="True"
                                                           VerticalScrollBarVisibility="Auto"
                                                           HorizontalScrollBarVisibility="Auto">
-                                                <ContentPresenter ContentSource="SelectedContent"
-                                                                  ScrollViewer.CanContentScroll="True"
-                                                                  ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                                                <ContentPresenter ContentSource="SelectedContent" />
+                                                <!--ScrollViewer.CanContentScroll="True"
+                                                                  ScrollViewer.VerticalScrollBarVisibility="Auto"/>-->
                                             </ScrollViewer>
 
                                             <WrapPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Stretch" Margin="0,0,0,10">
@@ -286,8 +287,8 @@
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Имя" HorizontalAlignment="Right"/>
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Расположение" HorizontalAlignment="Right"/>
 
-                <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Path=FileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=FilePath, Mode=TwoWay}"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Path=FileName, RelativeSource={RelativeSource AncestorType={x:Type local:CreateWindow}, Mode=FindAncestor}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=Path, RelativeSource={RelativeSource AncestorType={x:Type local:CreateWindow}, Mode=FindAncestor}, Mode=TwoWay}"/>
 
                 <Button Grid.Row="1" Grid.Column="2" Content="_Обзор" 
                     MaxWidth="100" Margin="5" 
@@ -303,8 +304,8 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <Button Grid.Column="1" Content="_OK" IsDefault="True" Command="{Binding Path=CreateCommand}"/>
-                <Button Grid.Column="3" Content="_Отмена" IsCancel="True" Command="{Binding Path=CancelCommand}"/>
+                <Button Grid.Column="1" Content="_OK" Click="BtnDialogOk_Click"/>
+                <Button Grid.Column="3" Content="_Отмена" IsDefault="True" IsCancel="True"/>
             </Grid>
         </Grid>
 
