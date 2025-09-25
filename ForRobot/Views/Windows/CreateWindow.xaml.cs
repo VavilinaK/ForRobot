@@ -4,6 +4,7 @@ using System.Windows.Input;
 using System.Windows.Controls;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 using ForRobot.Model.File3D;
 using ForRobot.Model.Detals;
@@ -13,10 +14,10 @@ namespace ForRobot.Views.Windows
     /// <summary>
     /// Логика взаимодействия для CreateWindow.xaml
     /// </summary>
-    public partial class CreateWindow : Window, IDisposable
+    public partial class CreateWindow : Window, INotifyPropertyChanged, IDisposable
     {
         private string _selectedDetalType = DetalTypes.Plita;
-
+        private string _path = string.Empty;
         private string _plitaProgramName = App.Current.Settings.PlitaProgramName;
         private string _plitaStringerProgramName = App.Current.Settings.PlitaStringerProgramName;
         private string _plitaTreugolnikProgramName = App.Current.Settings.PlitaTreugolnikProgramName;
@@ -72,7 +73,15 @@ namespace ForRobot.Views.Windows
             }
         }
 
-        public string Path { get; set; } = System.IO.Path.GetTempPath();
+        public string Path
+        {
+            get => this._path;
+            set
+            {
+                this._path = value;
+                this.OnPropertyChanged(nameof(this.Path));
+            }
+        }
 
         public File3D CreationFile { get; set; } = new File3D();
 
@@ -100,7 +109,8 @@ namespace ForRobot.Views.Windows
 
         public CreateWindow(DetalType detalType, string path = null) : this()
         {
-            Detal detal = Detal.GetDetal(DetalTypes.EnumToString(detalType));
+            this.SelectedDetalType = DetalTypes.EnumToString(detalType);
+            Detal detal = Detal.GetDetal(this.SelectedDetalType);
             this.CreationFile = new File3D(detal, path);
         }
 
@@ -148,6 +158,20 @@ namespace ForRobot.Views.Windows
             this.CreationFile.Path = System.IO.Path.Combine(this.Path, this.FileName);
             this.DialogResult = true;
         }
+
+        #region INotifyPropertyChanged Support
+
+        private void OnPropertyChanged(params string[] propertyNames)
+        {
+            foreach (var prop in propertyNames)
+            {
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion
 
         #region IDisposable Support
 

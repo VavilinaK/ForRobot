@@ -197,7 +197,7 @@
                                     </Setter>
 
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=DataContext.SelectedDetalType, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}" 
+                                        <DataTrigger Binding="{Binding Path=SelectedDetalType, RelativeSource={RelativeSource AncestorType={x:Type local:CreateWindow}, Mode=FindAncestor}}" 
                                                      Value="{x:Static detals:DetalTypes.Plita}">
                                             <Setter Property="Template">
                                                 <Setter.Value>
@@ -226,7 +226,7 @@
                                     </Setter>
 
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=DataContext.SelectedDetalType, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"
+                                        <DataTrigger Binding="{Binding Path=SelectedDetalType, RelativeSource={RelativeSource AncestorType={x:Type local:CreateWindow}, Mode=FindAncestor}}"
                                                      Value="{x:Static detals:DetalTypes.Plita}">
                                             <Setter Property="Template">
                                                 <Setter.Value>
@@ -255,7 +255,7 @@
                                     </Setter>
 
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=DataContext.SelectedDetalType, RelativeSource={RelativeSource AncestorType={x:Type Window}, Mode=FindAncestor}}"
+                                        <DataTrigger Binding="{Binding Path=SelectedDetalType, RelativeSource={RelativeSource AncestorType={x:Type local:CreateWindow}, Mode=FindAncestor}}"
                                                      Value="{x:Static detals:DetalTypes.Plita}">
                                             <Setter Property="Template">
                                                 <Setter.Value>
@@ -288,7 +288,7 @@
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Расположение" HorizontalAlignment="Right"/>
 
                 <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Path=FileName, RelativeSource={RelativeSource AncestorType={x:Type local:CreateWindow}, Mode=FindAncestor}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=Path, RelativeSource={RelativeSource AncestorType={x:Type local:CreateWindow}, Mode=FindAncestor}, Mode=TwoWay}"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=Path, RelativeSource={RelativeSource AncestorType={x:Type local:CreateWindow}, Mode=FindAncestor}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <Button Grid.Row="1" Grid.Column="2" Content="_Обзор" 
                     MaxWidth="100" Margin="5" 
@@ -305,7 +305,7 @@
                 </Grid.ColumnDefinitions>
 
                 <Button Grid.Column="1" Content="_OK" Click="BtnDialogOk_Click"/>
-                <Button Grid.Column="3" Content="_Отмена" IsDefault="True" IsCancel="True"/>
+                <Button Grid.Column="3" Content="_Отмена" IsCancel="True"/>
             </Grid>
         </Grid>
 
@@ -333,7 +333,7 @@
 
             <h:CoordinateSystemVisual3D ArrowLengths="3"/>
 
-            <ModelVisual3D Content="{Binding Path=File3D.CurrentModel, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <ModelVisual3D Content="{Binding Path=CreationFile.CurrentModel, RelativeSource={RelativeSource AncestorType={x:Type local:CreateWindow}, Mode=FindAncestor}, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
 
         </h:HelixViewport3D>
     </Grid>

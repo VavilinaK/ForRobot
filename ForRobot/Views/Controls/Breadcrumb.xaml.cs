@@ -256,7 +256,7 @@ namespace ForRobot.Views.Controls
 
         #endregion
 
-        #region Implementations of IDisposable
+        #region Implementations of INotifyPropertyChanged
 
         private void OnPropertyChanged(params string[] propertyNames)
         {

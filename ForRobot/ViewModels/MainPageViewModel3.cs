@@ -281,7 +281,7 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Создание файла
         /// </summary>
-        public ICommand CreateNewFileCommand { get; } = new RelayCommand(_ => App.Current.WindowsAppService.OpenCreateWindow());
+        public ICommand CreateNewFileCommand { get; } = new RelayCommand(_ => App.Current.WindowsAppService.OpenCreateWindow(DetalTypes.StringToEnum(App.Current.Settings.StartedDetalType)));
         
         /// <summary>
         /// Открытие файла программы

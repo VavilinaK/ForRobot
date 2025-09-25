@@ -33,7 +33,7 @@ namespace ForRobot.Services
         /// <summary>
         /// Открытие окна создание файла
         /// </summary>
-        void OpenCreateWindow();
+        void OpenCreateWindow(ForRobot.Model.Detals.DetalType detalType, string path = null);
 
         /// <summary>
         /// Открытие окна настроек
@@ -89,16 +89,29 @@ namespace ForRobot.Services
             return selectedItems;
         }
 
-        public void OpenCreateWindow()
+        public void OpenCreateWindow(ForRobot.Model.Detals.DetalType detalType, string path = null)
         {
-            using (this.CreateWindow = new ForRobot.Views.Windows.CreateWindow())
+            using (this.CreateWindow = new ForRobot.Views.Windows.CreateWindow(detalType, path))
             {
-                this.CreateWindow.Closed += (a, b) => this.CreateWindow = null;
-                this.CreateWindow.Owner = App.Current.MainWindow;
-                if (this.CreateWindow.ShowDialog() == true)
+                this.CreateWindow.Closing += (s, e) =>
                 {
-                    App.Current.OpenedFiles.Add(this.CreateWindow.CreationFile);
-                }
+                    CreateWindow createWindow = s as CreateWindow;
+                    if(createWindow.DialogResult == true)
+                    {
+                        if (string.IsNullOrEmpty(createWindow.Path))
+                        {
+                            e.Cancel = true;
+                            System.Windows.MessageBox.Show("Не выбран путь расположения файла.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly);
+                        }
+                        else
+                        {
+                            App.Current.OpenedFiles.Add(createWindow.CreationFile);
+                            e.Cancel = false;
+                        }
+                    }
+                };
+                this.CreateWindow.Owner = App.Current.MainWindow;
+                this.CreateWindow.ShowDialog();
             }
         }
         public void OpenPropertiesWindow()

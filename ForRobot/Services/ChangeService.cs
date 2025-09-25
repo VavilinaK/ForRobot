@@ -55,7 +55,7 @@ namespace ForRobot.Services
                     file.CurrentModel.Children.Add(this._modelingService.ModelBuilding(plita));
                     foreach (var item in file.WeldsCollection) item.Children.Clear();
                     file.WeldsCollection.Clear();
-                    foreach (var item in this._weldService.GetWelds(plita)) file.WeldsCollection.Add(item);
+                    //foreach (var item in this._weldService.GetWelds(plita)) file.WeldsCollection.Add(item);
                     break;
 
                 case DetalTypes.Stringer:
