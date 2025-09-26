@@ -51,8 +51,10 @@ namespace ForRobot.Services
             List<Weld> welds = new List<Weld>();
 
             double weldPositionY = -modelPlateWidth / 2; // Начальная позиция по Y
+            double weldLeftPositionY = weldPositionY;
+            double weldRightPositionY = weldPositionY;
 
-            for (int i = 0; i < plate.RibCount; i++)
+            for (int i = 0; i < 1; i++)
             {
                 var rib = plate.RibsCollection[i];
 
@@ -63,107 +65,49 @@ namespace ForRobot.Services
                 double modelRibDissolutionLeft = (double)rib.DissolutionLeft * (double)ScaleFactor;
                 double modelRibDissolutionRight = (double)rib.DissolutionRight * (double)ScaleFactor;
 
-                // Перемещение к позиции шва по Y - отступ от торца слева.
-                weldPositionY += modelRibDistanceLeft;
-                                
-                double weldLength = modelPlateLength; // Длина шва
+                weldLeftPositionY += modelRibDistanceLeft;
+                weldRightPositionY += modelRibDistanceRight;
 
-                double xStart = weldLength / 2 - modelRibIdentToLeft - modelRibDissolutionLeft;
-                double xEnd = (modelRibIdentToRight + modelRibDissolutionRight) - weldLength / 2;
-                
-                Point3D startPoint, endPoint;
+                // Длина шва (с учётом отступов ребра и роспусков)
+                double weldLength = modelPlateLength - modelRibIdentToLeft - modelRibIdentToRight - modelRibDissolutionLeft - modelRibDissolutionRight;
+
+                double ribYOffset = 0;  // Смещение задней части ребра для скоса
                 switch (plate.ScoseType)
                 {
                     case ScoseTypes.SlopeLeft:
                     case ScoseTypes.SlopeRight:
-
-                        double baseY = weldPositionY - modelRibThickness/2;
-
-                        double ribYOffset = (plate.ScoseType == ScoseTypes.SlopeLeft) ? -this._slopeOffset
-                                                                                      : this._slopeOffset;
-
-                        double totalLength = modelPlateLength - modelRibIdentToLeft - modelRibIdentToRight;
-                        //double positionRatio = (plate.ScoseType == ScoseTypes.SlopeLeft)
-                        //                       ? Math.Abs(xStart - xEnd) / totalLength
-                        //                       : Math.Abs(xEnd - xStart) / totalLength;
-                        double positionRatio = (plate.ScoseType == ScoseTypes.SlopeLeft)
-                                  ? Math.Abs((modelPlateLength / 2 - modelRibIdentToLeft) -
-                                             (modelRibIdentToRight - modelPlateLength / 2)) / totalLength
-                                  : Math.Abs((modelRibIdentToRight - modelPlateLength / 2) -
-                                             (modelPlateLength / 2 - modelRibIdentToLeft)) / totalLength;
-
-                        startPoint = new Point3D(xStart, baseY + ribYOffset * positionRatio, modelPlateHeight);
-                        endPoint = new Point3D(xEnd, baseY, modelPlateHeight);
-
-                        ////double centerY = weldPositionY;
-                        //double centerY = weldPositionY - modelRibThickness / 2;
-                        ////double centerY = (plate.ScoseType == ScoseTypes.SlopeLeft) ? weldPositionY - modelRibThickness / 2 : weldPositionY + modelRibThickness * 1.5;
-
-                        //// Смещение задней части ребра для скоса
-                        //double ribYOffset = (plate.ScoseType == ScoseTypes.SlopeLeft) ? -this._slopeOffset
-                        //                                                              : this._slopeOffset;
-
-                        //double totalLength = modelPlateLength - modelRibIdentToLeft - modelRibIdentToRight;
-                        ////double positionRatio = (xStart - xEnd) / totalLength;
-                        //double positionRatio = (plate.ScoseType == ScoseTypes.SlopeLeft) 
-                        //                       ? Math.Abs(xStart - xEnd) / totalLength
-                        //                       : Math.Abs(xEnd - xStart) / totalLength;
-
-                        ////if (plate.ScoseType == ScoseTypes.SlopeRight)
-                        ////{
-                        ////    startPoint = new Point3D(xStart, centerY, modelPlateHeight);
-                        ////    endPoint = new Point3D(xEnd, centerY + ribYOffset * positionRatio, modelPlateHeight);
-                        ////}
-                        ////else
-                        ////{
-                        ////    startPoint = new Point3D(xStart, centerY + ribYOffset * positionRatio, modelPlateHeight);
-                        ////    endPoint = new Point3D(xEnd, centerY, modelPlateHeight);
-                        ////}
-
-                        //startPoint = new Point3D(xStart, centerY + ribYOffset, modelPlateHeight);
-                        ////startPoint = new Point3D(xStart, centerY + ribYOffset * positionRatio, modelPlateHeight);
-                        //endPoint = new Point3D(xEnd, centerY, modelPlateHeight);
-                        break;                        
+                        ribYOffset = (plate.ScoseType == ScoseTypes.SlopeLeft) ? -ModelingService.SlopeOffset : ModelingService.SlopeOffset;
+                        break;
 
                     case ScoseTypes.TrapezoidTop:
                     case ScoseTypes.TrapezoidBottom:
-                        positionRatio = (weldPositionY + modelPlateWidth / 2) / modelPlateWidth;
+                        // Положение шва по ширине плиты
+                        double positionRatio = ((weldLeftPositionY + weldRightPositionY) / 2 + modelPlateWidth / 2) / modelPlateWidth;
+
+                        // Длина основания в позиции ребра
+                        double baseLength;
                         if (plate.ScoseType == ScoseTypes.TrapezoidTop)
-                        {
-                            weldLength = modelPlateLength * (1 - ModelingService.TrapezoidRatio * (1 - positionRatio));
-                        }
+                            baseLength = modelPlateLength * (1 - ModelingService.TrapezoidRatio * positionRatio);
                         else
-                        {
-                            weldLength = modelPlateLength * (1 - ModelingService.TrapezoidRatio * positionRatio);
-                        }
+                            baseLength = modelPlateLength * (1 - ModelingService.TrapezoidRatio * (1 - positionRatio));
+
+                        // Длина шва (с учётом отступов ребра и роспусков)
+                        weldLength = baseLength - modelPlateLength - modelRibIdentToLeft - modelRibIdentToRight - modelRibDissolutionLeft - modelRibDissolutionRight;
                         weldLength = Math.Max(weldLength, ModelingService.MIN_RIB_LENGTH);
-
-                        xStart = weldLength / 2 - modelRibIdentToLeft - modelRibDissolutionLeft;
-                        xEnd = (modelRibIdentToRight + modelRibDissolutionRight) - weldLength / 2;
-
-                        startPoint = new Point3D(xStart, weldPositionY, modelPlateHeight);
-                        endPoint = new Point3D(xEnd, weldPositionY, modelPlateHeight);
-                        break;
-
-                    default:
-                        startPoint = new Point3D(xStart, weldPositionY, modelPlateHeight);
-                        endPoint = new Point3D(xEnd, weldPositionY, modelPlateHeight);
                         break;
                 }
-                
+
+                Point3D startPoint = new Point3D(-weldLength/2, weldLeftPositionY, modelPlateHeight);
+                Point3D endPoint = new Point3D(weldLength/2, (weldRightPositionY) + ribYOffset, modelPlateHeight);
+
                 // Швы добавляются с обеих сторон ребра
                 string weldName = String.Format("Weld {0}", Convert.ToDouble(welds.Count / 2 + 1));
-
                 this.AddWeld(welds, startPoint, endPoint, weldName + ".1");
 
                 startPoint.Y += modelRibThickness;
                 endPoint.Y += modelRibThickness;
 
                 this.AddWeld(welds, startPoint, endPoint, weldName + ".2");
-
-                // Перемещение позиции до следующего ребра
-                if (!plate.ParalleleRibs)
-                    weldPositionY += modelRibThickness + modelRibDistanceRight;
             }
             return welds;
         }

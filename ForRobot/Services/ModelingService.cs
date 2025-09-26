@@ -336,7 +336,7 @@ namespace ForRobot.Services
         }
 
         private Model3DGroup AddRibs(Plita plate)
-        {            
+        {
             Model3DGroup model3DGroup = new Model3DGroup();
             MeshBuilder meshBuilder = new MeshBuilder();
 
@@ -346,88 +346,52 @@ namespace ForRobot.Services
             double modelPlateLength = (double)plate.PlateLength * (double)ScaleFactor;
             double modelRibHeight = (double)plate.RibHeight * (double)ScaleFactor;
             double modelRibThickness = (double)plate.RibThickness * (double)ScaleFactor;
-            
+
             double ribPositionY = -modelPlateWidth / 2; // Начальная позиция по Y
-            
+
+            double ribLeftPositionY = ribPositionY;
+            double ribRightPositionY = ribPositionY;
+
             for (int i = 0; i < plate.RibCount; i++)
             {
                 var rib = plate.RibsCollection[i];
                 double modelRibDistanceLeft = (double)rib.DistanceLeft * (double)ScaleFactor;
-                double modelRibDistanceRight = (double)rib.DistanceRight * (double)ScaleFactor;             
+                double modelRibDistanceRight = (double)rib.DistanceRight * (double)ScaleFactor;
                 double modelRibIdentToLeft = (double)rib.IdentToLeft * (double)ScaleFactor;
                 double modelRibIdentToRight = (double)rib.IdentToRight * (double)ScaleFactor;
 
-                // Перемещение к позиции ребра по Y - отступ от торца слева.
-                ribPositionY += modelRibDistanceLeft;
+                ribLeftPositionY += modelRibDistanceLeft;
+                ribRightPositionY += modelRibDistanceRight;
 
                 // Длина ребра (с учётом отступов)
                 double ribLength = modelPlateLength - modelRibIdentToLeft - modelRibIdentToRight;
 
                 // Центр ребра
-                double centerX = (modelRibIdentToLeft -modelRibIdentToRight) / 2;
+                double centerX = (modelRibIdentToLeft - modelRibIdentToRight) / 2;
                 double centerY = ribPositionY + modelRibThickness / 2;
                 double centerZ = modelPlateHeight / 2 + modelRibHeight / 2;
+
+                double plateSurfaceZ = modelPlateHeight / 2;
+                double ribYOffset = 0;  // Смещение задней части ребра для скоса
 
                 switch (plate.ScoseType)
                 {
                     case ScoseTypes.SlopeLeft:
                     case ScoseTypes.SlopeRight:
-                        double plateSurfaceZ = modelPlateHeight / 2;
-
                         if (plate.ScoseType == ScoseTypes.SlopeLeft)
                             plateSurfaceZ += SlopeOffset * (double)ScaleFactor * (centerY / (modelPlateWidth / 2));
                         else
                             plateSurfaceZ -= SlopeOffset * (double)ScaleFactor * (centerY / (modelPlateWidth / 2));
 
-                        // Смещение задней части ребра для скоса
-                        double ribYOffset = (plate.ScoseType == ScoseTypes.SlopeLeft) ? -SlopeOffset : SlopeOffset;
-
-                        MeshBuilder ribBuilder = new MeshBuilder();
-
-                        // Боковые грани                        
-                        ribBuilder.AddQuad(new Point3D(-ribLength / 2 + centerX, centerY, plateSurfaceZ),
-                                           new Point3D(-ribLength / 2 + centerX, centerY + modelRibThickness, plateSurfaceZ),
-                                           new Point3D(-ribLength / 2 + centerX, centerY + modelRibThickness, plateSurfaceZ + modelRibHeight),
-                                           new Point3D(-ribLength / 2 + centerX, centerY, plateSurfaceZ + modelRibHeight)); // Левая грань (X = -ribLength/2 + centerX)
-                                                
-                        ribBuilder.AddQuad(new Point3D(ribLength / 2 + centerX, centerY + ribYOffset, plateSurfaceZ),
-                                           new Point3D(ribLength / 2 + centerX, centerY + modelRibThickness + ribYOffset, plateSurfaceZ),
-                                           new Point3D(ribLength / 2 + centerX, centerY + modelRibThickness + ribYOffset, plateSurfaceZ + modelRibHeight),
-                                           new Point3D(ribLength / 2 + centerX, centerY + ribYOffset, plateSurfaceZ + modelRibHeight)); // Правая грань (X = ribLength/2 + centerX) со смещением по Y
-
-                        // Передняя грань
-                        ribBuilder.AddQuad(new Point3D(-ribLength / 2 + centerX, centerY, plateSurfaceZ),
-                                           new Point3D(-ribLength / 2 + centerX, centerY, plateSurfaceZ + modelRibHeight),
-                                           new Point3D(ribLength / 2 + centerX, centerY + ribYOffset, plateSurfaceZ + modelRibHeight),
-                                           new Point3D(ribLength / 2 + centerX, centerY + ribYOffset, plateSurfaceZ));
-
-                        // Задняя грань
-                        ribBuilder.AddQuad(new Point3D(-ribLength / 2 + centerX, centerY + modelRibThickness, plateSurfaceZ),
-                                           new Point3D(-ribLength / 2 + centerX, centerY + modelRibThickness, plateSurfaceZ + modelRibHeight),
-                                           new Point3D(ribLength / 2 + centerX, centerY + modelRibThickness + ribYOffset, plateSurfaceZ + modelRibHeight),
-                                           new Point3D(ribLength / 2 + centerX, centerY + modelRibThickness + ribYOffset, plateSurfaceZ));
-
-                        // Верхняя и нижняя грани
-                        ribBuilder.AddQuad(new Point3D(-ribLength / 2 + centerX, centerY, plateSurfaceZ + modelRibHeight),
-                                           new Point3D(-ribLength / 2 + centerX, centerY + modelRibThickness, plateSurfaceZ + modelRibHeight),
-                                           new Point3D(ribLength / 2 + centerX, centerY + modelRibThickness + ribYOffset, plateSurfaceZ + modelRibHeight),
-                                           new Point3D(ribLength / 2 + centerX, centerY + ribYOffset, plateSurfaceZ + modelRibHeight)); // Верхняя
-
-                        ribBuilder.AddQuad(new Point3D(-ribLength / 2 + centerX, centerY, plateSurfaceZ),
-                                           new Point3D(-ribLength / 2 + centerX, centerY + modelRibThickness, plateSurfaceZ),
-                                           new Point3D(ribLength / 2 + centerX, centerY + modelRibThickness + ribYOffset, plateSurfaceZ),
-                                           new Point3D(ribLength / 2 + centerX, centerY + ribYOffset, plateSurfaceZ)); // Нижняя
-
-                        GeometryModel3D ribModel = new GeometryModel3D(ribBuilder.ToMesh(), ForRobot.Model.File3D.Materials.Rib) { BackMaterial = ForRobot.Model.File3D.Materials.Rib };
-                        model3DGroup.Children.Add(ribModel);
-                        continue;
+                        ribYOffset = (plate.ScoseType == ScoseTypes.SlopeLeft) ? -SlopeOffset : SlopeOffset;
+                        break;
 
                     case ScoseTypes.TrapezoidTop:
                     case ScoseTypes.TrapezoidBottom:
                         // Положение ребра по ширине плиты
-                        double positionRatio = (ribPositionY + modelPlateWidth / 2) / modelPlateWidth;
+                        double positionRatio = ((ribLeftPositionY + ribRightPositionY)/2 + modelPlateWidth / 2) / modelPlateWidth;
 
-                        // Определяем длину основания в позиции ребра
+                        // Длина основания в позиции ребра
                         double baseLength;
                         if (plate.ScoseType == ScoseTypes.TrapezoidTop)
                         {
@@ -444,18 +408,44 @@ namespace ForRobot.Services
                         break;
                 }
 
-                // Строим ребро:
-                // - Длина вдоль X (ribLengthX)
-                // - Толщина вдоль Y (currentRibThickness)
-                // - Высота вдоль Z (modelRibHeight)
-                meshBuilder.AddBox(new Point3D(centerX, centerY, centerZ),
-                                   ribLength,
-                                   modelRibThickness,
-                                   modelRibHeight);
+                MeshBuilder ribBuilder = new MeshBuilder();
 
-                // Перемещаем позицию для следующего ребра
-                if (!plate.ParalleleRibs)
-                    ribPositionY += modelRibThickness + modelRibDistanceRight;
+                // Боковые грани                        
+                ribBuilder.AddQuad(new Point3D(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2), plateSurfaceZ),
+                                   new Point3D(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2) + modelRibThickness, plateSurfaceZ),
+                                   new Point3D(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2) + modelRibThickness, plateSurfaceZ + modelRibHeight),
+                                   new Point3D(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2), plateSurfaceZ + modelRibHeight)); // Левая грань (X = -ribLength/2 + centerX)
+
+                ribBuilder.AddQuad(new Point3D(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + ribYOffset, plateSurfaceZ),
+                                   new Point3D(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + modelRibThickness + ribYOffset, plateSurfaceZ),
+                                   new Point3D(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + modelRibThickness + ribYOffset, plateSurfaceZ + modelRibHeight),
+                                   new Point3D(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + ribYOffset, plateSurfaceZ + modelRibHeight)); // Правая грань (X = ribLength/2 + centerX) со смещением по Y
+
+                // Задняя грань
+                ribBuilder.AddQuad(new Point3D(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2) + modelRibThickness, plateSurfaceZ),
+                                   new Point3D(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2) + modelRibThickness, plateSurfaceZ + modelRibHeight),
+                                   new Point3D(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + modelRibThickness + ribYOffset, plateSurfaceZ + modelRibHeight),
+                                   new Point3D(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + modelRibThickness + ribYOffset, plateSurfaceZ));
+
+                // Передняя грань
+                ribBuilder.AddQuad(new Point3D(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2), plateSurfaceZ),
+                                   new Point3D(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2), plateSurfaceZ + modelRibHeight),
+                                   new Point3D(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + ribYOffset, plateSurfaceZ + modelRibHeight),
+                                   new Point3D(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + ribYOffset, plateSurfaceZ));
+
+                // Верхняя и нижняя грани
+                ribBuilder.AddQuad(new Point3D(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2), plateSurfaceZ + modelRibHeight),
+                                   new Point3D(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2) + modelRibThickness, plateSurfaceZ + modelRibHeight),
+                                   new Point3D(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + modelRibThickness + ribYOffset, plateSurfaceZ + modelRibHeight),
+                                   new Point3D(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + ribYOffset, plateSurfaceZ + modelRibHeight)); // Верхняя
+
+                ribBuilder.AddQuad(new Point3D(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2), plateSurfaceZ),
+                                   new Point3D(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2) + modelRibThickness, plateSurfaceZ),
+                                   new Point3D(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + modelRibThickness + ribYOffset, plateSurfaceZ),
+                                   new Point3D(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + ribYOffset, plateSurfaceZ)); // Нижняя
+
+                GeometryModel3D ribModel = new GeometryModel3D(ribBuilder.ToMesh(), ForRobot.Model.File3D.Materials.Rib) { BackMaterial = ForRobot.Model.File3D.Materials.Rib };
+                model3DGroup.Children.Add(ribModel);
             }
 
             model3DGroup.Children.Add(new GeometryModel3D(meshBuilder.ToMesh(), ForRobot.Model.File3D.Materials.Rib)
@@ -464,7 +454,7 @@ namespace ForRobot.Services
             });
             return model3DGroup;
         }
-
+        
         private Model3DGroup GetPlateModel(Plita plate)
         {
             Model3DGroup model3DGroup = new Model3DGroup();
