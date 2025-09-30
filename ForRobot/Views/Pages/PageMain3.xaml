@@ -90,7 +90,7 @@
 
         <Style x:Key="MenuItemDetalNull" TargetType="{x:Type MenuItem}">
             <Style.Triggers>
-                <DataTrigger Binding="{Binding Path=SelectedFile.Detal}" Value="{x:Null}">
+                <DataTrigger Binding="{Binding Path=SelectedFile.CurrentDetal}" Value="{x:Null}">
                     <Setter Property="IsEnabled" Value="False"/>
                 </DataTrigger>
             </Style.Triggers>
@@ -770,8 +770,10 @@
                                 
                                 <i:Interaction.Behaviors>
                                     <behavior:ZoomBehavior/>
-                                    <behavior:HelixWeldsBehavior Items="{Binding Path=WeldsCollection}" Thickness="{Binding Path=Settings.WeldsThickness, Source={x:Static Application.Current}, Mode=OneWay}"/>
                                     <behavior:CameraControllerBehavior/>
+                                    <behavior:HelixWeldsBehavior Detal="{Binding Path=CurrentDetal, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                 Thickness="{Binding Path=Settings.WeldsThickness, Source={x:Static Application.Current}, Mode=OneWay}"/>
+                                    
                                     <!--<behavior:HelixAnnotationsBehavior Items="{Binding Path=AnnotationsCollection}"
                                                                        FontSize="{Binding Path=Settings.ParamsFontSize, Mode=OneWay, Source={x:Static Application.Current}, UpdateSourceTrigger=PropertyChanged}"/>-->
                                     <!--<behavior:HelixSceneTrackerBehavior SceneItems="{Binding Path=DataContext.SceneItemsCollection, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>-->
@@ -943,7 +945,7 @@
                                     <!--<control:ParamsTreeView.Style>
                                             <Style TargetType="{x:Type control:ParamsTreeView}">
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Path=SelectedFile.Detal, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="{x:Null}">
+                                                    <DataTrigger Binding="{Binding Path=SelectedFile.CurrentDetal, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Value="{x:Null}">
                                                         <Setter Property="Visibility" Value="Hidden"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -958,7 +960,7 @@
                                         <TreeView.Style>
                                             <Style TargetType="{x:Type TreeView}">
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Path=SelectedFile.Detal}" Value="{x:Null}">
+                                                    <DataTrigger Binding="{Binding Path=SelectedFile.CurrentDetal}" Value="{x:Null}">
                                                         <Setter Property="IsEnabled" Value="False"/>
                                                         <!--<Setter Property="Visibility" Value="Hidden"/>-->
                                                     </DataTrigger>
@@ -1084,7 +1086,7 @@
 
                                             <Style TargetType="{x:Type ContentControl}">
                                                 <Setter Property="Margin" Value="-25,0,5,5"/>
-                                                <Setter Property="DataContext" Value="{Binding Path=SelectedFile.Detal, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                                <Setter Property="DataContext" Value="{Binding Path=SelectedFile.CurrentDetal, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
                                             </Style>
                                         </TreeView.Resources>
 

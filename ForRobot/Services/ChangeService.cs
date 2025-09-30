@@ -8,7 +8,7 @@ namespace ForRobot.Services
     public class ChangeService : BaseClass
     {
         private readonly ForRobot.Services.IModelingService _modelingService = new ForRobot.Services.ModelingService(ForRobot.Model.Settings.Settings.ScaleFactor);
-        private readonly ForRobot.Services.IWeldService _weldService = new ForRobot.Services.WeldService(ForRobot.Model.Settings.Settings.ScaleFactor);
+        //private readonly ForRobot.Services.IWeldService _weldService = new ForRobot.Services.WeldService(ForRobot.Model.Settings.Settings.ScaleFactor);
 
         /// <summary>
         /// Делегат изменения <see cref="ForRobot.Model.Detals.Detal"/> оповещающий о изменению его свойств
@@ -18,11 +18,11 @@ namespace ForRobot.Services
         public void HandleDetalChanged_Properties(object sender, Libr.ValueChangedEventArgs<Detal> e)
         {
             Model.File3D.File3D file3D = sender as Model.File3D.File3D;
-            RaisePropertyChanged(nameof(file3D.Detal));
+            RaisePropertyChanged(nameof(file3D.CurrentDetal));
 
-            if (file3D.Detal is ForRobot.Model.Detals.Plita)
+            if (file3D.CurrentDetal is ForRobot.Model.Detals.Plita)
             {
-                Plita plita = file3D.Detal as ForRobot.Model.Detals.Plita;
+                Plita plita = file3D.CurrentDetal as ForRobot.Model.Detals.Plita;
                 RaisePropertyChanged(nameof(plita.SelectedWeldingSchema));
                 RaisePropertyChanged(nameof(plita.WeldingSchema));
             }
@@ -30,7 +30,7 @@ namespace ForRobot.Services
             if (e.OldValue != null)
             {
                 var command = new PropertyChangeCommand<Detal>(file3D,
-                                                               nameof(File3D.Detal),
+                                                               nameof(File3D.CurrentDetal),
                                                                e.OldValue,
                                                                e.NewValue,
                                                                $"Изменение детали: {e.OldValue?.GetType().Name} -> {e.NewValue?.GetType().Name}");
@@ -47,15 +47,15 @@ namespace ForRobot.Services
         {
             File3D file = sender as File3D;
             file.CurrentModel.Children.Clear();
-            Detal detal = file.Detal;
+            Detal detal = file.CurrentDetal;
             switch (detal.DetalType)
             {
                 case DetalTypes.Plita:
                     Plita plita = detal as Plita;
                     file.CurrentModel.Children.Add(this._modelingService.ModelBuilding(plita));
-                    foreach (var item in file.WeldsCollection) item.Children.Clear();
-                    file.WeldsCollection.Clear();
-                    foreach (var item in this._weldService.GetWelds(plita)) file.WeldsCollection.Add(item);
+                    //foreach (var item in file.WeldsCollection) item.Children.Clear();
+                    //file.WeldsCollection.Clear();
+                    //foreach (var item in this._weldService.GetWelds(plita)) file.WeldsCollection.Add(item);
                     break;
 
                 case DetalTypes.Stringer:

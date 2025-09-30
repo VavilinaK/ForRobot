@@ -31,7 +31,7 @@ namespace ForRobot.Views.Windows
             set
             {
                 this._selectedDetalType = value;
-                this.CreationFile.Detal = Detal.GetDetal(this._selectedDetalType);
+                this.CreationFile.CurrentDetal = Detal.GetDetal(this._selectedDetalType);
             }
         }
 

@@ -46,7 +46,7 @@ namespace ForRobot.ViewModels
         {
             get
             {
-                switch (this.SelectedFile.Detal)
+                switch (this.SelectedFile.CurrentDetal)
                 {
                     case Plita plita:
                         return App.Current.Settings.PlitaProgramName;
@@ -67,7 +67,7 @@ namespace ForRobot.ViewModels
         {
             get
             {
-                switch (this.SelectedFile.Detal)
+                switch (this.SelectedFile.CurrentDetal)
                 {
                     case Plita plita:
                         return App.Current.Settings.PlitaScriptName;
@@ -321,7 +321,10 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Сброс параметров детали до стандартных
         /// </summary>
-        public ICommand StandartParametrsCommand { get; } = new RelayCommand(obj => GetStandartParametrs(obj as Model.File3D.File3D));
+        public ICommand StandartParametrsCommand { get => new RelayCommand(_ =>
+         {
+             this.SelectedFile.CurrentDetal = Model.File3D.File3D.StandartParamertrs(this.SelectedFile.CurrentDetal);
+         });}
 
         /// <summary>
         /// Маштабирование модели
@@ -469,7 +472,7 @@ namespace ForRobot.ViewModels
                 {
                     file3D = new Model.File3D.File3D();
                     file3D.Load(path);
-                    file3D = new Model.File3D.File3D(file3D.Detal, path);
+                    file3D = new Model.File3D.File3D(file3D.CurrentDetal, path);
                 }
                 else
                     file3D = new Model.File3D.File3D(Detal.GetDetal(App.Current.Settings.StartedDetalType), path);
@@ -533,14 +536,14 @@ namespace ForRobot.ViewModels
         //    }
         //}
 
-        /// <summary>
-        /// Возврат к стандартным параметрам детали
-        /// </summary>
-        /// <param name="file">Выбранный файл</param>
-        private static void GetStandartParametrs(Model.File3D.File3D file)
-        {
-            file.Detal = Model.File3D.File3D.StandartParamertrs(file.Detal);
-        }
+        ///// <summary>
+        ///// Возврат к стандартным параметрам детали
+        ///// </summary>
+        ///// <param name="file">Выбранный файл</param>
+        //private static void GetStandartParametrs(Model.File3D.File3D file)
+        //{
+        //    file.CurrentDetal = Model.File3D.File3D.StandartParamertrs(file.CurrentDetal);
+        //}
 
         /// <summary>
         /// Приближение/отдаление камеры в HelixViewport3D
@@ -865,10 +868,10 @@ namespace ForRobot.ViewModels
             }
 
             // Запись Json-файла.
-            this.WriteJsonFile(this.SelectedFile.Detal, Path.Combine(foldForGenerate, $"{programName}.json"));
+            this.WriteJsonFile(this.SelectedFile.CurrentDetal, Path.Combine(foldForGenerate, $"{programName}.json"));
 
             // Генерация программы.
-            switch (this.SelectedFile.Detal)
+            switch (this.SelectedFile.CurrentDetal)
             {
                 case Plita plita:
                     App.Current.Logger.Info("Начат процесс генерации программы для плиты с рёбрами . . .");
@@ -883,7 +886,7 @@ namespace ForRobot.ViewModels
                     break;
             }
 
-            new GenerationService(foldForGenerate, programName, this._scriptName).Start(this.SelectedFile.Detal);
+            new GenerationService(foldForGenerate, programName, this._scriptName).Start(this.SelectedFile.CurrentDetal);
 
             // Проверка успеха генерации
             if (this.SelectedRobotsName == "Все")

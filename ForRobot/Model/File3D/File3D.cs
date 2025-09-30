@@ -35,7 +35,7 @@ namespace ForRobot.Model.File3D
 
         private Model3DGroup _currentModel = new Model3DGroup();
 
-        private Detal _detal;
+        private Detal _currentDetal;
         private Detal _oldDetal;
 
         private ObservableCollection<Weld> _weldsCollection = new ObservableCollection<Weld>();
@@ -78,14 +78,14 @@ namespace ForRobot.Model.File3D
         /// </summary>
         public string NameWithoutExtension { get => System.IO.Path.GetFileNameWithoutExtension(this.Path); }
 
-        /// <summary>
-        /// Коллекция подписей на 3д моделе
-        /// </summary>
-        public ObservableCollection<Annotation> AnnotationsCollection { get; private set; } = new ObservableCollection<Annotation>();
-        /// <summary>
-        /// Коллекция швов для отображения на модели
-        /// </summary>
-        public ObservableCollection<Weld> WeldsCollection { get; } = new ObservableCollection<Weld>();
+        ///// <summary>
+        ///// Коллекция подписей на 3д моделе
+        ///// </summary>
+        //public ObservableCollection<Annotation> AnnotationsCollection { get; private set; } = new ObservableCollection<Annotation>();
+        ///// <summary>
+        ///// Коллекция швов для отображения на модели
+        ///// </summary>
+        //public ObservableCollection<Weld> WeldsCollection { get; } = new ObservableCollection<Weld>();
 
         public Model3DGroup CurrentModel
         {
@@ -99,7 +99,7 @@ namespace ForRobot.Model.File3D
             }
         }
 
-        public Detal Detal { get => this._detal; set => this.SetDetal(value); }
+        public Detal CurrentDetal { get => this._currentDetal; set => this.SetDetal(value); }
 
         public static readonly string FilterForFileDialog = "3D model files (*.3ds;*.obj;*.off;*.lwo;*.stl;*.ply;)|*.3ds;*.obj;*.objz;*.off;*.lwo;*.stl;*.ply;";
 
@@ -131,7 +131,7 @@ namespace ForRobot.Model.File3D
             this.FileChangedEvent += new ChangeService().HandleFileChange;
             this.UndoRedoStateChanged += (s, e) => this._oldDetal = (s as Detal).Clone() as Detal;
 
-            this.Detal = detal;
+            this.CurrentDetal = detal;
             this.Path = path;
 
             this.IsSaved = false;
@@ -169,30 +169,30 @@ namespace ForRobot.Model.File3D
         
         private void SetDetal(object value)
         {
-            if (_detal == value)
+            if (_currentDetal == value)
                 return;
 
-            if (this._detal != null)
+            if (this._currentDetal != null)
             {
-                this._detal.ChangePropertyEvent -= HandlePropertyChange;
-                this._oldDetal = this._detal.Clone() as Detal;
+                this._currentDetal.ChangePropertyEvent -= HandlePropertyChange;
+                this._oldDetal = this._currentDetal.Clone() as Detal;
             }
 
-            this._detal = value as Detal;
+            this._currentDetal = value as Detal;
 
-            if (this._detal == null)
+            if (this._currentDetal == null)
                 return;
 
-            this._detal.ChangePropertyEvent += HandlePropertyChange;
+            this._currentDetal.ChangePropertyEvent += HandlePropertyChange;
 
-            this.OnDetalChanged(this._oldDetal, this._detal);
+            this.OnDetalChanged(this._oldDetal, this._currentDetal);
 
             if (this._oldDetal == null)
-                this._oldDetal = this._detal.Clone() as Detal;
+                this._oldDetal = this._currentDetal.Clone() as Detal;
 
             this.OnModelChanged();
-            this.AnnotationsCollection = this._annotationService.GetAnnotations(this._detal);
 
+            //this.AnnotationsCollection = this._annotationService.GetAnnotations(this._currentDetal);
             //this.DetalChangedEvent += (s, o) => SceneUpdate();
         }
 
@@ -239,24 +239,24 @@ namespace ForRobot.Model.File3D
 
         }
 
-        /// <summary>
-        /// Изменение подписи одного из параметров
-        /// </summary>
-        /// <param name="detal"></param>
-        /// <param name="propertyName">Наименование параметра</param>
-        private void ChangePropertyAnnotations(Detal detal, string propertyName)
-        {
-            if (propertyName == null)
-                return;
+        ///// <summary>
+        ///// Изменение подписи одного из параметров
+        ///// </summary>
+        ///// <param name="detal"></param>
+        ///// <param name="propertyName">Наименование параметра</param>
+        //private void ChangePropertyAnnotations(Detal detal, string propertyName)
+        //{
+        //    if (propertyName == null)
+        //        return;
 
-            Annotation annotation = this.AnnotationsCollection.Count(item => item.PropertyName == propertyName) > 0 ? this.AnnotationsCollection.Where(item => item.PropertyName == propertyName).First() : null;
+        //    Annotation annotation = this.AnnotationsCollection.Count(item => item.PropertyName == propertyName) > 0 ? this.AnnotationsCollection.Where(item => item.PropertyName == propertyName).First() : null;
 
-            if (annotation == null)
-                return;
+        //    if (annotation == null)
+        //        return;
 
-            //annotation.Text = detal.GetType().GetProperty(propertyName).GetValue(detal, null).ToString();
-            annotation.Text = string.Format("{0}: {1} mm.", propertyName, detal.GetType().GetProperty(propertyName).GetValue(detal, null));
-        }
+        //    //annotation.Text = detal.GetType().GetProperty(propertyName).GetValue(detal, null).ToString();
+        //    annotation.Text = string.Format("{0}: {1} mm.", propertyName, detal.GetType().GetProperty(propertyName).GetValue(detal, null));
+        //}
         
         /// <summary>
         /// Выгрузка 3Д модели и файла
@@ -328,11 +328,11 @@ namespace ForRobot.Model.File3D
                         break;
 
                     case DetalTypes.Stringer:
-                        this.Detal = new Detals.PlitaStringer(DetalType.Stringer);
+                        this.CurrentDetal = new Detals.PlitaStringer(DetalType.Stringer);
                         break;
 
                     case DetalTypes.Treygolnik:
-                        this.Detal = new Detals.PlitaTreygolnik(DetalType.Treygolnik);
+                        this.CurrentDetal = new Detals.PlitaTreygolnik(DetalType.Treygolnik);
                         break;
                 }
             }
@@ -563,7 +563,7 @@ namespace ForRobot.Model.File3D
         {
             Detal detal = sender as Detal;
             this.OnDetalChanged(this._oldDetal, detal);
-            this.ChangePropertyAnnotations(detal, e.PropertyName);
+            //this.ChangePropertyAnnotations(detal, e.PropertyName);
         }
 
         private void SaveJsonFile()
@@ -581,8 +581,8 @@ namespace ForRobot.Model.File3D
             //        }
             //    });
 
-            if (this.Detal.JsonForSave == string.Empty) return;
-            File.WriteAllText(this.Path, this.Detal.JsonForSave);
+            if (this.CurrentDetal.JsonForSave == string.Empty) return;
+            File.WriteAllText(this.Path, this.CurrentDetal.JsonForSave);
             this.IsSaved = true;
         }
         
@@ -728,7 +728,7 @@ namespace ForRobot.Model.File3D
             command.Unexecute();
             _redoStack.Push(command);
             _isUndoRedoOperation = false;
-            UndoRedoStateChanged?.Invoke(this.Detal, EventArgs.Empty);
+            UndoRedoStateChanged?.Invoke(this.CurrentDetal, EventArgs.Empty);
         }
 
         /// <summary>
@@ -743,7 +743,7 @@ namespace ForRobot.Model.File3D
             command.Execute();
             _undoStack.Push(command);
             _isUndoRedoOperation = false;
-            UndoRedoStateChanged?.Invoke(this.Detal, EventArgs.Empty);
+            UndoRedoStateChanged?.Invoke(this.CurrentDetal, EventArgs.Empty);
         }
 
         public void AddUndoCommand(IUndoableCommand command)
@@ -752,14 +752,14 @@ namespace ForRobot.Model.File3D
 
             _undoStack.Push(command);
             _redoStack.Clear();
-            UndoRedoStateChanged?.Invoke(this.Detal, EventArgs.Empty);
+            UndoRedoStateChanged?.Invoke(this.CurrentDetal, EventArgs.Empty);
         }
 
         public void ClearUndoRedoHistory()
         {
             _undoStack.Clear();
             _redoStack.Clear();
-            UndoRedoStateChanged?.Invoke(this.Detal, EventArgs.Empty);
+            UndoRedoStateChanged?.Invoke(this.CurrentDetal, EventArgs.Empty);
         }
 
         #endregion
