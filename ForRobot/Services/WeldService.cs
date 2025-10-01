@@ -20,8 +20,10 @@ namespace ForRobot.Services
     {
         private double _slopeOffset = ModelingService.SlopeOffset;
 
-        public decimal ScaleFactor { get; set; } = 1.00M / 100.00M;
+        public const double DEFAULT_WELD_THICKNESS = 5.0;
 
+        public decimal ScaleFactor { get; set; } = 1.00M / 100.00M;
+        
         public WeldService(decimal _scaleFactor)
         {
             this.ScaleFactor = _scaleFactor;

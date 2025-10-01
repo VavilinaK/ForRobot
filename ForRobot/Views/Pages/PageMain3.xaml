@@ -771,7 +771,7 @@
                                 <i:Interaction.Behaviors>
                                     <behavior:ZoomBehavior/>
                                     <behavior:CameraControllerBehavior/>
-                                    <behavior:HelixWeldsBehavior Detal="{Binding Path=CurrentDetal, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                    <behavior:HelixWeldsBehavior Detal="{Binding Path=CurrentDetal, PresentationTraceSources.TraceLevel=High, Mode=OneWay}"
                                                                  Thickness="{Binding Path=Settings.WeldsThickness, Source={x:Static Application.Current}, Mode=OneWay}"/>
                                     
                                     <!--<behavior:HelixAnnotationsBehavior Items="{Binding Path=AnnotationsCollection}"

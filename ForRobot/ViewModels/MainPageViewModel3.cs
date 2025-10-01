@@ -456,7 +456,7 @@ namespace ForRobot.ViewModels
                 switch (e.Action)
                 {
                     case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
-                        this.ActiveContent = e.NewItems[0] as ForRobot.Model.File3D.File3D; // При открытии нового файла, он выбирается как активный
+                        this.SelectedFile = e.NewItems[0] as ForRobot.Model.File3D.File3D; // При открытии нового файла, он выбирается как активный
                         break;
                 }
             };

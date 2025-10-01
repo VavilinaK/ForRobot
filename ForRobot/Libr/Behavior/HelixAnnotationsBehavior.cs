@@ -11,6 +11,7 @@ using System.ComponentModel;
 using HelixToolkit.Wpf;
 
 using ForRobot.Model.File3D;
+using ForRobot.Model.Detals;
 
 namespace ForRobot.Libr.Behavior
 {
@@ -19,6 +20,16 @@ namespace ForRobot.Libr.Behavior
     /// </summary>
     public class HelixAnnotationsBehavior : HelixAddCollectionBehavior<Annotation>
     {
+        public Detal Detal
+        {
+            get => (Detal)GetValue(DetalProperty);
+            set => SetValue(DetalProperty, value);
+        }
+
+        public static readonly DependencyProperty DetalProperty = DependencyProperty.Register(nameof(Detal),
+                                                                                              typeof(Detal),
+                                                                                              typeof(HelixWeldsBehavior),
+                                                                                              new PropertyMetadata(null, new PropertyChangedCallback(OnDetalChanged)));
         public double FontSize
         {
             get => (double)GetValue(FontSizeProperty);
@@ -29,6 +40,12 @@ namespace ForRobot.Libr.Behavior
                                                                                                  typeof(double),
                                                                                                  typeof(HelixAnnotationsBehavior),
                                                                                                  new PropertyMetadata(Model.File3D.Annotation.DefaultFontSize, OnFontSizeChanged));
+
+        private static void OnDetalChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            HelixWeldsBehavior helixWeldsBehavior = (HelixWeldsBehavior)d;
+            helixWeldsBehavior.Detal = (Detal)e.NewValue;
+        }
 
         private static void OnFontSizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

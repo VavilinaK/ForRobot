@@ -30,7 +30,7 @@ namespace ForRobot.Libr.Behavior
         public static readonly DependencyProperty ThicknessProperty = DependencyProperty.Register(nameof(Thickness),
                                                                                                   typeof(double),
                                                                                                   typeof(HelixWeldsBehavior),
-                                                                                                  new PropertyMetadata(5.0, OnThicknessChanged));
+                                                                                                  new PropertyMetadata(Services.WeldService.DEFAULT_WELD_THICKNESS, new PropertyChangedCallback(OnThicknessChanged)));
 
         private static void OnDetalChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
