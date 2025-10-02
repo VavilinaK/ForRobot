@@ -68,6 +68,14 @@ namespace ForRobot.Libr.Behavior
 
                 case NotifyCollectionChangedAction.Reset:
                     //this._helixViewport.Children.Clear();
+                    List<T> itemsToReset = _helixViewport.Children.OfType<T>().ToList();
+
+                    foreach (var item in itemsToReset)
+                    {
+                        _helixViewport.Children.Remove(item);
+                        if (item is INotifyPropertyChanged notifyItem)
+                            notifyItem.PropertyChanged -= OnItemPropertyChanged;
+                    }
                     break;
             }
         }
@@ -75,11 +83,11 @@ namespace ForRobot.Libr.Behavior
         private void OnItemPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var item = sender as T;
-            if (item != null && AssociatedObject.Children.Contains(item))
+            if (item != null && this._helixViewport.Children.Contains(item))
             {
-                int index = AssociatedObject.Children.IndexOf(item);
-                AssociatedObject.Children.RemoveAt(index);
-                AssociatedObject.Children.Insert(index, item);
+                int index = this._helixViewport.Children.IndexOf(item);
+                this._helixViewport.Children.RemoveAt(index);
+                this._helixViewport.Children.Insert(index, item);
             }
         }
 

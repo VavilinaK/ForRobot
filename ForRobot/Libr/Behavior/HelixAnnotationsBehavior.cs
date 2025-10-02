@@ -28,7 +28,7 @@ namespace ForRobot.Libr.Behavior
 
         public static readonly DependencyProperty DetalProperty = DependencyProperty.Register(nameof(Detal),
                                                                                               typeof(Detal),
-                                                                                              typeof(HelixWeldsBehavior),
+                                                                                              typeof(HelixAnnotationsBehavior),
                                                                                               new PropertyMetadata(null, new PropertyChangedCallback(OnDetalChanged)));
         public double FontSize
         {
@@ -43,8 +43,8 @@ namespace ForRobot.Libr.Behavior
 
         private static void OnDetalChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            HelixWeldsBehavior helixWeldsBehavior = (HelixWeldsBehavior)d;
-            helixWeldsBehavior.Detal = (Detal)e.NewValue;
+            HelixAnnotationsBehavior helixAnnotationsBehavior = (HelixAnnotationsBehavior)d;
+            helixAnnotationsBehavior.Detal = (Detal)e.NewValue;
         }
 
         private static void OnFontSizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -58,6 +58,13 @@ namespace ForRobot.Libr.Behavior
             {
                 item.FontSize = fontSize;
             }
+        }
+
+        private void PropertyChangeHandle(object sender, PropertyChangedEventArgs e) => this.UpdateAnnotations();
+        
+        private void UpdateAnnotations()
+        {
+
         }
     }
 }

@@ -675,6 +675,15 @@ namespace ForRobot.Model.File3D
             switch (detal.DetalType)
             {
                 case DetalTypes.Plita:
+                    //var plita = new Plita(DetalType.Plita)
+                    //{
+                    //    ScoseType = ((Plita)detal).ScoseType,
+                    //    DiferentDistance = ((Plita)detal).DiferentDistance,
+                    //    ParalleleRibs = ((Plita)detal).ParalleleRibs,
+                    //    DiferentDissolutionLeft = ((Plita)detal).DiferentDissolutionLeft,
+                    //    DiferentDissolutionRight = ((Plita)detal).DiferentDissolutionRight
+                    //};
+                    //plita.ChangePropertyEvent = detal.ChangePropertyEvent;
                     return new Plita(DetalType.Plita)
                     {
                         ScoseType = ((Plita)detal).ScoseType,

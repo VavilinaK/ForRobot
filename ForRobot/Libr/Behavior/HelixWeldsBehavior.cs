@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -19,7 +20,7 @@ namespace ForRobot.Libr.Behavior
         public static readonly DependencyProperty DetalProperty = DependencyProperty.Register(nameof(Detal),
                                                                                               typeof(Detal),
                                                                                               typeof(HelixWeldsBehavior),
-                                                                                              new PropertyMetadata(null, new PropertyChangedCallback(OnDetalChanged)));
+                                                                                              new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnDetalChanged));
 
         public virtual double Thickness
         {
@@ -72,9 +73,7 @@ namespace ForRobot.Libr.Behavior
 
             if (this.Items is ObservableCollection<Weld> currentCollection)
             {
-                foreach (var item in currentCollection) item.Children.Clear();
-                //currentCollection.Clear();
-                //currentCollection.CollectionChanged -= this.HandleCollectionChanged;
+                currentCollection.Clear();
                 foreach (var weld in welds)
                 {
                     weld.Thickness = this.Thickness;

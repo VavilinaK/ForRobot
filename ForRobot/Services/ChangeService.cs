@@ -46,23 +46,34 @@ namespace ForRobot.Services
         public void HandleDetalChanged_Modeling(object sender, Libr.ValueChangedEventArgs<Detal> e)
         {
             File3D file = sender as File3D;
-            file.CurrentModel.Children.Clear();
-            Detal detal = file.CurrentDetal;
-            switch (detal.DetalType)
+            try
             {
-                case DetalTypes.Plita:
-                    Plita plita = detal as Plita;
-                    file.CurrentModel.Children.Add(this._modelingService.ModelBuilding(plita));
-                    //foreach (var item in file.WeldsCollection) item.Children.Clear();
-                    //file.WeldsCollection.Clear();
-                    //foreach (var item in this._weldService.GetWelds(plita)) file.WeldsCollection.Add(item);
-                    break;
+                Detal detal = file.CurrentDetal;
+                System.Windows.Media.Media3D.Model3DGroup model = null;
+                switch (detal.DetalType)
+                {
+                    case DetalTypes.Plita:
+                        Plita plita = detal as Plita;
+                         model = this._modelingService.ModelBuilding(plita);
+                        //file.CurrentModel.Children.Add(this._modelingService.ModelBuilding(plita));
 
-                case DetalTypes.Stringer:
-                    break;
+                        //foreach (var item in file.WeldsCollection) item.Children.Clear();
+                        //file.WeldsCollection.Clear();
+                        //foreach (var item in this._weldService.GetWelds(plita)) file.WeldsCollection.Add(item);
+                        break;
 
-                case DetalTypes.Treygolnik:
-                    break;
+                    case DetalTypes.Stringer:
+                        break;
+
+                    case DetalTypes.Treygolnik:
+                        break;
+                }
+                file.CurrentModel.Children.Clear();
+                file.CurrentModel.Children.Add(model);
+            }
+            catch (Exception ex)
+            {
+                App.Current.Logger.Error(ex, ex.Message);
             }
         }
 

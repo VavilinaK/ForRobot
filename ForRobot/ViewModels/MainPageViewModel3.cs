@@ -256,7 +256,7 @@ namespace ForRobot.ViewModels
         /// </summary>
         public ObservableCollection<string> RobotNamesCollection { get => new ObservableCollection<string>(new List<string>() { "Все" }.Union(this.RobotsCollection.Select(item => item.Name)).ToList<string>()); }
         /// <summary>
-        /// Коллекция сообщений
+        /// 
         /// </summary>
         public ObservableCollection<Model.File3D.SceneItem> SceneItemsCollection { get => this._sceneItemsCollection; set => Set(ref this._sceneItemsCollection, value); }
         /// <summary>
@@ -302,10 +302,10 @@ namespace ForRobot.ViewModels
         /// Сохранение всех файлов
         /// </summary>
         public ICommand SaveAllFilesCommand { get => new RelayCommand(_ =>
-         {
+        {
              foreach (var file in App.Current.OpenedFiles)
                  this.SaveFile(file);
-         }); }
+        }); }
             //= new RelayCommand(obj => SaveAllFile(obj as ObservableCollection<Model.File3D.File3D>));
 
         /// <summary>
@@ -322,9 +322,11 @@ namespace ForRobot.ViewModels
         /// Сброс параметров детали до стандартных
         /// </summary>
         public ICommand StandartParametrsCommand { get => new RelayCommand(_ =>
-         {
-             this.SelectedFile.CurrentDetal = Model.File3D.File3D.StandartParamertrs(this.SelectedFile.CurrentDetal);
-         });}
+        {
+            this.SelectedFile.CurrentDetal = Model.File3D.File3D.StandartParamertrs(this.SelectedFile.CurrentDetal);
+            RaisePropertyChanged(nameof(SelectedFile));
+            RaisePropertyChanged(nameof(SelectedFile.CurrentDetal));
+        });} 
 
         /// <summary>
         /// Маштабирование модели
@@ -456,7 +458,7 @@ namespace ForRobot.ViewModels
                 switch (e.Action)
                 {
                     case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
-                        this.SelectedFile = e.NewItems[0] as ForRobot.Model.File3D.File3D; // При открытии нового файла, он выбирается как активный
+                        this.ActiveContent = e.NewItems[0] as ForRobot.Model.File3D.File3D; // При открытии нового файла, он выбирается как активный
                         break;
                 }
             };

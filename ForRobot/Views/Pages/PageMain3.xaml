@@ -705,17 +705,10 @@
                                                MinimumFieldOfView="10.0" MaximumFieldOfView="120.0">
 
                                 <h:HelixViewport3D.DefaultCamera>
-                                    <!--<PerspectiveCamera x:Name="CameraControler" 
-                                                       Position="-354, 3, 381"
-                                                       LookDirection="351,-3,-383"
-                                                       UpDirection="0.7, 0, 0.7"
-                                                       FieldOfView="10"
-                                                       NearPlaneDistance="0.001"/>-->
-
                                     <PerspectiveCamera x:Name="CameraControler" 
-                                                       Position="3.7, 512.8, 620.5"
-                                                       LookDirection="-4.6,-513,-622"
-                                                       UpDirection="0, -0.7, 0.7"
+                                                       Position="-7.85, 442.2, 672.5"
+                                                       LookDirection="7.126,-445,-672"
+                                                       UpDirection="0.02, -0.77, 0.623"
                                                        FieldOfView="10"
                                                        NearPlaneDistance="0.001"/>
                                 </h:HelixViewport3D.DefaultCamera>
@@ -771,12 +764,12 @@
                                 <i:Interaction.Behaviors>
                                     <behavior:ZoomBehavior/>
                                     <behavior:CameraControllerBehavior/>
-                                    <behavior:HelixWeldsBehavior Detal="{Binding Path=CurrentDetal, PresentationTraceSources.TraceLevel=High, Mode=OneWay}"
-                                                                 Thickness="{Binding Path=Settings.WeldsThickness, Source={x:Static Application.Current}, Mode=OneWay}"/>
-                                    
-                                    <!--<behavior:HelixAnnotationsBehavior Items="{Binding Path=AnnotationsCollection}"
+                                    <!--<behavior:HelixWeldsBehavior Detal="{Binding Path=CurrentDetal, diag:PresentationTraceSources.TraceLevel=High, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                 Thickness="{Binding Path=Settings.WeldsThickness, Source={x:Static Application.Current}, Mode=OneWay}"/>-->
+
+                                    <!--<behavior:HelixAnnotationsBehavior Detal="{Binding Path=CurrentDetal, PresentationTraceSources.TraceLevel=High, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                                                        FontSize="{Binding Path=Settings.ParamsFontSize, Mode=OneWay, Source={x:Static Application.Current}, UpdateSourceTrigger=PropertyChanged}"/>-->
-                                    <!--<behavior:HelixSceneTrackerBehavior SceneItems="{Binding Path=DataContext.SceneItemsCollection, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>-->
+                                    <behavior:HelixSceneTrackerBehavior SceneItems="{Binding Path=DataContext.SceneItemsCollection, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>
                                 </i:Interaction.Behaviors>
                             </h:HelixViewport3D>
                         </DataTemplate>

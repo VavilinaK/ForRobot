@@ -95,56 +95,58 @@ namespace ForRobot.Services
             return mans;
         }
 
-        /// <summary>
-        /// Выгрузка модели монитора из компонентов сборки
-        /// </summary>
-        /// <returns></returns>
-        private Model3DGroup GetPCModel(double detalLength, double detalWidth, double detalHeight)
-        {
-            double halfLength = detalLength / 2;
-            double halfWidth = detalWidth / 2;
-            double halfHeight = detalHeight / 2;
+        ///// <summary>
+        ///// Выгрузка модели монитора из компонентов сборки
+        ///// </summary>
+        ///// <returns></returns>
+        //private Model3DGroup GetPCModel(double x, double y, double z)
+        //{
+        //    //double halfLength = detalLength / 2;
+        //    //double halfWidth = detalWidth / 2;
+        //    //double halfHeight = detalHeight / 2;
 
-            Vector3D pcTranslate = new Vector3D(-halfLength, -(halfWidth + 7), 0);
+        //    Vector3D pcTranslate = new Vector3D(x, y, z);
+        //    //Vector3D pcTranslate = new Vector3D(-halfLength, -(halfWidth + 7), 0);
 
-            var pcModel = new ModelImporter().Load("pack://application:,,,/InterfaceOfRobots;component/3DModels/computer_monitor.stl");
+        //    var pcModel = new ModelImporter().Load("pack://application:,,,/InterfaceOfRobots;component/3DModels/computer_monitor.stl");
 
-            this.ApplyCustomColor(pcModel, Model.File3D.Colors.PcColor);
+        //    this.ApplyCustomColor(pcModel, Model.File3D.Colors.PcColor);
 
-            Transform3DGroup modelTransform = new Transform3DGroup();
-            modelTransform.Children.Add(new TranslateTransform3D(pcTranslate));
-            modelTransform.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(1, 0, 0), 90), new Point3D(pcTranslate.X, pcTranslate.Y, pcTranslate.Z)));
-            modelTransform.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), 180), new Point3D(pcTranslate.X, pcTranslate.Y, pcTranslate.Z)));
-            pcModel.Transform = modelTransform;
+        //    Transform3DGroup modelTransform = new Transform3DGroup();
+        //    modelTransform.Children.Add(new TranslateTransform3D(pcTranslate));
+        //    modelTransform.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(1, 0, 0), 90), new Point3D(pcTranslate.X, pcTranslate.Y, pcTranslate.Z)));
+        //    modelTransform.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), 180), new Point3D(pcTranslate.X, pcTranslate.Y, pcTranslate.Z)));
+        //    pcModel.Transform = modelTransform;
 
-            return pcModel;
-        }
+        //    return pcModel;
+        //}
 
-        /// <summary>
-        /// Выгрузка модели робота из компонентов сборки
-        /// </summary>
-        /// <returns></returns>
-        private Model3DGroup GetRobotModel(double detalLength, double detalWidth, double detalHeight)
-        {
-            double scaleFactor = (double)ScaleFactor * 10;
-            double halfLength = detalLength / 2;
-            double halfWidth = detalWidth / 2;
-            double halfHeight = detalHeight / 2;
+        ///// <summary>
+        ///// Выгрузка модели робота из компонентов сборки
+        ///// </summary>
+        ///// <returns></returns>
+        //private Model3DGroup GetRobotModel(double x, double y, double z)
+        //{
+        //    double scaleFactor = (double)ScaleFactor * 10;
+        //    //double halfLength = detalLength / 2;
+        //    //double halfWidth = detalWidth / 2;
+        //    //double halfHeight = detalHeight / 2;
 
-            Vector3D robotTranslate = new Vector3D(halfLength, -(halfWidth + 7), 0);
-            
-            var robotModel = new ModelImporter().Load("pack://application:,,,/InterfaceOfRobots;component/3DModels/kukaRobot.stl");
+        //    Vector3D robotTranslate = new Vector3D(x, y, z);
+        //    //Vector3D robotTranslate = new Vector3D(halfLength, -(halfWidth + 7), 0);
 
-            this.ApplyCustomColor(robotModel, Model.File3D.Colors.RobotColor);
+        //    var robotModel = new ModelImporter().Load("pack://application:,,,/InterfaceOfRobots;component/3DModels/kukaRobot.stl");
 
-            Transform3DGroup modelTransform = new Transform3DGroup();
-            modelTransform.Children.Add(new ScaleTransform3D(scaleFactor, scaleFactor, scaleFactor));
-            modelTransform.Children.Add(new TranslateTransform3D(robotTranslate));
-            modelTransform.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), 90), new Point3D(robotTranslate.X, robotTranslate.Y, robotTranslate.Z)));
-            robotModel.Transform = modelTransform;
+        //    this.ApplyCustomColor(robotModel, Model.File3D.Colors.RobotColor);
 
-            return robotModel;
-        }
+        //    Transform3DGroup modelTransform = new Transform3DGroup();
+        //    modelTransform.Children.Add(new ScaleTransform3D(scaleFactor, scaleFactor, scaleFactor));
+        //    modelTransform.Children.Add(new TranslateTransform3D(robotTranslate));
+        //    modelTransform.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), 90), new Point3D(robotTranslate.X, robotTranslate.Y, robotTranslate.Z)));
+        //    robotModel.Transform = modelTransform;
+
+        //    return robotModel;
+        //}
 
         /// <summary>
         /// Метод создания параллелепипеда(кубоида)
@@ -330,7 +332,6 @@ namespace ForRobot.Services
                     geometry = meshBuilder.ToMesh();
                     break;
             }
-            
             model3DGroup.Children.Add(new GeometryModel3D(geometry, ForRobot.Model.File3D.Materials.Plate) { BackMaterial = ForRobot.Model.File3D.Materials.Plate });
             return model3DGroup;
         }
@@ -483,6 +484,9 @@ namespace ForRobot.Services
             if (plate.BevelToLeft + plate.BevelToRight >= plate.PlateWidth)
                 throw new ArgumentException("Сумма скосов превышает ширину плиты.", nameof(plate));
 
+            //if (plate.RibsCollection.Sum(item => item.DistanceLeft) >= plate.PlateWidth || plate.RibsCollection.Sum(item => item.DistanceRight) >= plate.PlateWidth)
+            //    throw new ArgumentException("Расстояние между плитами не может превышать ширину плиты.", nameof(plate));
+
             //if (plate.ScoseType == ScoseTypes.SlopeLeft && plate.BevelToLeft > plate.PlateWidth)
             //    throw new ArgumentException("Смещение параллелограмма и скосы недопустимы.", nameof(plate));
 
@@ -503,29 +507,47 @@ namespace ForRobot.Services
         {
             Model3DGroup scene = new Model3DGroup();
 
-            //double modelPlateLength = (double)detal.PlateLength * (double)ScaleFactor;
-            //double modelPlateWidth = (double)detal.PlateWidth * (double)ScaleFactor;
-            //double modelPlateHeight = (double)detal.PlateThickness * (double)ScaleFactor;
-
-            //var robotModel = GetRobotModel(modelPlateLength, modelPlateWidth, modelPlateHeight);
-            //var pcModel = GetPCModel(modelPlateLength, modelPlateWidth, modelPlateHeight);
-            //var mansModel = GetMansModel(modelPlateLength, modelPlateWidth, modelPlateHeight);
+            double halfModelPlateLength = (double)detal.PlateLength * (double)ScaleFactor / 2;
+            double halfModelPlateWidth = (double)detal.PlateWidth * (double)ScaleFactor / 2;
+            double halfModelPlateHeight = (double)detal.PlateThickness * (double)ScaleFactor / 2;
 
             switch (detal.DetalType)
             {
                 case DetalTypes.Plita:
-                    var plateModel = GetPlateModel(detal as Plita);
+                    Plita plate = detal as Plita;
+
+                    var plateModel = GetPlateModel(plate);
                     plateModel.SetName("Plate");
                     scene.Children.Add(plateModel);
+
+                    double offsetDirection = 0;
+                    switch (plate.ScoseType)
+                    {
+                        case ScoseTypes.SlopeLeft:
+                        case ScoseTypes.SlopeRight:
+                            offsetDirection = (plate.ScoseType == ScoseTypes.SlopeLeft) ? -SlopeOffset : SlopeOffset;
+                            break;
+
+                        case ScoseTypes.TrapezoidBottom:
+                            break;
+                    }
+
+                    scene.Children.AddRobot(halfModelPlateLength, -(halfModelPlateWidth + 7) + offsetDirection, 0, (double)ScaleFactor * 10);
+                    scene.Children.AddPC(-halfModelPlateLength, -(halfModelPlateWidth + 7), 0, (double)ScaleFactor * 200);
+
+                    Transform3DGroup modelTransformA = new Transform3DGroup();
+                    modelTransformA.Children.Add(new ScaleTransform3D((double)ScaleFactor, (double)ScaleFactor, (double)ScaleFactor));
+                    modelTransformA.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(1, 0, 0), 90), new Point3D(halfModelPlateLength + 7, 0, 0)));
+                    Transform3DGroup modelTransformB = modelTransformA.Clone();
+                    modelTransformA.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), -90)));
+
+                    scene.Children.AddMan(halfModelPlateLength + 7, 0, 0, (double)ScaleFactor * 150, modelTransformA);
+                    scene.Children.AddMan(0, halfModelPlateWidth + 15, 0, (double)ScaleFactor * 150, modelTransformB);
                     break;
 
                 default:
                     throw new NotSupportedException($"Ошибка построения модели: тип детали {detal.DetalType} не поддерживается!");
             }
-            scene.Children.AddRobot(detal, (double)ScaleFactor);
-            //scene.Children.Add(robotModel);
-            //scene.Children.Add(pcModel);
-            //scene.Children.Add(mansModel);
             return scene;
         }
 
@@ -636,11 +658,119 @@ namespace ForRobot.Services
 
     public static partial class Model3DCollection
     {
-        public static void AddRobot(this IEnumerable<Model3D> source, Detal detal, double scaleFactor = 10)
+        public const string RobotModelPath = "pack://application:,,,/InterfaceOfRobots;component/3DModels/kukaRobot.stl";
+        public const string PCModelPath = "pack://application:,,,/InterfaceOfRobots;component/3DModels/computer_monitor.stl";
+        public const string ManModelPath = "pack://application:,,,/InterfaceOfRobots;component/3DModels/stickman.stl";
+
+        /// <summary>
+        /// Выгрузка модели из компонентов сборки
+        /// </summary>
+        /// <param name="modelPath"></param>
+        /// <returns></returns>
+        public static Model3DGroup LoadModel(string modelPath)
         {
-            double halfLength = (double)detal.PlateLength * scaleFactor / 2;
-            double halfWidth = (double)detal.PlateWidth * scaleFactor / 2;
-            double halfHeight = (double)detal.PlateThickness * scaleFactor / 2;
+            Model3DGroup robotModel;
+            try
+            {
+                robotModel = new ModelImporter().Load(modelPath);
+                if (robotModel == null)
+                {
+                    throw new System.IO.FileNotFoundException($"Не удалось загрузить модель робота по пути: {modelPath}");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Ошибка загрузки модели робота: {ex.Message}", ex);
+            }
+            return robotModel;
+        }
+
+        /// <summary>
+        /// Добавление модели робота
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
+        /// <param name="scaleFactor">Маштабный коэффициент</param>
+        public static void AddRobot(this ICollection<Model3D> source, double x, double y, double z, double scaleFactor = 10)
+        {
+            Vector3D robotTranslate = new Vector3D(x, y, z);
+
+            Model3DGroup robotModel = LoadModel(RobotModelPath);
+
+            ApplyCustomColor(robotModel, Model.File3D.Colors.RobotColor);
+
+            Transform3DGroup modelTransform = new Transform3DGroup();
+            modelTransform.Children.Add(new ScaleTransform3D(scaleFactor, scaleFactor, scaleFactor));
+            modelTransform.Children.Add(new TranslateTransform3D(robotTranslate));
+            modelTransform.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), 90), new Point3D(robotTranslate.X, robotTranslate.Y, robotTranslate.Z)));
+            robotModel.Transform = modelTransform;
+            robotModel.SetName(string.Format("Robot {0}", source.Count(item => item.GetName().Contains("Robot")) + 1));
+            source.Add(robotModel);
+        }
+
+        /// <summary>
+        /// Добавление модели компьютера
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
+        /// <param name="scaleFactor">Маштабный коэффициент</param>
+        public static void AddPC(this ICollection<Model3D> source, double x, double y, double z, double scaleFactor = 10)
+        {
+            Vector3D pcTranslate = new Vector3D(x, y, z);
+
+            Model3DGroup pcModel = LoadModel(PCModelPath);
+
+            ApplyCustomColor(pcModel, Model.File3D.Colors.PcColor);
+
+            Transform3DGroup modelTransform = new Transform3DGroup();
+            modelTransform.Children.Add(new ScaleTransform3D(scaleFactor, scaleFactor, scaleFactor));
+            modelTransform.Children.Add(new TranslateTransform3D(pcTranslate));
+            modelTransform.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(1, 0, 0), 90), new Point3D(pcTranslate.X, pcTranslate.Y, pcTranslate.Z)));
+            modelTransform.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), 180), new Point3D(pcTranslate.X, pcTranslate.Y, pcTranslate.Z)));
+            pcModel.Transform = modelTransform;
+            pcModel.SetName(string.Format("PC {0}", source.Count(item => item.GetName().Contains("PC")) + 1));
+            source.Add(pcModel);
+        }
+
+        /// <summary>
+        /// Добавление модели человека
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="z"></param>
+        /// <param name="scaleFactor">Маштабный коэффициент</param>
+        /// <param name="modelTransform"></param>
+        public static void AddMan(this ICollection<Model3D> source, double x, double y, double z, double scaleFactor = 10, Transform3DGroup modelTransform = null)
+        {
+            Vector3D manTranslate = new Vector3D(x, y, z);
+            Model3DGroup manModel = LoadModel(ManModelPath);
+            ApplyCustomColor(manModel, Model.File3D.Colors.WatcherColor);
+            modelTransform?.Children.Add(new ScaleTransform3D(scaleFactor, scaleFactor, scaleFactor));
+            modelTransform?.Children.Add(new TranslateTransform3D(manTranslate));
+            manModel.Transform = modelTransform;
+            manModel.SetName(string.Format("Man {0}", source.Count(item => item.GetName().Contains("Man")) + 1));
+            source.Add(manModel);
+        }
+
+        private static void ApplyCustomColor(Model3DGroup modelGroup, Color color)
+        {
+            foreach (var model in modelGroup.Children)
+            {
+                if (model is GeometryModel3D geometryModel)
+                {
+                    geometryModel.Material = new DiffuseMaterial(new SolidColorBrush(color));
+                    geometryModel.BackMaterial = geometryModel.Material;
+                }
+                else if (model is Model3DGroup group)
+                {
+                    ApplyCustomColor(group, color);
+                }
+            }
         }
     }
 }
