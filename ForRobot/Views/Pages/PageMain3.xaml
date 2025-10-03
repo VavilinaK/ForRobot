@@ -767,9 +767,9 @@
                                     <!--<behavior:HelixWeldsBehavior Detal="{Binding Path=CurrentDetal, diag:PresentationTraceSources.TraceLevel=High, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                                                  Thickness="{Binding Path=Settings.WeldsThickness, Source={x:Static Application.Current}, Mode=OneWay}"/>-->
 
-                                    <!--<behavior:HelixAnnotationsBehavior Detal="{Binding Path=CurrentDetal, PresentationTraceSources.TraceLevel=High, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                                                       FontSize="{Binding Path=Settings.ParamsFontSize, Mode=OneWay, Source={x:Static Application.Current}, UpdateSourceTrigger=PropertyChanged}"/>-->
-                                    <behavior:HelixSceneTrackerBehavior SceneItems="{Binding Path=DataContext.SceneItemsCollection, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>
+                                    <behavior:HelixAnnotationsBehavior Detal="{Binding Path=CurrentDetal, PresentationTraceSources.TraceLevel=High, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                       FontSize="{Binding Path=Settings.ParamsFontSize, Mode=OneWay, Source={x:Static Application.Current}, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <!--<behavior:HelixSceneTrackerBehavior SceneItems="{Binding Path=DataContext.SceneItemsCollection, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>-->
                                 </i:Interaction.Behaviors>
                             </h:HelixViewport3D>
                         </DataTemplate>

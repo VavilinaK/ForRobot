@@ -49,9 +49,7 @@ namespace ForRobot.Model.File3D
         /// Массив допустимых для импрта форматов текстовых файлов
         /// </summary>
         private static readonly string[] FileTextExtensions = new string[] { ".txt", ".json" };
-
-        private readonly ForRobot.Services.IAnnotationService _annotationService = new ForRobot.Services.AnnotationService(ForRobot.Model.Settings.Settings.ScaleFactor);
-
+        
         #endregion Private variables
 
         #region Public variables
@@ -77,15 +75,6 @@ namespace ForRobot.Model.File3D
         /// Имя без расширения
         /// </summary>
         public string NameWithoutExtension { get => System.IO.Path.GetFileNameWithoutExtension(this.Path); }
-
-        ///// <summary>
-        ///// Коллекция подписей на 3д моделе
-        ///// </summary>
-        //public ObservableCollection<Annotation> AnnotationsCollection { get; private set; } = new ObservableCollection<Annotation>();
-        ///// <summary>
-        ///// Коллекция швов для отображения на модели
-        ///// </summary>
-        //public ObservableCollection<Weld> WeldsCollection { get; } = new ObservableCollection<Weld>();
 
         public Model3DGroup CurrentModel
         {
@@ -191,8 +180,7 @@ namespace ForRobot.Model.File3D
                 this._oldDetal = this._currentDetal.Clone() as Detal;
 
             this.OnModelChanged();
-
-            //this.AnnotationsCollection = this._annotationService.GetAnnotations(this._currentDetal);
+            
             //this.DetalChangedEvent += (s, o) => SceneUpdate();
         }
 
@@ -238,25 +226,6 @@ namespace ForRobot.Model.File3D
             //group.Children.Add(text.Model);
 
         }
-
-        ///// <summary>
-        ///// Изменение подписи одного из параметров
-        ///// </summary>
-        ///// <param name="detal"></param>
-        ///// <param name="propertyName">Наименование параметра</param>
-        //private void ChangePropertyAnnotations(Detal detal, string propertyName)
-        //{
-        //    if (propertyName == null)
-        //        return;
-
-        //    Annotation annotation = this.AnnotationsCollection.Count(item => item.PropertyName == propertyName) > 0 ? this.AnnotationsCollection.Where(item => item.PropertyName == propertyName).First() : null;
-
-        //    if (annotation == null)
-        //        return;
-
-        //    //annotation.Text = detal.GetType().GetProperty(propertyName).GetValue(detal, null).ToString();
-        //    annotation.Text = string.Format("{0}: {1} mm.", propertyName, detal.GetType().GetProperty(propertyName).GetValue(detal, null));
-        //}
         
         /// <summary>
         /// Выгрузка 3Д модели и файла

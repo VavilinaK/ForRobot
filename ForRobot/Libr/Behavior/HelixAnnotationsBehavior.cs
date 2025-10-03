@@ -20,6 +20,8 @@ namespace ForRobot.Libr.Behavior
     /// </summary>
     public class HelixAnnotationsBehavior : HelixAddCollectionBehavior<Annotation>
     {
+        private readonly ForRobot.Services.IAnnotationService _annotationService = new ForRobot.Services.AnnotationService(ForRobot.Model.Settings.Settings.ScaleFactor);
+
         public Detal Detal
         {
             get => (Detal)GetValue(DetalProperty);
@@ -45,6 +47,17 @@ namespace ForRobot.Libr.Behavior
         {
             HelixAnnotationsBehavior helixAnnotationsBehavior = (HelixAnnotationsBehavior)d;
             helixAnnotationsBehavior.Detal = (Detal)e.NewValue;
+
+            if (e.OldValue != null && e.OldValue is Detal oldDetal)
+                oldDetal.ChangePropertyEvent -= helixAnnotationsBehavior.PropertyChangeHandle;
+
+            helixAnnotationsBehavior.Detal = (Detal)e.NewValue;
+
+            if (helixAnnotationsBehavior.Detal != null)
+            {
+                helixAnnotationsBehavior.Detal.ChangePropertyEvent += helixAnnotationsBehavior.PropertyChangeHandle;
+                helixAnnotationsBehavior.UpdateAnnotations();
+            }
         }
 
         private static void OnFontSizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -60,11 +73,57 @@ namespace ForRobot.Libr.Behavior
             }
         }
 
-        private void PropertyChangeHandle(object sender, PropertyChangedEventArgs e) => this.UpdateAnnotations();
-        
+        private void PropertyChangeHandle(object sender, PropertyChangedEventArgs e) => this.ChangePropertyAnnotations(sender as Detal, e.PropertyName);
+
+        /// <summary>
+        /// Обновление параметров
+        /// </summary>
         private void UpdateAnnotations()
         {
+            var annotations = this._annotationService.GetAnnotations(this.Detal);
+            if (this.Items != null && this.Items is ObservableCollection<Annotation> currentCollection)
+            {
+                currentCollection.Clear();
+                foreach (var annotation in annotations)
+                {
+                    annotation.FontSize = this.FontSize;
+                    currentCollection.Add(annotation);
+                }
+            }
+            else
+            {
+                var newCollection = new ObservableCollection<Annotation>(annotations);
+                foreach (var item in newCollection)
+                {
+                    item.FontSize = this.FontSize;
+                }
+                this.Items = newCollection;
+            }
+        }
 
+        /// <summary>
+        /// Изменение подписи одного из параметров
+        /// </summary>
+        /// <param name="detal"></param>
+        /// <param name="propertyName">Наименование параметра</param>
+        private void ChangePropertyAnnotations(Detal detal, string propertyName)
+        {
+            if (detal == null && string.IsNullOrEmpty(propertyName))
+                return;
+
+            if (detal is Plita plate && propertyName == nameof(plate.ScoseType))
+            {
+                this.UpdateAnnotations();
+                return;
+            }
+
+            Annotation annotation = this.Items.Count(item => item.PropertyName == propertyName) > 0 ? this.Items.Where(item => item.PropertyName == propertyName).First() : null;
+
+            if (annotation == null)
+                return;
+
+            var newValue = detal.GetType().GetProperty(propertyName).GetValue(detal, null);
+            annotation.Text = _annotationService.ToString(Convert.ToDecimal(newValue));
         }
     }
 }

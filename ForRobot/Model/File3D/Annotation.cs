@@ -75,7 +75,7 @@ namespace ForRobot.Model.File3D
         /// <summary>
         /// Сторона со стрелкой
         /// </summary>
-        public ArrowSide ArrowsSide { get; set; } = ArrowSide.Bottom;
+        public ArrowSide ArrowsSide { get; set; } = ArrowSide.BC;
 
         public double FontSize
         {

@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Linq;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
@@ -221,19 +221,16 @@ namespace ForRobot.Services
             double halfWidth = width / 2;
             double halfHeight = height / 2;
 
-            // Создание вершин с точным округлением
-            Func<double, double, double, Point3D> createPoint = (x, y, z) => new Point3D(Math.Round(x, 4), Math.Round(y, 4), Math.Round(z, 4));
-
             // Вершины плиты
-            Point3D A = createPoint(-halfLength, -halfWidth, -halfHeight);  // передний левый низ
-            Point3D B = createPoint(-halfLength, halfWidth, -halfHeight);   // передний правый низ
-            Point3D C = createPoint(-halfLength, halfWidth, halfHeight);    // передний правый верх
-            Point3D D = createPoint(-halfLength, -halfWidth, halfHeight);   // передний левый верх
+            Point3D A = this.CreatePoint(-halfLength, -halfWidth, -halfHeight);  // левый низ
+            Point3D B = this.CreatePoint(-halfLength, halfWidth, -halfHeight);   // правый низ
+            Point3D C = this.CreatePoint(-halfLength, halfWidth, halfHeight);    // правый верх
+            Point3D D = this.CreatePoint(-halfLength, -halfWidth, halfHeight);   // левый верх
 
-            Point3D E = createPoint(halfLength, -halfWidth + offsetDirection, -halfHeight);  // задний левый низ
-            Point3D F = createPoint(halfLength, halfWidth + offsetDirection, -halfHeight);   // задний правый низ
-            Point3D G = createPoint(halfLength, halfWidth + offsetDirection, halfHeight);    // задний правый верх
-            Point3D H = createPoint(halfLength, -halfWidth + offsetDirection, halfHeight);   // задний левый верх
+            Point3D E = this.CreatePoint(halfLength, -halfWidth + offsetDirection, -halfHeight);  // левый низ
+            Point3D F = this.CreatePoint(halfLength, halfWidth + offsetDirection, -halfHeight);   // правый низ
+            Point3D G = this.CreatePoint(halfLength, halfWidth + offsetDirection, halfHeight);    // правый верх
+            Point3D H = this.CreatePoint(halfLength, -halfWidth + offsetDirection, halfHeight);   // левый верх
 
             MeshBuilder meshBuilder = new MeshBuilder();
 
@@ -265,21 +262,18 @@ namespace ForRobot.Services
             // Вычисление размеров оснований с учетом ориентации
             double bottomHalfLen = inBottom ?  halfLength * (1 - TrapezoidRatio) : halfLength;
             double topHalfLen = inBottom ? halfLength : halfLength * (1 - TrapezoidRatio);
-
-            // Создание вершин с точным округлением
-            Func<double, double, double, Point3D> createPoint = (x, y, z) => new Point3D(Math.Round(x, 4), Math.Round(y, 4), Math.Round(z, 4));
-
+            
             // Нижнее основание (Y = -halfWidth)
-            Point3D A = createPoint(-bottomHalfLen, -halfWidth, -halfHeight);
-            Point3D B = createPoint(bottomHalfLen, -halfWidth, -halfHeight);
-            Point3D C = createPoint(bottomHalfLen, -halfWidth, halfHeight);
-            Point3D D = createPoint(-bottomHalfLen, -halfWidth, halfHeight);
+            Point3D A = this.CreatePoint(-bottomHalfLen, -halfWidth, -halfHeight);
+            Point3D B = this.CreatePoint(bottomHalfLen, -halfWidth, -halfHeight);
+            Point3D C = this.CreatePoint(bottomHalfLen, -halfWidth, halfHeight);
+            Point3D D = this.CreatePoint(-bottomHalfLen, -halfWidth, halfHeight);
 
             // Верхнее основание (Y = halfWidth)
-            Point3D E = createPoint(-topHalfLen, halfWidth, -halfHeight);
-            Point3D F = createPoint(topHalfLen, halfWidth, -halfHeight);
-            Point3D G = createPoint(topHalfLen, halfWidth, halfHeight);
-            Point3D H = createPoint(-topHalfLen, halfWidth, halfHeight);
+            Point3D E = this.CreatePoint(-topHalfLen, halfWidth, -halfHeight);
+            Point3D F = this.CreatePoint(topHalfLen, halfWidth, -halfHeight);
+            Point3D G = this.CreatePoint(topHalfLen, halfWidth, halfHeight);
+            Point3D H = this.CreatePoint(-topHalfLen, halfWidth, halfHeight);
 
             MeshBuilder meshBuilder = new MeshBuilder();
 
@@ -412,38 +406,38 @@ namespace ForRobot.Services
                 MeshBuilder ribBuilder = new MeshBuilder();
 
                 // Боковые грани                        
-                ribBuilder.AddQuad(new Point3D(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2), plateSurfaceZ),
-                                   new Point3D(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2) + modelRibThickness, plateSurfaceZ),
-                                   new Point3D(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2) + modelRibThickness, plateSurfaceZ + modelRibHeight),
-                                   new Point3D(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2), plateSurfaceZ + modelRibHeight)); // Левая грань (X = -ribLength/2 + centerX)
+                ribBuilder.AddQuad(this.CreatePoint(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2), plateSurfaceZ),
+                                   this.CreatePoint(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2) + modelRibThickness, plateSurfaceZ),
+                                   this.CreatePoint(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2) + modelRibThickness, plateSurfaceZ + modelRibHeight),
+                                   this.CreatePoint(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2), plateSurfaceZ + modelRibHeight)); // Левая грань (X = -ribLength/2 + centerX)
 
-                ribBuilder.AddQuad(new Point3D(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + ribYOffset, plateSurfaceZ),
-                                   new Point3D(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + modelRibThickness + ribYOffset, plateSurfaceZ),
-                                   new Point3D(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + modelRibThickness + ribYOffset, plateSurfaceZ + modelRibHeight),
-                                   new Point3D(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + ribYOffset, plateSurfaceZ + modelRibHeight)); // Правая грань (X = ribLength/2 + centerX) со смещением по Y
+                ribBuilder.AddQuad(this.CreatePoint(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + ribYOffset, plateSurfaceZ),
+                                   this.CreatePoint(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + modelRibThickness + ribYOffset, plateSurfaceZ),
+                                   this.CreatePoint(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + modelRibThickness + ribYOffset, plateSurfaceZ + modelRibHeight),
+                                   this.CreatePoint(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + ribYOffset, plateSurfaceZ + modelRibHeight)); // Правая грань (X = ribLength/2 + centerX) со смещением по Y
 
                 // Задняя грань
-                ribBuilder.AddQuad(new Point3D(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2) + modelRibThickness, plateSurfaceZ),
-                                   new Point3D(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2) + modelRibThickness, plateSurfaceZ + modelRibHeight),
-                                   new Point3D(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + modelRibThickness + ribYOffset, plateSurfaceZ + modelRibHeight),
-                                   new Point3D(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + modelRibThickness + ribYOffset, plateSurfaceZ));
+                ribBuilder.AddQuad(this.CreatePoint(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2) + modelRibThickness, plateSurfaceZ),
+                                   this.CreatePoint(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2) + modelRibThickness, plateSurfaceZ + modelRibHeight),
+                                   this.CreatePoint(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + modelRibThickness + ribYOffset, plateSurfaceZ + modelRibHeight),
+                                   this.CreatePoint(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + modelRibThickness + ribYOffset, plateSurfaceZ));
 
                 // Передняя грань
-                ribBuilder.AddQuad(new Point3D(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2), plateSurfaceZ),
-                                   new Point3D(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2), plateSurfaceZ + modelRibHeight),
-                                   new Point3D(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + ribYOffset, plateSurfaceZ + modelRibHeight),
-                                   new Point3D(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + ribYOffset, plateSurfaceZ));
+                ribBuilder.AddQuad(this.CreatePoint(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2), plateSurfaceZ),
+                                   this.CreatePoint(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2), plateSurfaceZ + modelRibHeight),
+                                   this.CreatePoint(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + ribYOffset, plateSurfaceZ + modelRibHeight),
+                                   this.CreatePoint(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + ribYOffset, plateSurfaceZ));
 
                 // Верхняя и нижняя грани
-                ribBuilder.AddQuad(new Point3D(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2), plateSurfaceZ + modelRibHeight),
-                                   new Point3D(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2) + modelRibThickness, plateSurfaceZ + modelRibHeight),
-                                   new Point3D(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + modelRibThickness + ribYOffset, plateSurfaceZ + modelRibHeight),
-                                   new Point3D(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + ribYOffset, plateSurfaceZ + modelRibHeight)); // Верхняя
+                ribBuilder.AddQuad(this.CreatePoint(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2), plateSurfaceZ + modelRibHeight),
+                                   this.CreatePoint(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2) + modelRibThickness, plateSurfaceZ + modelRibHeight),
+                                   this.CreatePoint(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + modelRibThickness + ribYOffset, plateSurfaceZ + modelRibHeight),
+                                   this.CreatePoint(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + ribYOffset, plateSurfaceZ + modelRibHeight)); // Верхняя
 
-                ribBuilder.AddQuad(new Point3D(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2), plateSurfaceZ),
-                                   new Point3D(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2) + modelRibThickness, plateSurfaceZ),
-                                   new Point3D(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + modelRibThickness + ribYOffset, plateSurfaceZ),
-                                   new Point3D(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + ribYOffset, plateSurfaceZ)); // Нижняя
+                ribBuilder.AddQuad(this.CreatePoint(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2), plateSurfaceZ),
+                                   this.CreatePoint(-ribLength / 2 + centerX, (ribLeftPositionY + modelRibThickness / 2) + modelRibThickness, plateSurfaceZ),
+                                   this.CreatePoint(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + modelRibThickness + ribYOffset, plateSurfaceZ),
+                                   this.CreatePoint(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + ribYOffset, plateSurfaceZ)); // Нижняя
 
                 GeometryModel3D ribModel = new GeometryModel3D(ribBuilder.ToMesh(), ForRobot.Model.File3D.Materials.Rib) { BackMaterial = ForRobot.Model.File3D.Materials.Rib };
                 model3DGroup.Children.Add(ribModel);
@@ -471,6 +465,9 @@ namespace ForRobot.Services
         }
 
         #endregion  Plate Logic
+        
+        // Создание вершины с точным округлением
+        private Point3D CreatePoint(double x, double y, double z) => new Point3D(Math.Round(x, 4), Math.Round(y, 4), Math.Round(z, 4));
 
         private void ValidateScaleFactor(decimal scaleFactor) { if (scaleFactor <= 0) throw new ArgumentException("Масштабный коэффициент должен быть больше нуля."); }
 

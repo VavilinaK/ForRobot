@@ -100,7 +100,7 @@ namespace ForRobot.Services
                 }
 
                 Point3D startPoint = new Point3D(-weldLength/2, weldLeftPositionY, modelPlateHeight);
-                Point3D endPoint = new Point3D(weldLength/2, (weldRightPositionY) + ribYOffset, modelPlateHeight);
+                Point3D endPoint = new Point3D(weldLength/2, weldRightPositionY + ribYOffset, modelPlateHeight);
 
                 // Швы добавляются с обеих сторон ребра
                 string weldName = String.Format("Weld {0}", Convert.ToDouble(welds.Count / 2 + 1));
