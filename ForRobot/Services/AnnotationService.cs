@@ -3,6 +3,7 @@ using System.Windows.Media.Media3D;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
+using ForRobot.Libr.Attributes;
 using ForRobot.Model.Detals;
 using ForRobot.Model.File3D;
 
@@ -55,7 +56,8 @@ namespace ForRobot.Services
         {
             List<Annotation> annotations = new List<Annotation>()
             {
-                this.GetPlateLengthAnnotation(plate)
+                this.GetPlateLengthAnnotation(plate),
+                this.GetPlateWidthAnnotation(plate)
 
                 //this.GetRibHeightAnnotation(plate),
                 //this.GetRibThicknessAnnotation(plate),
@@ -68,26 +70,6 @@ namespace ForRobot.Services
         }
 
         #region Properties
-
-        private Annotation GetPlateWidthAnnotation(Detal detal)
-        {
-            double halfLength = (double)detal.PlateLength * (double)ScaleFactor / 2;
-            double halfWidth = (double)detal.PlateWidth * (double)ScaleFactor / 2;
-
-            Point3DCollection points = new Point3DCollection(new List<Point3D>()
-            {
-                new Point3D(-halfLength, halfWidth, 0),
-                new Point3D(-halfLength, -halfWidth, 0),
-                new Point3D(-(halfLength + Annotation.DefaultAnnotationWidth), -halfWidth , 0),
-                new Point3D(-(halfLength + Annotation.DefaultAnnotationWidth), halfWidth, 0)
-            });
-
-            return new Annotation(points)
-            {
-                Text = ToString(detal.PlateWidth),
-                PropertyName = nameof(detal.PlateWidth)
-            };
-        }
 
         private Annotation GetPlateThicknessAnnotation(Detal detal)
         {
@@ -163,6 +145,7 @@ namespace ForRobot.Services
 
         #region Plita
 
+        //[PropertyCameraAttribute(nameof(Plita.PlateLength), new Vector3D (0, -6, -722), new Vector3D(0, -1, 0))]
         private Annotation GetPlateLengthAnnotation(Plita plate)
         {
             double halfLength = (double)plate.PlateLength * (double)ScaleFactor / 2;
@@ -177,10 +160,10 @@ namespace ForRobot.Services
                     break;
             }
 
-            Point3D A = this.CreatePoint(halfLength, -halfWidth + offsetDirection, 0);
-            Point3D B = this.CreatePoint(halfLength, -(halfWidth + Annotation.DefaultAnnotationWidth), 0);
-            Point3D C = this.CreatePoint(-halfLength, -halfWidth - offsetDirection, 0);
-            Point3D D = this.CreatePoint(-halfLength, -(halfWidth + Annotation.DefaultAnnotationWidth), 0);
+            Point3D A = this.CreatePoint(halfLength, halfWidth + Annotation.DefaultAnnotationWidth, 0);
+            Point3D B = this.CreatePoint(halfLength, halfWidth + offsetDirection, 0);
+            Point3D C = this.CreatePoint(-halfLength, halfWidth + offsetDirection, 0);
+            Point3D D = this.CreatePoint(-halfLength, halfWidth + Annotation.DefaultAnnotationWidth, 0);
 
             Point3DCollection points = new Point3DCollection() { A, B, C, D };
             //Point3DCollection points = new Point3DCollection(new List<Point3D>()
@@ -191,10 +174,49 @@ namespace ForRobot.Services
             //    new Point3D(-halfLength, -(halfWidth + Annotation.DefaultAnnotationWidth), 0)
             //});
 
-            return new Annotation(points, Annotation.ArrowSide.BC)
+            return new Annotation(points, Annotation.ArrowSide.DA)
             {
                 Text = ToString(plate.PlateLength),
                 PropertyName = nameof(plate.PlateLength),
+            };
+        }
+
+        private Annotation GetPlateWidthAnnotation(Plita plate)
+        {
+            double halfLength = (double)plate.PlateLength * (double)ScaleFactor / 2;
+            double halfWidth = (double)plate.PlateWidth * (double)ScaleFactor / 2;
+
+            double bottomHalfLen = halfLength, topHalfLen = halfLength;
+            double offsetDirection = 0;
+            switch (plate.ScoseType)
+            {
+                case ScoseTypes.SlopeLeft:
+                case ScoseTypes.SlopeRight:
+                    offsetDirection = (plate.ScoseType == ScoseTypes.SlopeLeft) ? -ModelingService.SlopeOffset : ModelingService.SlopeOffset;
+                    break;
+
+                case ScoseTypes.TrapezoidTop:
+                    bottomHalfLen = halfLength;
+                    topHalfLen = halfLength * (1 - ModelingService.TrapezoidRatio);
+                    break;
+
+                case ScoseTypes.TrapezoidBottom:
+                    bottomHalfLen = halfLength * (1 - ModelingService.TrapezoidRatio);
+                    topHalfLen = halfLength;
+                    break;
+            }
+
+            Point3D A = this.CreatePoint(-bottomHalfLen, -halfWidth, 0);
+            Point3D B = this.CreatePoint(-bottomHalfLen - Annotation.DefaultAnnotationWidth, -halfWidth, 0);
+            Point3D C = this.CreatePoint(-topHalfLen - Annotation.DefaultAnnotationWidth, halfWidth, 0);
+            Point3D D = this.CreatePoint(-topHalfLen, halfWidth, 0);
+
+            Point3DCollection points = new Point3DCollection() { A, B, C, D };
+            
+            return new Annotation(points)
+            {
+                Text = ToString(plate.PlateWidth),
+                PropertyName = nameof(plate.PlateWidth)
             };
         }
 

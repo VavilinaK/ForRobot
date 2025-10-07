@@ -306,6 +306,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Libr\Attributes\PropertyCameraAttribute.cs" />
     <Compile Include="Libr\Attributes\PropertyNameAttribute.cs" />
     <Compile Include="Libr\Behavior\BehaviorAttacher.cs" />
     <Compile Include="Libr\Behavior\CameraControllerBehavior.cs" />
