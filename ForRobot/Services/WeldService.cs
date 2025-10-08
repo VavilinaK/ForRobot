@@ -46,6 +46,9 @@ namespace ForRobot.Services
             double weldLeftPositionY = weldPositionY;
             double weldRightPositionY = weldPositionY;
 
+            //weldLeftPositionY -= modelRibThickness / 2;
+            //weldRightPositionY -= modelRibThickness / 2;
+
             for (int i = 0; i < plate.RibCount; i++)
             {
                 var rib = plate.RibsCollection[i];
@@ -64,11 +67,20 @@ namespace ForRobot.Services
                 double weldLength = modelPlateLength;
 
                 double ribYOffset = 0;  // Смещение задней части ребра для скоса
+                //double positionRatio = 0;
                 switch (plate.ScoseType)
                 {
                     case ScoseTypes.SlopeLeft:
                     case ScoseTypes.SlopeRight:
-                        ribYOffset = (plate.ScoseType == ScoseTypes.SlopeLeft) ? -ModelingService.SlopeOffset : ModelingService.SlopeOffset;
+
+                        ribYOffset = (plate.ScoseType == ScoseTypes.SlopeLeft) ? -ModelingService.SlopeOffset
+                                                                               : ModelingService.SlopeOffset;
+
+                        //positionRatio = (plate.ScoseType == ScoseTypes.SlopeLeft)
+                        //          ? Math.Abs((modelPlateLength / 2 - modelRibIdentToLeft) -
+                        //                     (modelRibIdentToRight - modelPlateLength / 2)) / weldLength
+                        //          : Math.Abs((modelRibIdentToRight - modelPlateLength / 2) -
+                        //                     (modelPlateLength / 2 - modelRibIdentToLeft)) / weldLength;
                         break;
 
                     case ScoseTypes.TrapezoidTop:
@@ -76,26 +88,14 @@ namespace ForRobot.Services
                         // Положение шва по ширине плиты
                         double positionRatio = ((weldLeftPositionY + weldRightPositionY) / 2 + modelPlateWidth / 2) / modelPlateWidth;
 
-                        // Длина основания в позиции ребра
-                        //double baseLength;
-                        //if (plate.ScoseType == ScoseTypes.TrapezoidTop)
-                        //    baseLength = modelPlateLength * (1 - ModelingService.TrapezoidRatio * positionRatio);
-                        //else
-                        //    baseLength = modelPlateLength * (1 - ModelingService.TrapezoidRatio * (1 - positionRatio));
                         if (plate.ScoseType == ScoseTypes.TrapezoidTop)
                             weldLength = modelPlateLength * (1 - ModelingService.TrapezoidRatio * positionRatio);
                         else
                             weldLength = modelPlateLength * (1 - ModelingService.TrapezoidRatio * (1 - positionRatio));
-
-                        // Длина шва (с учётом отступов ребра и роспусков)
-                        //weldLength = baseLength - modelRibIdentToLeft - modelRibIdentToRight - modelRibDissolutionLeft - modelRibDissolutionRight;
+                        
                         weldLength = Math.Max(weldLength, ModelingService.MIN_RIB_LENGTH);
                         break;
                 }
-
-                //double xStart = weldLength / 2 - modelRibIdentToLeft - modelRibDissolutionLeft;
-                //double xEnd = (modelRibIdentToRight + modelRibDissolutionRight) - weldLength / 2;
-
                 double xStart = (modelRibIdentToLeft + modelRibDissolutionLeft) - weldLength / 2;
                 double xEnd = weldLength / 2 - modelRibIdentToRight - modelRibDissolutionRight;
 

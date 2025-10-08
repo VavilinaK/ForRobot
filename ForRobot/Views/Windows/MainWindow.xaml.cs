@@ -55,7 +55,7 @@ namespace ForRobot.Views.Windows
         {
             lock (App.Current)
             {
-                GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Behavior.SaveLayoutMessage());
+                GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Messages.SaveLayoutMessage());
 
                 if((System.Windows.Controls.Page)this.MainFrame?.Content is Pages.PageMain2 && (this.MainFrame.Content as ForRobot.Views.Pages.PageMain2).ViewModel.RobotsCollection.Where(robot => robot.IsConnection).Count() > 0)
                 {

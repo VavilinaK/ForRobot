@@ -316,14 +316,12 @@
     <Compile Include="Libr\Behavior\FocusBehavior.cs" />
     <Compile Include="Libr\Behavior\HelixAddCollectionBehavior.cs" />
     <Compile Include="Libr\Behavior\DataGridStretchLastColumn.cs" />
-    <Compile Include="Libr\Behavior\FindElementByTagMessage.cs" />
+    <Compile Include="Libr\Messages\FindElementByTagMessage.cs" />
     <Compile Include="Libr\Behavior\HelixAnnotationsBehavior.cs" />
     <Compile Include="Libr\Behavior\HelixSceneTrackerBehavior.cs" />
-    <Compile Include="Libr\Behavior\LayoutMessage.cs" />
+    <Compile Include="Libr\Messages\LayoutMessage.cs" />
     <Compile Include="Libr\Behavior\HelixWeldsBehavior.cs" />
     <Compile Include="Libr\Behavior\SelectLayoutDocumentPane.cs" />
-    <Compile Include="Libr\Behavior\ZoomBehavior.cs" />
-    <Compile Include="Libr\Behavior\ZoomMessage.cs" />
     <Compile Include="Libr\Collections\ItemPropertyChangedEventArgs.cs" />
     <Compile Include="Libr\ConfigurationProperties\AppConfigurationSection.cs" />
     <Compile Include="Libr\Converters\ArrayMultiValueConverter.cs" />
@@ -344,6 +342,7 @@
     <Compile Include="Libr\Json\PlitaWithRibsAttributesResolver.cs" />
     <Compile Include="Libr\Json\SettingsResolver.cs" />
     <Compile Include="Libr\Logger.cs" />
+    <Compile Include="Libr\Messages\UpdateCurrentDetalMessage.cs" />
     <Compile Include="Libr\UndoRedo\IUndoRedo.cs" />
     <Compile Include="Libr\ValueChangedEventArgs.cs" />
     <Compile Include="Model\File3D\Colors.cs" />

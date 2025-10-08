@@ -176,7 +176,7 @@ namespace ForRobot.Model.Detals
                 if (this._paralleleRibs && this.RibsCollection?.Count > 0) // Изменение расстояния для параллельных рёбер.
                     for (int i = 0; i < this.RibsCollection.Count; i++)
                     {
-                        this.RibsCollection[i].OnChangeDistanceEvent(this.RibsCollection[i], null);
+                        this.RibsCollection[i].OnChangeDistanceLeftEvent();
                     }
                 this.OnChangeProperty(nameof(this.ParalleleRibs));
             }
@@ -730,11 +730,10 @@ namespace ForRobot.Model.Detals
 
                 base.RibCount = value;
 
-                if (this.RibsCollection != null)
-                    this.ChangeRibCollection(this.RibsCollection, RibCount);
+                this.ChangeRibCollection();
 
-                if (this.WeldingSchema != null)
-                    this.ChangeWeldingSchema(this.WeldingSchema, this.SelectedWeldingSchema, RibCount);
+                this.ChangeWeldingSchema();
+
                 this.OnChangeProperty(nameof(this.RibCount));
             }
         }
@@ -748,14 +747,23 @@ namespace ForRobot.Model.Detals
             get => this._ribsCollection;
             private set
             {
+                if(this._ribsCollection != null)
+                {
+                    this._ribsCollection.ItemPropertyChanged -= (s, e) => this.OnChangeProperty();
+
+                    foreach (var rib in this._ribsCollection)
+                        rib.ChangeDistanceLeft -= HandleChangeDistanceLeft;
+                }
+
                 this._ribsCollection = value;
 
-                foreach (var rib in this._ribsCollection)
-                    rib.ChangeDistance += (s, e) =>
-                    {
-                        if (this.ParalleleRibs)
-                            (s as Rib).DistanceRight = (s as Rib).DistanceLeft;
-                    };
+                if (this._ribsCollection != null)
+                {
+                    this._ribsCollection.ItemPropertyChanged += (s, e) => this.OnChangeProperty();
+
+                    foreach (var rib in this._ribsCollection)
+                        rib.ChangeDistanceLeft += HandleChangeDistanceLeft;
+                }
             }
         }
 
@@ -810,6 +818,20 @@ namespace ForRobot.Model.Detals
         #region Private functions
 
         /// <summary>
+        /// Делегат изменения расстояния до следующего ребра слева
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void HandleChangeDistanceLeft(object sender, EventArgs e)
+        {
+            if (sender == null || !(sender is Rib rib))
+                return;
+
+            if (this.ParalleleRibs)
+                rib.DistanceRight = rib.DistanceLeft;
+        }
+
+        /// <summary>
         /// Заполнение коллекции расстояний
         /// </summary>
         /// <returns></returns>
@@ -843,9 +865,7 @@ namespace ForRobot.Model.Detals
 
                 ribsList.Add(rib);
             }
-            FullyObservableCollection<Rib> ribs = new FullyObservableCollection<Rib>(ribsList);
-            ribs.ItemPropertyChanged += (s, e) => this.OnChangeProperty();
-            return ribs;
+            return new FullyObservableCollection<Rib>(ribsList);
         }
 
         private FullyObservableCollection<WeldingSchemas.SchemaRib> FillWeldingSchema()
@@ -864,38 +884,38 @@ namespace ForRobot.Model.Detals
             return schema;
         }
 
-        private void ChangeRibCollection(FullyObservableCollection<Rib> collection, int ribCount)
+        private void ChangeRibCollection()
         {
-            if (collection.Count == 0)
+            if (this.RibsCollection == null || this.RibsCollection?.Count == 0)
                 return;
 
-            if (ribCount > collection.Count)
-                for (int i = collection.Count; i < ribCount; i++)
+            if (this.RibCount > this.RibsCollection.Count)
+                for (int i = this.RibsCollection.Count; i < this.RibCount; i++)
                 {
-                    collection.Add(collection.Last<Rib>().Clone() as Rib);
+                    this.RibsCollection.Add(this.RibsCollection.Last<Rib>().Clone() as Rib);
                 }
             else
             {
-                for(int i = collection.Count - 1; i >= ribCount; i--)
-                    collection.RemoveAt(i);
+                for(int i = this.RibsCollection.Count - 1; i >= this.RibCount; i--)
+                    this.RibsCollection.RemoveAt(i);
             }
         }
 
-        private void ChangeWeldingSchema(FullyObservableCollection<WeldingSchemas.SchemaRib> collection, string selectedWeldingSchema, int ribCount)
+        private void ChangeWeldingSchema()
         {
-            if (collection?.Count == 0)
+            if (this.WeldingSchema == null || this.WeldingSchema?.Count == 0)
                 return;
 
-            if (ribCount > collection.Count)
-                for (int i = collection.Count; i < ribCount; i++)
-                    collection.Add(new WeldingSchemas.SchemaRib());
+            if (this.RibCount > this.WeldingSchema.Count)
+                for (int i = this.WeldingSchema.Count; i < this.RibCount; i++)
+                    this.WeldingSchema.Add(new WeldingSchemas.SchemaRib());
             else
             {
-                for (int i = collection.Count - 1; i >= ribCount; i--)
-                    collection.RemoveAt(i);
+                for (int i = this.WeldingSchema.Count - 1; i >= this.RibCount; i--)
+                    this.WeldingSchema.RemoveAt(i);
             }
 
-            this.SelectedWeldingSchema = selectedWeldingSchema;
+            this.SelectedWeldingSchema = this.SelectedWeldingSchema;
         }
 
         #region Рёбра

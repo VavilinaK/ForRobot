@@ -151,12 +151,20 @@ namespace ForRobot.ViewModels
             set
             {
                 if (this._selectedFile != null)
-                    this._selectedFile.DetalChangedEvent -= (s, e) => RaisePropertyChanged(nameof(this.SelectedFile));
+                    this._selectedFile.DetalChangedEvent -= (s, e) =>
+                    {
+                        RaisePropertyChanged(nameof(this.SelectedFile));
+                        RaisePropertyChanged(nameof(this.ActiveContent));
+                    };
 
                 Set(ref this._selectedFile, value);
 
                 if (this._selectedFile != null)
-                    this._selectedFile.DetalChangedEvent += (s, e) => RaisePropertyChanged(nameof(this.SelectedFile));
+                    this._selectedFile.DetalChangedEvent += (s, e) => 
+                    {
+                        RaisePropertyChanged(nameof(this.SelectedFile));
+                        RaisePropertyChanged(nameof(this.ActiveContent));
+                    };
             }
         }
 
@@ -202,7 +210,7 @@ namespace ForRobot.ViewModels
                     //    return;
 
                     case ForRobot.Model.File3D.Annotation annotation:
-                        GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Behavior.FindElementByTagMessage((value as Model.File3D.Annotation).PropertyName));
+                        GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Messages.FindElementByTagMessage((value as Model.File3D.Annotation).PropertyName));
                         break;
 
                     default:
@@ -271,7 +279,7 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Выгрузка макета
         /// </summary>
-        public ICommand LoadedCommand { get; } = new RelayCommand(_ => Messenger.Default.Send(new Libr.Behavior.LoadLayoutMessage()));
+        public ICommand LoadedCommand { get; } = new RelayCommand(_ => Messenger.Default.Send(new Libr.Messages.LoadLayoutMessage()));
         
         /// <summary>
         /// Сброс фокуса
@@ -323,15 +331,13 @@ namespace ForRobot.ViewModels
         /// </summary>
         public ICommand StandartParametrsCommand { get => new RelayCommand(_ =>
         {
-            this.SelectedFile.CurrentDetal = Model.File3D.File3D.StandartParamertrs(this.SelectedFile.CurrentDetal);
-            RaisePropertyChanged(nameof(SelectedFile));
-            RaisePropertyChanged(nameof(SelectedFile.CurrentDetal));
+            var newDetal = Model.File3D.File3D.StandartParamertrs(this.SelectedFile.CurrentDetal);
+            this.SelectedFile.CurrentDetal = newDetal;
+            RaisePropertyChanged(nameof(this.SelectedFile));
+            RaisePropertyChanged(nameof(this.SelectedFile.CurrentDetal));
+            RaisePropertyChanged(nameof(this.ActiveContent));
+            GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Messages.UpdateCurrentDetalMessage(newDetal));
         });} 
-
-        /// <summary>
-        /// Маштабирование модели
-        /// </summary>
-        public ICommand ZoomCommand { get; } = new RelayCommand(obj => ZoomViewPort(obj as double?));
 
         /// <summary>
         /// Показывает скрытые панели
@@ -547,17 +553,17 @@ namespace ForRobot.ViewModels
         //    file.CurrentDetal = Model.File3D.File3D.StandartParamertrs(file.CurrentDetal);
         //}
 
-        /// <summary>
-        /// Приближение/отдаление камеры в HelixViewport3D
-        /// </summary>
-        /// <param name="step">Шаг приближения/отдаления</param>
-        private static void ZoomViewPort(double? step = null)
-        {
-            if (step == null)
-                GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Behavior.ZoomMessage());
-            else
-                GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Behavior.ZoomMessage((double)step));
-        }
+        ///// <summary>
+        ///// Приближение/отдаление камеры в HelixViewport3D
+        ///// </summary>
+        ///// <param name="step">Шаг приближения/отдаления</param>
+        //private static void ZoomViewPort(double? step = null)
+        //{
+        //    if (step == null)
+        //        GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Messages.ZoomMessage());
+        //    else
+        //        GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Messages.ZoomMessage((double)step));
+        //}
 
         /// <summary>
         /// Открытие скрытых панелей

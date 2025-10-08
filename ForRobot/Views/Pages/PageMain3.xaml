@@ -56,13 +56,13 @@
                     Command="{Binding Path=StandartParametrsCommand}"
                     CommandParameter="{Binding Path=SelectedFile}"/>
 
-        <KeyBinding Key="OemMinus" Command="{Binding Path=ZoomCommand}">
+        <KeyBinding Key="Plus" Command="{x:Static behavior:CameraControllerBehavior.ZoomViewCommand}">
             <KeyBinding.CommandParameter>
                 <sys:Double>1</sys:Double>
             </KeyBinding.CommandParameter>
         </KeyBinding>
 
-        <KeyBinding Key="OemPlus" Command="{Binding Path=ZoomCommand}">
+        <KeyBinding Key="OemPlus" Command="{x:Static behavior:CameraControllerBehavior.ZoomViewCommand}">
             <KeyBinding.CommandParameter>
                 <sys:Double>-50</sys:Double>
             </KeyBinding.CommandParameter>
@@ -514,7 +514,7 @@
 
             <MenuItem Header="Отдалить камеру (-)"
                       Template="{StaticResource MenuItemTemplate1}"
-                      Command="{Binding Path=ZoomCommand}">
+                      Command="{x:Static behavior:CameraControllerBehavior.ZoomViewCommand}">
 
                 <MenuItem.CommandParameter>
                     <sys:Double>1</sys:Double>
@@ -528,7 +528,7 @@
 
             <MenuItem Header="Приблизить камеру (+)"
                       Template="{StaticResource MenuItemTemplate1}" 
-                      Command="{Binding Path=ZoomCommand}">
+                      Command="{x:Static behavior:CameraControllerBehavior.ZoomViewCommand}">
 
                 <MenuItem.CommandParameter>
                     <sys:Double>-50</sys:Double>
@@ -760,15 +760,14 @@
                                 <h:BoundingBoxVisual3D BoundingBox="{Binding Path=DataContext.SelectedObject, Converter={StaticResource BoundsConvert}, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
                                                        Diameter="0.1"
                                                        Fill="{Binding Source={x:Static file:Colors.SelectorBoxColor}, Converter={StaticResource ColorToBrushConverter}}"/>
-                                
+
                                 <i:Interaction.Behaviors>
-                                    <behavior:ZoomBehavior/>
                                     <behavior:CameraControllerBehavior/>
-                                    <behavior:HelixWeldsBehavior Detal="{Binding Path=CurrentDetal, diag:PresentationTraceSources.TraceLevel=High, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                    <behavior:HelixWeldsBehavior Detal="{Binding Path=CurrentDetal, diag:PresentationTraceSources.TraceLevel=High, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                                  Thickness="{Binding Path=Settings.WeldsThickness, Source={x:Static Application.Current}, Mode=OneWay}"/>
 
                                     <!--<behavior:HelixAnnotationsBehavior Detal="{Binding Path=CurrentDetal, PresentationTraceSources.TraceLevel=High, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                                                       FontSize="{Binding Path=Settings.ParamsFontSize, Mode=OneWay, Source={x:Static Application.Current}, UpdateSourceTrigger=PropertyChanged}"/>-->
+                                                                           FontSize="{Binding Path=Settings.ParamsFontSize, Mode=OneWay, Source={x:Static Application.Current}, UpdateSourceTrigger=PropertyChanged}"/>-->
                                     
                                     <!--<behavior:HelixSceneTrackerBehavior SceneItems="{Binding Path=DataContext.SceneItemsCollection, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>-->
                                 </i:Interaction.Behaviors>

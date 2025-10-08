@@ -33,7 +33,7 @@ namespace ForRobot.Model.Detals
             set
             {
                 Set(ref this._distanceLeft, value);
-                this.ChangeDistance?.Invoke(this, null);
+                this.ChangeDistanceLeft?.Invoke(this, null);
             }
         }
 
@@ -90,7 +90,7 @@ namespace ForRobot.Model.Detals
         /// <summary>
         /// Событие изменения расстояниия между рёбрами, при их параллельности
         /// </summary>
-        public event EventHandler ChangeDistance;
+        public event EventHandler ChangeDistanceLeft;
 
         ///// <summary>
         ///// Событие изменения высоты ребра, если она одинаковая с 2-х сторон
@@ -99,7 +99,8 @@ namespace ForRobot.Model.Detals
 
         public Rib() { }
 
-        public void OnChangeDistanceEvent(object sender, EventArgs e) => this.ChangeDistance?.Invoke(sender, e);
+        public void OnChangeDistanceLeftEvent() => this.ChangeDistanceLeft?.Invoke(this, null);
+
         //public void OnChangeHightEvent(object sender, EventArgs e) => this.ChangeHight?.Invoke(sender, e);
 
         public object Clone() => (Rib)this.MemberwiseClone();

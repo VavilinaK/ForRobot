@@ -4,6 +4,8 @@ using System.Windows;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
+using GalaSoft.MvvmLight.Messaging;
+
 using ForRobot.Model.File3D;
 using ForRobot.Model.Detals;
 
@@ -32,16 +34,22 @@ namespace ForRobot.Libr.Behavior
                                                                                                   typeof(double),
                                                                                                   typeof(HelixWeldsBehavior),
                                                                                                   new PropertyMetadata(Services.WeldService.DEFAULT_WELD_THICKNESS, new PropertyChangedCallback(OnThicknessChanged)));
+        
+        public HelixWeldsBehavior()
+        {
+            Messenger.Default.Register<ForRobot.Libr.Messages.UpdateCurrentDetalMessage>(this, message => 
+            {
+                this.Detal = message.Detal;
+                this.UpdateWelds();
+            });
+        }
 
         private static void OnDetalChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             HelixWeldsBehavior helixWeldsBehavior = (HelixWeldsBehavior)d;
 
             if (e.OldValue != null && e.OldValue is Detal oldDetal)
-            {
                 oldDetal.ChangePropertyEvent -= helixWeldsBehavior.PropertyChangeHandle;
-
-            }
 
             if (helixWeldsBehavior.Items != null && helixWeldsBehavior.Items is ObservableCollection<Weld> currentCollection)
                 foreach (var item in currentCollection) item.Children.Clear();
@@ -49,12 +57,7 @@ namespace ForRobot.Libr.Behavior
             helixWeldsBehavior.Detal = (Detal)e.NewValue;
 
             if (helixWeldsBehavior.Detal != null)
-            {
                 helixWeldsBehavior.Detal.ChangePropertyEvent += helixWeldsBehavior.PropertyChangeHandle;
-
-                //if (helixWeldsBehavior.Detal is Plita plate)
-                //    plate.RibsCollection.ItemPropertyChanged += helixWeldsBehavior.PropertyChangeHandle;
-            }
 
             helixWeldsBehavior.UpdateWelds();
         }

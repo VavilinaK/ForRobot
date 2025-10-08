@@ -15,6 +15,7 @@ using GalaSoft.MvvmLight.Messaging;
 using HelixToolkit.Wpf;
 
 using ForRobot.Libr.Behavior;
+using ForRobot.Libr.Messages;
 
 namespace ForRobot.Views.Pages
 {

@@ -18,6 +18,7 @@ namespace ForRobot.Libr.Behavior
         public static readonly RoutedCommand BottomViewCommand = new RoutedCommand(nameof(BottomViewCommand), typeof(CameraControllerBehavior));
         public static readonly RoutedCommand LeftViewCommand = new RoutedCommand(nameof(LeftViewCommand), typeof(CameraControllerBehavior));
         public static readonly RoutedCommand RightViewCommand = new RoutedCommand(nameof(RightViewCommand), typeof(CameraControllerBehavior));
+        public static readonly RoutedCommand ZoomViewCommand = new RoutedCommand(nameof(ZoomViewCommand), typeof(CameraControllerBehavior));
 
         protected override void OnAttached()
         {
@@ -38,6 +39,8 @@ namespace ForRobot.Libr.Behavior
             this._helixViewport.InputBindings.Add(new KeyBinding(BottomViewCommand, new KeyGesture(Key.D, ModifierKeys.Control)));
             this._helixViewport.InputBindings.Add(new KeyBinding(LeftViewCommand, new KeyGesture(Key.L, ModifierKeys.Control)));
             this._helixViewport.InputBindings.Add(new KeyBinding(RightViewCommand, new KeyGesture(Key.R, ModifierKeys.Control)));
+            this._helixViewport.InputBindings.Add(new KeyBinding(ZoomViewCommand, new KeyGesture(Key.OemMinus)) { CommandParameter = 1 });
+            this._helixViewport.InputBindings.Add(new KeyBinding(ZoomViewCommand, new KeyGesture(Key.OemPlus)) { CommandParameter = -50 });
 
             this._helixViewport.CommandBindings.Add(new CommandBinding(BackViewCommand,
                                                                        OnBackViewCommandExecuted,
@@ -61,6 +64,10 @@ namespace ForRobot.Libr.Behavior
 
             this._helixViewport.CommandBindings.Add(new CommandBinding(RightViewCommand,
                                                                        OnRightViewCommandExecuted,
+                                                                       CanExecuteCommand));
+
+            this._helixViewport.CommandBindings.Add(new CommandBinding(ZoomViewCommand,
+                                                                       OnZoomCommandExecuted,
                                                                        CanExecuteCommand));
         }
 
@@ -169,6 +176,21 @@ namespace ForRobot.Libr.Behavior
                 throw new Exception("CameraController is null");
 
             this._helixViewport?.CameraController.ChangeDirection(new Vector3D(-1, 0, 0), new Vector3D(0, 0, 1));
+            e.Handled = true;
+        }
+
+        private void OnZoomCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (this._helixViewport?.CameraController == null)
+                throw new Exception("CameraController is null");
+
+            double? step = Convert.ToDouble(e.Parameter);
+
+            if (step == null)
+                this._helixViewport.ZoomExtents();
+            else
+                this._helixViewport.CameraController.Zoom((double)step);
+
             e.Handled = true;
         }
 
