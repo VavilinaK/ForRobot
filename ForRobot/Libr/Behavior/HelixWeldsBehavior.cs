@@ -38,7 +38,10 @@ namespace ForRobot.Libr.Behavior
             HelixWeldsBehavior helixWeldsBehavior = (HelixWeldsBehavior)d;
 
             if (e.OldValue != null && e.OldValue is Detal oldDetal)
+            {
                 oldDetal.ChangePropertyEvent -= helixWeldsBehavior.PropertyChangeHandle;
+
+            }
 
             if (helixWeldsBehavior.Items != null && helixWeldsBehavior.Items is ObservableCollection<Weld> currentCollection)
                 foreach (var item in currentCollection) item.Children.Clear();
@@ -46,7 +49,12 @@ namespace ForRobot.Libr.Behavior
             helixWeldsBehavior.Detal = (Detal)e.NewValue;
 
             if (helixWeldsBehavior.Detal != null)
+            {
                 helixWeldsBehavior.Detal.ChangePropertyEvent += helixWeldsBehavior.PropertyChangeHandle;
+
+                //if (helixWeldsBehavior.Detal is Plita plate)
+                //    plate.RibsCollection.ItemPropertyChanged += helixWeldsBehavior.PropertyChangeHandle;
+            }
 
             helixWeldsBehavior.UpdateWelds();
         }

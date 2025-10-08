@@ -629,10 +629,10 @@ namespace ForRobot.ViewModels
         /// </summary>
         private void SetActiveContent(object value)
         {
+            Set(ref this._activeContent, value);
+
             System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
-                Set(ref this._activeContent, value);
-
                 if (ActiveContent is Model.File3D.File3D file3D)
                     Task.Run(() => GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Behavior.SelectLayoutDocumentPane(file3D)));
             }), System.Windows.Threading.DispatcherPriority.Background);

@@ -93,8 +93,11 @@ namespace ForRobot.Services
                         break;
                 }
 
-                double xStart = (modelRibIdentToRight + modelRibDissolutionRight) - weldLength / 2;
-                double xEnd = weldLength / 2 - modelRibIdentToLeft - modelRibDissolutionLeft;
+                //double xStart = weldLength / 2 - modelRibIdentToLeft - modelRibDissolutionLeft;
+                //double xEnd = (modelRibIdentToRight + modelRibDissolutionRight) - weldLength / 2;
+
+                double xStart = (modelRibIdentToLeft + modelRibDissolutionLeft) - weldLength / 2;
+                double xEnd = weldLength / 2 - modelRibIdentToRight - modelRibDissolutionRight;
 
                 Point3D startPoint = new Point3D(xStart, weldLeftPositionY, modelPlateHeight);
                 Point3D endPoint = new Point3D(xEnd, weldRightPositionY + ribYOffset, modelPlateHeight);
