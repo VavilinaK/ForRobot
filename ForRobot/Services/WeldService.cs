@@ -1,10 +1,9 @@
-﻿using System;
+﻿using ForRobot.Model.Detals;
+using ForRobot.Model.File3D;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Media.Media3D;
-
-using ForRobot.Model.Detals;
-using ForRobot.Model.File3D;
 
 namespace ForRobot.Services
 {
@@ -23,14 +22,14 @@ namespace ForRobot.Services
         public const double DEFAULT_WELD_THICKNESS = 5.0;
 
         public decimal ScaleFactor { get; set; } = 1.00M / 100.00M;
-        
+
         public WeldService(decimal _scaleFactor)
         {
             this.ScaleFactor = _scaleFactor;
         }
 
         #region Private functions
-        
+
         private List<Weld> GetPlateWelds(Plita plate)
         {
             // Преобразование реальных размеров в модельные.
@@ -46,9 +45,6 @@ namespace ForRobot.Services
             double weldLeftPositionY = weldPositionY;
             double weldRightPositionY = weldPositionY;
 
-            //weldLeftPositionY -= modelRibThickness / 2;
-            //weldRightPositionY -= modelRibThickness / 2;
-
             for (int i = 0; i < plate.RibCount; i++)
             {
                 var rib = plate.RibsCollection[i];
@@ -60,6 +56,8 @@ namespace ForRobot.Services
                 double modelRibDissolutionLeft = (double)rib.DissolutionLeft * (double)ScaleFactor;
                 double modelRibDissolutionRight = (double)rib.DissolutionRight * (double)ScaleFactor;
 
+                double centerX = (modelRibIdentToLeft - modelRibIdentToRight) / 2;
+
                 weldLeftPositionY += modelRibDistanceLeft;
                 weldRightPositionY += modelRibDistanceRight;
 
@@ -67,20 +65,11 @@ namespace ForRobot.Services
                 double weldLength = modelPlateLength;
 
                 double ribYOffset = 0;  // Смещение задней части ребра для скоса
-                //double positionRatio = 0;
                 switch (plate.ScoseType)
                 {
                     case ScoseTypes.SlopeLeft:
                     case ScoseTypes.SlopeRight:
-
-                        ribYOffset = (plate.ScoseType == ScoseTypes.SlopeLeft) ? -ModelingService.SlopeOffset
-                                                                               : ModelingService.SlopeOffset;
-
-                        //positionRatio = (plate.ScoseType == ScoseTypes.SlopeLeft)
-                        //          ? Math.Abs((modelPlateLength / 2 - modelRibIdentToLeft) -
-                        //                     (modelRibIdentToRight - modelPlateLength / 2)) / weldLength
-                        //          : Math.Abs((modelRibIdentToRight - modelPlateLength / 2) -
-                        //                     (modelPlateLength / 2 - modelRibIdentToLeft)) / weldLength;
+                        ribYOffset = (plate.ScoseType == ScoseTypes.SlopeLeft) ? -ModelingService.SlopeOffset : ModelingService.SlopeOffset;
                         break;
 
                     case ScoseTypes.TrapezoidTop:
@@ -92,18 +81,20 @@ namespace ForRobot.Services
                             weldLength = modelPlateLength * (1 - ModelingService.TrapezoidRatio * positionRatio);
                         else
                             weldLength = modelPlateLength * (1 - ModelingService.TrapezoidRatio * (1 - positionRatio));
-                        
+
                         weldLength = Math.Max(weldLength, ModelingService.MIN_RIB_LENGTH);
                         break;
                 }
+                //double weldOffset = modelRibThickness * 0.1;
+
                 double xStart = (modelRibIdentToLeft + modelRibDissolutionLeft) - weldLength / 2;
                 double xEnd = weldLength / 2 - modelRibIdentToRight - modelRibDissolutionRight;
 
                 Point3D startPoint = new Point3D(xStart, weldLeftPositionY, modelPlateHeight);
-                Point3D endPoint = new Point3D(xEnd, weldRightPositionY + ribYOffset, modelPlateHeight);
+                Point3D endPoint = new Point3D(xEnd, weldLeftPositionY + ribYOffset, modelPlateHeight);
 
                 // Швы добавляются с обеих сторон ребра
-                string weldName = String.Format("Weld {0}", Convert.ToDouble(welds.Count / 2 + 1));
+                string weldName = String.Format("Weld {0}", i + 1);
 
                 welds.Add(new Weld()
                 {
@@ -114,7 +105,7 @@ namespace ForRobot.Services
 
                 startPoint.Y += modelRibThickness * 1.5; // Костыль.
                 endPoint.Y += modelRibThickness * 1.5;
-                
+
                 welds.Add(new Weld()
                 {
                     Name = weldName + ".2",
@@ -128,13 +119,13 @@ namespace ForRobot.Services
         #endregion Private functions
 
         #region Public functions
-        
+
         public ObservableCollection<Weld> GetWelds(Detal detal)
         {
             switch (detal.DetalType)
             {
                 case DetalTypes.Plita:
-                     return new ObservableCollection<Weld>(this.GetPlateWelds(detal as Plita));
+                    return new ObservableCollection<Weld>(this.GetPlateWelds(detal as Plita));
 
                 default:
                     return null;
