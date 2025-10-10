@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using ForRobot.Libr.Attributes;
 using ForRobot.Model.Detals;
 using ForRobot.Model.File3D;
+using System.Linq;
 
 namespace ForRobot.Services
 {
@@ -57,13 +58,13 @@ namespace ForRobot.Services
             List<Annotation> annotations = new List<Annotation>()
             {
                 this.GetPlateLengthAnnotation(plate),
-                this.GetPlateWidthAnnotation(plate)
+                this.GetPlateWidthAnnotation(plate),
+                this.GetBevelToLeftAnnotation(plate)
 
                 //this.GetRibHeightAnnotation(plate),
                 //this.GetRibThicknessAnnotation(plate),
                 //this.GetTechOffsetSeamStartAnnotation(plate),
                 //this.GetTechOffsetSeamEndAnnotation(plate),
-                //this.GetBevelToLeftAnnotation(plate),
                 //this.GetBevelToRightAnnotation(plate)
             };
             return annotations;
@@ -148,32 +149,52 @@ namespace ForRobot.Services
         //[PropertyCameraAttribute(nameof(Plita.PlateLength), new Vector3D (0, -6, -722), new Vector3D(0, -1, 0))]
         private Annotation GetPlateLengthAnnotation(Plita plate)
         {
-            double halfLength = (double)plate.PlateLength * (double)ScaleFactor / 2;
-            double halfWidth = (double)plate.PlateWidth * (double)ScaleFactor / 2;
+            double modelPlateWidth = (double)plate.PlateWidth * (double)ScaleFactor;
 
-            double offsetDirection = 0;
+            double halfLength = (double)plate.PlateLength * (double)ScaleFactor / 2;
+            double halfWidth = modelPlateWidth / 2;
+
+            double leftOffsetDirection = 0;
+            double rightOffsetDirection = 0;
             switch (plate.ScoseType)
             {
                 case ScoseTypes.SlopeLeft:
+                    leftOffsetDirection = -ModelingService.SlopeOffset;
+                    break;
+
                 case ScoseTypes.SlopeRight:
-                    offsetDirection = (plate.ScoseType == ScoseTypes.SlopeLeft) ? -ModelingService.SlopeOffset : ModelingService.SlopeOffset;
+                    rightOffsetDirection = ModelingService.SlopeOffset;
                     break;
             }
 
             Point3D A = this.CreatePoint(halfLength, halfWidth + Annotation.DefaultAnnotationWidth, 0);
-            Point3D B = this.CreatePoint(halfLength, halfWidth + offsetDirection, 0);
-            Point3D C = this.CreatePoint(-halfLength, halfWidth + offsetDirection, 0);
+            Point3D B = this.CreatePoint(halfLength, halfWidth + leftOffsetDirection, 0);
+            Point3D C = this.CreatePoint(-halfLength, halfWidth + rightOffsetDirection, 0);
             Point3D D = this.CreatePoint(-halfLength, halfWidth + Annotation.DefaultAnnotationWidth, 0);
 
-            Point3DCollection points = new Point3DCollection() { A, B, C, D };
-            //Point3DCollection points = new Point3DCollection(new List<Point3D>()
-            //{
-            //    new Point3D(-halfLength, -halfWidth, 0),
-            //    new Point3D(halfLength, -halfWidth, 0),
-            //    new Point3D(halfLength, -(halfWidth + Annotation.DefaultAnnotationWidth), 0),
-            //    new Point3D(-halfLength, -(halfWidth + Annotation.DefaultAnnotationWidth), 0)
-            //});
+            if (plate.ScoseType == ScoseTypes.TrapezoidTop)
+            {
+                A.Y -= modelPlateWidth + Annotation.DefaultAnnotationWidth * 2;
+                B.Y -= modelPlateWidth;
+                C.Y -= modelPlateWidth;
+                D.Y -= modelPlateWidth + Annotation.DefaultAnnotationWidth * 2;
+            }
 
+            Point3DCollection points = new Point3DCollection() { A, B, C, D };
+
+            //if (plate.ScoseType == ScoseTypes.TrapezoidTop)
+            //{
+            //    for(int i = 0; i < points.Count; i++)
+            //    {
+            //        Point3D point = points[i];
+            //        point.Y -= modelPlateWidth;
+            //    }
+
+            //    //ModelingService.RotateVerticesAroundX(points.ToArray(), 180);
+            //}
+            
+            //ModelingService.RotateVerticesAroundX(points.ToArray(), 180);
+            
             return new Annotation(points, Annotation.ArrowSide.DA)
             {
                 Text = ToString(plate.PlateLength),
@@ -220,15 +241,39 @@ namespace ForRobot.Services
             };
         }
 
-        //private Annotation GetBevelToLeftAnnotation(Plita plate)
-        //{
-        //    return new Annotation()
-        //    {
-        //        Position = new Point3D(10, 10, 5),
-        //        Text = $"BevelToLeft: {plate.BevelToLeft} mm",
-        //        PropertyName = nameof(plate.BevelToLeft)
-        //    };
-        //}
+        private Annotation GetBevelToLeftAnnotation(Plita plate)
+        {
+            Point3D A = new Point3D();
+            Point3D B = new Point3D();
+            Point3D C = new Point3D();
+            Point3D D = new Point3D();
+
+            switch (plate.ScoseType)
+            {
+                case ScoseTypes.Rect:
+                    return null;
+
+                case ScoseTypes.SlopeLeft:
+                    break;
+
+                case ScoseTypes.SlopeRight:
+                    break;
+                
+                case ScoseTypes.TrapezoidTop:
+                    break;
+
+                case ScoseTypes.TrapezoidBottom:
+                    break;
+            }
+
+            Point3DCollection points = new Point3DCollection() { A, B, C, D };
+
+            return new Annotation(points)
+            {
+                Text = $"BevelToLeft: {plate.BevelToLeft} mm",
+                PropertyName = nameof(plate.BevelToLeft)
+            };
+        }
 
         //private Annotation GetBevelToRightAnnotation(Plita plate)
         //{
