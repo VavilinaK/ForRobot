@@ -58,8 +58,8 @@ namespace ForRobot.Services
             List<Annotation> annotations = new List<Annotation>()
             {
                 this.GetPlateLengthAnnotation(plate),
-                this.GetPlateWidthAnnotation(plate),
-                this.GetBevelToLeftAnnotation(plate)
+                this.GetPlateWidthAnnotation(plate)
+                //this.GetBevelToLeftAnnotation(plate)
 
                 //this.GetRibHeightAnnotation(plate),
                 //this.GetRibThicknessAnnotation(plate),
@@ -275,15 +275,41 @@ namespace ForRobot.Services
             };
         }
 
-        //private Annotation GetBevelToRightAnnotation(Plita plate)
-        //{
-        //    return new Annotation()
-        //    {
-        //        Position = new Point3D(10, 15, 5),
-        //        Text = $"BevelToRight: {plate.BevelToRight} mm",
-        //        PropertyName = nameof(plate.BevelToRight)
-        //    };
-        //}
+        private Annotation GetBevelToRightAnnotation(Plita plate)
+        {
+            Point3D A = new Point3D();
+            Point3D B = new Point3D();
+            Point3D C = new Point3D();
+            Point3D D = new Point3D();
+
+            switch (plate.ScoseType)
+            {
+                case ScoseTypes.Rect:
+                    return null;
+
+                case ScoseTypes.SlopeLeft:
+                    break;
+
+                case ScoseTypes.SlopeRight:
+                    break;
+
+                case ScoseTypes.TrapezoidTop:
+                    break;
+
+                case ScoseTypes.TrapezoidBottom:
+                    break;
+            }
+
+            Point3DCollection points = new Point3DCollection() { A, B, C, D };
+
+            return new Annotation(points)
+            {
+                Text = $"BevelToRight: {plate.BevelToRight} mm",
+                PropertyName = nameof(plate.BevelToRight)
+            };
+        }
+
+        //private List<Annotation> Get
 
         #endregion Plita
 

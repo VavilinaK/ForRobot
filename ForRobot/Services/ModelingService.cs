@@ -51,103 +51,6 @@ namespace ForRobot.Services
 
         #region Private Methods
 
-        //private Model3DGroup LoadMan3DModel() => new ModelImporter().Load("pack://application:,,,/InterfaceOfRobots;component/3DModels/stickman.stl");
-
-        ///// <summary>
-        ///// Выгрузка модели наблюдателя из компонентов сборки
-        ///// </summary>
-        ///// <returns></returns>
-        //private Model3DGroup GetMansModel(double detalLength, double detalWidth, double detalHeight)
-        //{
-        //    Model3DGroup mans = new Model3DGroup();
-        //    double halfLength = detalLength / 2;
-        //    double halfWidth = detalWidth / 2;
-        //    double halfHeight = detalHeight / 2;
-
-        //    Vector3D manATranslate = new Vector3D(halfLength + 7, 0, 0);
-        //    Vector3D manBTranslate = new Vector3D(0, halfWidth + 15, 0);
-
-        //    var manModelA = this.LoadMan3DModel(); // По ширине
-        //    var manModelB = this.LoadMan3DModel(); // По длине
-
-        //    Transform3DGroup modelTransformA = new Transform3DGroup();
-        //    modelTransformA.Children.Add(new ScaleTransform3D((double)ScaleFactor, (double)ScaleFactor, (double)ScaleFactor));
-        //    modelTransformA.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(1, 0, 0), 90), new Point3D(manATranslate.X, manATranslate.Y, manATranslate.Z)));
-
-        //    Transform3DGroup modelTransformB = modelTransformA.Clone();
-
-        //    modelTransformA.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), -90)));
-
-        //    modelTransformA.Children.Add(new TranslateTransform3D(manATranslate));
-        //    modelTransformB.Children.Add(new TranslateTransform3D(manBTranslate));
-
-        //    manModelA.Transform = modelTransformA;
-        //    manModelB.Transform = modelTransformB;
-
-        //    manModelA.SetName("Mam 1");
-        //    manModelB.SetName("Mam 2");
-            
-        //    mans.Children.Add(manModelA);
-        //    mans.Children.Add(manModelB);
-
-        //    this.ApplyCustomColor(mans, Model.File3D.Colors.WatcherColor);
-
-        //    return mans;
-        //}
-
-        ///// <summary>
-        ///// Выгрузка модели монитора из компонентов сборки
-        ///// </summary>
-        ///// <returns></returns>
-        //private Model3DGroup GetPCModel(double x, double y, double z)
-        //{
-        //    //double halfLength = detalLength / 2;
-        //    //double halfWidth = detalWidth / 2;
-        //    //double halfHeight = detalHeight / 2;
-
-        //    Vector3D pcTranslate = new Vector3D(x, y, z);
-        //    //Vector3D pcTranslate = new Vector3D(-halfLength, -(halfWidth + 7), 0);
-
-        //    var pcModel = new ModelImporter().Load("pack://application:,,,/InterfaceOfRobots;component/3DModels/computer_monitor.stl");
-
-        //    this.ApplyCustomColor(pcModel, Model.File3D.Colors.PcColor);
-
-        //    Transform3DGroup modelTransform = new Transform3DGroup();
-        //    modelTransform.Children.Add(new TranslateTransform3D(pcTranslate));
-        //    modelTransform.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(1, 0, 0), 90), new Point3D(pcTranslate.X, pcTranslate.Y, pcTranslate.Z)));
-        //    modelTransform.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), 180), new Point3D(pcTranslate.X, pcTranslate.Y, pcTranslate.Z)));
-        //    pcModel.Transform = modelTransform;
-
-        //    return pcModel;
-        //}
-
-        ///// <summary>
-        ///// Выгрузка модели робота из компонентов сборки
-        ///// </summary>
-        ///// <returns></returns>
-        //private Model3DGroup GetRobotModel(double x, double y, double z)
-        //{
-        //    double scaleFactor = (double)ScaleFactor * 10;
-        //    //double halfLength = detalLength / 2;
-        //    //double halfWidth = detalWidth / 2;
-        //    //double halfHeight = detalHeight / 2;
-
-        //    Vector3D robotTranslate = new Vector3D(x, y, z);
-        //    //Vector3D robotTranslate = new Vector3D(halfLength, -(halfWidth + 7), 0);
-
-        //    var robotModel = new ModelImporter().Load("pack://application:,,,/InterfaceOfRobots;component/3DModels/kukaRobot.stl");
-
-        //    this.ApplyCustomColor(robotModel, Model.File3D.Colors.RobotColor);
-
-        //    Transform3DGroup modelTransform = new Transform3DGroup();
-        //    modelTransform.Children.Add(new ScaleTransform3D(scaleFactor, scaleFactor, scaleFactor));
-        //    modelTransform.Children.Add(new TranslateTransform3D(robotTranslate));
-        //    modelTransform.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), 90), new Point3D(robotTranslate.X, robotTranslate.Y, robotTranslate.Z)));
-        //    robotModel.Transform = modelTransform;
-
-        //    return robotModel;
-        //}
-
         /// <summary>
         /// Метод создания параллелепипеда(кубоида)
         /// </summary>
@@ -252,24 +155,13 @@ namespace ForRobot.Services
             //meshBuilder.AddQuad(A, D, H, E); // Левая
             //meshBuilder.AddQuad(B, F, G, C); // Правая
 
-            // Грани плиты - основания теперь параллельны оси X
-            // Задняя грань (X = -halfLength) - параллельна оси Z
-            meshBuilder.AddQuad(A, B, C, D);
-
-            // Передняя грань (X = halfLength) - параллельна оси Z  
-            meshBuilder.AddQuad(E, F, G, H);
-
-            // Нижняя грань (Z = -halfHeight) - параллельна оси X
-            meshBuilder.AddQuad(A, E, F, B);
-
-            // Верхняя грань (Z = halfHeight) - параллельна оси X
-            meshBuilder.AddQuad(D, C, G, H);
-
-            // Левая грань (наклонная)
-            meshBuilder.AddQuad(A, D, H, E);
-
-            // Правая грань (наклонная)
-            meshBuilder.AddQuad(B, F, G, C);
+            // Грани плиты
+            meshBuilder.AddQuad(A, B, C, D); // Задняя грань (X = -halfLength)
+            meshBuilder.AddQuad(E, F, G, H); // Передняя грань (X = halfLength)
+            meshBuilder.AddQuad(A, E, H, D); // Левая грань (наклонная в плоскости XY)
+            meshBuilder.AddQuad(B, F, G, C); // Правая грань (наклонная в плоскости XY)
+            meshBuilder.AddQuad(A, B, F, E); // Нижняя грань (параллельна оси X)
+            meshBuilder.AddQuad(D, C, G, H); // Верхняя грань (параллельна оси X)
 
             return meshBuilder.ToMesh();
         }
@@ -289,7 +181,7 @@ namespace ForRobot.Services
             double halfHeight = height / 2;
 
             // Вычисление размеров оснований с учетом ориентации
-            double bottomHalfLen = inBottom ?  halfLength * (1 - TrapezoidRatio) : halfLength;
+            double bottomHalfLen = inBottom ? halfLength * (1 - TrapezoidRatio) : halfLength;
             double topHalfLen = inBottom ? halfLength : halfLength * (1 - TrapezoidRatio);
             
             // Нижнее основание (Y = -halfWidth)
@@ -355,7 +247,9 @@ namespace ForRobot.Services
                     geometry = meshBuilder.ToMesh();
                     break;
             }
-            model3DGroup.Children.Add(new GeometryModel3D(geometry, ForRobot.Model.File3D.Materials.Plate) { BackMaterial = ForRobot.Model.File3D.Materials.Plate });
+            var plateModel = new GeometryModel3D(geometry, ForRobot.Model.File3D.Materials.Plate) { BackMaterial = ForRobot.Model.File3D.Materials.Plate };
+            plateModel.SetName("Plate");
+            model3DGroup.Children.Add(plateModel);
             return model3DGroup;
         }
 
@@ -469,6 +363,7 @@ namespace ForRobot.Services
                                    this.CreatePoint(ribLength / 2 + centerX, (ribRightPositionY + modelRibThickness / 2) + ribYOffset, plateSurfaceZ)); // Нижняя
 
                 GeometryModel3D ribModel = new GeometryModel3D(ribBuilder.ToMesh(), ForRobot.Model.File3D.Materials.Rib) { BackMaterial = ForRobot.Model.File3D.Materials.Rib };
+                ribModel.SetName(string.Format("Rib {0}", i));
                 model3DGroup.Children.Add(ribModel);
             }
 

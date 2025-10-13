@@ -20,6 +20,7 @@ using ForRobot.Libr.Json;
 using ForRobot.Libr.Converters;
 using ForRobot.Libr.Collections;
 using ForRobot.Libr.ConfigurationProperties;
+using System.ComponentModel;
 
 namespace ForRobot.Model.Detals
 {
@@ -325,14 +326,6 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.RibHeight = value;
-                //if (this.RibsCollection?.Count > 0)
-                //{
-                //    for (int i = 0; i < this.RibsCollection.Count; i++)
-                //    {
-                //        this.RibsCollection[i].HightLeft = base.RibHeight;
-                //        this.RibsCollection[i].HightRight = base.RibHeight;
-                //    }
-                //}
                 this.OnChangeProperty(nameof(this.RibHeight));
             }
         }
@@ -349,11 +342,6 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.DistanceToFirst = value;
-                if (this.RibsCollection?.Count > 0)
-                {
-                    this.RibsCollection[0].DistanceLeft = base.DistanceToFirst;
-                    this.RibsCollection[0].DistanceRight = base.DistanceToFirst;
-                }
                 this.OnChangeProperty();
             }
         }
@@ -370,12 +358,6 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.DistanceBetween = value;
-                if (this.RibsCollection?.Count > 0)
-                    for (int i = 1; i < this.RibsCollection.Count; i++)
-                    {
-                        this.RibsCollection[i].DistanceLeft = base.DistanceBetween;
-                        this.RibsCollection[i].DistanceRight = base.DistanceBetween;
-                    }
                 this.OnChangeProperty();
             }
         }
@@ -392,11 +374,6 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.IdentToLeft = value;
-                if (this.RibsCollection?.Count > 0)
-                    for (int i = 0; i < this.RibsCollection.Count; i++)
-                    {
-                        this.RibsCollection[i].IdentToLeft = base.IdentToLeft;
-                    }
                 this.OnChangeProperty();
             }
         }
@@ -413,11 +390,6 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.IdentToRight = value;
-                if (this.RibsCollection?.Count > 0)
-                    for (int i = 0; i < this.RibsCollection.Count; i++)
-                    {
-                        this.RibsCollection[i].IdentToRight = base.IdentToRight;
-                    }
                 this.OnChangeProperty();
             }
         }
@@ -434,11 +406,6 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.DissolutionLeft = value;
-                if (this.RibsCollection?.Count > 0)
-                    for (int i = 0; i < this.RibsCollection.Count; i++)
-                    {
-                        this.RibsCollection[i].DissolutionLeft = base.DissolutionLeft;
-                    }
                 this.OnChangeProperty();
             }
         }
@@ -455,11 +422,6 @@ namespace ForRobot.Model.Detals
             set
             {
                 base.DissolutionRight = value;
-                if (this.RibsCollection?.Count > 0)
-                    for (int i = 0; i < this.RibsCollection.Count; i++)
-                    {
-                        this.RibsCollection[i].DissolutionRight = base.DissolutionRight;
-                    }
                 this.OnChangeProperty();
             }
         }
@@ -829,6 +791,87 @@ namespace ForRobot.Model.Detals
 
             if (this.ParalleleRibs)
                 rib.DistanceRight = rib.DistanceLeft;
+        }
+
+        /// <summary>
+        /// Делегат изменения свойства детали
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected override void HandleChangeProperty(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(this.DistanceToFirst):
+                    if (this.RibsCollection?.Count == 0)
+                        return;
+
+                    this.RibsCollection[0].DistanceLeft = base.DistanceToFirst;
+                    this.RibsCollection[0].DistanceRight = base.DistanceToFirst;
+                    break;
+
+                case nameof(this.DistanceBetween):
+                    if (this.RibsCollection?.Count == 0)
+                        return;
+
+                    for (int i = 1; i < this.RibsCollection.Count; i++)
+                    {
+                        this.RibsCollection[i].DistanceLeft = base.DistanceBetween;
+                        this.RibsCollection[i].DistanceRight = base.DistanceBetween;
+                    }
+                    break;
+
+                case nameof(this.DissolutionRight):
+                    if (this.RibsCollection?.Count == 0)
+                        return;
+
+                    for (int i = 0; i < this.RibsCollection.Count; i++)
+                    {
+                        this.RibsCollection[i].DissolutionRight = base.DissolutionRight;
+                    }
+                    break;
+
+                case nameof(this.DissolutionLeft):
+                    if (this.RibsCollection?.Count == 0)
+                        return;
+
+                    for (int i = 0; i < this.RibsCollection.Count; i++)
+                    {
+                        this.RibsCollection[i].DissolutionLeft = base.DissolutionLeft;
+                    }
+                    break;
+
+                case nameof(this.IdentToRight):
+                    if (this.RibsCollection?.Count == 0)
+                        return;
+
+                    for (int i = 0; i < this.RibsCollection.Count; i++)
+                    {
+                        this.RibsCollection[i].IdentToRight = base.IdentToRight;
+                    }
+                    break;
+                    
+                case nameof(this.IdentToLeft):
+                    if (this.RibsCollection?.Count == 0)
+                        return;
+
+                    for (int i = 0; i < this.RibsCollection.Count; i++)
+                    {
+                        this.RibsCollection[i].IdentToLeft = base.IdentToLeft;
+                    }
+                    break;
+
+                case nameof(this.RibHeight):
+                    //if (this.RibsCollection?.Count > 0)
+                    //{
+                    //    for (int i = 0; i < this.RibsCollection.Count; i++)
+                    //    {
+                    //        this.RibsCollection[i].HightLeft = base.RibHeight;
+                    //        this.RibsCollection[i].HightRight = base.RibHeight;
+                    //    }
+                    //}
+                    break;
+            }
         }
 
         /// <summary>

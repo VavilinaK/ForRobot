@@ -30,7 +30,6 @@ namespace ForRobot.Libr.Client
         #region Private variables
 
         private volatile int _disposed;
-        private bool Disposed => _disposed != 0;
 
         /// <summary>
         /// Используется классом для указания, что соединение установлено

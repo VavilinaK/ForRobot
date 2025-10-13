@@ -235,8 +235,8 @@
             </MenuItem>
 
             <MenuItem Header="_Окно" >
-                <MenuItem Header="_Настройки робота/ов"
-                          Command="{Binding Path=CollapedCommand}" CommandParameter="Robots"/>
+                <MenuItem Header="_Обозреватель соединений"
+                          Command="{Binding Path=CollapedCommand}" CommandParameter="Connections"/>
                 <MenuItem Header="_Окно управления работами"
                           Command="{Binding Path=CollapedCommand}" CommandParameter="Control"/>
                 
@@ -1110,7 +1110,7 @@
                 <avalonDock:LayoutRoot.RightSide>
                     <avalonDock:LayoutAnchorSide>
                         <avalonDock:LayoutAnchorGroup>
-                            <avalonDock:LayoutAnchorable Title="Роботы" ContentId="Robots" AutoHideMinWidth="400">
+                            <avalonDock:LayoutAnchorable Title="Соединения" ContentId="Connections" AutoHideMinWidth="400">
                                 <Grid Margin="10"
                                       DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}">
 

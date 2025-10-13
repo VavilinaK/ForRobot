@@ -13,10 +13,12 @@ using Newtonsoft.Json.Linq;
 using ForRobot.Model.File3D;
 using ForRobot.Libr;
 using ForRobot.Libr.Json;
+using HelixToolkit.Wpf.SharpDX;
+using System.Threading;
 
 namespace ForRobot.Model.Detals
 {
-    public class Detal : ICloneable
+    public class Detal : ICloneable, IDisposable
     {
         #region Private variables
 
@@ -213,9 +215,12 @@ namespace ForRobot.Model.Detals
 
         #region Constructors
 
-        public Detal() { }
+        public Detal() 
+        {
+            this.ChangePropertyEvent += this.HandleChangeProperty;
+        }
 
-        public Detal(DetalType type)
+        public Detal(DetalType type) : this()
         {
             switch (type)
             {
@@ -249,6 +254,12 @@ namespace ForRobot.Model.Detals
 
         #region Private functions
 
+        /// <summary>
+        /// Делегат изменения свойства детали
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected virtual void HandleChangeProperty(object sender, PropertyChangedEventArgs e) { }
 
         #endregion
 
@@ -309,6 +320,28 @@ namespace ForRobot.Model.Detals
         /// Вызов события сохранения свойств
         /// </summary>
         public void SaveProperties() => this.SavePropertiesEvent?.Invoke(this, null);
+
+        #endregion
+
+        #region Implementations of IDisposable
+
+        private volatile int _disposed;
+
+        ~Detal() => Dispose(false);
+
+        public void Dispose() => this.Dispose(true);
+
+        public void Dispose(bool disposing)
+        {
+            if (Interlocked.CompareExchange(ref _disposed, 1, 0) == 0)
+            {
+                if (disposing)
+                {
+                    this.ChangePropertyEvent -= this.HandleChangeProperty;
+                    GC.SuppressFinalize(this);
+                }
+            }
+        }
 
         #endregion
     }
