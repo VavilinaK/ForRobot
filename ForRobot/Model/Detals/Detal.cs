@@ -215,12 +215,9 @@ namespace ForRobot.Model.Detals
 
         #region Constructors
 
-        public Detal() 
-        {
-            this.ChangePropertyEvent += this.HandleChangeProperty;
-        }
+        public Detal() { }
 
-        public Detal(DetalType type) : this()
+        public Detal(DetalType type) 
         {
             switch (type)
             {
@@ -253,13 +250,6 @@ namespace ForRobot.Model.Detals
         #endregion
 
         #region Private functions
-
-        /// <summary>
-        /// Делегат изменения свойства детали
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        protected virtual void HandleChangeProperty(object sender, PropertyChangedEventArgs e) { }
 
         #endregion
 
@@ -337,7 +327,6 @@ namespace ForRobot.Model.Detals
             {
                 if (disposing)
                 {
-                    this.ChangePropertyEvent -= this.HandleChangeProperty;
                     GC.SuppressFinalize(this);
                 }
             }

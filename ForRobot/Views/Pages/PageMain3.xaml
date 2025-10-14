@@ -10,6 +10,7 @@
       xmlns:model="clr-namespace:ForRobot.Model"
       xmlns:file="clr-namespace:ForRobot.Model.File3D"
       xmlns:local="clr-namespace:ForRobot.Views.Pages" 
+      xmlns:attached="clr-namespace:ForRobot.Libr.Attached_properties"
       xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
       xmlns:avalonDock="https://github.com/Dirkster99/AvalonDock"
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
@@ -1110,7 +1111,7 @@
                 <avalonDock:LayoutRoot.RightSide>
                     <avalonDock:LayoutAnchorSide>
                         <avalonDock:LayoutAnchorGroup>
-                            <avalonDock:LayoutAnchorable Title="Соединения" ContentId="Connections" AutoHideMinWidth="400">
+                            <avalonDock:LayoutAnchorable Title="Соединения" ContentId="Connections" AutoHideMinWidth="400" attached:LayoutAnchorableCommands.IsClosed="True">
                                 <Grid Margin="10"
                                       DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}">
 

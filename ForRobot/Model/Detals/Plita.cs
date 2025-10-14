@@ -21,6 +21,7 @@ using ForRobot.Libr.Converters;
 using ForRobot.Libr.Collections;
 using ForRobot.Libr.ConfigurationProperties;
 using System.ComponentModel;
+using System.Threading;
 
 namespace ForRobot.Model.Detals
 {
@@ -751,12 +752,12 @@ namespace ForRobot.Model.Detals
 
         #endregion
 
-        #region Constructors
-
-        //public Plita() { }
+        #region Constructor
 
         public Plita(DetalType type) : base(type)
         {
+            this.ChangePropertyEvent += this.HandleChangeProperty;
+
             this.PlateWidth = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).Width;
             this.BevelToLeft = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).BevelToStart;
             this.BevelToRight = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).BevelToEnd;
@@ -779,6 +780,8 @@ namespace ForRobot.Model.Detals
 
         #region Private functions
 
+        #region Handle
+
         /// <summary>
         /// Делегат изменения расстояния до следующего ребра слева
         /// </summary>
@@ -798,7 +801,7 @@ namespace ForRobot.Model.Detals
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        protected override void HandleChangeProperty(object sender, PropertyChangedEventArgs e)
+        private void HandleChangeProperty(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -873,6 +876,8 @@ namespace ForRobot.Model.Detals
                     break;
             }
         }
+
+        #endregion Handle
 
         /// <summary>
         /// Заполнение коллекции расстояний
@@ -1850,7 +1855,29 @@ namespace ForRobot.Model.Detals
         }
 
         public FullyObservableCollection<Rib> SetRibsCollection(FullyObservableCollection<Rib> collection) => this.RibsCollection = collection;
-        
+
         #endregion Public functions
+
+        #region Implementations of IDisposable
+
+        private volatile int _disposed;
+
+        ~Plita() => Dispose(false);
+
+        public new void Dispose() => this.Dispose(true);
+
+        public new void Dispose(bool disposing)
+        {
+            if (Interlocked.CompareExchange(ref _disposed, 1, 0) == 0)
+            {
+                if (disposing)
+                {
+                    this.ChangePropertyEvent -= this.HandleChangeProperty;
+                    GC.SuppressFinalize(this);
+                }
+            }
+        }
+
+        #endregion
     }
 }
