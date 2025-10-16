@@ -296,6 +296,7 @@
     <Compile Include="Libr\Attributes\PropertyNameAttribute.cs" />
     <Compile Include="Libr\Behavior\BehaviorAttacher.cs" />
     <Compile Include="Libr\Behavior\CameraControllerBehavior.cs" />
+    <Compile Include="Libr\Behavior\ClosedLayoutAnchorableBehavior.cs" />
     <Compile Include="Libr\Behavior\CollapedLayoutAnchorableBehavior.cs" />
     <Compile Include="Libr\Behavior\CollapedLayoutAnchorableMessage.cs" />
     <Compile Include="Libr\Behavior\DataGridAutoSizeColumns.cs" />
@@ -364,9 +365,6 @@
     <Compile Include="ViewModels\MainPageViewModel4.cs" />
     <Compile Include="ViewModels\NavigationTreeViewModel.cs" />
     <Compile Include="ViewModels\PropertiesWindowViewModel.cs" />
-    <Compile Include="Views\Controls\Breadcrumb.xaml.cs">
-      <DependentUpon>Breadcrumb.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Controls\CustomAttributes.cs" />
     <Compile Include="Views\Controls\Image2D.cs" />
     <Compile Include="Views\Controls\PanesTemplateSelector.cs" />
@@ -399,10 +397,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\TabControlStyleResourceDictionary.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Controls\Breadcrumb.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

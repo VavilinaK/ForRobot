@@ -253,12 +253,12 @@
                 </Border.Style>
 
                 <Border.InputBindings>
-                    <MouseBinding MouseAction="LeftClick" Command="{Binding Path=SelectDirectoryCommand, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}">
+                    <MouseBinding MouseAction="LeftClick" Command="{Binding Path=SelectDirectoryCommand, RelativeSource={RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}}">
                         <MouseBinding.CommandParameter>
                             <MultiBinding Converter="{StaticResource ArrayMultiValueConvert}">
-                                <Binding Path="ItemsSource" RelativeSource="{RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}"/>
+                                <Binding Path="ItemsSource" RelativeSource="{RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}"/>
                                 <Binding Path="Content" RelativeSource="{RelativeSource AncestorType={x:Type ListBoxItem}, Mode=FindAncestor}"/>
-                                <Binding Path="." RelativeSource="{RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}"/>
+                                <Binding Path="." RelativeSource="{RelativeSource AncestorType={x:Type local:NavigationTreeView}, Mode=FindAncestor}"/>
                             </MultiBinding>
                         </MouseBinding.CommandParameter>
                     </MouseBinding>
@@ -439,7 +439,6 @@
 
                             <Border Grid.Column="1" BorderThickness="0"
                                     Background="{TemplateBinding Background}"
-                                    Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type local:Breadcrumb}, Mode=FindAncestor}}"
                                     HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
                                 <Border.Style>
@@ -470,9 +469,10 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <ProgressBar x:Name="ProgressBar" Grid.ColumnSpan="2" Panel.ZIndex="1" Background="Transparent" BorderThickness="0"
+                                    <ProgressBar x:Name="ProgressBar" Grid.ColumnSpan="2" Panel.ZIndex="1"
+                                                 Background="Transparent" BorderThickness="0"
                                                  Foreground="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}"
-                                                 Minimum="0" Maximum="100" IsIndeterminate="True">
+                                                 IsIndeterminate="True">
 
                                         <ProgressBar.Style>
                                             <Style TargetType="{x:Type ProgressBar}">
@@ -491,24 +491,14 @@
                                                   Width="{Binding Path=ActualHeight, RelativeSource={RelativeSource Self}}"
                                                   Template="{StaticResource ToggleButtonTemplate}">
 
-                                        <Path Fill="{StaticResource FolderIconStroke}" Stretch="Uniform">
+                                        <Path Fill="{StaticResource FolderIconStroke}" Stretch="UniformToFill">
                                             <Path.Style>
                                                 <Style TargetType="{x:Type Path}">
                                                     <Setter Property="Data" Value="{StaticResource FolderIcon}"/>
-                                                    <Setter Property="LayoutTransform">
-                                                        <Setter.Value>
-                                                            <ScaleTransform ScaleX="0.8" ScaleY="0.8"/>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                    
+
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}, Mode=FindAncestor}}" Value="True">
                                                             <Setter Property="Data" Value="{StaticResource OpenFolderIcon}"/>
-                                                            <Setter Property="LayoutTransform">
-                                                                <Setter.Value>
-                                                                    <ScaleTransform ScaleX="1" ScaleY="1"/>
-                                                                </Setter.Value>
-                                                            </Setter>
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
