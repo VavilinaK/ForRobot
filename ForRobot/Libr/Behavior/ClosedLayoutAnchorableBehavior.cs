@@ -23,7 +23,10 @@ namespace ForRobot.Libr.Behavior
             this._layoutAnchorable = base.AssociatedObject;
 
             if (this._layoutAnchorable != null)
+            {
+                this._layoutAnchorable.PropertyChanged += HandlerPropertyChangedEvent;
                 this._layoutAnchorable.Hiding += HandleHidingEvent;
+            }
         }
 
         protected override void OnDetaching()
@@ -31,7 +34,15 @@ namespace ForRobot.Libr.Behavior
             base.OnDetaching();
 
             if (this._layoutAnchorable != null)
+            {
+                this._layoutAnchorable.PropertyChanged -= HandlerPropertyChangedEvent;
                 this._layoutAnchorable.Hiding -= HandleHidingEvent;
+            }
+        }
+    
+        private static void HandlerPropertyChangedEvent(object sender, EventArgs e)
+        {
+
         }
 
         private static void HandleHidingEvent(object sender, CancelEventArgs e)
