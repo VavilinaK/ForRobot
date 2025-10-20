@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
+using System.Threading.Tasks;
 using System.ComponentModel;
 
 using System.Windows.Interactivity;
@@ -15,8 +16,9 @@ namespace ForRobot.Libr.Behavior
     public class ClosedLayoutAnchorableBehavior : Behavior<LayoutAnchorable>
     {
         private LayoutAnchorable _layoutAnchorable = null;
-        private bool _isOpening = false;
-        
+        private bool _isCheckingPin = false;
+        private bool _isUnlocked = false;
+
         protected override void OnAttached()
         {
             base.OnAttached();
@@ -40,14 +42,43 @@ namespace ForRobot.Libr.Behavior
             }
         }
     
-        private static void HandlerPropertyChangedEvent(object sender, EventArgs e)
+        private void HandlerPropertyChangedEvent(object sender, PropertyChangedEventArgs e)
         {
-
+            string propertyName = e.PropertyName;
+            if ((propertyName == nameof(LayoutAnchorable.IsSelected) && _layoutAnchorable.IsSelected) ||
+               (propertyName == nameof(LayoutAnchorable.IsVisible) && _layoutAnchorable.IsVisible))
+            {
+                if (!_isUnlocked && !_isCheckingPin)
+                {
+                    //Task.Run(async () => await CheckPinCodeAsync());
+                }
+            }
         }
 
-        private static void HandleHidingEvent(object sender, CancelEventArgs e)
-        {
+        private void HandleHidingEvent(object sender, CancelEventArgs e) => _isUnlocked = false;
 
+        private async Task CheckPinCodeAsync()
+        {
+            this._isCheckingPin = true;
+            try
+            {
+                bool pinResult = false;
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    pinResult = ForRobot.App.EqualsPinCode();
+                });
+                if (pinResult)
+                {
+                    _isUnlocked = true;
+                    return;
+                }
+            }
+            finally
+            {
+                _layoutAnchorable.Hide();
+                _isCheckingPin = false;
+                //MessageBox.Show("Неверный пин-код")
+            }
         }
 
         //private static void LayoutAnchorable_IsSelectedChanged(object sender, EventArgs e)

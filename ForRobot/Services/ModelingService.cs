@@ -124,17 +124,6 @@ namespace ForRobot.Services
             double halfWidth = width / 2;
             double halfHeight = height / 2;
 
-            // Вершины плиты
-            //Point3D A = this.CreatePoint(-halfLength, -halfWidth - offsetDirection, -halfHeight);  // левый низ
-            //Point3D B = this.CreatePoint(-halfLength, halfWidth - offsetDirection, -halfHeight);   // правый низ
-            //Point3D C = this.CreatePoint(-halfLength, halfWidth - offsetDirection, halfHeight);    // правый верх
-            //Point3D D = this.CreatePoint(-halfLength, -halfWidth - offsetDirection, halfHeight);   // левый верх
-
-            //Point3D E = this.CreatePoint(halfLength, -halfWidth + offsetDirection, -halfHeight);  // левый низ
-            //Point3D F = this.CreatePoint(halfLength, halfWidth + offsetDirection, -halfHeight);   // правый низ
-            //Point3D G = this.CreatePoint(halfLength, halfWidth + offsetDirection, halfHeight);    // правый верх
-            //Point3D H = this.CreatePoint(halfLength, -halfWidth + offsetDirection, halfHeight);   // левый верх
-
             Point3D A = this.CreatePoint(-halfLength - offsetDirection, -halfWidth, -halfHeight);  // левый низ
             Point3D B = this.CreatePoint(halfLength - offsetDirection, -halfWidth, -halfHeight);   // правый низ
             Point3D C = this.CreatePoint(halfLength - offsetDirection, -halfWidth, halfHeight);    // правый верх
@@ -312,32 +301,20 @@ namespace ForRobot.Services
                 double halfRibThickness = modelRibThickness / 2;
 
                 //Вершины нижнего основания ребра
-                Point3D A = CreatePoint(-halfRibLength + centerX, centerY, modelPlateHeight / 2);
-                Point3D B = CreatePoint(halfRibLength + centerX, centerY - halfRibThickness, modelPlateHeight / 2);
-                Point3D C = CreatePoint(halfRibLength + centerX, centerY, modelPlateHeight / 2);
-                Point3D D = CreatePoint(-halfRibLength + centerX, centerY + halfRibThickness, modelPlateHeight / 2);
+                Point3D A = CreatePoint(-halfRibLength + centerX, ribLeftPositionY + modelRibThickness, modelPlateHeight / 2);
+                Point3D B = CreatePoint(halfRibLength + centerX, ribRightPositionY + modelRibThickness, modelPlateHeight / 2);
+                Point3D C = CreatePoint(halfRibLength + centerX, ribRightPositionY, modelPlateHeight / 2);
+                Point3D D = CreatePoint(-halfRibLength + centerX, ribLeftPositionY, modelPlateHeight / 2);
 
                 // Вершины верхнего основания ребра
-                Point3D E = CreatePoint(-halfRibLength + centerX, centerY, modelPlateHeight / 2 + modelRibHeight);
-                Point3D F = CreatePoint(halfRibLength + centerX, centerY - halfRibThickness, modelPlateHeight / 2 + modelRibHeight);
-                Point3D G = CreatePoint(halfRibLength + centerX, centerY, modelPlateHeight / 2 + modelRibHeight);
-                Point3D H = CreatePoint(-halfRibLength + centerX, centerY + halfRibThickness, modelPlateHeight / 2 + modelRibHeight);
-
-                ////Вершины нижнего основания ребра
-                //Point3D A = CreatePoint(-halfRibLength + centerX, centerY, modelPlateHeight / 2);
-                //Point3D B = CreatePoint(halfRibLength + centerX, centerY - halfRibThickness, modelPlateHeight / 2);
-                //Point3D C = CreatePoint(halfRibLength + centerX, centerY, modelPlateHeight / 2);
-                //Point3D D = CreatePoint(-halfRibLength + centerX, centerY + halfRibThickness, modelPlateHeight / 2);
-
-                //// Вершины верхнего основания ребра
-                //Point3D E = CreatePoint(-halfRibLength + centerX, centerY, modelPlateHeight / 2 + modelRibHeight);
-                //Point3D F = CreatePoint(halfRibLength + centerX, centerY - halfRibThickness, modelPlateHeight / 2 + modelRibHeight);
-                //Point3D G = CreatePoint(halfRibLength + centerX, centerY, modelPlateHeight / 2 + modelRibHeight);
-                //Point3D H = CreatePoint(-halfRibLength + centerX, centerY + halfRibThickness, modelPlateHeight / 2 + modelRibHeight);
+                Point3D E = CreatePoint(-halfRibLength + centerX, ribLeftPositionY + modelRibThickness, modelPlateHeight / 2 + modelRibHeight);
+                Point3D F = CreatePoint(halfRibLength + centerX, ribRightPositionY + modelRibThickness, modelPlateHeight / 2 + modelRibHeight);
+                Point3D G = CreatePoint(halfRibLength + centerX, ribRightPositionY, modelPlateHeight / 2 + modelRibHeight);
+                Point3D H = CreatePoint(-halfRibLength + centerX, ribLeftPositionY, modelPlateHeight / 2 + modelRibHeight);
 
                 ribBuilder.AddQuad(A, B, C, D);  // Нижняя грань                
                 ribBuilder.AddQuad(E, F, G, H); // Верхняя грань
-                // Боковые грани
+                //Боковые грани
                 ribBuilder.AddQuad(A, D, H, E); // Левая
                 ribBuilder.AddQuad(B, C, G, F); // Правая
                 // Торцевые грани
@@ -400,6 +377,8 @@ namespace ForRobot.Services
 
         #region Public Methods
 
+        private const int DEFAULT_DISTANCE = 7;
+
         /// <summary>
         /// Построение модели детали
         /// </summary>
@@ -427,15 +406,15 @@ namespace ForRobot.Services
                     {
                         case ScoseTypes.SlopeLeft:
                         case ScoseTypes.SlopeRight:
-                            offsetDirection = (plate.ScoseType == ScoseTypes.SlopeLeft) ? -SlopeOffset : SlopeOffset;
+                            offsetDirection = SlopeOffset;
                             break;
 
                         case ScoseTypes.TrapezoidBottom:
                             break;
                     }
 
-                    scene.Children.AddRobot(halfModelPlateLength, -(halfModelPlateWidth + 7) + offsetDirection, 0, (double)ScaleFactor * 10);
-                    scene.Children.AddPC(-halfModelPlateLength, -(halfModelPlateWidth + 7), 0, (double)ScaleFactor * 200);
+                    scene.Children.AddRobot(halfModelPlateLength + offsetDirection, -halfModelPlateWidth - DEFAULT_DISTANCE, 0, (double)ScaleFactor * 10);
+                    scene.Children.AddPC(-halfModelPlateLength - offsetDirection, -halfModelPlateWidth - DEFAULT_DISTANCE, 0, (double)ScaleFactor * 200);
 
                     Transform3DGroup modelTransformA = new Transform3DGroup();
                     modelTransformA.Children.Add(new ScaleTransform3D((double)ScaleFactor, (double)ScaleFactor, (double)ScaleFactor));
@@ -443,7 +422,7 @@ namespace ForRobot.Services
                     Transform3DGroup modelTransformB = modelTransformA.Clone();
                     modelTransformA.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), -90)));
 
-                    scene.Children.AddMan(halfModelPlateLength + 7, 0, 0, (double)ScaleFactor * 150, modelTransformA);
+                    scene.Children.AddMan(halfModelPlateLength + DEFAULT_DISTANCE + offsetDirection, 0, 0, (double)ScaleFactor * 150, modelTransformA);
                     scene.Children.AddMan(0, halfModelPlateWidth + 15, 0, (double)ScaleFactor * 150, modelTransformB);
                     break;
 
