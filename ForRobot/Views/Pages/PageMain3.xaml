@@ -676,7 +676,7 @@
             <DockingManager.LayoutItemTemplateSelector>
                 <control:PanesTemplateSelector>
                     <control:PanesTemplateSelector.FileViewTemplate>
-                        <DataTemplate> 
+                        <DataTemplate>
                             <h:HelixViewport3D PreviewMouseDown="UIElement_OnMouseDown"
                                                Background="{h:LinearGradientBrush Gray, White}"
                                                
@@ -713,7 +713,7 @@
                                                        FieldOfView="10"
                                                        NearPlaneDistance="0.001"/>
                                 </h:HelixViewport3D.DefaultCamera>
-                                
+
                                 <h:HelixViewport3D.InputBindings>
                                     <KeyBinding Key="B" Modifiers="Ctrl" Command="{x:Static behavior:CameraControllerBehavior.BackViewCommand}"/>
                                     <KeyBinding Key="F" Modifiers="Ctrl" Command="{x:Static behavior:CameraControllerBehavior.FrontViewCommand}"/>
@@ -721,7 +721,7 @@
                                     <KeyBinding Key="D" Modifiers="Ctrl" Command="{x:Static behavior:CameraControllerBehavior.BottomViewCommand}"/>
                                     <KeyBinding Key="L" Modifiers="Ctrl" Command="{x:Static behavior:CameraControllerBehavior.LeftViewCommand}"/>
                                     <KeyBinding Key="R" Modifiers="Ctrl" Command="{x:Static behavior:CameraControllerBehavior.RightViewCommand}"/>
-                                    
+
                                     <MouseBinding Command="{x:Static h:CameraController.RotateCommand}"  Gesture="RightClick" />
                                     <MouseBinding Command="{x:Static h:CameraController.ZoomCommand}" Gesture="MiddleClick" />
                                     <MouseBinding Command="{x:Static h:CameraController.ZoomExtentsCommand}" Gesture="MiddleDoubleClick" />
@@ -767,12 +767,56 @@
                                     <behavior:HelixWeldsBehavior Detal="{Binding Path=CurrentDetal, diag:PresentationTraceSources.TraceLevel=High, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                                  Thickness="{Binding Path=Settings.WeldsThickness, Source={x:Static Application.Current}, Mode=OneWay}"/>
 
-                                    <!--<behavior:HelixAnnotationsBehavior Detal="{Binding Path=CurrentDetal, PresentationTraceSources.TraceLevel=High, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                                                       FontSize="{Binding Path=Settings.ParamsFontSize, Mode=OneWay, Source={x:Static Application.Current}, UpdateSourceTrigger=PropertyChanged}"/>-->
-                                    
+                                    <behavior:HelixAnnotationsBehavior Detal="{Binding Path=CurrentDetal, PresentationTraceSources.TraceLevel=High, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                       FontSize="{Binding Path=Settings.ParamsFontSize, Mode=OneWay, Source={x:Static Application.Current}, UpdateSourceTrigger=PropertyChanged}"/>
+
                                     <!--<behavior:HelixSceneTrackerBehavior SceneItems="{Binding Path=DataContext.SceneItemsCollection, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>-->
                                 </i:Interaction.Behaviors>
                             </h:HelixViewport3D>
+
+                            <!--<hx:Viewport3DX Grid.Row="1"
+                                                CoordinateSystemHorizontalPosition="{Binding Path=Settings.CoordinateSystemHorizontalPosition, Source={x:Static Application.Current}, Mode=OneWay}"
+                                               CoordinateSystemVerticalPosition="{Binding Path=Settings.CoordinateSystemVerticalPosition, Source={x:Static Application.Current}, Mode=OneWay}"                                              
+                                               ShowCoordinateSystem="{Binding Path=Settings.ShowCoordinateSystem, Source={x:Static Application.Current}, Mode=OneWay}"
+                                               ShowViewCube="{Binding Path=Settings.ShowViewCube, Source={x:Static Application.Current}, Mode=OneWay}"
+                                               ShowTriangleCountInfo="{Binding Path=Settings.ShowTriangleCountInfo, Source={x:Static Application.Current}, Mode=OneWay}"
+                                               ShowFrameRate="{Binding Path=Settings.ShowFrameRate, Source={x:Static Application.Current}, Mode=OneWay}"
+                                               
+                                               Orthographic="{Binding Path=Settings.Orthographic, Source={x:Static Application.Current}, Mode=OneWay}"
+                                               ShowCameraInfo="{Binding Path=Settings.ShowCameraInfo, Source={x:Static Application.Current}, Mode=OneWay}"
+                                               ShowCameraTarget="{Binding Path=Settings.ShowCameraTarget, Source={x:Static Application.Current}, Mode=OneWay}"
+                                               RotateAroundMouseDownPoint="{Binding Path=Settings.RotateAroundMouseDownPoint, Source={x:Static Application.Current}, Mode=OneWay}"
+                                               ZoomAroundMouseDownPoint="{Binding Path=Settings.ZoomAroundMouseDownPoint, Source={x:Static Application.Current}, Mode=OneWay}"
+                                               IsInertiaEnabled="{Binding Path=Settings.IsInertiaEnabled, Source={x:Static Application.Current}, Mode=OneWay}"
+                                               IsPanEnabled="{Binding Path=Settings.IsPanEnabled, Source={x:Static Application.Current}, Mode=OneWay}"
+                                               IsMoveEnabled="{Binding Path=Settings.IsMoveEnabled, Source={x:Static Application.Current}, Mode=OneWay}"
+                                               IsRotationEnabled="{Binding Path=Settings.IsRotationEnabled, Source={x:Static Application.Current}, Mode=OneWay}"
+                                               IsZoomEnabled="{Binding Path=Settings.IsZoomEnabled, Source={x:Static Application.Current}, Mode=OneWay}"
+                                               IsChangeFieldOfViewEnabled="{Binding Path=Settings.IsChangeFieldOfViewEnabled, Source={x:Static Application.Current}, Mode=OneWay}"
+                                               RotationSensitivity="{Binding Path=Settings.RotationSensitivity, Source={x:Static Application.Current}, Mode=OneWay}"
+                                               ZoomSensitivity="{Binding Path=Settings.ZoomSensitivity, Source={x:Static Application.Current}, Mode=OneWay}"
+                                               CameraInertiaFactor="{Binding Path=Settings.CameraInertiaFactor, Source={x:Static Application.Current}, Mode=OneWay}"
+                                               PageUpDownZoomSensitivity="5"
+                                               MinimumFieldOfView="10.0" MaximumFieldOfView="120.0">
+
+                                    <hx:Viewport3DX.InputBindings>
+                                        <KeyBinding Key="B" Modifiers="Ctrl" Command="{x:Static behavior:CameraControllerBehavior.BackViewCommand}"/>
+                                        <KeyBinding Key="F" Modifiers="Ctrl" Command="{x:Static behavior:CameraControllerBehavior.FrontViewCommand}"/>
+                                        <KeyBinding Key="U" Modifiers="Ctrl" Command="{x:Static behavior:CameraControllerBehavior.TopViewCommand}"/>
+                                        <KeyBinding Key="D" Modifiers="Ctrl" Command="{x:Static behavior:CameraControllerBehavior.BottomViewCommand}"/>
+                                        <KeyBinding Key="L" Modifiers="Ctrl" Command="{x:Static behavior:CameraControllerBehavior.LeftViewCommand}"/>
+                                        <KeyBinding Key="R" Modifiers="Ctrl" Command="{x:Static behavior:CameraControllerBehavior.RightViewCommand}"/>
+
+                                        <MouseBinding Command="{x:Static h:CameraController.RotateCommand}"  Gesture="RightClick" />
+                                        <MouseBinding Command="{x:Static h:CameraController.ZoomCommand}" Gesture="MiddleClick" />
+                                        <MouseBinding Command="{x:Static h:CameraController.ZoomExtentsCommand}" Gesture="MiddleDoubleClick" />
+                                        <MouseBinding Command="{x:Static h:CameraController.PanCommand}" Gesture="LeftClick" />
+                                    </hx:Viewport3DX.InputBindings>
+
+                                    <hx:AmbientLight3D/>
+
+                                    <hx:LineGeometryModel3D Visibility="{Binding Path=DataContext.IsVisibleGridLinesVisual3D, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>
+                                </hx:Viewport3DX>-->
                         </DataTemplate>
                     </control:PanesTemplateSelector.FileViewTemplate>
                 </control:PanesTemplateSelector>
@@ -923,8 +967,7 @@
                                 <avalonDock:LayoutAnchorable Title="Параметры детали" ContentId="ParametrsOfDetal">
                                     <!--<control:ParamsTreeView>
                                         <TreeViewItem Header="Общие">
-                                           
- <ContentControl ContentTemplate="{StaticResource PlitaTemplate3Style}"/>
+                                            <ContentControl ContentTemplate="{StaticResource PlitaTemplate3Style}"/>
                                         </TreeViewItem>
 
                                         <TreeViewItem Header="Доп.">
@@ -935,7 +978,8 @@
                                             <ContentControl ContentTemplate="{StaticResource PlitaSvarkaTemplate3Style}"/>
                                         </TreeViewItem>
 
-                                        -->
+                                        
+                                    -->
                                     <!--<control:ParamsTreeView.Style>
                                             <Style TargetType="{x:Type control:ParamsTreeView}">
                                                 <Style.Triggers>
@@ -944,8 +988,8 @@
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
-                                        </control:ParamsTreeView.Style>--><!--
-                                    </control:ParamsTreeView>-->
+                                        </control:ParamsTreeView.Style>-->
+                                    <!--</control:ParamsTreeView>-->
 
                                     <TreeView FontSize="{StaticResource FontSizeNP2}" BorderBrush="Transparent"
                                               VerticalContentAlignment="Top" HorizontalContentAlignment="Stretch"
@@ -956,7 +1000,6 @@
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Path=SelectedFile.CurrentDetal}" Value="{x:Null}">
                                                         <Setter Property="IsEnabled" Value="False"/>
-                                                        <!--<Setter Property="Visibility" Value="Hidden"/>-->
                                                     </DataTrigger>
 
                                                     <DataTrigger Binding="{Binding Path=SceneItemsCollection.Count}" Value="{x:Null}">
@@ -967,9 +1010,6 @@
                                         </TreeView.Style>
 
                                         <TreeView.Resources>
-                                            
-                                    <!--<SolidColorBrush x:Key="TreeViewItem.TreeArrow.Static.Background" Color="#B8B8B8"/>-->
-                                    
                                             <SolidColorBrush x:Key="TreeViewItem.TreeArrow.Static.Checked.Fill" Color="#304cff"/>
                                             <SolidColorBrush x:Key="TreeViewItem.TreeArrow.Static.Checked.Stroke" Color="#001ccf"/>
                                             <SolidColorBrush x:Key="TreeViewItem.TreeArrow.MouseOver.Stroke" Color="#42fcff"/>

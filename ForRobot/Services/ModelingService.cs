@@ -135,7 +135,7 @@ namespace ForRobot.Services
             Point3D H = this.CreatePoint(-halfLength + offsetDirection, halfWidth, halfHeight);   // левый верх
 
             MeshBuilder meshBuilder = new MeshBuilder();
-            
+
             // Грани плиты
             meshBuilder.AddQuad(A, B, C, D); // Задняя грань (X = -halfLength)
             meshBuilder.AddQuad(E, F, G, H); // Передняя грань (X = halfLength)

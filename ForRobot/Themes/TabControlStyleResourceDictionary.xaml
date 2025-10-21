@@ -1708,20 +1708,64 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            
+
                             <TextBlock x:Name="scoseT" Grid.Column="0" Text="{Binding}" TextWrapping="Wrap" VerticalAlignment="Center" Padding="0, 4" Margin="6, 0"/>
-                            
+
                             <Path Grid.Column="1" Stretch="Uniform">
                                 <Path.Style>
-                                <Style TargetType="{x:Type Path}">
-                                    <Setter Property="Fill" Value="Black"/>
+                                    <Style TargetType="{x:Type Path}">
+                                        <Setter Property="Fill" Value="Black"/>
 
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Path=Text, ElementName=scoseT}" Value="Прямоугольник">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=Text, ElementName=scoseT}" Value="Прямоугольник">
+                                                <Setter Property="Data" Value="{DynamicResource RectangularPathGeomerty}"/>
+                                            </DataTrigger>
+
+                                            <DataTrigger Binding="{Binding Path=Text, ElementName=scoseT}" Value="С наклоном влево">
+                                                <Setter Property="Data" Value="{DynamicResource ParallelogramRightPathGeomerty}"/>
+                                                <Setter Property="LayoutTransform">
+                                                    <Setter.Value>
+                                                        <ScaleTransform ScaleX="-1.0"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter Property="Fill" Value="Transparent"/>
+                                                <Setter Property="Stroke" Value="Black"/>
+                                            </DataTrigger>
+
+                                            <DataTrigger Binding="{Binding Path=Text, ElementName=scoseT}" Value="С наклоном вправо">
+                                                <Setter Property="Data" Value="{DynamicResource ParallelogramRightPathGeomerty}"/>
+                                                <Setter Property="Fill" Value="Transparent"/>
+                                                <Setter Property="Stroke" Value="Black"/>
+                                            </DataTrigger>
+
+                                            <DataTrigger Binding="{Binding Path=Text, ElementName=scoseT}" Value="Трапеция">
+                                                <Setter Property="Data" Value="{DynamicResource TrapezoidTopPathGeomerty}"/>
+                                            </DataTrigger>
+
+                                            <DataTrigger Binding="{Binding Path=Text, ElementName=scoseT}" Value="Перевёрнутая трапеция">
+                                                <Setter Property="Data" Value="{DynamicResource TrapezoidTopPathGeomerty}"/>
+                                                <Setter Property="LayoutTransform">
+                                                    <Setter.Value>
+                                                        <ScaleTransform ScaleY="-1.0"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Path.Style>
+                            </Path>
+
+                            <!--<Path Grid.Column="1" Stretch="Uniform">
+                                <Path.Style>
+                                    <Style TargetType="{x:Type Path}">
+                                        <Setter Property="Fill" Value="Black"/>
+
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=ScoseType}" Value="{x:Static detals:ScoseTypes.Rect}">
                                             <Setter Property="Data" Value="{DynamicResource RectangularPathGeomerty}"/>
                                         </DataTrigger>
 
-                                        <DataTrigger Binding="{Binding Path=Text, ElementName=scoseT}" Value="С наклоном влево">
+                                            <DataTrigger Binding="{Binding Path=ScoseType}" Value="{x:Static detals:ScoseTypes.SlopeLeft}">
                                             <Setter Property="Data" Value="{DynamicResource ParallelogramRightPathGeomerty}"/>
                                             <Setter Property="LayoutTransform">
                                                 <Setter.Value>
@@ -1732,17 +1776,17 @@
                                             <Setter Property="Stroke" Value="Black"/>
                                         </DataTrigger>
 
-                                        <DataTrigger Binding="{Binding Path=Text, ElementName=scoseT}" Value="С наклоном вправо">
+                                            <DataTrigger Binding="{Binding Path=ScoseType}" Value="{x:Static detals:ScoseTypes.SlopeRight}">
                                             <Setter Property="Data" Value="{DynamicResource ParallelogramRightPathGeomerty}"/>
                                             <Setter Property="Fill" Value="Transparent"/>
                                             <Setter Property="Stroke" Value="Black"/>
                                         </DataTrigger>
 
-                                        <DataTrigger Binding="{Binding Path=Text, ElementName=scoseT}" Value="Трапеция">
+                                            <DataTrigger Binding="{Binding Path=ScoseType}" Value="{x:Static detals:ScoseTypes.TrapezoidTop}">
                                             <Setter Property="Data" Value="{DynamicResource TrapezoidTopPathGeomerty}"/>
                                         </DataTrigger>
 
-                                        <DataTrigger Binding="{Binding Path=Text, ElementName=scoseT}" Value="Перевёрнутая трапеция">
+                                            <DataTrigger Binding="{Binding Path=ScoseType}" Value="{x:Static detals:ScoseTypes.TrapezoidBottom}">
                                             <Setter Property="Data" Value="{DynamicResource TrapezoidTopPathGeomerty}"/>
                                             <Setter Property="LayoutTransform">
                                                 <Setter.Value>
@@ -1750,10 +1794,10 @@
                                                 </Setter.Value>
                                             </Setter>
                                         </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Path.Style>
-                        </Path>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Path.Style>
+                            </Path>-->
                         </Grid>
                     </DataTemplate>
                 </ComboBox.ItemTemplate>

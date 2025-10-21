@@ -57,8 +57,8 @@ namespace ForRobot.Services
         {
             List<Annotation> annotations = new List<Annotation>()
             {
-                this.GetPlateLengthAnnotation(plate),
-                this.GetPlateWidthAnnotation(plate)
+                this.GetPlateLengthAnnotation(plate)
+                //this.GetPlateWidthAnnotation(plate)
                 //this.GetBevelToLeftAnnotation(plate)
 
                 //this.GetRibHeightAnnotation(plate),
@@ -154,31 +154,24 @@ namespace ForRobot.Services
             double halfLength = (double)plate.PlateLength * (double)ScaleFactor / 2;
             double halfWidth = modelPlateWidth / 2;
 
-            double leftOffsetDirection = 0;
-            double rightOffsetDirection = 0;
+            //double leftOffsetDirection = 0;
+            //double rightOffsetDirection = 0;
+            double offsetX = 0;
             switch (plate.ScoseType)
             {
                 case ScoseTypes.SlopeLeft:
-                    leftOffsetDirection = -ModelingService.SlopeOffset;
+                    offsetX = (plate.ScoseType == ScoseTypes.SlopeLeft) ? -ModelingService.SlopeOffset : ModelingService.SlopeOffset;
                     break;
 
                 case ScoseTypes.SlopeRight:
-                    rightOffsetDirection = ModelingService.SlopeOffset;
+                    //rightOffsetDirection = ModelingService.SlopeOffset;
                     break;
             }
 
-            Point3D A = this.CreatePoint(halfLength, halfWidth + Annotation.DefaultAnnotationWidth, 0);
-            Point3D B = this.CreatePoint(halfLength, halfWidth + leftOffsetDirection, 0);
-            Point3D C = this.CreatePoint(-halfLength, halfWidth + rightOffsetDirection, 0);
-            Point3D D = this.CreatePoint(-halfLength, halfWidth + Annotation.DefaultAnnotationWidth, 0);
-
-            if (plate.ScoseType == ScoseTypes.TrapezoidTop)
-            {
-                A.Y -= modelPlateWidth + Annotation.DefaultAnnotationWidth * 2;
-                B.Y -= modelPlateWidth;
-                C.Y -= modelPlateWidth;
-                D.Y -= modelPlateWidth + Annotation.DefaultAnnotationWidth * 2;
-            }
+            Point3D A = this.CreatePoint(-halfLength + offsetX, halfWidth, 0);
+            Point3D B = this.CreatePoint(-halfLength + offsetX, halfWidth + Annotation.DefaultAnnotationWidth, 0);
+            Point3D C = this.CreatePoint(halfLength + offsetX, halfWidth + Annotation.DefaultAnnotationWidth, 0);
+            Point3D D = this.CreatePoint(halfLength + offsetX, halfWidth, 0);
 
             Point3DCollection points = new Point3DCollection() { A, B, C, D };
 
@@ -195,7 +188,7 @@ namespace ForRobot.Services
             
             //ModelingService.RotateVerticesAroundX(points.ToArray(), 180);
             
-            return new Annotation(points, Annotation.ArrowSide.DA)
+            return new Annotation(points)
             {
                 Text = ToString(plate.PlateLength),
                 PropertyName = nameof(plate.PlateLength),

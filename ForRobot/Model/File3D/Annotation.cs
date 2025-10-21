@@ -53,15 +53,7 @@ namespace ForRobot.Model.File3D
 
             DA = 3,
 
-            Top = AB,
-
-            Right = BC,
-
-            Bottom = CD,
-
-            Left = DA,
-
-            All = Top | Right | Bottom | Left
+            All = AB | BC | CD | DA
         }
 
         public static double DefaultFontSize { get; set; } = 20.0;
@@ -113,6 +105,12 @@ namespace ForRobot.Model.File3D
         /// </summary>
         public bool IsHorizontal { get; set; }
 
+        /* Расположение точек
+         * B<------->C
+         *  |       |
+         *  |_______|
+         *  A       D
+        */
         public new Point3DCollection Points
         {
             get => this._points;

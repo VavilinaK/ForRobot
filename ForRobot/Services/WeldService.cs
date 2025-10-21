@@ -64,34 +64,33 @@ namespace ForRobot.Services
                 // Длина шва
                 double weldLength = modelPlateLength;
 
-                double ribYOffset = 0;  // Смещение задней части ребра для скоса
+                double weldYOffset = 0;  // Смещение задней части ребра для скоса
                 switch (plate.ScoseType)
                 {
                     case ScoseTypes.SlopeLeft:
                     case ScoseTypes.SlopeRight:
-                        ribYOffset = (plate.ScoseType == ScoseTypes.SlopeLeft) ? -ModelingService.SlopeOffset : ModelingService.SlopeOffset;
+                        double positionRatio = ((weldLeftPositionY + weldRightPositionY) / 2 + modelPlateWidth / 2) / modelPlateWidth * 2 - 1;
+                        weldYOffset = ((plate.ScoseType == ScoseTypes.SlopeLeft) ? -ModelingService.SlopeOffset : ModelingService.SlopeOffset) * positionRatio;
                         break;
 
                     case ScoseTypes.TrapezoidTop:
                     case ScoseTypes.TrapezoidBottom:
-                        // Положение шва по ширине плиты
-                        double positionRatio = ((weldLeftPositionY + weldRightPositionY) / 2 + modelPlateWidth / 2) / modelPlateWidth;
+                        double trapezoidPositionRatio = ((weldLeftPositionY + weldRightPositionY) / 2 + modelPlateWidth / 2) / modelPlateWidth;
 
                         if (plate.ScoseType == ScoseTypes.TrapezoidTop)
-                            weldLength = modelPlateLength * (1 - ModelingService.TrapezoidRatio * positionRatio);
+                            weldLength = modelPlateLength * (1 - ModelingService.TrapezoidRatio * trapezoidPositionRatio);
                         else
-                            weldLength = modelPlateLength * (1 - ModelingService.TrapezoidRatio * (1 - positionRatio));
+                            weldLength = modelPlateLength * (1 - ModelingService.TrapezoidRatio * (1 - trapezoidPositionRatio));
 
                         weldLength = Math.Max(weldLength, ModelingService.MIN_RIB_LENGTH);
                         break;
                 }
-                //double weldOffset = modelRibThickness * 0.1;
 
                 double xStart = (modelRibIdentToLeft + modelRibDissolutionLeft) - weldLength / 2;
                 double xEnd = weldLength / 2 - modelRibIdentToRight - modelRibDissolutionRight;
 
-                Point3D startPoint = new Point3D(xStart, weldLeftPositionY, modelPlateHeight);
-                Point3D endPoint = new Point3D(xEnd, weldLeftPositionY + ribYOffset, modelPlateHeight);
+                Point3D startPoint = new Point3D(xStart + weldYOffset, weldLeftPositionY, modelPlateHeight);
+                Point3D endPoint = new Point3D(xEnd + weldYOffset, weldRightPositionY, modelPlateHeight);
 
                 // Швы добавляются с обеих сторон ребра
                 string weldName = String.Format("Weld {0}", i + 1);
@@ -103,8 +102,8 @@ namespace ForRobot.Services
                     EndPoint = endPoint
                 });
 
-                startPoint.Y += modelRibThickness * 1.5; // Костыль.
-                endPoint.Y += modelRibThickness * 1.5;
+                startPoint.Y += modelRibThickness;
+                endPoint.Y += modelRibThickness;
 
                 welds.Add(new Weld()
                 {

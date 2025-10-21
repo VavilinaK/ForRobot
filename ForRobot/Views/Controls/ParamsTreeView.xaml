@@ -119,8 +119,4 @@
             <StackPanel Orientation="Vertical"/>
         </ItemsPanelTemplate>
     </TreeView.ItemsPanel>
-
-    <!--<TreeViewItem Header="Общие" ToolTip="Tooltip for Item 1">
-        <TreeViewItem Header="Общие"/>
-    </TreeViewItem>-->
 </TreeView>
