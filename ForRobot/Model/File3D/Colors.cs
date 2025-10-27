@@ -17,8 +17,8 @@ namespace ForRobot.Model.File3D
         private static Color DefaultWeldColor => Color.FromRgb(255, 142, 20);
         private static Color DefaultLeftSideWeldColor => Color.FromRgb(43, 255, 209);
         private static Color DefaultRightSideWeldColor => Color.FromRgb(255, 31, 53);
-        private static Color DefaultAnnotationArrowsColor => Color.FromRgb(0, 191, 255);
 
+        private static Color DefaultAnnotationArrowsColor => Color.FromRgb(0, 191, 255);
         private static Color DefaultAnnotationForegroundColor => Color.FromRgb(0, 0, 0);
         private static Color DefaultAnnotationBackgroundColor => System.Windows.Media.Colors.Transparent;
 

@@ -57,8 +57,8 @@ namespace ForRobot.Services
         {
             List<Annotation> annotations = new List<Annotation>()
             {
-                this.GetPlateLengthAnnotation(plate)
-                //this.GetPlateWidthAnnotation(plate)
+                this.GetPlateLengthAnnotation(plate),
+                this.GetPlateWidthAnnotation(plate)
                 //this.GetBevelToLeftAnnotation(plate)
 
                 //this.GetRibHeightAnnotation(plate),
@@ -332,6 +332,7 @@ namespace ForRobot.Services
         }
 
         public string ToString(decimal param) => string.Format("{0} mm", param);
+        //public string ToString(object param) => param.ToString();
 
         #endregion
     }

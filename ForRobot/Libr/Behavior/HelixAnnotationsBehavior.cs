@@ -97,6 +97,18 @@ namespace ForRobot.Libr.Behavior
         
         public static readonly DependencyProperty LabelBackgroundProperty = DependencyProperty.Register(nameof(LabelBackground), typeof(Brush), typeof(HelixAnnotationsBehavior), new UIPropertyMetadata(Brushes.Transparent, VisualChanged));
 
+        /// <summary>
+        /// Gets or sets the thickness.
+        /// </summary>
+        /// <value>The thickness.</value>
+        public double Thickness
+        {
+            get => (double)this.GetValue(ThicknessProperty);
+            set => this.SetValue(ThicknessProperty, value);
+        }
+
+        public static readonly DependencyProperty ThicknessProperty = DependencyProperty.Register(nameof(Thickness), typeof(double), typeof(HelixAnnotationsBehavior), new UIPropertyMetadata(Brushes.Transparent, VisualChanged));
+
         #endregion Public variables
 
         #region Private functions
@@ -108,15 +120,11 @@ namespace ForRobot.Libr.Behavior
 
             foreach(Annotation item in this.Items)
             {
-                item.Label.FontWeight = this.FontWeight;
-                item.Label.Foreground = this.Foreground;
-                item.Label.Background = this.LabelBackground;
-
-                if(this.FontFamily != null)
-                    item.Label.FontFamily = this.FontFamily;
-                    
-                if (this.FontSize > 0)
-                    item.Label.FontSize = this.FontSize;
+                item.GetFontSize(this.FontSize);
+                item.GetFontFamily(this.FontFamily);
+                item.GetFontWeight(this.FontWeight);
+                item.GetForeground(this.Foreground);
+                item.GetLabelBackground(this.LabelBackground);
             }
         }
 
@@ -177,12 +185,12 @@ namespace ForRobot.Libr.Behavior
             if (this.Items != null && this.Items is ObservableCollection<Annotation> currentCollection)
             {
                 currentCollection.Clear();
-                currentCollection.Union(annotations);
-                //foreach (var annotation in annotations)
-                //{
-                //    annotation.FontSize = this.FontSize;
-                //    currentCollection.Add(annotation);
-                //}
+                //currentCollection.Union(annotations);
+                foreach (var annotation in annotations)
+                {
+                    //annotation.FontSize = this.FontSize;
+                    currentCollection.Add(annotation);
+                }
             }
             else
             {

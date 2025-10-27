@@ -261,39 +261,62 @@ namespace ForRobot.Model.Settings
 
         #region Params
 
-        private double _paramsFontSize = 20;
+        private double _annotationFontSize = 20;
         private double _weldsThickness = 5;
-        private bool _paramsIsVisibale = true;
+        private double _annotationThickness = 2.0;
+        //private bool _annotationIsVisibale = true;
 
-        public double WeldsThickness { get; set; } = 5;
+        /// <summary>
+        /// Толщина линий шва на модели
+        /// </summary>
+        public double WeldsThickness
+        {
+            get => this._weldsThickness;
+            set
+            {
+                this._weldsThickness = value;
+                this.OnChangeProperty();
+            }
+        }
+
+        /// <summary>
+        /// Размер шрифта
+        /// </summary>
+        public double AnnotationFontSize
+        {
+            get => this._annotationFontSize;
+            set
+            {
+                this._annotationFontSize = value;
+                this.OnChangeProperty();
+            }
+        }
+
+        /// <summary>
+        /// Толщина линий
+        /// </summary>
+        public double AnnotationThickness
+        {
+            get => this._annotationThickness;
+            set
+            {
+                this._annotationThickness = value;
+                this.OnChangeProperty();
+            }
+        }
+
+        ///// <summary>
+        ///// Видимы ли параметры
+        ///// </summary>
+        //public bool AnnotationIsVisibale
         //{
-        //    get => this._weldsThickness;
+        //    get => this._annotationIsVisibale;
         //    set
         //    {
-        //        this._weldsThickness = value;
+        //        this._paramsIsVisibale = value;
         //        this.OnChangeProperty();
         //    }
         //}
-
-        public double ParamsFontSize
-        {
-            get => this._paramsFontSize;
-            set
-            {
-                this._paramsFontSize = value;
-                this.OnChangeProperty();
-            }
-        }
-
-        public bool ParamsIsVisibale
-        {
-            get => this._paramsIsVisibale;
-            set
-            {
-                this._paramsIsVisibale = value;
-                this.OnChangeProperty();
-            }
-        }
 
         #endregion Params
 
