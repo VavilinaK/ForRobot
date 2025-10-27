@@ -768,7 +768,9 @@
                                                                  Thickness="{Binding Path=Settings.WeldsThickness, Source={x:Static Application.Current}, Mode=OneWay}"/>
 
                                     <behavior:HelixAnnotationsBehavior Detal="{Binding Path=CurrentDetal, PresentationTraceSources.TraceLevel=High, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                                                       FontSize="{Binding Path=Settings.ParamsFontSize, Mode=OneWay, Source={x:Static Application.Current}, UpdateSourceTrigger=PropertyChanged}"/>
+                                                                       FontSize="{Binding Path=Settings.ParamsFontSize, Mode=OneWay, Source={x:Static Application.Current}, UpdateSourceTrigger=PropertyChanged}"
+                                                                       Foreground="{Binding Source={x:Static file:Colors.AnnotationForegroundColor}, Converter={StaticResource ColorToBrushConverter}}"
+                                                                       LabelBackground="{Binding Source={x:Static file:Colors.AnnotationBackgroundColor}, Converter={StaticResource ColorToBrushConverter}}"/>
 
                                     <!--<behavior:HelixSceneTrackerBehavior SceneItems="{Binding Path=DataContext.SceneItemsCollection, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>-->
                                 </i:Interaction.Behaviors>

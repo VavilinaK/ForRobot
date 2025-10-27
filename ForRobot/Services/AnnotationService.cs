@@ -70,7 +70,7 @@ namespace ForRobot.Services
             return annotations;
         }
 
-        #region Properties
+        #region Detal's properties
 
         private Annotation GetPlateThicknessAnnotation(Detal detal)
         {

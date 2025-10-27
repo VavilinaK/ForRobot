@@ -80,6 +80,9 @@ namespace ForRobot.Libr.Behavior
         {
             ForRobot.Services.IWeldService weldService = new ForRobot.Services.WeldService(ForRobot.Model.Settings.Settings.ScaleFactor);
 
+            //if (this.Detal == null)
+            //    return;
+
             var welds = weldService.GetWelds(this.Detal);
 
             if (this.Items is ObservableCollection<Weld> currentCollection)

@@ -15,10 +15,13 @@ namespace ForRobot.Model.File3D
         private static Color DefaultPlateColor => Color.FromRgb(23, 230, 75);
         private static Color DefaultRibsColor => Color.FromRgb(23, 230, 75);
         private static Color DefaultWeldColor => Color.FromRgb(255, 142, 20);
-        private static Color DefaultLeftWeldColor => Color.FromRgb(43, 255, 209);
-        private static Color DefaultRightWeldColor => Color.FromRgb(255, 31, 53);
+        private static Color DefaultLeftSideWeldColor => Color.FromRgb(43, 255, 209);
+        private static Color DefaultRightSideWeldColor => Color.FromRgb(255, 31, 53);
         private static Color DefaultAnnotationArrowsColor => Color.FromRgb(0, 191, 255);
-        private static Color DefaultAnnotationTextColor => Color.FromRgb(0, 0, 0);
+
+        private static Color DefaultAnnotationForegroundColor => Color.FromRgb(0, 0, 0);
+        private static Color DefaultAnnotationBackgroundColor => System.Windows.Media.Colors.Transparent;
+
         private static Color DefaultSelectorBoxColor => Color.FromRgb(255, 218, 33);
 
         [PropertyName("Робот")]
@@ -40,16 +43,19 @@ namespace ForRobot.Model.File3D
         public static Color WeldColor { get; set; } = DefaultWeldColor;
 
         [PropertyName("Левая сторона шва")]
-        public static Color LeftWeldColor { get; set; } = DefaultLeftWeldColor;
+        public static Color LeftSideWeldColor { get; set; } = DefaultLeftSideWeldColor;
 
         [PropertyName("Правая сторона шва")]
-        public static Color RightWeldColor { get; set; } = DefaultRightWeldColor;
+        public static Color RightSideWeldColor { get; set; } = DefaultRightSideWeldColor;
 
-        [PropertyName("Параметры детали (стрелки)")]
+        [PropertyName("Линии (параметры детали)")]
         public static Color AnnotationArrowsColor { get; set; } = DefaultAnnotationArrowsColor;
 
-        [PropertyName("Параметры детали (тескт)")]
-        public static Color AnnotationTextColor { get; set; } = DefaultAnnotationTextColor;
+        [PropertyName("Текст (параметры детали)")]
+        public static Color AnnotationForegroundColor { get; set; } = DefaultAnnotationForegroundColor;
+
+        [PropertyName("Фон тескта (параметры детали)")]
+        public static Color AnnotationBackgroundColor { get; set; } = DefaultAnnotationBackgroundColor;
 
         [PropertyName("Бокс выбора модели/части модели")]
         public static Color SelectorBoxColor { get; set; } = DefaultSelectorBoxColor;
@@ -59,13 +65,17 @@ namespace ForRobot.Model.File3D
         /// </summary>
         public static void DefaultColors()
         {
+            RobotColor = DefaultRobotColor;
+            PcColor = DefaultPcColor;
+            WatcherColor = DefaultWatcherColor;
             PlateColor = DefaultPlateColor;
             RibsColor = DefaultRibsColor;
             WeldColor = DefaultWeldColor;
-            LeftWeldColor = DefaultLeftWeldColor;
-            RightWeldColor = DefaultRightWeldColor;
+            LeftSideWeldColor = DefaultLeftSideWeldColor;
+            RightSideWeldColor = DefaultRightSideWeldColor;
             AnnotationArrowsColor = DefaultAnnotationArrowsColor;
-            AnnotationTextColor = DefaultAnnotationTextColor;
+            AnnotationForegroundColor = DefaultAnnotationForegroundColor;
+            AnnotationBackgroundColor = DefaultAnnotationBackgroundColor;
             SelectorBoxColor = DefaultSelectorBoxColor;
         }
     }

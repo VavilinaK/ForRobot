@@ -22,18 +22,29 @@ namespace ForRobot.Model.File3D
     {
         #region Private variables
 
-        private double _thickness = DefaultThickness;
+        //private static double _defaultFontSize = 20.0;
+        //private static double _defaultThickness = 2.0;
+        //private static double _defaultHeadSize = 1.0;
+        //private static double _defaultAnnotationWidth = 5.0;
+        //private static Brush _defaultTextForeground = Brushes.Black;
+        //private static Brush _defaultTextBackground = Brushes.Transparent;
+        //private Brush _defaultArrowColor = Brushes.Blue;
+
         private Point3DCollection _points;
-        private readonly TextVisual3D _label = new TextVisual3D
-        {
-            FontSize = DefaultFontSize,
-            Foreground = new SolidColorBrush(ForRobot.Model.File3D.Colors.AnnotationTextColor),
-            VerticalAlignment = VerticalAlignment.Center,
-            HorizontalAlignment = HorizontalAlignment.Center,
-            IsDoubleSided = true
-        };
+
+        //private readonly BillboardTextVisual3D _label = new BillboardTextVisual3D
+        //{
+        //    FontSize = _defaultFontSize,
+        //    Foreground = _defaultTextForeground,
+        //    Background = _defaultTextForeground,
+        //    VerticalAlignment = VerticalAlignment.Center,
+        //    HorizontalAlignment = HorizontalAlignment.Center
+        //};
         private readonly LinesVisual3D _lines;
         private readonly LinesVisual3D _arrows;
+
+        //private readonly BillboardVisual3D _lines;
+        //private readonly BillboardVisual3D _arrows;
 
         #endregion Private variables
 
@@ -56,46 +67,43 @@ namespace ForRobot.Model.File3D
             All = AB | BC | CD | DA
         }
 
-        public static double DefaultFontSize { get; set; } = 20.0;
-        public static double DefaultThickness { get; set; } = 2.0;
-        public static double DefaultHeadSize { get; set; } = 1.0;
-        public static double DefaultAnnotationWidth { get; set; } = 5.0;
-        //public static Brush DefaultTextForeground { get; set; } = Brushes.Black;
-        public static Brush DefaultTextBackground { get; set; } = Brushes.Transparent;
-        //public static Brush DefaultArrowColor { get; set; } = Brushes.Blue;
+        public BillboardTextVisual3D Label { get; } = new BillboardTextVisual3D();
+        
+        public static double DefaultHeadSize = 1.0;
+        public static double DefaultAnnotationWidth = 5.0;
 
         /// <summary>
         /// Сторона со стрелкой
         /// </summary>
         public ArrowSide ArrowsSide { get; set; } = ArrowSide.BC;
 
-        public double FontSize
-        {
-            get => _label.FontSize;
-            set
-            {
-                _label.FontSize = value;
-                this.UpdateText();
-            }
-        }
-        public double Thickness
-        {
-            get => this._thickness;
-            set
-            {
-                this._thickness = value;
-                this._lines.Thickness = this._thickness;
-                this._arrows.Thickness = this._thickness;
-            }
-        }
+        //public double FontSize
+        //{
+        //    get => _label.FontSize;
+        //    set
+        //    {
+        //        _label.FontSize = value;
+        //        this.UpdateText();
+        //    }
+        //}
+        //public double Thickness
+        //{
+        //    get => this._thickness;
+        //    set
+        //    {
+        //        this._thickness = value;
+        //        this._lines.Thickness = this._thickness;
+        //        this._arrows.Thickness = this._thickness;
+        //    }
+        //}
 
         public string PropertyName { get; set; }
         public string Text
         {
-            get => _label.Text;
+            get => this.Label.Text;
             set
             {
-                _label.Text = value;
+                this.Label.Text = value;
                 this.UpdateText();
             }
         }
@@ -129,14 +137,12 @@ namespace ForRobot.Model.File3D
         {
             this._lines = new LinesVisual3D()
             {
-                Color = ForRobot.Model.File3D.Colors.AnnotationArrowsColor,
-                Thickness = this.Thickness
+                Color = ForRobot.Model.File3D.Colors.AnnotationArrowsColor
             };
 
             this._arrows = new LinesVisual3D()
             {
-                Color = ForRobot.Model.File3D.Colors.AnnotationArrowsColor,
-                Thickness = this.Thickness
+                Color = ForRobot.Model.File3D.Colors.AnnotationArrowsColor
             };
 
             points = new Point3DCollection(points.Take(4));
@@ -144,7 +150,7 @@ namespace ForRobot.Model.File3D
 
             Children.Add(_lines);
             Children.Add(_arrows);
-            Children.Add(_label);
+            Children.Add(this.Label);
         }
 
         /// <summary>
@@ -269,7 +275,7 @@ namespace ForRobot.Model.File3D
             _arrows.Points = new Point3DCollection(arrowPoints);
         }
 
-        public List<TextVisual3D> Labels { get; set; } = new List<TextVisual3D>();
+        //public List<TextVisual3D> Labels { get; set; } = new List<TextVisual3D>();
 
         private void UpdateText()
         {
@@ -277,7 +283,7 @@ namespace ForRobot.Model.File3D
             ////var mainLineDirection = (Points[1] - Points[0]).Normalized();
             //Vector3D textOffset = IsHorizontal ? new Vector3D(0, DefaultHeadSize * 2, 0) : new Vector3D(DefaultHeadSize * 2, 0, 0);
 
-            if (_label == null || this.Points == null || this.Points.Count < 4) return;
+            if (this.Label == null || this.Points == null || this.Points.Count < 4) return;
 
             var directions = new Dictionary<ArrowSide, (int start, int end)> // Направления стрелок и индексы точек
             {
@@ -296,7 +302,7 @@ namespace ForRobot.Model.File3D
                 (point0.Y + point1.Y) * 0.5,
                 (point0.Z + point1.Z) * 0.5
             );
-            _label.Position = midPoint - new Vector3D(0, 0, DefaultHeadSize * 2);
+            this.Label.Position = midPoint - new Vector3D(0, 0, DefaultHeadSize * 2);
             //_label.FontSize = FontSize;
             //_label.Position = midPoint + textOffset;
             //_label.Transform = new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), -90));
