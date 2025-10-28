@@ -107,7 +107,7 @@ namespace ForRobot.Libr.Behavior
             set => this.SetValue(ThicknessProperty, value);
         }
 
-        public static readonly DependencyProperty ThicknessProperty = DependencyProperty.Register(nameof(Thickness), typeof(double), typeof(HelixAnnotationsBehavior), new UIPropertyMetadata(Brushes.Transparent, VisualChanged));
+        public static readonly DependencyProperty ThicknessProperty = DependencyProperty.Register(nameof(Thickness), typeof(double), typeof(HelixAnnotationsBehavior), new UIPropertyMetadata(5.0, VisualChanged));
 
         #endregion Public variables
 
@@ -120,6 +120,8 @@ namespace ForRobot.Libr.Behavior
 
             foreach(Annotation item in this.Items)
             {
+                if (item == null) continue;
+
                 item.GetFontSize(this.FontSize);
                 item.GetFontFamily(this.FontFamily);
                 item.GetFontWeight(this.FontWeight);

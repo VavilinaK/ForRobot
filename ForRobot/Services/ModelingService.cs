@@ -246,9 +246,8 @@ namespace ForRobot.Services
             double modelRibHeight = (double)plate.RibHeight * (double)ScaleFactor;
             double modelRibThickness = (double)plate.RibThickness * (double)ScaleFactor;
             
-            double currentY = -modelPlateWidth / 2; // Начальная позиция по Y
-            double ribLeftPositionY = currentY;
-            double ribRightPositionY = currentY;
+            double ribLeftPositionY = -modelPlateWidth / 2; // Начальная позиция по Y.
+            double ribRightPositionY = -modelPlateWidth / 2;
 
             for (int i = 0; i < plate.RibCount; i++)
             {

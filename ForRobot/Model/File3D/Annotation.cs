@@ -95,6 +95,8 @@ namespace ForRobot.Model.File3D
         //private readonly BillboardLinesVisual3D _lines;
         //private readonly BillboardLinesVisual3D _arrows;
 
+        private double _arrowSize = DEFAULT_ARROW_SIZE;
+
         #endregion Private variables
 
         #region Public variables
@@ -116,8 +118,18 @@ namespace ForRobot.Model.File3D
             All = AB | BC | CD | DA
         }
                 
-        public static double DefaultHeadSize = 1.0;
+        const double DEFAULT_ARROW_SIZE = 1.0;
         public static double DefaultAnnotationWidth = 5.0;
+
+        public double ArrowSize
+        {
+            get => _arrowSize;
+            set
+            {
+                this._arrowSize = value;
+                this.UpdateGeometry();
+            }
+        }
 
         /// <summary>
         /// Сторона со стрелкой
@@ -165,13 +177,6 @@ namespace ForRobot.Model.File3D
         //    }
         //}
 
-        /// <summary>
-        /// Горизонтальное ли примечание
-        ///// </summary>
-        //public bool IsHorizontal { get; set; }
-
-        //public bool IsVisible { get; set; } = false;
-
         /* Расположение точек
          * B<------->C
          *  |       |
@@ -205,7 +210,6 @@ namespace ForRobot.Model.File3D
                 Color = ForRobot.Model.File3D.Colors.AnnotationArrowsColor,
                 DepthOffset = 0.05
             };
-
             this._arrows = new LinesVisual3D()
             {
                 Color = ForRobot.Model.File3D.Colors.AnnotationArrowsColor,
@@ -286,27 +290,23 @@ namespace ForRobot.Model.File3D
 
                 // Стрелка в начале грани (начальная точка)
                 arrowPoints.Add(start);
-                arrowPoints.Add(start + direction * DefaultHeadSize + perpendicular * DefaultHeadSize * 0.5);
+                arrowPoints.Add(start + direction * ArrowSize + perpendicular * ArrowSize * 0.5);
 
                 arrowPoints.Add(start);
-                arrowPoints.Add(start + direction * DefaultHeadSize - perpendicular * DefaultHeadSize * 0.5);
+                arrowPoints.Add(start + direction * ArrowSize - perpendicular * ArrowSize * 0.5);
 
                 // Стрелка в конце грани (конечная точка)
                 arrowPoints.Add(end);
-                arrowPoints.Add(end - direction * DefaultHeadSize + perpendicular * DefaultHeadSize * 0.5);
+                arrowPoints.Add(end - direction * ArrowSize + perpendicular * ArrowSize * 0.5);
 
                 arrowPoints.Add(end);
-                arrowPoints.Add(end - direction * DefaultHeadSize - perpendicular * DefaultHeadSize * 0.5);
+                arrowPoints.Add(end - direction * ArrowSize - perpendicular * ArrowSize * 0.5);
             }
             _arrows.Points = new Point3DCollection(arrowPoints);
         }
 
         private void UpdateText()
         {
-            //// Позиционирование текста
-            ////var mainLineDirection = (Points[1] - Points[0]).Normalized();
-            //Vector3D textOffset = IsHorizontal ? new Vector3D(0, DefaultHeadSize * 2, 0) : new Vector3D(DefaultHeadSize * 2, 0, 0);
-
             if (this._label == null || this.Points == null || this.Points.Count < 4) return;
 
             var directions = new Dictionary<ArrowSide, (int start, int end)> // Направления стрелок и индексы точек
@@ -326,7 +326,7 @@ namespace ForRobot.Model.File3D
                 (point0.Y + point1.Y) * 0.5,
                 (point0.Z + point1.Z) * 0.5
             );
-            this._label.Position = midPoint - new Vector3D(0, 0, DefaultHeadSize * 2);
+            this._label.Position = midPoint - new Vector3D(0, 0, ArrowSize * 2);
         }
 
         protected override bool UpdateTransforms() => true;

@@ -100,7 +100,11 @@ namespace ForRobot.Libr.Behavior
                 return;
 
             foreach (var item in Items)
+            {
+                if (item == null) continue;
+
                 this._helixViewport.Children.Add(item);
+            }
         }
 
         protected override void OnDetaching()
