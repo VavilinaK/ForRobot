@@ -384,15 +384,29 @@ namespace ForRobot.Services
                     ribLeftPositionY -= modelRibThickness;
                 Point3D C = new Point3D(-halfRibLength + centerX, ribLeftPositionY, modelPlateHeight);
                 Point3D D = new Point3D(-halfRibLength + centerX, ribLeftPositionY, modelPlateHeight);
-
-                Point3DCollection points = new Point3DCollection() { A, B, C, D };
-                Annotation annotation = new Annotation(points, Annotation.ArrowSide.DA)
+                
+                Annotation annotation1 = new Annotation(new Point3DCollection() { A, B, C, D }, Annotation.ArrowSide.DA)
                 {
-                    Text = this.ToString(plate.BevelToRight),
-                    PropertyName = string.Format("{0} {1}", nameof(plate.BevelToRight), i),
+                    Text = this.ToString(plate.BevelToLeft),
+                    PropertyName = string.Format("{0} {1}", nameof(plate.BevelToLeft), i),
                     ArrowSize = 0.5
                 };
-                annotations.Add(annotation);
+                annotations.Add(annotation1);
+
+                //A = new Point3D(halfRibLength + centerX, ribRightPositionY, modelPlateHeight);
+                //B = new Point3D(halfRibLength + centerX, ribRightPositionY, modelPlateHeight);
+                //if (i > 0)
+                //    ribRightPositionY -= modelRibThickness;
+                //C = new Point3D(halfRibLength + centerX, ribRightPositionY, modelPlateHeight);
+                //D = new Point3D(halfRibLength + centerX, ribRightPositionY, modelPlateHeight);
+
+                //Annotation annotation2 = new Annotation(new Point3DCollection() { A, B, C, D }, Annotation.ArrowSide.DA)
+                //{
+                //    Text = this.ToString(plate.BevelToRight),
+                //    PropertyName = string.Format("{0} {1}", nameof(plate.BevelToRight), i),
+                //    ArrowSize = 0.5
+                //};
+                //annotations.Add(annotation2);
 
                 ribLeftPositionY += modelRibThickness;
                 ribRightPositionY += modelRibThickness;
