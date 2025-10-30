@@ -19,7 +19,7 @@ namespace ForRobot.Services
     {
         private double _slopeOffset = ModelingService.SlopeOffset;
 
-        public const double DEFAULT_WELD_THICKNESS = 5.0;
+        public const double DEFAULT_WELD_THICKNESS = 2.0;
 
         public decimal ScaleFactor { get; set; } = 1.00M / 100.00M;
 
@@ -95,7 +95,7 @@ namespace ForRobot.Services
                 // Швы добавляются с обеих сторон ребра
                 string weldName = String.Format("Weld {0}", i + 1);
 
-                welds.Add(new Weld()
+                welds.Add(new Weld(ForRobot.Model.File3D.Colors.WeldColor, ForRobot.Model.File3D.Colors.LeftSideWeldColor, ForRobot.Model.File3D.Colors.RightSideWeldColor)
                 {
                     Name = weldName + ".1",
                     StartPoint = startPoint,
@@ -105,7 +105,7 @@ namespace ForRobot.Services
                 startPoint.Y += modelRibThickness;
                 endPoint.Y += modelRibThickness;
 
-                welds.Add(new Weld()
+                welds.Add(new Weld(ForRobot.Model.File3D.Colors.WeldColor, ForRobot.Model.File3D.Colors.LeftSideWeldColor, ForRobot.Model.File3D.Colors.RightSideWeldColor)
                 {
                     Name = weldName + ".2",
                     StartPoint = startPoint,

@@ -275,8 +275,15 @@
 
                 <MenuItem Header="_Размер шрифта" Margin="0">
                     <StackPanel Orientation="Horizontal">
-                        <Slider Value="{Binding Path=Settings.ParamsFontSize, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="6" Maximum="52" TickPlacement="BottomRight" TickFrequency="2" IsSnapToTickEnabled="True" Width="200"/>
-                        <Label Content="{Binding Path=Settings.ParamsFontSize, Mode=OneWay, StringFormat='{}{0:0}', Source={x:Static Application.Current}, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Slider Value="{Binding Path=Settings.AnnotationFontSize, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="6" Maximum="52" TickPlacement="BottomRight" TickFrequency="2" IsSnapToTickEnabled="True" Width="200"/>
+                        <Label Content="{Binding Path=Settings.AnnotationFontSize, Mode=OneWay, StringFormat='{}{0:0}', Source={x:Static Application.Current}, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                </MenuItem>
+
+                <MenuItem Header="_Толщина линии" Margin="0">
+                    <StackPanel Orientation="Horizontal">
+                        <Slider Value="{Binding Path=Settings.AnnotationThickness, Source={x:Static Application.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Minimum="0.5" Maximum="10" TickFrequency="0.5" TickPlacement="BottomRight" IsSnapToTickEnabled="True" Width="200"/>
+                        <Label Content="{Binding Path=Settings.AnnotationThickness, Mode=OneWay, StringFormat='{}{0:0}', Source={x:Static Application.Current}, UpdateSourceTrigger=PropertyChanged}"/>
                     </StackPanel>
                 </MenuItem>
 
@@ -765,12 +772,14 @@
                                 <i:Interaction.Behaviors>
                                     <behavior:CameraControllerBehavior/>
                                     <behavior:HelixWeldsBehavior Detal="{Binding Path=CurrentDetal, diag:PresentationTraceSources.TraceLevel=High, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                                 Thickness="{Binding Path=Settings.WeldsThickness, Source={x:Static Application.Current}, Mode=OneWay}"/>
+                                                                 Thickness="{Binding Path=Settings.WeldsThickness, Source={x:Static Application.Current}, Mode=OneWay}"
+                                                                 IsDivided="True"/>
 
                                     <behavior:HelixAnnotationsBehavior Detal="{Binding Path=CurrentDetal, PresentationTraceSources.TraceLevel=High, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
-                                                                       FontSize="{Binding Path=Settings.ParamsFontSize, Mode=OneWay, Source={x:Static Application.Current}, UpdateSourceTrigger=PropertyChanged}"
+                                                                       FontSize="{Binding Path=Settings.AnnotationFontSize, Mode=OneWay, Source={x:Static Application.Current}, UpdateSourceTrigger=PropertyChanged}"
                                                                        Foreground="{Binding Source={x:Static file:Colors.AnnotationForegroundColor}, Converter={StaticResource ColorToBrushConverter}}"
-                                                                       LabelBackground="{Binding Source={x:Static file:Colors.AnnotationBackgroundColor}, Converter={StaticResource ColorToBrushConverter}}"/>
+                                                                       LabelBackground="{Binding Source={x:Static file:Colors.AnnotationBackgroundColor}, Converter={StaticResource ColorToBrushConverter}}"
+                                                                       Thickness="{Binding Path=Settings.AnnotationThickness, Mode=OneWay, Source={x:Static Application.Current}, UpdateSourceTrigger=PropertyChanged}"/>
 
                                     <!--<behavior:HelixSceneTrackerBehavior SceneItems="{Binding Path=DataContext.SceneItemsCollection, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>-->
                                 </i:Interaction.Behaviors>

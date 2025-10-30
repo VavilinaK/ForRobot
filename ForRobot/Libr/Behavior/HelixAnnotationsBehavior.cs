@@ -59,7 +59,7 @@ namespace ForRobot.Libr.Behavior
             set => this.SetValue(FontFamilyProperty, value);
         }
 
-        public static readonly DependencyProperty FontFamilyProperty = DependencyProperty.Register(nameof(FontFamily), typeof(FontFamily), typeof(HelixAnnotationsBehavior), new UIPropertyMetadata(null, VisualChanged));
+        public static readonly DependencyProperty FontFamilyProperty = DependencyProperty.Register(nameof(FontFamily), typeof(FontFamily), typeof(HelixAnnotationsBehavior), new UIPropertyMetadata(new FontFamily("GOST Type A"), VisualChanged));
 
         /// <summary>
         /// Gets or sets the font weight.
@@ -121,12 +121,13 @@ namespace ForRobot.Libr.Behavior
             foreach(Annotation item in this.Items)
             {
                 if (item == null) continue;
-
+                
                 item.GetFontSize(this.FontSize);
                 item.GetFontFamily(this.FontFamily);
                 item.GetFontWeight(this.FontWeight);
                 item.GetForeground(this.Foreground);
                 item.GetLabelBackground(this.LabelBackground);
+                item.GetThickness(this.Thickness);
             }
         }
 

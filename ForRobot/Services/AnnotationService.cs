@@ -67,9 +67,10 @@ namespace ForRobot.Services
                 //this.GetTechOffsetSeamStartAnnotation(plate),
                 //this.GetTechOffsetSeamEndAnnotation(plate),
             };
+
             foreach (var item in this.GetRibsDistancseAnnotation(plate))
                 annotations.Add(item);
-            //annotations.Union(this.GetRibsDistancseAnnotation(plate));
+
             return annotations;
         }
 

@@ -262,7 +262,7 @@ namespace ForRobot.Model.Settings
         #region Params
 
         private double _annotationFontSize = 20;
-        private double _weldsThickness = 5;
+        private double _weldsThickness = 5.0;
         private double _annotationThickness = 2.0;
         //private bool _annotationIsVisibale = true;
 

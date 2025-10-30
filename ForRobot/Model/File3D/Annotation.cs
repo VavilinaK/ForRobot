@@ -84,18 +84,24 @@ namespace ForRobot.Model.File3D
     public class Annotation : ScreenSpaceVisual3D
     {
         #region Private variables
-
-        //private double _thickness = 2.0;
-
-        private Point3DCollection _points;
-
+        
         private readonly BillboardTextVisual3D _label;
         private readonly LinesVisual3D _lines;
         private readonly LinesVisual3D _arrows;
-        //private readonly BillboardLinesVisual3D _lines;
-        //private readonly BillboardLinesVisual3D _arrows;
 
         private double _arrowSize = DEFAULT_ARROW_SIZE;
+
+        /// <summary>
+        /// Направления стрелок и индексы точек
+        /// </summary>
+        private Dictionary<ArrowSide, (int start, int end)> _directions = new Dictionary<ArrowSide, (int start, int end)>
+        {
+            { ArrowSide.AB, (0, 1) },
+            { ArrowSide.BC, (1, 2) },
+            { ArrowSide.CD, (2, 3) },
+            { ArrowSide.DA, (3, 0) }
+        };
+        private Point3DCollection _points;
 
         #endregion Private variables
 
@@ -156,7 +162,13 @@ namespace ForRobot.Model.File3D
         //    }
         //}
 
+        /// <summary>
+        /// Наименование свойства
+        /// </summary>
         public string PropertyName { get; set; }
+        /// <summary>
+        /// Текст параметра
+        /// </summary>
         public string Text
         {
             get => this._label.Text;
@@ -183,6 +195,9 @@ namespace ForRobot.Model.File3D
          *  |_______|
          *  A       D
         */
+        /// <summary>
+        /// Точки вершин прямоугольника параметров
+        /// </summary>
         public new Point3DCollection Points
         {
             get => this._points;
@@ -204,7 +219,12 @@ namespace ForRobot.Model.File3D
         /// <param name="arrowSide">Сторона со стрелкой</param>
         public Annotation(Point3DCollection points, ArrowSide arrowSide = ArrowSide.BC)
         {
-            this._label = new BillboardTextVisual3D();
+            this._label = new BillboardTextVisual3D()
+            {
+                Padding = new Thickness(4),
+                Background = Brushes.Transparent,
+                Foreground = new SolidColorBrush(Colors.AnnotationForegroundColor)
+            };
             this._lines = new LinesVisual3D()
             {
                 Color = ForRobot.Model.File3D.Colors.AnnotationArrowsColor,
@@ -215,16 +235,6 @@ namespace ForRobot.Model.File3D
                 Color = ForRobot.Model.File3D.Colors.AnnotationArrowsColor,
                 DepthOffset = 0.05
             };
-            //this._lines = new BillboardVisual3D()
-            //{
-            //    Material = new DiffuseMaterial(new SolidColorBrush(ForRobot.Model.File3D.Colors.AnnotationArrowsColor)),
-            //    DepthOffset = 0.05
-            //};
-            //this._arrows = new BillboardVisual3D()
-            //{
-            //    Material = new DiffuseMaterial(new SolidColorBrush(ForRobot.Model.File3D.Colors.AnnotationArrowsColor)),
-            //    DepthOffset = 0.05
-            //};
 
             points = new Point3DCollection(points.Take(4));
             this.Points = points;
@@ -257,10 +267,7 @@ namespace ForRobot.Model.File3D
         private void UpdatePoints()
         {
             if (this.Points == null || this.Points.Count < 4) return;
-
-            //this._lines.Material = new DiffuseMaterial(new SolidColorBrush(ForRobot.Model.File3D.Colors.AnnotationArrowsColor));
-            //this._arrows.Material = new DiffuseMaterial(new SolidColorBrush(ForRobot.Model.File3D.Colors.AnnotationArrowsColor));
-
+            
             var linePoints = new Point3DCollection();
             for (int i = 0; i < 4; i++)
             {
@@ -272,16 +279,7 @@ namespace ForRobot.Model.File3D
             // Добавление стрелок на выбранных сторонах
             List <Point3D> arrowPoints = new List<Point3D>();
 
-            // Направления стрелок и индексы точек.
-            var directions = new Dictionary<ArrowSide, (int start, int end)>
-            {
-                { ArrowSide.AB, (0, 1) },
-                { ArrowSide.BC, (1, 2) },
-                { ArrowSide.CD, (2, 3) },
-                { ArrowSide.DA, (3, 0) }
-            };
-
-            foreach (var side in directions.Where(x => x.Key == ArrowsSide))
+            foreach (var side in this._directions.Where(x => x.Key == ArrowsSide))
             {
                 var start = Points[side.Value.start];
                 var end = Points[side.Value.end];
@@ -308,17 +306,9 @@ namespace ForRobot.Model.File3D
         private void UpdateText()
         {
             if (this._label == null || this.Points == null || this.Points.Count < 4) return;
-
-            var directions = new Dictionary<ArrowSide, (int start, int end)> // Направления стрелок и индексы точек
-            {
-                { ArrowSide.AB, (0, 1) },
-                { ArrowSide.BC, (1, 2) },
-                { ArrowSide.CD, (2, 3) },
-                { ArrowSide.DA, (3, 0) }
-            };
-
+            
             // Вычисляем середину между Points[0] и Points[1]
-            var side = directions.Where(x => x.Key == ArrowsSide).First();
+            var side = this._directions.Where(x => x.Key == ArrowsSide).First();
             var point0 = Points[side.Value.start];
             var point1 = Points[side.Value.end];
             var midPoint = new Point3D(
@@ -326,7 +316,7 @@ namespace ForRobot.Model.File3D
                 (point0.Y + point1.Y) * 0.5,
                 (point0.Z + point1.Z) * 0.5
             );
-            this._label.Position = midPoint - new Vector3D(0, 0, ArrowSize * 2);
+            this._label.Position = midPoint - new Vector3D(0, 0, -ArrowSize * 2);
         }
 
         protected override bool UpdateTransforms() => true;
