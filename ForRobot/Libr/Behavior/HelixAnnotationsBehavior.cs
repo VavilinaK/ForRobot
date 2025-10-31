@@ -23,7 +23,7 @@ namespace ForRobot.Libr.Behavior
     {
         #region Private variables
 
-        private readonly ForRobot.Services.IAnnotationService _annotationService = new ForRobot.Services.AnnotationService(ForRobot.Model.Settings.Settings.ScaleFactor);
+        private readonly ForRobot.Services.AnnotationService _annotationService = new ForRobot.Services.AnnotationService(new  ForRobot.Model.Settings.Settings.ScaleFactor);
 
         #endregion
 
@@ -224,7 +224,7 @@ namespace ForRobot.Libr.Behavior
                 return;
             }
 
-            Annotation annotation = this.Items.Count(item => item.PropertyName == propertyName) > 0 ? this.Items.Where(item => item.PropertyName == propertyName).First() : null;
+            Annotation annotation = this.Items == null || this.Items.Count(item => item.PropertyName == propertyName) == 0 ? null : this.Items.Where(item => item.PropertyName == propertyName).First();
 
             if (annotation == null)
                 return;

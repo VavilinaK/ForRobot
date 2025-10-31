@@ -360,6 +360,10 @@
     <Compile Include="Services\SelectAppsOnDeviceService.cs" />
     <Compile Include="Services\WeldService.cs" />
     <Compile Include="Services\WindowsAppService.cs" />
+    <Compile Include="Strategies\AnnotationStrategies\IDetalAnnotationStrategy.cs" />
+    <Compile Include="Strategies\AnnotationStrategies\PlateAnnotationStrategy.cs" />
+    <Compile Include="Strategies\ModelingStrategies\IDetalModelingStrategy.cs" />
+    <Compile Include="Strategies\ModelingStrategies\PlateModelingStrategy.cs" />
     <Compile Include="ViewModels\CreateWindowViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel3.cs" />
     <Compile Include="ViewModels\MainPageViewModel4.cs" />

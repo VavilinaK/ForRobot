@@ -14,8 +14,7 @@ namespace ForRobot.Model.File3D
     public class Weld : ScreenSpaceVisual3D
     {
         #region Private variables
-
-        //private readonly LinesVisual3D _line;
+        
         private readonly LinesVisual3D _line1;
         private readonly LinesVisual3D _line2;
         private Point3D _startPoint;
@@ -192,6 +191,7 @@ namespace ForRobot.Model.File3D
                 this._line1.Color = this.LeftLineColor;
                 this._line2.Color = this.RightLineColor;
             }
+            else
             {
                 this._line1.Color = this.Color;
                 this._line2.Color = this.Color;

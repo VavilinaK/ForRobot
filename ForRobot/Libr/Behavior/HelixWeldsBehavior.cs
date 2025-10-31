@@ -103,19 +103,16 @@ namespace ForRobot.Libr.Behavior
                 currentCollection.Clear();
                 foreach (var weld in welds)
                 {
-                    weld.Thickness = this.Thickness;
+                    this.UpdateWeldProperties(weld);
                     currentCollection.Add(weld);
                 }
             }
             else
             {
-                var newCollection = new ObservableCollection<Weld>(welds);
-                foreach (var item in newCollection)
-                {
-                    item.Thickness = this.Thickness;
-                    item.IsDivided = this.IsDivided;
-                }
-                this.Items = newCollection;
+                foreach (var item in welds)
+                    this.UpdateWeldProperties(item);
+
+                this.Items = welds;
             }
         }
 
@@ -135,6 +132,16 @@ namespace ForRobot.Libr.Behavior
 
             foreach (var item in currentCollection)
                 item.IsDivided = this.IsDivided;
+        }
+
+        /// <summary>
+        /// Обновление свойств объекта класса <see cref="Weld"/>
+        /// </summary>
+        /// <param name="weld"></param>
+        private void UpdateWeldProperties(Weld weld)
+        {
+            weld.Thickness = this.Thickness;
+            weld.IsDivided = this.IsDivided;
         }
     }
 }

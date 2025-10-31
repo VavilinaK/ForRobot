@@ -287,6 +287,9 @@
                     </StackPanel>
                 </MenuItem>
 
+                <MenuItem Header="_Разделение шва" IsCheckable="True"
+                          IsChecked="{Binding Path=DataContext.IsDividedWelds, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>
+
                 <Separator/>
 
                 <MenuItem Header="_Ортоганальная камера" IsCheckable="True"
@@ -773,7 +776,7 @@
                                     <behavior:CameraControllerBehavior/>
                                     <behavior:HelixWeldsBehavior Detal="{Binding Path=CurrentDetal, diag:PresentationTraceSources.TraceLevel=High, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                                  Thickness="{Binding Path=Settings.WeldsThickness, Source={x:Static Application.Current}, Mode=OneWay}"
-                                                                 IsDivided="True"/>
+                                                                 IsDivided="{Binding Path=DataContext.IsDividedWelds, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, UpdateSourceTrigger=PropertyChanged}"/>
 
                                     <behavior:HelixAnnotationsBehavior Detal="{Binding Path=CurrentDetal, PresentationTraceSources.TraceLevel=High, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                                                        FontSize="{Binding Path=Settings.AnnotationFontSize, Mode=OneWay, Source={x:Static Application.Current}, UpdateSourceTrigger=PropertyChanged}"

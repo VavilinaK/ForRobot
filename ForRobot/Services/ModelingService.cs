@@ -10,10 +10,10 @@ using ForRobot.Model.Detals;
 
 namespace ForRobot.Services
 {
-    public interface IModelingService
-    {
-        Model3DGroup ModelBuilding(Detal detal);
-    }
+    //public interface IModelingService
+    //{
+    //    Model3DGroup ModelBuilding(Detal detal);
+    //}
 
     /// <summary>
     /// Сервис сборки 3д модели детали
