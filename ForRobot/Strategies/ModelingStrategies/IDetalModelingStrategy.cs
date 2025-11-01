@@ -12,6 +12,6 @@ namespace ForRobot.Strategies.ModelingStrategies
     public interface IDetalModelingStrategy
     {
         bool CanHandle(DetalType detalType);
-        Model3DGroup Get3DScene(Detal detal);
+        Model3DGroup CreateModel3D(Detal detal);
     }
 }

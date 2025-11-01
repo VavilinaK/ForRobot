@@ -16,11 +16,6 @@ namespace ForRobot.Strategies.ModelingStrategies
     public class PlateModelingStrategy : IDetalModelingStrategy
     {
         /// <summary>
-        /// Минимальное кол-во рёбер
-        /// </summary>
-        public const double MIN_RIB_LENGTH = 1.0;
-
-        /// <summary>
         /// Масштабный коэффициент
         /// </summary>
         private readonly double _scaleFactor;
@@ -244,7 +239,7 @@ namespace ForRobot.Strategies.ModelingStrategies
 
                 // Длина ребра с учетом отступов и формы плиты
                 double ribLength = basePlateLength - modelRibIdentToLeft - modelRibIdentToRight;
-                ribLength = Math.Max(ribLength, MIN_RIB_LENGTH);
+                ribLength = Math.Max(ribLength, ForRobot.Services.ModelingService.MIN_RIB_LENGTH);
 
                 // Центр ребра по X с учетом смещения
                 double centerX = offsetX + (modelRibIdentToLeft - modelRibIdentToRight) / 2;
@@ -287,7 +282,6 @@ namespace ForRobot.Strategies.ModelingStrategies
             return model3DGroup;
         }
 
-
         /// <summary>
         /// Валидация параметров плиты
         /// </summary>
@@ -316,15 +310,14 @@ namespace ForRobot.Strategies.ModelingStrategies
 
         public bool CanHandle(DetalType detalType) => detalType == DetalType.Plita;
 
-        public Model3DGroup Get3DScene(Detal detal)
+        public Model3DGroup CreateModel3D(Detal detal)
         {
-            Model3DGroup scene = new Model3DGroup();
-
-            double halfModelPlateLength = (double)detal.PlateLength * this._scaleFactor / 2;
-            double halfModelPlateWidth = (double)detal.PlateWidth * this._scaleFactor / 2;
-            double halfModelPlateHeight = (double)detal.PlateThickness * this._scaleFactor / 2;
-
-            return scene;
+            Model3DGroup model3DGroup = new Model3DGroup();
+            Plita plate = (Plita)detal;            
+            model3DGroup.Children.Add(this.AddPlate(plate)); // Создание плиты.            
+            model3DGroup.Children.Add(this.AddRibs(plate)); // Добавление рёбер.
+            model3DGroup.SetName("DetalModel");
+            return model3DGroup;
         }
     }
 }

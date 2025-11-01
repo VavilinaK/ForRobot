@@ -13,6 +13,7 @@ using HelixToolkit.Wpf;
 
 using ForRobot.Model.File3D;
 using ForRobot.Model.Detals;
+using ForRobot.Strategies.AnnotationStrategies;
 
 namespace ForRobot.Libr.Behavior
 {
@@ -23,7 +24,7 @@ namespace ForRobot.Libr.Behavior
     {
         #region Private variables
 
-        private readonly ForRobot.Services.AnnotationService _annotationService = new ForRobot.Services.AnnotationService(new  ForRobot.Model.Settings.Settings.ScaleFactor);
+        private readonly ForRobot.Services.AnnotationService _annotationService;
 
         #endregion
 
@@ -110,6 +111,16 @@ namespace ForRobot.Libr.Behavior
         public static readonly DependencyProperty ThicknessProperty = DependencyProperty.Register(nameof(Thickness), typeof(double), typeof(HelixAnnotationsBehavior), new UIPropertyMetadata(5.0, VisualChanged));
 
         #endregion Public variables
+
+        public HelixAnnotationsBehavior()
+        {
+            double scaleFactor = (double)ForRobot.Model.Settings.Settings.ScaleFactor;
+            var strategies = new List<IDetalAnnotationStrategy>
+            {
+                new PlateAnnotationStrategy(scaleFactor)
+            };
+            _annotationService = new Services.AnnotationService(strategies);
+        }
 
         #region Private functions
 
@@ -230,7 +241,7 @@ namespace ForRobot.Libr.Behavior
                 return;
 
             var newValue = detal.GetType().GetProperty(propertyName).GetValue(detal, null);
-            annotation.Text = _annotationService.ToString(Convert.ToDecimal(newValue));
+            //annotation.Text = _annotationService.ToString(Convert.ToDecimal(newValue));
         }
     }
 }

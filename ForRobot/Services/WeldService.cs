@@ -17,8 +17,6 @@ namespace ForRobot.Services
     /// </summary>
     public sealed class WeldService : IWeldService
     {
-        private double _slopeOffset = ModelingService.SlopeOffset;
-
         public const double DEFAULT_WELD_THICKNESS = 2.0;
 
         public decimal ScaleFactor { get; set; } = 1.00M / 100.00M;
@@ -70,7 +68,7 @@ namespace ForRobot.Services
                     case ScoseTypes.SlopeLeft:
                     case ScoseTypes.SlopeRight:
                         double positionRatio = ((weldLeftPositionY + weldRightPositionY) / 2 + modelPlateWidth / 2) / modelPlateWidth * 2 - 1;
-                        weldYOffset = ((plate.ScoseType == ScoseTypes.SlopeLeft) ? -ModelingService.SlopeOffset : ModelingService.SlopeOffset) * positionRatio;
+                        weldYOffset = ((plate.ScoseType == ScoseTypes.SlopeLeft) ? -ModelingService.SLOPE_OFF_SET : ModelingService.SLOPE_OFF_SET) * positionRatio;
                         break;
 
                     case ScoseTypes.TrapezoidTop:
@@ -78,9 +76,9 @@ namespace ForRobot.Services
                         double trapezoidPositionRatio = ((weldLeftPositionY + weldRightPositionY) / 2 + modelPlateWidth / 2) / modelPlateWidth;
 
                         if (plate.ScoseType == ScoseTypes.TrapezoidTop)
-                            weldLength = modelPlateLength * (1 - ModelingService.TrapezoidRatio * trapezoidPositionRatio);
+                            weldLength = modelPlateLength * (1 - ModelingService.TRAPEZOID_RATIO * trapezoidPositionRatio);
                         else
-                            weldLength = modelPlateLength * (1 - ModelingService.TrapezoidRatio * (1 - trapezoidPositionRatio));
+                            weldLength = modelPlateLength * (1 - ModelingService.TRAPEZOID_RATIO * (1 - trapezoidPositionRatio));
 
                         weldLength = Math.Max(weldLength, ModelingService.MIN_RIB_LENGTH);
                         break;

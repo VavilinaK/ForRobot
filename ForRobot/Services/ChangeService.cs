@@ -1,14 +1,26 @@
 ﻿using System;
+using System.Collections.Generic;
+
 using ForRobot.Model.File3D;
 using ForRobot.Model.Detals;
 using ForRobot.Libr.UndoRedo;
+using ForRobot.Strategies.ModelingStrategies;
 
 namespace ForRobot.Services
 {
     public class ChangeService : BaseClass
     {
-        private readonly ForRobot.Services.IModelingService _modelingService = new ForRobot.Services.ModelingService(ForRobot.Model.Settings.Settings.ScaleFactor);
-        //private readonly ForRobot.Services.IWeldService _weldService = new ForRobot.Services.WeldService(ForRobot.Model.Settings.Settings.ScaleFactor);
+        private readonly ForRobot.Services.ModelingService _modelingService;
+
+        public ChangeService()
+        {
+            double scaleFactor = (double)ForRobot.Model.Settings.Settings.ScaleFactor;
+            var strategies = new List<IDetalModelingStrategy>
+            {
+                new PlateModelingStrategy(scaleFactor)
+            };
+            this._modelingService = new Services.ModelingService(strategies, scaleFactor);
+        }
 
         /// <summary>
         /// Делегат изменения <see cref="ForRobot.Model.Detals.Detal"/> оповещающий о изменению его свойств
@@ -39,7 +51,7 @@ namespace ForRobot.Services
         }
 
         /// <summary>
-        /// Делегат изменения <see cref="ForRobot.Model.Detals.Detal"/>, изменяющий CurrentModel
+        /// Делегат изменения <see cref="ForRobot.Model.Detals.Detal"/>, изменяющий CurrentModel в классе <see cref="File3D"/>
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -48,21 +60,7 @@ namespace ForRobot.Services
             File3D file = sender as File3D;
             try
             {
-                Detal detal = file.CurrentDetal;
-                System.Windows.Media.Media3D.Model3DGroup model = null;
-                switch (detal.DetalType)
-                {
-                    case DetalTypes.Plita:
-                        Plita plita = detal as Plita;
-                         model = this._modelingService.ModelBuilding(plita);
-                        break;
-
-                    case DetalTypes.Stringer:
-                        break;
-
-                    case DetalTypes.Treygolnik:
-                        break;
-                }
+                System.Windows.Media.Media3D.Model3DGroup model = this._modelingService.Get3DScene(file.CurrentDetal);
                 file.CurrentModel.Children.Clear();
                 file.CurrentModel.Children.Add(model);
             }
