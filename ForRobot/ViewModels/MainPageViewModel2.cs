@@ -771,7 +771,7 @@ namespace ForRobot.ViewModels
 
                                     if (!await Task.Run<bool>(() => this.RobotsCollection[i].Copy(this.ProgrammName)))
                                         continue;
-
+                                   
                                     await Task.Run(() => this.RobotsCollection[i].SelectProgramByName(string.Join("", this.ProgrammName, ".src")));
                                 }
                             else if(this.RobotForControl.IsConnection)

@@ -235,10 +235,7 @@ namespace ForRobot.Strategies.AnnotationStrategies
                 double modelRibDistanceRight = (double)rib.DistanceRight * (double)this._scaleFactor;
                 double modelRibIdentToLeft = (double)rib.IdentToLeft * (double)this._scaleFactor;
                 double modelRibIdentToRight = (double)rib.IdentToRight * (double)this._scaleFactor;
-
-                //ribLeftPositionY += modelRibDistanceLeft;
-                //ribRightPositionY += modelRibDistanceLeft;
-
+                
                 double offsetX = 0;
                 double centerY = (ribLeftPositionY + ribRightPositionY) / 2 + modelRibThickness / 2;
                 double basePlateLength = modelPlateLength;
@@ -252,7 +249,7 @@ namespace ForRobot.Strategies.AnnotationStrategies
 
                     case ScoseTypes.TrapezoidTop:
                     case ScoseTypes.TrapezoidBottom:
-                        double trapezoidPositionRatio = (centerY + modelPlateWidth / 2) / modelPlateWidth;
+                        double trapezoidPositionRatio = (centerY + modelRibDistanceLeft / 2 + modelRibDistanceRight / 2 + modelPlateWidth / 2) / modelPlateWidth;
 
                         if (plate.ScoseType == ScoseTypes.TrapezoidTop)
                             basePlateLength = modelPlateLength * (1 - ModelingService.TRAPEZOID_RATIO * trapezoidPositionRatio);

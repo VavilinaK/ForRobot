@@ -556,10 +556,10 @@
     <Resource Include="Themes\Images\top_view.png" />
     <Resource Include="Themes\Images\front_view.svg" />
     <EmbeddedResource Include="Scripts\__pycache__\coord_templates.cpython-312.pyc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Scripts\__pycache__\krl_templates.cpython-312.pyc">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
     <Resource Include="Themes\Images\none.png" />
     <EmbeddedResource Include="Help\HelpManual.chm">
