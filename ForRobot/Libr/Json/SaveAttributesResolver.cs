@@ -14,7 +14,7 @@ namespace ForRobot.Libr.Json
             IList<Newtonsoft.Json.Serialization.JsonProperty> props = base.CreateProperties(type, memberSerialization);
             foreach (var prop in props)
             {
-                if (Attribute.IsDefined(type.GetProperty(prop.UnderlyingName), typeof(SaveAttribute)))
+                if (Attribute.IsDefined(type.GetProperty(prop.UnderlyingName), typeof(ForRobot.Libr.Attributes.SaveAttribute)))
                 {
                     prop.Ignored = false;
                 }

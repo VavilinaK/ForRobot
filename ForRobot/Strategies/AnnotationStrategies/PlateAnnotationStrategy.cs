@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Media.Media3D;
 
+using ForRobot.Libr.Attributes;
 using ForRobot.Model.Detals;
 using ForRobot.Model.File3D;
 using ForRobot.Services;
@@ -35,6 +36,7 @@ namespace ForRobot.Strategies.AnnotationStrategies
         /// <returns></returns>
         private Point3D CreatePoint(double x, double y, double z) => new Point3D(Math.Round(x, 4), Math.Round(y, 4), Math.Round(z, 4));
 
+        [PropertyName(nameof(Plita.PlateLength))]
         private Annotation GetPlateLengthAnnotation(Plita plate)
         {
             double modelPlateWidth = (double)plate.PlateWidth * (double)this._scaleFactor;
@@ -65,6 +67,7 @@ namespace ForRobot.Strategies.AnnotationStrategies
             };
         }
 
+        [PropertyName(nameof(Plita.PlateWidth))]
         private Annotation GetPlateWidthAnnotation(Plita plate)
         {
             double halfLength = (double)plate.PlateLength * (double)this._scaleFactor / 2;
@@ -104,6 +107,7 @@ namespace ForRobot.Strategies.AnnotationStrategies
             };
         }
 
+        [PropertyName(nameof(Plita.BevelToLeft))]
         private Annotation GetBevelToLeftAnnotation(Plita plate)
         {
             double halfLength = (double)plate.PlateLength * (double)this._scaleFactor / 2;
@@ -161,6 +165,7 @@ namespace ForRobot.Strategies.AnnotationStrategies
             };
         }
 
+        [PropertyName(nameof(Plita.BevelToRight))]
         private Annotation GetBevelToRightAnnotation(Plita plate)
         {
             double halfLength = (double)plate.PlateLength * (double)this._scaleFactor / 2;
@@ -218,7 +223,8 @@ namespace ForRobot.Strategies.AnnotationStrategies
             };
         }
 
-        private List<Annotation> GetRibsDistancseAnnotation(Plita plate)
+        [PropertyName(nameof(Rib.DistanceLeft))]
+        private List<Annotation> GetRibsDistancsesAnnotation(Plita plate)
         {
             List<Annotation> annotations = new List<Annotation>();
             double modelPlateLength = (double)plate.PlateLength * (double)this._scaleFactor;
@@ -266,13 +272,13 @@ namespace ForRobot.Strategies.AnnotationStrategies
 
                 double halfRibLength = ribLength / 2;
 
-                Point3D A = new Point3D(-halfRibLength + centerX, ribLeftPositionY, modelPlateHeight);
-                Point3D B = new Point3D(-halfRibLength + centerX, ribLeftPositionY, modelPlateHeight);
+                Point3D A = this.CreatePoint(-halfRibLength + centerX, ribLeftPositionY, modelPlateHeight);
+                Point3D B = this.CreatePoint(-halfRibLength + centerX, ribLeftPositionY, modelPlateHeight);
                 ribLeftPositionY += modelRibDistanceLeft;
                 if (i > 0)
                     ribLeftPositionY -= modelRibThickness;
-                Point3D C = new Point3D(-halfRibLength + centerX, ribLeftPositionY, modelPlateHeight);
-                Point3D D = new Point3D(-halfRibLength + centerX, ribLeftPositionY, modelPlateHeight);
+                Point3D C = this.CreatePoint(-halfRibLength + centerX, ribLeftPositionY, modelPlateHeight);
+                Point3D D = this.CreatePoint(-halfRibLength + centerX, ribLeftPositionY, modelPlateHeight);
 
                 Annotation annotation1 = new Annotation(new Point3DCollection() { A, B, C, D }, Annotation.ArrowSide.DA)
                 {
@@ -282,13 +288,13 @@ namespace ForRobot.Strategies.AnnotationStrategies
                 };
                 annotations.Add(annotation1);
 
-                A = new Point3D(halfRibLength + centerX, ribRightPositionY, modelPlateHeight);
-                B = new Point3D(halfRibLength + centerX, ribRightPositionY, modelPlateHeight);
+                A = this.CreatePoint(halfRibLength + centerX, ribRightPositionY, modelPlateHeight);
+                B = this.CreatePoint(halfRibLength + centerX, ribRightPositionY, modelPlateHeight);
                 ribRightPositionY += modelRibDistanceRight;
                 if (i > 0)
                     ribRightPositionY -= modelRibThickness;
-                C = new Point3D(halfRibLength + centerX, ribRightPositionY, modelPlateHeight);
-                D = new Point3D(halfRibLength + centerX, ribRightPositionY, modelPlateHeight);
+                C = this.CreatePoint(halfRibLength + centerX, ribRightPositionY, modelPlateHeight);
+                D = this.CreatePoint(halfRibLength + centerX, ribRightPositionY, modelPlateHeight);
 
                 Annotation annotation2 = new Annotation(new Point3DCollection() { A, B, C, D }, Annotation.ArrowSide.DA)
                 {
@@ -304,6 +310,46 @@ namespace ForRobot.Strategies.AnnotationStrategies
             return annotations;
         }
 
+        [PropertyName(nameof(Rib.IdentToLeft))]
+        private List<Annotation> GetRibsIdentsAnnotation(Plita plate)
+        {
+            List<Annotation> annotations = new List<Annotation>();
+            double halfModelPlateLength = (double)plate.PlateLength * (double)this._scaleFactor / 2;
+            double modelPlateWidth = (double)plate.PlateWidth * (double)this._scaleFactor;
+            double modelPlateHeight = (double)plate.PlateThickness * (double)this._scaleFactor;
+            double modelRibThickness = (double)plate.RibThickness * (double)this._scaleFactor;
+
+            double ribLeftPositionY = -modelPlateWidth / 2;
+            double ribRightPositionY = -modelPlateWidth / 2;
+            for (int i = 0; i < plate.RibCount; i++)
+            {
+                var rib = plate.RibsCollection[i];
+                double modelRibDistanceLeft = (double)rib.DistanceLeft * (double)this._scaleFactor;
+                double modelRibDistanceRight = (double)rib.DistanceRight * (double)this._scaleFactor;
+                double modelRibIdentToLeft = (double)rib.IdentToLeft * (double)this._scaleFactor;
+                double modelRibIdentToRight = (double)rib.IdentToRight * (double)this._scaleFactor;
+
+                ribLeftPositionY += modelRibDistanceLeft;
+                ribRightPositionY += modelRibDistanceRight;
+
+                double centerX = (modelRibIdentToLeft - modelRibIdentToRight) / 2;
+
+                Point3D A = this.CreatePoint(-halfModelPlateLength, ribLeftPositionY, modelPlateHeight);
+                Point3D B = this.CreatePoint(-halfModelPlateLength + centerX, ribLeftPositionY, modelPlateHeight);
+                Point3D C = this.CreatePoint(-halfModelPlateLength + centerX, ribLeftPositionY, modelPlateHeight);
+                Point3D D = this.CreatePoint(-halfModelPlateLength, ribLeftPositionY, modelPlateHeight);
+
+                Annotation annotation = new Annotation(new Point3DCollection() { A, B, C, D }, Annotation.ArrowSide.DA)
+                {
+                    Text = this.ToString(rib.IdentToLeft),
+                    PropertyName = string.Format("{0} {1}", nameof(rib.IdentToLeft), i),
+                    ArrowSize = 0.5
+                };
+                annotations.Add(annotation);
+            }
+            return annotations;
+        }
+
         #endregion Private functions
 
         public bool CanHandle(DetalType detalType) => detalType == DetalType.Plita;
@@ -313,18 +359,21 @@ namespace ForRobot.Strategies.AnnotationStrategies
             Plita plate = (Plita)detal;
             List<Annotation> annotationsList = new List<Annotation>()
             {
-                this.GetPlateLengthAnnotation(plate),
-                this.GetPlateWidthAnnotation(plate),
-                //this.GetPlateThicknessAnnotation(plate),
-                this.GetBevelToLeftAnnotation(plate),
-                this.GetBevelToRightAnnotation(plate)
+                //this.GetPlateLengthAnnotation(plate),
+                //this.GetPlateWidthAnnotation(plate),
+                ////this.GetPlateThicknessAnnotation(plate),
+                //this.GetBevelToLeftAnnotation(plate),
+                //this.GetBevelToRightAnnotation(plate)
 
                 //this.GetRibThicknessAnnotation(plate),
                 //this.GetTechOffsetSeamStartAnnotation(plate),
                 //this.GetTechOffsetSeamEndAnnotation(plate),
             };
 
-            foreach (var item in this.GetRibsDistancseAnnotation(plate))
+            //foreach (var item in this.GetRibsDistancsesAnnotation(plate))
+            //    annotationsList.Add(item);
+
+            foreach (var item in this.GetRibsIdentsAnnotation(plate))
                 annotationsList.Add(item);
 
             return new ObservableCollection<Annotation>(annotationsList);

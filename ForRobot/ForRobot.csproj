@@ -457,7 +457,7 @@
     <Compile Include="Libr\Collections\FullyObservableCollection.cs" />
     <Compile Include="Libr\Generation.cs" />
     <Compile Include="Libr\Behavior\AutoScrollBehavior.cs" />
-    <Compile Include="Libr\Json\SaveAttribute.cs" />
+    <Compile Include="Libr\Attributes\SaveAttribute.cs" />
     <Compile Include="Libr\Json\SaveAttributesResolver.cs" />
     <Compile Include="Libr\ConfigurationProperties\PlitaConfigurationSection.cs" />
     <Compile Include="Libr\ConfigurationProperties\RobotConfigurationSection.cs" />

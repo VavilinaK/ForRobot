@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ForRobot.Libr.Json
+namespace ForRobot.Libr.Attributes
 {
     /// <summary>
     /// Аттрибут для сохранения игнорируемых свойств

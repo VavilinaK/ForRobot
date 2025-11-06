@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using System.Windows.Interactivity;
+using System.Reflection;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -25,11 +26,12 @@ namespace ForRobot.Libr.Behavior
         #region Private variables
 
         private readonly ForRobot.Services.AnnotationService _annotationService;
+        private readonly List<IDetalAnnotationStrategy> _strategies;
 
         #endregion
 
         #region Public variables
-        
+
         public Detal Detal
         {
             get => (Detal)GetValue(DetalProperty);
@@ -115,11 +117,11 @@ namespace ForRobot.Libr.Behavior
         public HelixAnnotationsBehavior()
         {
             double scaleFactor = (double)ForRobot.Model.Settings.Settings.ScaleFactor;
-            var strategies = new List<IDetalAnnotationStrategy>
+            this._strategies = new List<IDetalAnnotationStrategy>
             {
                 new PlateAnnotationStrategy(scaleFactor)
             };
-            _annotationService = new Services.AnnotationService(strategies);
+            _annotationService = new Services.AnnotationService(_strategies);
         }
 
         #region Private functions
@@ -144,7 +146,7 @@ namespace ForRobot.Libr.Behavior
 
         #region Handle
 
-        private void PropertyChangeHandle(object sender, PropertyChangedEventArgs e) => this.ChangePropertyAnnotations(sender as Detal, e.PropertyName);
+        private void PropertyChangeHandle(object sender, PropertyChangedEventArgs e) => this.ChangePropertyAnnotation(sender as Detal, e.PropertyName);
         
         #endregion
 
@@ -224,24 +226,12 @@ namespace ForRobot.Libr.Behavior
         /// </summary>
         /// <param name="detal"></param>
         /// <param name="propertyName">Наименование параметра</param>
-        private void ChangePropertyAnnotations(Detal detal, string propertyName)
+        private void ChangePropertyAnnotation(Detal detal, string propertyName)
         {
             if (detal == null && string.IsNullOrEmpty(propertyName))
                 return;
 
-            if (detal is Plita plate && propertyName == nameof(plate.ScoseType))
-            {
-                this.UpdateAnnotations();
-                return;
-            }
-
-            Annotation annotation = this.Items == null || this.Items.Count(item => item.PropertyName == propertyName) == 0 ? null : this.Items.Where(item => item.PropertyName == propertyName).First();
-
-            if (annotation == null)
-                return;
-
-            var newValue = detal.GetType().GetProperty(propertyName).GetValue(detal, null);
-            //annotation.Text = _annotationService.ToString(Convert.ToDecimal(newValue));
+            this.UpdateAnnotations();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
         }
     }
 }
