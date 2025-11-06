@@ -717,9 +717,9 @@
 
                                 <h:HelixViewport3D.DefaultCamera>
                                     <PerspectiveCamera x:Name="CameraControler" 
-                                                       Position="-7.85, 442.2, 672.5"
-                                                       LookDirection="7.126,-445,-672"
-                                                       UpDirection="0.02, -0.77, 0.623"
+                                                       Position="-0.7, -2.8, 900"
+                                                       LookDirection="0,0,-900"
+                                                       UpDirection="0, 1, 0"
                                                        FieldOfView="10"
                                                        NearPlaneDistance="0.001"/>
                                 </h:HelixViewport3D.DefaultCamera>
@@ -768,9 +768,9 @@
 
                                 <h:CoordinateSystemVisual3D ArrowLengths="3"/>
 
-                                <h:BoundingBoxVisual3D BoundingBox="{Binding Path=DataContext.SelectedObject, Converter={StaticResource BoundsConvert}, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
+                                <!--<h:BoundingBoxVisual3D BoundingBox="{Binding Path=DataContext.SelectedObject, Converter={StaticResource BoundsConvert}, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
                                                        Diameter="0.1"
-                                                       Fill="{Binding Source={x:Static file:Colors.SelectorBoxColor}, Converter={StaticResource ColorToBrushConverter}}"/>
+                                                       Fill="{Binding Source={x:Static file:Colors.SelectorBoxColor}, Converter={StaticResource ColorToBrushConverter}}"/>-->
 
                                 <i:Interaction.Behaviors>
                                     <behavior:CameraControllerBehavior/>

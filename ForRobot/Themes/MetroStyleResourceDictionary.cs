@@ -3,8 +3,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Controls;
-using System.Windows.Threading;
-using System.Collections.Generic;
 
 namespace ForRobot.Themes
 {
@@ -21,6 +19,8 @@ namespace ForRobot.Themes
 
             if (textBox != null)
                 textBox.SelectAll();
+
+            GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Messages.ProperteisNameMessage(textBox.Tag as string));
         }
 
         /// <summary>

@@ -3,17 +3,17 @@
 namespace ForRobot.Libr.Messages
 {
     /// <summary>
-    /// Сообщение нахождения элемента по тэгу
+    /// Сообщение передачи имени свойства
     /// <para/>
     /// Используется для получения фокуса <see cref="System.Windows.Controls.TextBox"/> с привязанным соответствено <see cref="FindElementByTagMessage.TagProperty"/> параметром
     /// </summary>
-    public class FindElementByTagMessage
+    public class ProperteisNameMessage
     {
-        public string TagProperty { get; private set; }
+        public string PropertyName { get; private set; }
 
-        public FindElementByTagMessage(string tagProperty)
+        public ProperteisNameMessage(string propertyName)
         {
-            this.TagProperty = tagProperty;
+            this.PropertyName = propertyName;
         }
     }
 }

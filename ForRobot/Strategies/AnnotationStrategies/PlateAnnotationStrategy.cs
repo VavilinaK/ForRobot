@@ -236,7 +236,7 @@ namespace ForRobot.Strategies.AnnotationStrategies
             };
         }
 
-        [PropertyName(nameof(Rib.DistanceLeft))]
+        [PropertyName("Distance")]
         private List<Annotation> GetRibsDistancsesAnnotation(Plita plate)
         {
             List<Annotation> annotations = new List<Annotation>();
@@ -323,7 +323,7 @@ namespace ForRobot.Strategies.AnnotationStrategies
             return annotations;
         }
 
-        [PropertyName(nameof(Rib.IdentToLeft))]
+        [PropertyName("Ident")]
         private List<Annotation> GetRibsIdentsAnnotation(Plita plate)
         {
             List<Annotation> annotations = new List<Annotation>();
@@ -398,7 +398,7 @@ namespace ForRobot.Strategies.AnnotationStrategies
             return annotations;
         }
 
-        [PropertyName(nameof(Rib.DissolutionLeft))]
+        [PropertyName("Dissolution")]
         private List<Annotation> GetRibsDissolutionsAnnotation(Plita plate)
         {
             List<Annotation> annotations = new List<Annotation>();

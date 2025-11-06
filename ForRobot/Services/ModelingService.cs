@@ -67,7 +67,7 @@ namespace ForRobot.Services
                     Plita plate = detal as Plita;
                     detalModel3D.SetName("Plate");
 
-                    double offsetDirection = (plate.ScoseType == ScoseTypes.SlopeLeft || plate.ScoseType == ScoseTypes.SlopeLeft) ? SLOPE_OFF_SET : 0;
+                    double offsetDirection = (plate.ScoseType == ScoseTypes.SlopeLeft || plate.ScoseType == ScoseTypes.SlopeRight) ? SLOPE_OFF_SET : 0;
                     
                     scene.Children.AddRobot(halfModelPlateLength + offsetDirection, -halfModelPlateWidth - DEFAULT_DISTANCE, 0, this._scaleFactor * 10);
                     scene.Children.AddPC(-halfModelPlateLength - offsetDirection, -halfModelPlateWidth - DEFAULT_DISTANCE, 0, this._scaleFactor * 200);

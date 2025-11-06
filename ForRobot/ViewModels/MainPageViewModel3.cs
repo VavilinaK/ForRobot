@@ -212,7 +212,7 @@ namespace ForRobot.ViewModels
                     //    return;
 
                     case ForRobot.Model.File3D.Annotation annotation:
-                        GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Messages.FindElementByTagMessage((value as Model.File3D.Annotation).PropertyName));
+                        GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Messages.ProperteisNameMessage((value as Model.File3D.Annotation).PropertyName));
                         break;
 
                     default:

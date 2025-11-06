@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 
+using GalaSoft.MvvmLight.Messaging;
 using HelixToolkit.Wpf;
 
 using ForRobot.Model.File3D;
@@ -122,6 +123,8 @@ namespace ForRobot.Libr.Behavior
                 new PlateAnnotationStrategy(scaleFactor)
             };
             _annotationService = new Services.AnnotationService(_strategies);
+
+            Messenger.Default.Register<ForRobot.Libr.Messages.ProperteisNameMessage>(this, message => this.UpdateAnnotationsIsVisibale(message.PropertyName));
         }
 
         #region Private functions
@@ -176,22 +179,6 @@ namespace ForRobot.Libr.Behavior
 
         #endregion Callback
 
-        #endregion Private functions
-
-        //private static void OnFontSizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        //{
-        //    HelixAnnotationsBehavior helixAnnotationsBehavior = (HelixAnnotationsBehavior)d;
-        //    helixAnnotationsBehavior.FontSize = (double)e.NewValue;
-
-        //    if (helixAnnotationsBehavior.Items == null) return;
-
-        //    foreach(var item in helixAnnotationsBehavior.Items)
-        //    {
-        //        item.FontSize = helixAnnotationsBehavior.FontSize;
-        //    }
-        //}
-
-
         /// <summary>
         /// Обновление параметров
         /// </summary>
@@ -222,7 +209,7 @@ namespace ForRobot.Libr.Behavior
         }
 
         /// <summary>
-        /// Изменение подписи одного из параметров
+        /// Изменение параметров
         /// </summary>
         /// <param name="detal"></param>
         /// <param name="propertyName">Наименование параметра</param>
@@ -231,7 +218,42 @@ namespace ForRobot.Libr.Behavior
             if (detal == null && string.IsNullOrEmpty(propertyName))
                 return;
 
-            this.UpdateAnnotations();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+            this.UpdateAnnotations();
+        }
+
+        private void UpdateAnnotationsIsVisibale(string propertyName)
+        {
+            switch (propertyName)
+            {
+                case nameof(Detal.DistanceToFirst):
+                case nameof(Detal.DistanceBetween):
+                case nameof(Rib.DistanceLeft):
+                case nameof(Rib.DistanceRight):
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        #endregion Private functions
+
+        //private static void OnFontSizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        //{
+        //    HelixAnnotationsBehavior helixAnnotationsBehavior = (HelixAnnotationsBehavior)d;
+        //    helixAnnotationsBehavior.FontSize = (double)e.NewValue;
+
+        //    if (helixAnnotationsBehavior.Items == null) return;
+
+        //    foreach(var item in helixAnnotationsBehavior.Items)
+        //    {
+        //        item.FontSize = helixAnnotationsBehavior.FontSize;
+        //    }
+        //}
+
+        ~HelixAnnotationsBehavior()
+        {
+            Messenger.Default.Unregister<ForRobot.Libr.Messages.ProperteisNameMessage>(this);
         }
     }
 }

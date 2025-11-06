@@ -42,38 +42,38 @@ namespace ForRobot.Views.Pages
 
             this.Loaded += OnPageLoaded;
 
-            Messenger.Default.Register<FindElementByTagMessage>(this, message => 
-            {
-                DockingManager dockingManager = FindChild<DockingManager>(this);
+            //Messenger.Default.Register<FindElementByTagMessage>(this, message => 
+            //{
+            //    DockingManager dockingManager = FindChild<DockingManager>(this);
 
-                LayoutAnchorable anchorable = FindLayoutAnchorable(dockingManager, "Параметры детали");
-                anchorable?.Show();
+            //    LayoutAnchorable anchorable = FindLayoutAnchorable(dockingManager, "Параметры детали");
+            //    anchorable?.Show();
 
-                var content = anchorable.Content as FrameworkElement;
-                if (content == null) return;
+            //    var content = anchorable.Content as FrameworkElement;
+            //    if (content == null) return;
 
-                TreeView treeView = FindChild<TreeView>(content);
-                if (treeView == null) return;
+            //    TreeView treeView = FindChild<TreeView>(content);
+            //    if (treeView == null) return;
 
-                ExpandAllTreeViewItems(treeView);
+            //    ExpandAllTreeViewItems(treeView);
 
-                Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new Action(() =>
-                {
-                    var targetTemplate = this.Resources["PlitaDopTemplate3Style"] as DataTemplate;
-                    var presenter = FindChild<ContentPresenter>(this);
+            //    Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.ContextIdle, new Action(() =>
+            //    {
+            //        var targetTemplate = this.Resources["PlitaDopTemplate3Style"] as DataTemplate;
+            //        var presenter = FindChild<ContentPresenter>(this);
 
-                    if (presenter.ContentTemplate == targetTemplate)
-                    {
-                        TextBox textBox = FindElementByTag<TextBox>(presenter, message.TagProperty);
-                        if (textBox != null && !textBox.IsKeyboardFocusWithin)
-                        {
-                            textBox.Focus();
-                            Keyboard.Focus(textBox);
-                            textBox.SelectAll();
-                        }
-                    }
-                }));
-            }); // Сообщение получения фокуса TextBox при нажатии на соответствующий параметр модели.
+            //        if (presenter.ContentTemplate == targetTemplate)
+            //        {
+            //            TextBox textBox = FindElementByTag<TextBox>(presenter, message.TagProperty);
+            //            if (textBox != null && !textBox.IsKeyboardFocusWithin)
+            //            {
+            //                textBox.Focus();
+            //                Keyboard.Focus(textBox);
+            //                textBox.SelectAll();
+            //            }
+            //        }
+            //    }));
+            //}); // Сообщение получения фокуса TextBox при нажатии на соответствующий параметр модели.
 
             Messenger.Default.Register<SaveLayoutMessage>(this, _ => SaveLayout()); // Сообщение сохранения макета интерфейса.
             Messenger.Default.Register<LoadLayoutMessage>(this, _ => LoadLayout()); // Сообщение выгрузки макета интерфейса.
@@ -252,7 +252,8 @@ namespace ForRobot.Views.Pages
 
         ~PageMain3()
         {
-            Messenger.Default.Unregister<FindElementByTagMessage>(this); // Отмена подписки на сообщение.
+            //Messenger.Default.Unregister<FindElementByTagMessage>(this); 
+            // Отмена подписки на сообщения.
             Messenger.Default.Unregister<SelectLayoutDocumentPane>(this);
             Messenger.Default.Unregister<SaveLayoutMessage>(this);
             Messenger.Default.Unregister<LoadLayoutMessage>(this);
