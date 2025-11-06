@@ -19,10 +19,23 @@ namespace ForRobot.Strategies.AnnotationStrategies
         /// Масштабный коэффициент
         /// </summary>
         private readonly double _scaleFactor;
+        /// <summary>
+        /// Коэффициент сужения/расширения для трапеций (от 0.1 до 0.9)
+        /// </summary>
+        private readonly double _trapezoidRatio;
+        /// <summary>
+        /// Смещение скоса
+        /// </summary>
+        private readonly double _slopeOffset;
 
-        public PlateAnnotationStrategy(double scaleFactor)
+        public PlateAnnotationStrategy(double scaleFactor, double slopeOffset = ModelingService.SLOPE_OFF_SET, double trapezoidRatio = ModelingService.TRAPEZOID_RATIO)
         {
+            if (slopeOffset <= 0)
+                throw new ArgumentException("Масштабный коэффициент должен быть больше нуля.");
+
             this._scaleFactor = scaleFactor;
+            this._slopeOffset = slopeOffset;
+            this._trapezoidRatio = trapezoidRatio;
         }
 
         #region Private functions
@@ -332,20 +345,132 @@ namespace ForRobot.Strategies.AnnotationStrategies
                 ribLeftPositionY += modelRibDistanceLeft;
                 ribRightPositionY += modelRibDistanceRight;
 
-                double centerX = (modelRibIdentToLeft - modelRibIdentToRight) / 2;
+                double offsetX = 0;
+                double basePlateLength = halfModelPlateLength;
+                switch (plate.ScoseType)
+                {
+                    case ScoseTypes.SlopeLeft:
+                    case ScoseTypes.SlopeRight:
+                        double positionRatio = ((ribLeftPositionY + ribRightPositionY) / 2 + modelPlateWidth / 2) / modelPlateWidth * 2 - 1;
+                        offsetX = ((plate.ScoseType == ScoseTypes.SlopeLeft) ? -this._slopeOffset : this._slopeOffset) * positionRatio;
+                        break;
 
-                Point3D A = this.CreatePoint(-halfModelPlateLength, ribLeftPositionY, modelPlateHeight);
-                Point3D B = this.CreatePoint(-halfModelPlateLength + centerX, ribLeftPositionY, modelPlateHeight);
-                Point3D C = this.CreatePoint(-halfModelPlateLength + centerX, ribLeftPositionY, modelPlateHeight);
-                Point3D D = this.CreatePoint(-halfModelPlateLength, ribLeftPositionY, modelPlateHeight);
+                    case ScoseTypes.TrapezoidTop:
+                    case ScoseTypes.TrapezoidBottom:
+                        double centerY = (ribLeftPositionY + ribRightPositionY) / 2 + modelRibThickness / 2;
+                        double trapezoidPositionRatio = (centerY + modelPlateWidth / 2) / modelPlateWidth;
 
-                Annotation annotation = new Annotation(new Point3DCollection() { A, B, C, D }, Annotation.ArrowSide.DA)
+                        if (plate.ScoseType == ScoseTypes.TrapezoidTop)
+                            basePlateLength *= (1 - this._trapezoidRatio * trapezoidPositionRatio);
+                        else
+                            basePlateLength *= (1 - this._trapezoidRatio * (1 - trapezoidPositionRatio));
+                        break;
+                }
+
+                double centerX = offsetX + (modelRibIdentToLeft - modelRibIdentToRight) / 2;
+
+                Point3D A = this.CreatePoint(-basePlateLength + centerX, ribLeftPositionY, modelPlateHeight);
+                Point3D B = this.CreatePoint(-basePlateLength + centerX, ribLeftPositionY, modelPlateHeight);
+                Point3D C = this.CreatePoint(-basePlateLength + modelRibIdentToLeft + centerX, ribLeftPositionY, modelPlateHeight);
+                Point3D D = this.CreatePoint(-basePlateLength + modelRibIdentToLeft + centerX, ribLeftPositionY, modelPlateHeight);
+
+                Annotation annotation1 = new Annotation(new Point3DCollection() { A, B, C, D })
                 {
                     Text = this.ToString(rib.IdentToLeft),
                     PropertyName = string.Format("{0} {1}", nameof(rib.IdentToLeft), i),
                     ArrowSize = 0.5
                 };
-                annotations.Add(annotation);
+                annotations.Add(annotation1);
+
+                A = this.CreatePoint(basePlateLength + centerX, ribRightPositionY, modelPlateHeight);
+                B = this.CreatePoint(basePlateLength + centerX, ribRightPositionY, modelPlateHeight);
+                C = this.CreatePoint(basePlateLength - modelRibIdentToRight + centerX, ribRightPositionY, modelPlateHeight);
+                D = this.CreatePoint(basePlateLength - modelRibIdentToRight + centerX, ribRightPositionY, modelPlateHeight);
+
+                Annotation annotation2 = new Annotation(new Point3DCollection() { A, B, C, D })
+                {
+                    Text = this.ToString(rib.IdentToRight),
+                    PropertyName = string.Format("{0} {1}", nameof(rib.IdentToRight), i),
+                    ArrowSize = 0.5
+                };
+                annotations.Add(annotation2);
+            }
+            return annotations;
+        }
+
+        [PropertyName(nameof(Rib.DissolutionLeft))]
+        private List<Annotation> GetRibsDissolutionsAnnotation(Plita plate)
+        {
+            List<Annotation> annotations = new List<Annotation>();
+            double halfModelPlateLength = (double)plate.PlateLength * (double)this._scaleFactor / 2;
+            double modelPlateWidth = (double)plate.PlateWidth * (double)this._scaleFactor;
+            double modelPlateHeight = (double)plate.PlateThickness * (double)this._scaleFactor;
+            double modelRibThickness = (double)plate.RibThickness * (double)this._scaleFactor;
+
+            double ribLeftPositionY = -modelPlateWidth / 2;
+            double ribRightPositionY = -modelPlateWidth / 2;
+            for (int i = 0; i < plate.RibCount; i++)
+            {
+                var rib = plate.RibsCollection[i];
+                double modelRibDistanceLeft = (double)rib.DistanceLeft * (double)this._scaleFactor;
+                double modelRibDistanceRight = (double)rib.DistanceRight * (double)this._scaleFactor;
+                double modelRibIdentToLeft = (double)rib.IdentToLeft * (double)this._scaleFactor;
+                double modelRibIdentToRight = (double)rib.IdentToRight * (double)this._scaleFactor;
+                double modelRibDissolutionLeft = (double)rib.DissolutionLeft * (double)this._scaleFactor;
+                double modelRibDissolutionRight = (double)rib.DissolutionRight * (double)this._scaleFactor;
+
+                ribLeftPositionY += modelRibDistanceLeft;
+                ribRightPositionY += modelRibDistanceRight;
+
+                double offsetX = 0;
+                double basePlateLength = halfModelPlateLength;
+                switch (plate.ScoseType)
+                {
+                    case ScoseTypes.SlopeLeft:
+                    case ScoseTypes.SlopeRight:
+                        double positionRatio = ((ribLeftPositionY + ribRightPositionY) / 2 + modelPlateWidth / 2) / modelPlateWidth * 2 - 1;
+                        offsetX = ((plate.ScoseType == ScoseTypes.SlopeLeft) ? -this._slopeOffset : this._slopeOffset) * positionRatio;
+                        break;
+
+                    case ScoseTypes.TrapezoidTop:
+                    case ScoseTypes.TrapezoidBottom:
+                        double centerY = (ribLeftPositionY + ribRightPositionY) / 2 + modelRibThickness / 2;
+                        double trapezoidPositionRatio = (centerY + modelPlateWidth / 2) / modelPlateWidth;
+
+                        if (plate.ScoseType == ScoseTypes.TrapezoidTop)
+                            basePlateLength *= (1 - this._trapezoidRatio * trapezoidPositionRatio);
+                        else
+                            basePlateLength *= (1 - this._trapezoidRatio * (1 - trapezoidPositionRatio));
+                        break;
+                }
+
+                double centerX = offsetX + (modelRibIdentToLeft - modelRibIdentToRight) / 2;
+
+                Point3D A = this.CreatePoint(-basePlateLength + modelRibIdentToLeft + centerX, ribLeftPositionY, modelPlateHeight);
+                Point3D B = this.CreatePoint(-basePlateLength + modelRibIdentToLeft + centerX, ribLeftPositionY, modelPlateHeight);
+                Point3D C = this.CreatePoint(-basePlateLength + modelRibIdentToLeft + modelRibDissolutionLeft + centerX, ribLeftPositionY, modelPlateHeight);
+                Point3D D = this.CreatePoint(-basePlateLength + modelRibIdentToLeft + modelRibDissolutionLeft + centerX, ribLeftPositionY, modelPlateHeight);
+
+                Annotation annotation1 = new Annotation(new Point3DCollection() { A, B, C, D })
+                {
+                    Text = this.ToString(rib.DissolutionLeft),
+                    PropertyName = string.Format("{0} {1}", nameof(rib.DissolutionLeft), i),
+                    ArrowSize = 0.5
+                };
+                annotations.Add(annotation1);
+
+                A = this.CreatePoint(basePlateLength - modelRibIdentToRight + centerX, ribRightPositionY, modelPlateHeight);
+                B = this.CreatePoint(basePlateLength - modelRibIdentToRight + centerX, ribRightPositionY, modelPlateHeight);
+                C = this.CreatePoint(basePlateLength - modelRibIdentToRight - modelRibDissolutionRight + centerX, ribRightPositionY, modelPlateHeight);
+                D = this.CreatePoint(basePlateLength - modelRibIdentToRight - modelRibDissolutionRight + centerX, ribRightPositionY, modelPlateHeight);
+
+                Annotation annotation2 = new Annotation(new Point3DCollection() { A, B, C, D })
+                {
+                    Text = this.ToString(rib.DissolutionRight),
+                    PropertyName = string.Format("{0} {1}", nameof(rib.DissolutionRight), i),
+                    ArrowSize = 0.5
+                };
+                annotations.Add(annotation2);
             }
             return annotations;
         }
@@ -359,22 +484,30 @@ namespace ForRobot.Strategies.AnnotationStrategies
             Plita plate = (Plita)detal;
             List<Annotation> annotationsList = new List<Annotation>()
             {
-                //this.GetPlateLengthAnnotation(plate),
-                //this.GetPlateWidthAnnotation(plate),
-                ////this.GetPlateThicknessAnnotation(plate),
-                //this.GetBevelToLeftAnnotation(plate),
-                //this.GetBevelToRightAnnotation(plate)
-
-                //this.GetRibThicknessAnnotation(plate),
-                //this.GetTechOffsetSeamStartAnnotation(plate),
-                //this.GetTechOffsetSeamEndAnnotation(plate),
+                this.GetPlateLengthAnnotation(plate),
+                this.GetPlateWidthAnnotation(plate),
+                //this.GetPlateThicknessAnnotation(plate),
+                this.GetBevelToLeftAnnotation(plate),
+                this.GetBevelToRightAnnotation(plate)
             };
 
-            //foreach (var item in this.GetRibsDistancsesAnnotation(plate))
-            //    annotationsList.Add(item);
+            foreach (var item in this.GetRibsDistancsesAnnotation(plate))
+            {
+                item.IsVisible = false;
+                annotationsList.Add(item);
+            }
 
             foreach (var item in this.GetRibsIdentsAnnotation(plate))
+            {
+                item.IsVisible = false;
                 annotationsList.Add(item);
+            }
+
+            foreach (var item in this.GetRibsDissolutionsAnnotation(plate))
+            {
+                item.IsVisible = false;
+                annotationsList.Add(item);
+            }
 
             return new ObservableCollection<Annotation>(annotationsList);
         }

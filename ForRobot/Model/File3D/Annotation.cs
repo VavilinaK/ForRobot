@@ -18,69 +18,6 @@ namespace ForRobot.Model.File3D
         }
     }
     
-    //public class BillboardLinesVisual3D : ScreenSpaceVisual3D
-    //{
-    //    private readonly LinesVisual3D _linesVisual = new LinesVisual3D();
-
-    //    //public static readonly DependencyProperty PointsProperty = DependencyProperty.Register("Points", typeof(Point3DCollection), typeof(BillboardLinesVisual3D),
-    //    //        new PropertyMetadata(null, OnPointsChanged));
-
-    //    public static readonly DependencyProperty ThicknessProperty =
-    //        DependencyProperty.Register("Thickness", typeof(double), typeof(BillboardLinesVisual3D),
-    //            new PropertyMetadata(2.0, OnThicknessChanged));
-
-    //    //public static readonly DependencyProperty ColorProperty =
-    //    //    DependencyProperty.Register("Color", typeof(Color), typeof(BillboardLinesVisual3D),
-    //    //        new PropertyMetadata(Colors.Black, OnColorChanged));
-
-    //    //public Point3DCollection Points
-    //    //{
-    //    //    get => (Point3DCollection)GetValue(PointsProperty);
-    //    //    set => SetValue(PointsProperty, value);
-    //    //}
-
-    //    public double Thickness
-    //    {
-    //        get => (double)GetValue(ThicknessProperty);
-    //        set => SetValue(ThicknessProperty, value);
-    //    }
-
-    //    //public Color Color
-    //    //{
-    //    //    get => (Color)GetValue(ColorProperty);
-    //    //    set => SetValue(ColorProperty, value);
-    //    //}
-
-    //    public BillboardLinesVisual3D()
-    //    {
-    //        Children.Add(_linesVisual);
-    //    }
-
-    //    //private static void OnPointsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    //    //{
-    //    //    ((BillboardLinesVisual3D)d).UpdateGeometry();
-    //    //}
-
-    //    private static void OnThicknessChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    //    {
-    //        ((BillboardLinesVisual3D)d).UpdateGeometry();
-    //    }
-
-    //    //private static void OnColorChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    //    //{
-    //    //    ((BillboardLinesVisual3D)d).UpdateGeometry();
-    //    //}
-
-    //    protected override void UpdateGeometry()
-    //    {
-    //        _linesVisual.Points = Points;
-    //        _linesVisual.Thickness = Thickness;
-    //        _linesVisual.Color = Color;
-    //    }
-
-    //    protected override bool UpdateTransforms() => true;
-    //}
-
     public class Annotation : ScreenSpaceVisual3D
     {
         #region Private variables
@@ -90,6 +27,7 @@ namespace ForRobot.Model.File3D
         private readonly LinesVisual3D _arrows;
 
         private double _arrowSize = DEFAULT_ARROW_SIZE;
+        private bool _isVisible = true;
 
         /// <summary>
         /// Направления стрелок и индексы точек
@@ -176,6 +114,19 @@ namespace ForRobot.Model.File3D
             {
                 this._label.Text = value;
                 this.UpdateText();
+            }
+        }
+
+        /// <summary>
+        /// Свойство видимости аннотации
+        /// </summary>
+        public bool IsVisible
+        {
+            get => this._isVisible;
+            set
+            {
+                this._isVisible = value;
+                this.UpdateVisibility();
             }
         }
 
@@ -317,6 +268,25 @@ namespace ForRobot.Model.File3D
                 (point0.Z + point1.Z) * 0.5
             );
             this._label.Position = midPoint - new Vector3D(0, 0, -ArrowSize * 2);
+        }
+
+        private void UpdateVisibility()
+        {
+            if (_isVisible)
+            {
+                if (!Children.Contains(_label))
+                    Children.Add(_label);
+                if (!Children.Contains(_lines))
+                    Children.Add(_lines);
+                if (!Children.Contains(_arrows))
+                    Children.Add(_arrows);
+            }
+            else
+            {
+                Children.Remove(_label);
+                Children.Remove(_lines);
+                Children.Remove(_arrows);
+            }
         }
 
         protected override bool UpdateTransforms() => true;
