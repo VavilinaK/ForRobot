@@ -615,7 +615,7 @@ namespace ForRobot.Model.Settings
         {
             Dictionary<string, System.Windows.Media.Color> colors = new Dictionary<string, System.Windows.Media.Color>();
 
-            foreach (var f in typeof(ForRobot.Model.File3D.Colors).GetProperties(BindingFlags.Static | BindingFlags.Public))
+            foreach (var f in typeof(ForRobot.Themes.Colors).GetProperties(BindingFlags.Static | BindingFlags.Public))
             {
                 var attribute = f.GetCustomAttributes(typeof(ForRobot.Libr.Attributes.PropertyNameAttribute), false).FirstOrDefault() as ForRobot.Libr.Attributes.PropertyNameAttribute;
                 if (attribute != null)
@@ -639,7 +639,7 @@ namespace ForRobot.Model.Settings
         /// <param name="color">Значение цвета</param>
         public static void SetColor(string propertyName, System.Windows.Media.Color color)
         {
-            foreach (var f in typeof(ForRobot.Model.File3D.Colors).GetProperties(BindingFlags.Static | BindingFlags.Public))
+            foreach (var f in typeof(ForRobot.Themes.Colors).GetProperties(BindingFlags.Static | BindingFlags.Public))
             {
                 var attribute = f.GetCustomAttributes(typeof(ForRobot.Libr.Attributes.PropertyNameAttribute), false).FirstOrDefault() as ForRobot.Libr.Attributes.PropertyNameAttribute;
                 if (attribute.PropertyName == propertyName)

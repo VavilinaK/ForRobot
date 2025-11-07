@@ -333,7 +333,7 @@
     <Compile Include="Libr\Messages\UpdateCurrentDetalMessage.cs" />
     <Compile Include="Libr\UndoRedo\IUndoRedo.cs" />
     <Compile Include="Libr\ValueChangedEventArgs.cs" />
-    <Compile Include="Model\File3D\Colors.cs" />
+    <Compile Include="Themes\Colors.cs" />
     <Compile Include="Model\Settings\ApplicationInfo.cs" />
     <Compile Include="Model\Settings\PropertyColor.cs" />
     <Compile Include="Model\Settings\ModeClosingApp.cs" />

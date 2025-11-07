@@ -26,8 +26,12 @@ namespace ForRobot.Model.File3D
         private readonly LinesVisual3D _lines;
         private readonly LinesVisual3D _arrows;
 
+        private Color _color = Colors.Black;
+        private Color _selectedColor = Color.FromRgb(255, 218, 33);
         private double _arrowSize = DEFAULT_ARROW_SIZE;
+        private double _thickness = 2.0;
         private bool _isVisible = true;
+        private bool _isSelect = false;
 
         /// <summary>
         /// Направления стрелок и индексы точек
@@ -65,6 +69,11 @@ namespace ForRobot.Model.File3D
         const double DEFAULT_ARROW_SIZE = 1.0;
         public static double DefaultAnnotationWidth = 5.0;
 
+        /// <summary>
+        /// Сторона со стрелкой
+        /// </summary>
+        public ArrowSide ArrowsSide { get; set; } = ArrowSide.BC;
+
         public double ArrowSize
         {
             get => _arrowSize;
@@ -74,32 +83,41 @@ namespace ForRobot.Model.File3D
                 this.UpdateGeometry();
             }
         }
-
-        /// <summary>
-        /// Сторона со стрелкой
-        /// </summary>
-        public ArrowSide ArrowsSide { get; set; } = ArrowSide.BC;
-
-        //public double FontSize
-        //{
-        //    get => _label.FontSize;
-        //    set
-        //    {
-        //        _label.FontSize = value;
-        //        this.UpdateText();
-        //    }
-        //}
-        //public double Thickness
-        //{
-        //    get => this._thickness;
-        //    set
-        //    {
-        //        this._thickness = value;
-        //        this._lines.Thickness = this._thickness;
-        //        this._arrows.Thickness = this._thickness;
-        //    }
-        //}
-
+        public double FontSize {  get => this._label.FontSize; set => this._label.FontSize = value;  }
+        public double Thickness
+        {
+            get => this._thickness;
+            set
+            {
+                this._thickness = value;
+                this._lines.Thickness = this._thickness;
+                this._arrows.Thickness = this._thickness;
+            }
+        }
+        
+        public FontFamily FontFamily { get => this._label.FontFamily; set => this._label.FontFamily = value; }
+        public FontWeight FontWeight { get => this._label.FontWeight; set => this._label.FontWeight = value; }
+        public Brush Foreground { get => this._label.Foreground; set => this._label.Foreground = value; }
+        public Brush Background { get => this._label.Background; set => this._label.Background = value; }
+        public new Color Color
+        {
+            get => this._color;
+            set
+            {
+                this._color = value;
+                this.UpdateColor();
+            }
+        }
+        public Color SelectedColor
+        {
+            get => this._selectedColor;
+            set
+            {
+                this._selectedColor = value;
+                this.UpdateColor();
+            }
+        }
+        
         /// <summary>
         /// Наименование свойства
         /// </summary>
@@ -129,16 +147,15 @@ namespace ForRobot.Model.File3D
                 this.UpdateVisibility();
             }
         }
-
-        //public double Thickness
-        //{
-        //    get => this._thickness;
-        //    set
-        //    {
-        //        this._thickness = value;
-        //        this.UpdateGeometry();
-        //    }
-        //}
+        public bool IsSelect
+        {
+            get => this._isSelect;
+            set
+            {
+                this._isSelect = value;
+                this.UpdateColor();
+            }
+        }
 
         /* Расположение точек
          * B<------->C
@@ -174,16 +191,15 @@ namespace ForRobot.Model.File3D
             {
                 Padding = new Thickness(4),
                 Background = Brushes.Transparent,
-                Foreground = new SolidColorBrush(Colors.AnnotationForegroundColor)
             };
             this._lines = new LinesVisual3D()
             {
-                Color = ForRobot.Model.File3D.Colors.AnnotationArrowsColor,
+                Thickness = this._thickness,
                 DepthOffset = 0.05
             };
             this._arrows = new LinesVisual3D()
             {
-                Color = ForRobot.Model.File3D.Colors.AnnotationArrowsColor,
+                Thickness = this._thickness,
                 DepthOffset = 0.05
             };
 
@@ -197,19 +213,6 @@ namespace ForRobot.Model.File3D
 
             this.UpdateGeometry();
         }
-
-        ///// <summary>
-        ///// <para>AAA</para>
-        ///// <para>BBb</para>
-        ///// </summary>
-        ///// <param name="point3Ds">Точки прямоугольника примечания</param>
-        ///// <param name="arrowSide">Сторона со стрелкой</param>
-        //public Annotation(Point3DCollection points, ArrowSide arrowSide) : this(points)
-        //{
-        //    this.ArrowsSide = arrowSide;
-
-        //    this.UpdateGeometry();
-        //}
 
         #endregion
 
@@ -289,108 +292,44 @@ namespace ForRobot.Model.File3D
             }
         }
 
+        private void UpdateColor()
+        {
+            if (_lines == null || _arrows == null) return;
+
+            if (this.IsSelect)
+            {
+                this._lines.Color = this.SelectedColor;
+                this._arrows.Color = this.SelectedColor;
+            }
+            else{
+                this._lines.Color = this.Color;
+                this._arrows.Color = this.Color;
+            }
+        }
+
         protected override bool UpdateTransforms() => true;
 
         protected override void UpdateGeometry()
         {
             this.UpdatePoints();
             this.UpdateText();
-
-            //if (Points == null || Points.Count < 4) return;
-
-            //_lines.Points.Clear();
-            //_arrows.Points.Clear();
-
-            //// Построение линий прямоугольника
-            //for (int i = 0; i < 4; i++)
-            //{
-            //    _lines.Points.Add(Points[i]);
-            //    _lines.Points.Add(Points[(i + 1) % 4]);
-            //}
-
-            //// Добавление стрелок на выбранных сторонах
-            //var arrowPoints = new List<Point3D>();
-            //var directions = new Dictionary<ArrowSide, (int start, int end)>
-            //{
-            //    { ArrowSide.AB, (0, 1) },
-            //    { ArrowSide.BC, (1, 2) },
-            //    { ArrowSide.CD, (2, 3) },
-            //    { ArrowSide.DA, (3, 0) }
-            //};
-
-            //foreach (var side in directions.Where(x => ArrowsSide.HasFlag(x.Key)))
-            //{
-            //    //var start = Points[side.Value.start];
-            //    //var end = Points[side.Value.end];
-            //    //var direction = (end - start).Normalized();
-            //    //var mid = start + (end - start) * 0.5;
-
-            //    //// Стрелка в середине линии
-            //    //arrowPoints.Add(mid - direction * DefaultHeadSize);
-            //    //arrowPoints.Add(mid);
-            //    //arrowPoints.Add(mid + direction * DefaultHeadSize);
-
-            //    var start = Points[side.Value.start];
-            //    var end = Points[side.Value.end];
-            //    var direction = (end - start).Normalized();
-            //    var perpendicular = new Vector3D(-direction.Y, direction.X, 0).Normalized();
-            //    var mid = start + (end - start) * 0.5;
-
-            //    // Треугольный наконечник
-            //    arrowPoints.Add(mid - direction * DefaultHeadSize + perpendicular * DefaultHeadSize * 0.5);
-            //    arrowPoints.Add(mid);
-            //    arrowPoints.Add(mid - direction * DefaultHeadSize - perpendicular * DefaultHeadSize * 0.5);
-            //}
-
-            //_arrows.Points = new Point3DCollection(arrowPoints);
-
-            //// Позиционирование текста
-            ////var center = new Point3D(Points.Average(p => p.X),
-            ////                         Points.Average(p => p.Y),
-            ////                         Points.Average(p => p.Z));
-
-            ////if (_label == null) return;
-            //////_label.Position = IsHorizontal ? center + new Vector3D(0, DefaultHeadSize * 2, 0) : center + new Vector3D(DefaultHeadSize * 2, 0, 0);
-            ////_label.Position = center + new Vector3D(DefaultHeadSize * 2, 0, 0);
-
-            //// Позиционирование текста
-            //var mainLineDirection = (Points[1] - Points[0]).Normalized();
-            //var textOffset = IsHorizontal
-            //    ? new Vector3D(0, DefaultHeadSize * 2, 0)
-            //    : new Vector3D(DefaultHeadSize * 2, 0, 0);
-
-            //if (_label == null) return;
-            //// Вычисляем середину между Points[0] и Points[1]
-            //var point0 = Points[0];
-            //var point1 = Points[1];
-            //var midPoint = new Point3D(
-            //    (point0.X + point1.X) * 0.5,
-            //    (point0.Y + point1.Y) * 0.5,
-            //    (point0.Z + point1.Z) * 0.5
-            //);
-            //_label.Position = midPoint + textOffset;
-
-            ////if (this.IsHorizontal)
-            ////    _label.Transform = new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(1, 0, 0), 90));
-
-            //_label.Transform = new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), -90));
         }
 
         #endregion Private functions
 
         #region Public functions
 
-        public void GetFontSize(double fontSize) => this._label.FontSize = fontSize;
-        public void GetFontFamily(FontFamily fontFamily) => this._label.FontFamily = fontFamily;
-        public void GetFontWeight(FontWeight fontWeight) => this._label.FontWeight = fontWeight;
-        public void GetForeground(Brush brush) => this._label.Foreground = brush;
-        public void GetLabelBackground(Brush brush) => this._label.Background = brush;
-        public void GetThickness(double thickness)
-        {
-            this._lines.Thickness = thickness;
-            this._arrows.Thickness = thickness;
-        }
-
+        //public void GetFontSize(double fontSize) => this._label.FontSize = fontSize;
+        //public void GetFontFamily(FontFamily fontFamily) => this._label.FontFamily = fontFamily;
+        //public void GetFontWeight(FontWeight fontWeight) => this._label.FontWeight = fontWeight;
+        //public void GetForeground(Brush brush) => this._label.Foreground = brush;
+        //public void GetLabelBackground(Brush brush) => this._label.Background = brush;
+        //public void GetThickness(double thickness)
+        //{
+        //    this._lines.Thickness = thickness;
+        //    this._arrows.Thickness = thickness;
+        //}
+        
         #endregion Public functions
     }
 }

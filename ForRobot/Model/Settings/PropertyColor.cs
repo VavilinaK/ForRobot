@@ -27,7 +27,7 @@ namespace ForRobot.Model.File3D
         private Color GetColor()
         {
             string propName = string.Empty;
-            foreach (var f in typeof(ForRobot.Model.File3D.Colors).GetProperties(BindingFlags.Static | BindingFlags.Public))
+            foreach (var f in typeof(ForRobot.Themes.Colors).GetProperties(BindingFlags.Static | BindingFlags.Public))
             {
                 var attribute = f.GetCustomAttributes(typeof(ForRobot.Libr.Attributes.PropertyNameAttribute), false).FirstOrDefault() as ForRobot.Libr.Attributes.PropertyNameAttribute;
                 if (attribute.PropertyName == this.PropertyName)
@@ -42,7 +42,7 @@ namespace ForRobot.Model.File3D
         /// <param name="color">Новое значение свойства</param>
         private void SetColor(Color color)
         {
-            foreach (var f in typeof(ForRobot.Model.File3D.Colors).GetProperties(BindingFlags.Static | BindingFlags.Public))
+            foreach (var f in typeof(ForRobot.Themes.Colors).GetProperties(BindingFlags.Static | BindingFlags.Public))
             {
                 var attribute = f.GetCustomAttributes(typeof(ForRobot.Libr.Attributes.PropertyNameAttribute), false).FirstOrDefault() as ForRobot.Libr.Attributes.PropertyNameAttribute;
                 if (attribute.PropertyName == this.PropertyName)

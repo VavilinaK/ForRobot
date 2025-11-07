@@ -53,7 +53,7 @@ namespace ForRobot.Libr.Collections
 
             Model3DGroup robotModel = LoadModel(RobotModelPath);
 
-            ApplyCustomColor(robotModel, Model.File3D.Colors.RobotColor);
+            ApplyCustomColor(robotModel, ForRobot.Themes.Colors.RobotColor);
 
             Transform3DGroup modelTransform = new Transform3DGroup();
             modelTransform.Children.Add(new ScaleTransform3D(scaleFactor, scaleFactor, scaleFactor));
@@ -78,7 +78,7 @@ namespace ForRobot.Libr.Collections
 
             Model3DGroup pcModel = LoadModel(PCModelPath);
 
-            ApplyCustomColor(pcModel, Model.File3D.Colors.PcColor);
+            ApplyCustomColor(pcModel, ForRobot.Themes.Colors.PcColor);
 
             Transform3DGroup modelTransform = new Transform3DGroup();
             modelTransform.Children.Add(new ScaleTransform3D(scaleFactor, scaleFactor, scaleFactor));
@@ -103,7 +103,7 @@ namespace ForRobot.Libr.Collections
         {
             Vector3D manTranslate = new Vector3D(x, y, z);
             Model3DGroup manModel = LoadModel(ManModelPath);
-            ApplyCustomColor(manModel, Model.File3D.Colors.WatcherColor);
+            ApplyCustomColor(manModel, ForRobot.Themes.Colors.WatcherColor);
             modelTransform?.Children.Add(new ScaleTransform3D(scaleFactor, scaleFactor, scaleFactor));
             modelTransform?.Children.Add(new TranslateTransform3D(manTranslate));
             manModel.Transform = modelTransform;

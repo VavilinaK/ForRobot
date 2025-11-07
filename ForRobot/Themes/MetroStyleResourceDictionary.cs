@@ -13,7 +13,7 @@ namespace ForRobot.Themes
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Text_GotFocus(object sender, RoutedEventArgs e)
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             TextBox textBox = sender as TextBox;
 
@@ -21,6 +21,16 @@ namespace ForRobot.Themes
                 textBox.SelectAll();
 
             GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Messages.ProperteisNameMessage(textBox.Tag as string));
+        }
+
+        /// <summary>
+        /// Метод потери фокуса <see cref="TextBox"/>
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Messages.ProperteisNameMessage(string.Empty)); // Отправка сообщения для изменения аннотации в HelixAnnotationsBehavior.
         }
 
         /// <summary>

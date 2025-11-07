@@ -73,11 +73,7 @@ namespace ForRobot.Strategies.AnnotationStrategies
 
             Point3DCollection points = new Point3DCollection() { A, B, C, D };
 
-            return new Annotation(points)
-            {
-                Text = ToString(plate.PlateLength),
-                PropertyName = nameof(plate.PlateLength),
-            };
+            return this.GetAnnotation(points, nameof(plate.PlateLength), ToString(plate.PlateLength));
         }
 
         [PropertyName(nameof(Plita.PlateWidth))]
@@ -113,11 +109,7 @@ namespace ForRobot.Strategies.AnnotationStrategies
 
             Point3DCollection points = new Point3DCollection() { A, B, C, D };
 
-            return new Annotation(points)
-            {
-                Text = ToString(plate.PlateWidth),
-                PropertyName = nameof(plate.PlateWidth)
-            };
+            return this.GetAnnotation(points, nameof(plate.PlateWidth), ToString(plate.PlateWidth));
         }
 
         [PropertyName(nameof(Plita.BevelToLeft))]
@@ -170,12 +162,7 @@ namespace ForRobot.Strategies.AnnotationStrategies
             }
 
             Point3DCollection points = new Point3DCollection() { A, B, C, D };
-
-            return new Annotation(points, arrowSide)
-            {
-                Text = this.ToString(plate.BevelToLeft),
-                PropertyName = nameof(plate.BevelToLeft)
-            };
+            return this.GetAnnotation(points, nameof(plate.BevelToLeft), ToString(plate.BevelToLeft), arrowSide);
         }
 
         [PropertyName(nameof(Plita.BevelToRight))]
@@ -228,12 +215,7 @@ namespace ForRobot.Strategies.AnnotationStrategies
             }
 
             Point3DCollection points = new Point3DCollection() { A, B, C, D };
-
-            return new Annotation(points, arrowSide)
-            {
-                Text = this.ToString(plate.BevelToRight),
-                PropertyName = nameof(plate.BevelToRight)
-            };
+            return this.GetAnnotation(points, nameof(plate.BevelToRight), ToString(plate.BevelToRight), arrowSide);
         }
 
         [PropertyName("Distance")]
@@ -293,12 +275,18 @@ namespace ForRobot.Strategies.AnnotationStrategies
                 Point3D C = this.CreatePoint(-halfRibLength + centerX, ribLeftPositionY, modelPlateHeight);
                 Point3D D = this.CreatePoint(-halfRibLength + centerX, ribLeftPositionY, modelPlateHeight);
 
-                Annotation annotation1 = new Annotation(new Point3DCollection() { A, B, C, D }, Annotation.ArrowSide.DA)
-                {
-                    Text = this.ToString(rib.DistanceLeft),
-                    PropertyName = string.Format("{0} {1}", nameof(rib.DistanceLeft), i),
-                    ArrowSize = 0.5
-                };
+                Annotation annotation1 = this.GetAnnotation(new Point3DCollection() { A, B, C, D },
+                                                            string.Format("{0} {1}",
+                                                            nameof(rib.DistanceLeft), i),
+                                                            ToString(rib.DistanceLeft),
+                                                            Annotation.ArrowSide.DA);
+                annotation1.ArrowSize = 0.5;
+                //    new Annotation(new Point3DCollection() { A, B, C, D }, Annotation.ArrowSide.DA)
+                //{
+                //    Text = this.ToString(rib.DistanceLeft),
+                //    PropertyName = string.Format("{0} {1}", nameof(rib.DistanceLeft), i),
+                //    ArrowSize = 0.5
+                //};
                 annotations.Add(annotation1);
 
                 A = this.CreatePoint(halfRibLength + centerX, ribRightPositionY, modelPlateHeight);
@@ -309,12 +297,18 @@ namespace ForRobot.Strategies.AnnotationStrategies
                 C = this.CreatePoint(halfRibLength + centerX, ribRightPositionY, modelPlateHeight);
                 D = this.CreatePoint(halfRibLength + centerX, ribRightPositionY, modelPlateHeight);
 
-                Annotation annotation2 = new Annotation(new Point3DCollection() { A, B, C, D }, Annotation.ArrowSide.DA)
-                {
-                    Text = this.ToString(rib.DistanceRight),
-                    PropertyName = string.Format("{0} {1}", nameof(rib.DistanceRight), i),
-                    ArrowSize = 0.5
-                };
+                Annotation annotation2 = this.GetAnnotation(new Point3DCollection() { A, B, C, D },
+                                                            string.Format("{0} {1}",
+                                                            nameof(rib.DistanceRight), i),
+                                                            ToString(rib.DistanceRight),
+                                                            Annotation.ArrowSide.DA);
+                annotation2.ArrowSize = 0.5;
+                //    new Annotation(new Point3DCollection() { A, B, C, D }, Annotation.ArrowSide.DA)
+                //{
+                //    Text = this.ToString(rib.DistanceRight),
+                //    PropertyName = string.Format("{0} {1}", nameof(rib.DistanceRight), i),
+                //    ArrowSize = 0.5
+                //};
                 annotations.Add(annotation2);
 
                 ribLeftPositionY += modelRibThickness;
@@ -374,12 +368,16 @@ namespace ForRobot.Strategies.AnnotationStrategies
                 Point3D C = this.CreatePoint(-basePlateLength + modelRibIdentToLeft + centerX, ribLeftPositionY, modelPlateHeight);
                 Point3D D = this.CreatePoint(-basePlateLength + modelRibIdentToLeft + centerX, ribLeftPositionY, modelPlateHeight);
 
-                Annotation annotation1 = new Annotation(new Point3DCollection() { A, B, C, D })
-                {
-                    Text = this.ToString(rib.IdentToLeft),
-                    PropertyName = string.Format("{0} {1}", nameof(rib.IdentToLeft), i),
-                    ArrowSize = 0.5
-                };
+                Annotation annotation1 = this.GetAnnotation(new Point3DCollection() { A, B, C, D },
+                                                            string.Format("{0} {1}", nameof(rib.IdentToLeft), i),
+                                                            ToString(rib.IdentToLeft));
+                annotation1.ArrowSize = 0.5;
+                //    new Annotation(new Point3DCollection() { A, B, C, D })
+                //{
+                //    Text = this.ToString(rib.IdentToLeft),
+                //    PropertyName = string.Format("{0} {1}", nameof(rib.IdentToLeft), i),
+                //    ArrowSize = 0.5
+                //};
                 annotations.Add(annotation1);
 
                 A = this.CreatePoint(basePlateLength + centerX, ribRightPositionY, modelPlateHeight);
@@ -387,12 +385,16 @@ namespace ForRobot.Strategies.AnnotationStrategies
                 C = this.CreatePoint(basePlateLength - modelRibIdentToRight + centerX, ribRightPositionY, modelPlateHeight);
                 D = this.CreatePoint(basePlateLength - modelRibIdentToRight + centerX, ribRightPositionY, modelPlateHeight);
 
-                Annotation annotation2 = new Annotation(new Point3DCollection() { A, B, C, D })
-                {
-                    Text = this.ToString(rib.IdentToRight),
-                    PropertyName = string.Format("{0} {1}", nameof(rib.IdentToRight), i),
-                    ArrowSize = 0.5
-                };
+                Annotation annotation2 = this.GetAnnotation(new Point3DCollection() { A, B, C, D },
+                                                            string.Format("{0} {1}", nameof(rib.IdentToRight), i),
+                                                            ToString(rib.IdentToRight));
+                annotation2.ArrowSize = 0.5;
+                //    new Annotation(new Point3DCollection() { A, B, C, D })
+                //{
+                //    Text = this.ToString(rib.IdentToRight),
+                //    PropertyName = string.Format("{0} {1}", nameof(rib.IdentToRight), i),
+                //    ArrowSize = 0.5
+                //};
                 annotations.Add(annotation2);
             }
             return annotations;
@@ -451,12 +453,16 @@ namespace ForRobot.Strategies.AnnotationStrategies
                 Point3D C = this.CreatePoint(-basePlateLength + modelRibIdentToLeft + modelRibDissolutionLeft + centerX, ribLeftPositionY, modelPlateHeight);
                 Point3D D = this.CreatePoint(-basePlateLength + modelRibIdentToLeft + modelRibDissolutionLeft + centerX, ribLeftPositionY, modelPlateHeight);
 
-                Annotation annotation1 = new Annotation(new Point3DCollection() { A, B, C, D })
-                {
-                    Text = this.ToString(rib.DissolutionLeft),
-                    PropertyName = string.Format("{0} {1}", nameof(rib.DissolutionLeft), i),
-                    ArrowSize = 0.5
-                };
+                Annotation annotation1 = this.GetAnnotation(new Point3DCollection() { A, B, C, D },
+                                                            string.Format("{0} {1}", nameof(rib.DissolutionLeft), i),
+                                                            ToString(rib.DissolutionLeft));
+                annotation1.ArrowSize = 0.5;
+                //    new Annotation(new Point3DCollection() { A, B, C, D })
+                //{
+                //    Text = this.ToString(rib.DissolutionLeft),
+                //    PropertyName = string.Format("{0} {1}", nameof(rib.DissolutionLeft), i),
+                //    ArrowSize = 0.5
+                //};
                 annotations.Add(annotation1);
 
                 A = this.CreatePoint(basePlateLength - modelRibIdentToRight + centerX, ribRightPositionY, modelPlateHeight);
@@ -464,15 +470,30 @@ namespace ForRobot.Strategies.AnnotationStrategies
                 C = this.CreatePoint(basePlateLength - modelRibIdentToRight - modelRibDissolutionRight + centerX, ribRightPositionY, modelPlateHeight);
                 D = this.CreatePoint(basePlateLength - modelRibIdentToRight - modelRibDissolutionRight + centerX, ribRightPositionY, modelPlateHeight);
 
-                Annotation annotation2 = new Annotation(new Point3DCollection() { A, B, C, D })
-                {
-                    Text = this.ToString(rib.DissolutionRight),
-                    PropertyName = string.Format("{0} {1}", nameof(rib.DissolutionRight), i),
-                    ArrowSize = 0.5
-                };
+                Annotation annotation2 = this.GetAnnotation(new Point3DCollection() { A, B, C, D },
+                                                            string.Format("{0} {1}", nameof(rib.DissolutionRight), i),
+                                                            ToString(rib.DissolutionRight));
+                annotation2.ArrowSize = 0.5;
+                //    new Annotation(new Point3DCollection() { A, B, C, D })
+                //{
+                //    Text = this.ToString(rib.DissolutionRight),
+                //    PropertyName = string.Format("{0} {1}", nameof(rib.DissolutionRight), i),
+                //    ArrowSize = 0.5
+                //};
                 annotations.Add(annotation2);
             }
             return annotations;
+        }
+
+        private Annotation GetAnnotation(Point3DCollection points, string propertyName, string text, Annotation.ArrowSide arrowSide = Annotation.ArrowSide.BC)
+        {
+            return new Annotation(points, arrowSide)
+            {
+                Text = text,
+                PropertyName = propertyName,
+                Foreground = new System.Windows.Media.SolidColorBrush(ForRobot.Themes.Colors.AnnotationForegroundColor),
+                Color = ForRobot.Themes.Colors.AnnotationArrowsColor
+            };
         }
 
         #endregion Private functions

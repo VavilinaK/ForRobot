@@ -4,6 +4,11 @@ using ForRobot.Model.Detals;
 
 namespace ForRobot.Libr.Messages
 {
+    /// <summary>
+    /// Сообщение обновления/передачи детали
+    /// <para/>
+    /// Используется для обновления свойства <see cref="ForRobot.Model.Detals.Detal"/> в HelixAnnotationsBehavior и HelixWeldsBehavior
+    /// </summary>
     public class UpdateCurrentDetalMessage
     {
         public Detal Detal { get; private set; }

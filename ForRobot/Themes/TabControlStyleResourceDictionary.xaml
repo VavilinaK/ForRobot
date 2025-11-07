@@ -31,7 +31,8 @@
                 <Setter Property="Height" Value="37"/>
                 <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
                 <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
-                <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
+                <EventSetter Event="GotFocus" Handler="TextBox_GotFocus"/>
+                <EventSetter Event="LostFocus" Handler="TextBox_LostFocus"/>
             </Style>
 
             <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource TextBoxBase}"></Style>
@@ -229,7 +230,8 @@
                                 <Setter Property="FontSize" Value="16"/>
                                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                                 <EventSetter Event="PreviewMouseDown"  Handler="IgnoreMouseButton"/>
-                                <EventSetter Event="GotFocus"  Handler="Text_GotFocus"/>
+                                <EventSetter Event="GotFocus"  Handler="TextBox_GotFocus"/>
+                                <EventSetter Event="LostFocus" Handler="TextBox_LostFocus"/>
                             </Style>
 
                             <Style TargetType="{x:Type DataGrid}">
@@ -494,7 +496,8 @@
                                 <Setter Property="FontSize" Value="16"/>
                                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                                 <EventSetter Event="PreviewMouseDown"  Handler="IgnoreMouseButton"/>
-                                <EventSetter Event="GotFocus"  Handler="Text_GotFocus"/>
+                                <EventSetter Event="GotFocus"  Handler="TextBox_GotFocus"/>
+                                <EventSetter Event="LostFocus" Handler="TextBox_LostFocus"/>
                             </Style>
 
                             <Style TargetType="{x:Type DataGrid}">
@@ -615,7 +618,8 @@
                                 <Setter Property="FontSize" Value="16"/>
                                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                                 <EventSetter Event="PreviewMouseDown"  Handler="IgnoreMouseButton"/>
-                                <EventSetter Event="GotFocus"  Handler="Text_GotFocus"/>
+                                <EventSetter Event="GotFocus"  Handler="TextBox_GotFocus"/>
+                                <EventSetter Event="LostFocus" Handler="TextBox_LostFocus"/>
                             </Style>
 
                             <Style TargetType="{x:Type DataGrid}">
@@ -753,7 +757,8 @@
                 <Setter Property="Height" Value="37"/>
                 <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
                 <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
-                <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
+                <EventSetter Event="GotFocus" Handler="TextBox_GotFocus"/>
+                <EventSetter Event="LostFocus" Handler="TextBox_LostFocus"/>
             </Style>
 
             <Style x:Key="groupBoxBase" TargetType="{x:Type GroupBox}" BasedOn="{StaticResource TextBase}">
@@ -1044,7 +1049,8 @@
                 <Setter Property="Height" Value="37"/>
                 <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
                 <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
-                <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
+                <EventSetter Event="GotFocus" Handler="TextBox_GotFocus"/>
+                <EventSetter Event="LostFocus" Handler="TextBox_LostFocus"/>
             </Style>
 
             <Style TargetType="{x:Type DataGrid}">
@@ -1279,7 +1285,8 @@
                 <Setter Property="Padding" Value="20,3"/>
                 <Setter Property="Margin" Value="10,5,0,5"/>
                 <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
-                <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
+                <EventSetter Event="GotFocus" Handler="TextBox_GotFocus"/>
+                <EventSetter Event="LostFocus" Handler="TextBox_LostFocus"/>
                 <Setter Property="Tag" Value="{Binding Path=., RelativeSource={RelativeSource Self}, Converter={StaticResource BindingToTagConvert}}"/>
             </Style>
 
@@ -1467,7 +1474,8 @@
                 <Setter Property="Padding" Value="20,3"/>
                 <Setter Property="Margin" Value="10,5,0,5"/>
                 <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
-                <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
+                <EventSetter Event="GotFocus" Handler="TextBox_GotFocus"/>
+                <EventSetter Event="LostFocus" Handler="TextBox_LostFocus"/>
             </Style>
         </DataTemplate.Resources>
 
@@ -1574,7 +1582,8 @@
                 <Setter Property="Padding" Value="20,3"/>
                 <Setter Property="Margin" Value="10,5,0,5"/>
                 <EventSetter Event="PreviewMouseDown" Handler="IgnoreMouseButton"/>
-                <EventSetter Event="GotFocus" Handler="Text_GotFocus"/>
+                <EventSetter Event="GotFocus" Handler="TextBox_GotFocus"/>
+                <EventSetter Event="LostFocus" Handler="TextBox_LostFocus"/>
                 <Setter Property="Tag" Value="{Binding Path=., RelativeSource={RelativeSource Self}, Converter={StaticResource BindingToTagConvert}}"/>
             </Style>
 

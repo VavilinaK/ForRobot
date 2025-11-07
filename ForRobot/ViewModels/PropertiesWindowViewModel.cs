@@ -207,7 +207,7 @@ namespace ForRobot.ViewModels
         {
             get => this._standartSettingsCommand ?? (this._standartSettingsCommand = new RelayCommand(_ => 
                                                                                                           {
-                                                                                                              ForRobot.Model.File3D.Colors.DefaultColors();
+                                                                                                              ForRobot.Themes.Colors.DefaultColors();
                                                                                                               this.Settings = new Settings();
                                                                                                           }));
         }

@@ -55,6 +55,8 @@ namespace ForRobot.Libr.Behavior
             });
         }
 
+        #region Static functions
+
         private static void OnDetalChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             HelixWeldsBehavior helixWeldsBehavior = (HelixWeldsBehavior)d;
@@ -86,6 +88,8 @@ namespace ForRobot.Libr.Behavior
             helixWeldsBehavior.IsDivided = (bool)e.NewValue;
             helixWeldsBehavior.UpdateWeldsIsDivided();
         }
+
+        #endregion Static functions
 
         private void PropertyChangeHandle(object sender, PropertyChangedEventArgs e) => this.UpdateWelds();
 
@@ -142,6 +146,11 @@ namespace ForRobot.Libr.Behavior
         {
             weld.Thickness = this.Thickness;
             weld.IsDivided = this.IsDivided;
+        }
+
+        ~HelixWeldsBehavior()
+        {
+            Messenger.Default.Unregister<ForRobot.Libr.Messages.UpdateCurrentDetalMessage>(this);
         }
     }
 }

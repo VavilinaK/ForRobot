@@ -321,12 +321,20 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Команда отмены действия
         /// </summary>
-        public ICommand UndoCommand { get => new RelayCommand(_ => this.SelectedFile?.Undo(), _ => this.CanUndo); }
+        public ICommand UndoCommand { get => new RelayCommand(_ => 
+        {
+            this.SelectedFile?.Undo();
+            GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Messages.UpdateCurrentDetalMessage(this.SelectedFile.CurrentDetal));
+        }, _ => this.CanUndo); }
 
         /// <summary>
         /// Команда возврата действия
         /// </summary>
-        public ICommand RedoCommand { get => new RelayCommand(_ => this.SelectedFile?.Redo(), _ => this.CanRedo); }
+        public ICommand RedoCommand { get => new RelayCommand(_ => 
+        {
+            this.SelectedFile?.Redo();
+            GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Messages.UpdateCurrentDetalMessage(this.SelectedFile.CurrentDetal));
+        }, _ => this.CanRedo); }
 
         /// <summary>
         /// Сброс параметров детали до стандартных

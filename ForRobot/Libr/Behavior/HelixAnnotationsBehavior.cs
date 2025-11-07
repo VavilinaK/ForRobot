@@ -111,7 +111,7 @@ namespace ForRobot.Libr.Behavior
             set => this.SetValue(ThicknessProperty, value);
         }
 
-        public static readonly DependencyProperty ThicknessProperty = DependencyProperty.Register(nameof(Thickness), typeof(double), typeof(HelixAnnotationsBehavior), new UIPropertyMetadata(5.0, VisualChanged));
+        public static readonly DependencyProperty ThicknessProperty = DependencyProperty.Register(nameof(Thickness), typeof(double), typeof(HelixAnnotationsBehavior), new UIPropertyMetadata(2.0, VisualChanged));
 
         #endregion Public variables
 
@@ -125,6 +125,10 @@ namespace ForRobot.Libr.Behavior
             _annotationService = new Services.AnnotationService(_strategies);
 
             Messenger.Default.Register<ForRobot.Libr.Messages.ProperteisNameMessage>(this, message => this.UpdateAnnotationsIsVisibale(message.PropertyName));
+            Messenger.Default.Register<ForRobot.Libr.Messages.UpdateCurrentDetalMessage>(this, message =>
+            {
+                this.Detal = message.Detal;
+            });
         }
 
         #region Private functions
@@ -138,27 +142,24 @@ namespace ForRobot.Libr.Behavior
             {
                 if (item == null) continue;
                 
-                item.GetFontSize(this.FontSize);
-                item.GetFontFamily(this.FontFamily);
-                item.GetFontWeight(this.FontWeight);
-                item.GetForeground(this.Foreground);
-                item.GetLabelBackground(this.LabelBackground);
-                item.GetThickness(this.Thickness);
+                item.FontSize = this.FontSize;
+                item.FontFamily = this.FontFamily;
+                item.FontWeight = this.FontWeight;
+                item.Foreground = this.Foreground;
+                item.Background = this.LabelBackground;
+                item.Thickness = this.Thickness;
             }
         }
 
         #region Handle
 
         private void PropertyChangeHandle(object sender, PropertyChangedEventArgs e) => this.ChangePropertyAnnotation(sender as Detal, e.PropertyName);
-        
+
         #endregion
 
         #region Callback
 
-        private static void VisualChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            ((HelixAnnotationsBehavior)d).VisualChanged();
-        }
+        private static void VisualChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) => ((HelixAnnotationsBehavior)d).VisualChanged();
 
         private static void OnDetalChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -221,35 +222,48 @@ namespace ForRobot.Libr.Behavior
             this.UpdateAnnotations();
         }
 
+        /// <summary>
+        /// Обновление видимости <see cref="Annotation"/>
+        /// </summary>
+        /// <param name="propertyName">Имя свойства <see cref="Model.Detals.Detal"/></param>
         private void UpdateAnnotationsIsVisibale(string propertyName)
         {
+            if (this.Items == null)
+                return;
+
+            foreach (var item in Items.Where(x => x != null))
+                item.IsVisible = false;
+
             switch (propertyName)
             {
-                case nameof(Detal.DistanceToFirst):
-                case nameof(Detal.DistanceBetween):
+                case nameof(ForRobot.Model.Detals.Detal.DistanceToFirst):
+                case nameof(ForRobot.Model.Detals.Detal.DistanceBetween):
                 case nameof(Rib.DistanceLeft):
                 case nameof(Rib.DistanceRight):
+                    foreach (var item in this.Items.Where(x => x != null && x.PropertyName.Contains("Distance")))
+                        item.IsVisible = true;
+                    break;
+
+                case nameof(ForRobot.Model.Detals.Detal.IdentToLeft):
+                case nameof(ForRobot.Model.Detals.Detal.IdentToRight):
+                    foreach (var item in this.Items.Where(x => x != null && x.PropertyName.Contains("Ident")))
+                        item.IsVisible = true;
+                    break;
+
+                case nameof(Rib.DissolutionLeft):
+                case nameof(Rib.DissolutionRight):
+                    foreach (var item in this.Items.Where(x => x != null && x.PropertyName.Contains("Dissolution")))
+                        item.IsVisible = true;
                     break;
 
                 default:
+                    foreach (var item in this.Items.Where(x => x != null && new List<string> { nameof(Plita.PlateLength), nameof(Plita.PlateWidth), nameof(Plita.BevelToLeft), nameof(Plita.BevelToRight) }.Contains(x.PropertyName)))
+                        item.IsVisible = true;
                     break;
             }
         }
 
         #endregion Private functions
-
-        //private static void OnFontSizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        //{
-        //    HelixAnnotationsBehavior helixAnnotationsBehavior = (HelixAnnotationsBehavior)d;
-        //    helixAnnotationsBehavior.FontSize = (double)e.NewValue;
-
-        //    if (helixAnnotationsBehavior.Items == null) return;
-
-        //    foreach(var item in helixAnnotationsBehavior.Items)
-        //    {
-        //        item.FontSize = helixAnnotationsBehavior.FontSize;
-        //    }
-        //}
 
         ~HelixAnnotationsBehavior()
         {

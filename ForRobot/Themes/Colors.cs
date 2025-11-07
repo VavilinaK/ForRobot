@@ -2,7 +2,7 @@
 using System.Windows.Media;
 using ForRobot.Libr.Attributes;
 
-namespace ForRobot.Model.File3D
+namespace ForRobot.Themes
 {
     /// <summary>
     /// Цвета элементов 3д просмотрщика
@@ -11,18 +11,18 @@ namespace ForRobot.Model.File3D
     {
         private static Color DefaultRobotColor => Color.FromRgb(255, 132, 0);
         private static Color DefaultPcColor => Color.FromRgb(66, 66, 66);
-        private static Color DefaultWatcherColor => Color.FromRgb(217, 0, 0);
+        private static Color DefaultWatcherColor => Color.FromRgb(225, 0, 0);
         private static Color DefaultPlateColor => Color.FromRgb(23, 230, 75);
         private static Color DefaultRibsColor => Color.FromRgb(23, 230, 75);
         private static Color DefaultWeldColor => Color.FromRgb(255, 142, 20);
         private static Color DefaultLeftSideWeldColor => Color.FromRgb(43, 255, 209);
         private static Color DefaultRightSideWeldColor => Color.FromRgb(255, 31, 53);
 
-        private static Color DefaultAnnotationArrowsColor => Color.FromRgb(0, 191, 255);
+        private static Color DefaultAnnotationArrowsColor => Color.FromRgb(225, 0, 0);
         private static Color DefaultAnnotationForegroundColor => Color.FromRgb(0, 0, 0);
         private static Color DefaultAnnotationBackgroundColor => System.Windows.Media.Colors.Transparent;
 
-        private static Color DefaultSelectorBoxColor => Color.FromRgb(255, 218, 33);
+        private static Color DefaultSelectorColor => Color.FromRgb(255, 218, 33);
 
         [PropertyName("Робот")]
         public static Color RobotColor { get; set; } = DefaultRobotColor;
@@ -58,7 +58,7 @@ namespace ForRobot.Model.File3D
         public static Color AnnotationBackgroundColor { get; set; } = DefaultAnnotationBackgroundColor;
 
         [PropertyName("Бокс выбора модели/части модели")]
-        public static Color SelectorBoxColor { get; set; } = DefaultSelectorBoxColor;
+        public static Color SelectorColor { get; set; } = DefaultSelectorColor;
 
         /// <summary>
         /// Установка стандартных значений
@@ -76,7 +76,7 @@ namespace ForRobot.Model.File3D
             AnnotationArrowsColor = DefaultAnnotationArrowsColor;
             AnnotationForegroundColor = DefaultAnnotationForegroundColor;
             AnnotationBackgroundColor = DefaultAnnotationBackgroundColor;
-            SelectorBoxColor = DefaultSelectorBoxColor;
+            SelectorColor = DefaultSelectorColor;
         }
     }
 }

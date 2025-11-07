@@ -93,7 +93,7 @@ namespace ForRobot.Services
                 // Швы добавляются с обеих сторон ребра
                 string weldName = String.Format("Weld {0}", i + 1);
 
-                welds.Add(new Weld(ForRobot.Model.File3D.Colors.WeldColor, ForRobot.Model.File3D.Colors.LeftSideWeldColor, ForRobot.Model.File3D.Colors.RightSideWeldColor)
+                welds.Add(new Weld(ForRobot.Themes.Colors.WeldColor, ForRobot.Themes.Colors.LeftSideWeldColor, ForRobot.Themes.Colors.RightSideWeldColor)
                 {
                     Name = weldName + ".1",
                     StartPoint = startPoint,
@@ -103,7 +103,7 @@ namespace ForRobot.Services
                 startPoint.Y += modelRibThickness;
                 endPoint.Y += modelRibThickness;
 
-                welds.Add(new Weld(ForRobot.Model.File3D.Colors.WeldColor, ForRobot.Model.File3D.Colors.LeftSideWeldColor, ForRobot.Model.File3D.Colors.RightSideWeldColor)
+                welds.Add(new Weld(ForRobot.Themes.Colors.WeldColor, ForRobot.Themes.Colors.LeftSideWeldColor, ForRobot.Themes.Colors.RightSideWeldColor)
                 {
                     Name = weldName + ".2",
                     StartPoint = startPoint,
