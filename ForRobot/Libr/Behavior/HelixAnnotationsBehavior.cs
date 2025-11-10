@@ -20,7 +20,7 @@ using ForRobot.Strategies.AnnotationStrategies;
 namespace ForRobot.Libr.Behavior
 {
     /// <summary>
-    /// Класс-поведение <see cref="HelixViewport3D"/> вывода параметров детали
+    /// Класс-поведение <see cref="HelixToolkit.Wpf.HelixViewport3D"/> вывода параметров детали
     /// </summary>
     public class HelixAnnotationsBehavior : HelixAddCollectionBehavior<Annotation>
     {
@@ -28,6 +28,7 @@ namespace ForRobot.Libr.Behavior
 
         private readonly ForRobot.Services.AnnotationService _annotationService;
         private readonly List<IDetalAnnotationStrategy> _strategies;
+        private readonly Dictionary<string, Annotation> _annotationCache;
 
         #endregion
 
@@ -268,6 +269,7 @@ namespace ForRobot.Libr.Behavior
         ~HelixAnnotationsBehavior()
         {
             Messenger.Default.Unregister<ForRobot.Libr.Messages.ProperteisNameMessage>(this);
+            Messenger.Default.Unregister<ForRobot.Libr.Messages.UpdateCurrentDetalMessage>(this);
         }
     }
 }

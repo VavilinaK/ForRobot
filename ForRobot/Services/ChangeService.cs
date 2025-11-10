@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Windows;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using ForRobot.Model.File3D;
@@ -8,10 +11,14 @@ using ForRobot.Strategies.ModelingStrategies;
 
 namespace ForRobot.Services
 {
-    public class ChangeService : BaseClass
+    public class ChangeService : BaseClass, IDisposable
     {
+        private File3D _pendingUpdate;
+        private CancellationTokenSource _cancellationTokenSource;
+        private readonly object _updateLock = new object();
+        private readonly int _debounceDelayMs = 150;
         private readonly ForRobot.Services.ModelingService _modelingService;
-
+        
         public ChangeService()
         {
             double scaleFactor = (double)ForRobot.Model.Settings.Settings.ScaleFactor;
@@ -58,16 +65,14 @@ namespace ForRobot.Services
         public void HandleDetalChanged_Modeling(object sender, Libr.ValueChangedEventArgs<Detal> e)
         {
             File3D file = sender as File3D;
-            try
+            this._pendingUpdate = file;
+            lock (this._updateLock)
             {
-                System.Windows.Media.Media3D.Model3DGroup model = this._modelingService.Get3DScene(file.CurrentDetal);
-                file.CurrentModel.Children.Clear();
-                file.CurrentModel.Children.Add(model);
+                this._cancellationTokenSource?.Cancel();
+                this._cancellationTokenSource?.Dispose();
+                this._cancellationTokenSource = new CancellationTokenSource();
             }
-            catch (Exception ex)
-            {
-                App.Current.Logger.Error(ex, ex.Message);
-            }
+            _ = DebouncedUpdateAsync(_cancellationTokenSource.Token);
         }
 
         /// <summary>
@@ -91,5 +96,59 @@ namespace ForRobot.Services
             Model.File3D.File3D file3D = sender as Model.File3D.File3D;
             RaisePropertyChanged(nameof(file3D));
         }
+
+        #region Async functions
+
+        private async Task DebouncedUpdateAsync(CancellationToken cancellationToken)
+        {
+            await Task.Delay(_debounceDelayMs, cancellationToken);
+
+            if (cancellationToken.IsCancellationRequested)
+                return;
+
+            File3D file = this._pendingUpdate;
+            if (file?.CurrentDetal == null) return;
+            try
+            {
+                await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    if (!cancellationToken.IsCancellationRequested)
+                    {
+                        try
+                        {
+                            var model = _modelingService.Get3DScene(file.CurrentDetal);
+                            file.CurrentModel.Children.Clear();
+                            file.CurrentModel.Children.Add(model);
+                        }
+                        catch (Exception ex)
+                        {
+                            App.Current.Logger.Error(ex, "Ошибка создания модели: " + ex.Message);
+                        }
+                    }
+                }));
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex)
+            {
+                App.Current.Logger.Error(ex, "Ошибка отложенного обновления модели:\n" + ex.Message);
+            }
+        }
+        
+        #endregion Async functions
+
+        #region Implementations of IDisposable
+
+        ~ChangeService() => Dispose();
+
+        public void Dispose()
+        {
+            lock (this._updateLock)
+            {
+                this._cancellationTokenSource?.Cancel();
+                this._cancellationTokenSource?.Dispose();
+            }
+        }
+
+        #endregion
     }
 }

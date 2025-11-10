@@ -102,8 +102,7 @@ namespace ForRobot.Strategies.ModelingStrategies
 
             // Вычисление размеров оснований с учетом ориентации
             double bottomHalfLen = inBottom ? halfLength * (1 - this._trapezoidRatio) : halfLength;
-            double topHalfLen = inBottom ? halfLength : halfLength * (1 - this._trapezoidRatio
-);
+            double topHalfLen = inBottom ? halfLength : halfLength * (1 - this._trapezoidRatio);
 
             // Нижнее основание (Y = -halfWidth)
             Point3D A = this.CreatePoint(-bottomHalfLen, -halfWidth, -halfHeight);

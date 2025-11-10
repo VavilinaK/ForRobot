@@ -1159,10 +1159,10 @@
                 <avalonDock:LayoutRoot.RightSide>
                     <avalonDock:LayoutAnchorSide>
                         <avalonDock:LayoutAnchorGroup>
-                            <avalonDock:LayoutAnchorable Title="Соединения" ContentId="Connections" AutoHideMinWidth="400">
-                                <i:Interaction.Behaviors>
+                            <avalonDock:LayoutAnchorable Title="Соединения" ContentId="Connections" AutoHideMinWidth="400" IsVisible="False">
+                                <!--<i:Interaction.Behaviors>
                                     <behavior:ClosedLayoutAnchorableBehavior/>
-                                </i:Interaction.Behaviors>
+                                </i:Interaction.Behaviors>-->
                                 
                                 <Grid Margin="10"
                                       DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}">

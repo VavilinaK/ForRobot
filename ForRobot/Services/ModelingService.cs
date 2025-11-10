@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using HelixToolkit.Wpf;
@@ -90,6 +91,8 @@ namespace ForRobot.Services
 
             return scene;
         }
+
+        public async Task<Model3DGroup> Get3DSceneAsync(Detal detal) => await Task.Run(() => this.Get3DScene(detal));
 
         /// <summary>
         /// Поворот вершин вокруг оси X на заданный угол (в градусах)
