@@ -28,7 +28,6 @@ namespace ForRobot.Libr.Behavior
 
         private readonly ForRobot.Services.AnnotationService _annotationService;
         private readonly List<IDetalAnnotationStrategy> _strategies;
-        private readonly Dictionary<string, Annotation> _annotationCache;
 
         #endregion
 
@@ -123,7 +122,7 @@ namespace ForRobot.Libr.Behavior
             {
                 new PlateAnnotationStrategy(scaleFactor)
             };
-            _annotationService = new Services.AnnotationService(_strategies);
+            this._annotationService = new Services.AnnotationService(_strategies);
 
             Messenger.Default.Register<ForRobot.Libr.Messages.ProperteisNameMessage>(this, message => this.UpdateAnnotationsIsVisibale(message.PropertyName));
             Messenger.Default.Register<ForRobot.Libr.Messages.UpdateCurrentDetalMessage>(this, message =>
@@ -190,21 +189,13 @@ namespace ForRobot.Libr.Behavior
             if (this.Items != null && this.Items is ObservableCollection<Annotation> currentCollection)
             {
                 currentCollection.Clear();
-                //currentCollection.Union(annotations);
                 foreach (var annotation in annotations)
                 {
-                    //annotation.FontSize = this.FontSize;
                     currentCollection.Add(annotation);
                 }
             }
             else
             {
-                //var newCollection = new ObservableCollection<Annotation>(annotations);
-                //foreach (var item in newCollection)
-                //{
-                //    item.FontSize = this.FontSize;
-                //}
-                //this.Items = newCollection;
                 this.Items = annotations;
             }
             this.VisualChanged();
@@ -217,11 +208,27 @@ namespace ForRobot.Libr.Behavior
         /// <param name="propertyName">Наименование параметра</param>
         private void ChangePropertyAnnotation(Detal detal, string propertyName)
         {
-            if (detal == null && string.IsNullOrEmpty(propertyName))
+            if (detal == null || string.IsNullOrEmpty(propertyName))
                 return;
 
             this.UpdateAnnotations();
         }
+
+        /// <summary>
+        /// Форматирование значения для отображения
+        /// </summary>
+        /// <param name="value">Значение</param>
+        /// <returns>Отформатированная строка</returns>
+        private string FormatValue(object value)
+        {
+            if (value is decimal decimalValue)
+                return string.Format("{0} mm", decimalValue);
+            else if (value is double doubleValue)
+                return string.Format("{0:F2} mm", doubleValue);
+            else
+                return value?.ToString() ?? string.Empty;
+        }
+
 
         /// <summary>
         /// Обновление видимости <see cref="Annotation"/>

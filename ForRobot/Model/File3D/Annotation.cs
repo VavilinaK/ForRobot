@@ -121,7 +121,7 @@ namespace ForRobot.Model.File3D
         /// <summary>
         /// Наименование свойства
         /// </summary>
-        public string PropertyName { get; set; }
+        public string PropertyName { get; set; } 
         /// <summary>
         /// Текст параметра
         /// </summary>
@@ -318,17 +318,7 @@ namespace ForRobot.Model.File3D
         #endregion Private functions
 
         #region Public functions
-
-        //public void GetFontSize(double fontSize) => this._label.FontSize = fontSize;
-        //public void GetFontFamily(FontFamily fontFamily) => this._label.FontFamily = fontFamily;
-        //public void GetFontWeight(FontWeight fontWeight) => this._label.FontWeight = fontWeight;
-        //public void GetForeground(Brush brush) => this._label.Foreground = brush;
-        //public void GetLabelBackground(Brush brush) => this._label.Background = brush;
-        //public void GetThickness(double thickness)
-        //{
-        //    this._lines.Thickness = thickness;
-        //    this._arrows.Thickness = thickness;
-        //}
+        
         
         #endregion Public functions
     }
