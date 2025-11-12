@@ -48,10 +48,9 @@ namespace ForRobot.Libr.Behavior
 
         public HelixWeldsBehavior()
         {
-            Messenger.Default.Register<ForRobot.Libr.Messages.UpdateCurrentDetalMessage>(this, message => 
+            Messenger.Default.Register<ForRobot.Libr.Messages.UpdateCurrentDetalMessage>(this, message =>
             {
                 this.Detal = message.Detal;
-                this.UpdateWelds();
             });
         }
 
@@ -69,10 +68,16 @@ namespace ForRobot.Libr.Behavior
 
             helixWeldsBehavior.Detal = (Detal)e.NewValue;
 
-            if (helixWeldsBehavior.Detal != null)
+            if (helixWeldsBehavior.Detal == null)
+            {
+                if (helixWeldsBehavior.Items is ObservableCollection<Weld> weldsCollection)
+                    weldsCollection.Clear();
+            }
+            else
+            {
                 helixWeldsBehavior.Detal.ChangePropertyEvent += helixWeldsBehavior.PropertyChangeHandle;
-
-            helixWeldsBehavior.UpdateWelds();
+                helixWeldsBehavior.UpdateWelds();
+            }
         }
 
         private static void OnThicknessChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

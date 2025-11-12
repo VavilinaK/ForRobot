@@ -118,11 +118,16 @@ namespace ForRobot.Model.File3D
             this.DetalChangedEvent += new ChangeService().HandleDetalChanged_Properties;
             this.DetalChangedEvent += new ChangeService().HandleDetalChanged_Modeling;
             this.FileChangedEvent += new ChangeService().HandleFileChange;
-            this.UndoRedoStateChanged += (s, e) => this._oldDetal = (s as Detal).Clone() as Detal;
+            this.UndoRedoStateChanged += (s, e) =>
+            {
+                if (s == null)
+                    return;
+
+                this._oldDetal = s as Detal;
+            };
 
             this.CurrentDetal = detal;
             this.Path = path;
-
             this.IsSaved = false;
         }
 
@@ -180,7 +185,7 @@ namespace ForRobot.Model.File3D
                 this._oldDetal = this._currentDetal.Clone() as Detal;
 
             this.OnModelChanged();
-            
+
             //this.DetalChangedEvent += (s, o) => SceneUpdate();
         }
 
@@ -532,6 +537,7 @@ namespace ForRobot.Model.File3D
         {
             Detal detal = sender as Detal;
             this.OnDetalChanged(this._oldDetal, detal);
+            //this._oldDetal = this.CurrentDetal.Clone() as Detal;
             //this.ChangePropertyAnnotations(detal, e.PropertyName);
         }
 
@@ -605,7 +611,7 @@ namespace ForRobot.Model.File3D
         }
 
         /// <summary>
-        /// Открывает <see cref="SaveFileDialog"/>
+        /// Открывает <see cref="SaveFileDialog"/> 
         /// </summary>
         public void Save()
         {
@@ -706,9 +712,10 @@ namespace ForRobot.Model.File3D
             command.Unexecute();
             _redoStack.Push(command);
             _isUndoRedoOperation = false;
-            UndoRedoStateChanged?.Invoke(this.CurrentDetal, EventArgs.Empty);
-        }
 
+            if(this.CurrentDetal != null)
+                UndoRedoStateChanged?.Invoke(this.CurrentDetal.Clone(), EventArgs.Empty);
+        }
         /// <summary>
         /// Возврат изменения
         /// </summary>
@@ -721,7 +728,9 @@ namespace ForRobot.Model.File3D
             command.Execute();
             _undoStack.Push(command);
             _isUndoRedoOperation = false;
-            UndoRedoStateChanged?.Invoke(this.CurrentDetal, EventArgs.Empty);
+
+            if(this.CurrentDetal != null)
+                UndoRedoStateChanged?.Invoke(this.CurrentDetal.Clone(), EventArgs.Empty);
         }
 
         public void AddUndoCommand(IUndoableCommand command)
@@ -730,14 +739,14 @@ namespace ForRobot.Model.File3D
 
             _undoStack.Push(command);
             _redoStack.Clear();
-            UndoRedoStateChanged?.Invoke(this.CurrentDetal, EventArgs.Empty);
+            UndoRedoStateChanged?.Invoke(this.CurrentDetal.Clone(), EventArgs.Empty);
         }
 
         public void ClearUndoRedoHistory()
         {
             _undoStack.Clear();
             _redoStack.Clear();
-            UndoRedoStateChanged?.Invoke(this.CurrentDetal, EventArgs.Empty);
+            UndoRedoStateChanged?.Invoke(this.CurrentDetal.Clone(), EventArgs.Empty);
         }
 
         #endregion

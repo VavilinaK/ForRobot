@@ -2,12 +2,8 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Media.Media3D;
-using System.Windows.Interactivity;
-using System.Reflection;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 
 using GalaSoft.MvvmLight.Messaging;
@@ -171,7 +167,12 @@ namespace ForRobot.Libr.Behavior
 
             hab.Detal = (Detal)e.NewValue;
 
-            if (hab.Detal != null)
+            if (hab.Detal == null)
+            {
+                if (hab.Items is ObservableCollection<Annotation> currentCollection)
+                    currentCollection.Clear();
+            }
+            else
             {
                 hab.Detal.ChangePropertyEvent += hab.PropertyChangeHandle;
                 hab.UpdateAnnotations();

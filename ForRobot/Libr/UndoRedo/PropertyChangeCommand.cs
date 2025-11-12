@@ -33,38 +33,4 @@ namespace ForRobot.Libr.UndoRedo
             }
         }
     }
-
-    //public class CompositeCommand : IUndoableCommand
-    //{
-    //    private readonly List<IUndoableCommand> _commands = new List<IUndoableCommand>();
-    //    private readonly string _description;
-
-    //    public CompositeCommand(string description = "")
-    //    {
-    //        _description = description;
-    //    }
-
-    //    public string Description => _description;
-
-    //    public void AddCommand(IUndoableCommand command)
-    //    {
-    //        _commands.Add(command);
-    //    }
-
-    //    public void Execute()
-    //    {
-    //        foreach (var command in _commands)
-    //        {
-    //            command.Execute();
-    //        }
-    //    }
-
-    //    public void Unexecute()
-    //    {
-    //        for (int i = _commands.Count - 1; i >= 0; i--)
-    //        {
-    //            _commands[i].Unexecute();
-    //        }
-    //    }
-    //}
 }

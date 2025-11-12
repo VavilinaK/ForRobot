@@ -281,6 +281,10 @@ namespace ForRobot.Model.Detals
         }
 
         public object Clone() => (Detal)this.MemberwiseClone();
+        //{
+        //    var json = JsonConvert.SerializeObject(this);
+        //    return JsonConvert.DeserializeObject(json, this.GetType());
+        //}
 
         public static Detal GetDetal(string detalType)
         {

@@ -22,7 +22,7 @@
       xmlns:hx="http://helix-toolkit.org/wpf/SharpDX"
       xmlns:pt="http://propertytools.org/wpf"
       mc:Ignorable="d"       
-      d:DesignHeight="800" d:DesignWidth="1500">
+      d:DesignHeight="800" d:DesignWidth="1400">
     
     <Page.Title>
         <MultiBinding Converter="{StaticResource StringFormatMultiConvert}" ConverterParameter="Интерфейс генерации программ - v.{0}">
@@ -768,7 +768,7 @@
 
                                 <i:Interaction.Behaviors>
                                     <behavior:CameraControllerBehavior/>
-                                    <behavior:HelixWeldsBehavior Detal="{Binding Path=CurrentDetal, diag:PresentationTraceSources.TraceLevel=High, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    <behavior:HelixWeldsBehavior Detal="{Binding Path=CurrentDetal, diag:PresentationTraceSources.TraceLevel=High, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                                                                  Thickness="{Binding Path=Settings.WeldsThickness, Source={x:Static Application.Current}, Mode=OneWay}"
                                                                  IsDivided="{Binding Path=DataContext.IsDividedWelds, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}, UpdateSourceTrigger=PropertyChanged}"/>
 

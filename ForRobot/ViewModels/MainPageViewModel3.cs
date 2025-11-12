@@ -33,7 +33,7 @@ namespace ForRobot.ViewModels
 {
     public class MainPageViewModel3 : BaseClass
     {
-        #region Private variables
+        #region Private variables 
 
         private readonly IModelExporter _modelExporter = new ExporterService();
         private readonly IFileDialogService _fileDialogService = new FileDialogService();
@@ -160,6 +160,8 @@ namespace ForRobot.ViewModels
                     };
 
                 Set(ref this._selectedFile, value);
+
+                GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Messages.UpdateCurrentDetalMessage(this._selectedFile.CurrentDetal));
 
                 if (this._selectedFile != null)
                     this._selectedFile.DetalChangedEvent += (s, e) => 
