@@ -21,14 +21,24 @@ namespace ForRobot.Libr.UndoRedo
             Description = description;
         }
 
-        public void Unexecute() => SetValue(_oldValue);
-        public void Execute() => SetValue(_newValue);
+        public event EventHandler CanExecuteChanged;
+        //{
+        //    add { CommandManager.RequerySuggested += value; }
+        //    remove { CommandManager.RequerySuggested -= value; }
+        //}
+
+        public bool CanExecute(object parameter) => true;
+
+        public void Execute() => this.SetValue(_oldValue);
+        public void Execute(object parameter) => this.Execute();
+
+        public void Unexecute() => this.SetValue(_newValue);
 
         private void SetValue(T value)
         {
             var property = _target.GetType().GetProperty(_propertyName);
             if (property != null && property.CanWrite)
-            {                
+            {
                 property.SetValue(_target, value);
             }
         }

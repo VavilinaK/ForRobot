@@ -188,49 +188,6 @@ namespace ForRobot.Model.File3D
 
             //this.DetalChangedEvent += (s, o) => SceneUpdate();
         }
-
-        private void CreateParameterArrow(Point3D start, Point3D end, string label, Color color)
-        {
-            //Model3DGroup model3DGroup = new Model3DGroup();
-
-            //// Основная линия стрелки
-            //LinesVisual3D line = new LinesVisual3D
-            //{
-            //    Points = new Point3DCollection() { start, end },
-            //    //Point1 = start,
-            //    //Point2 = end,
-            //    Thickness = 2,
-            //    Color = color
-            //};
-
-            //model3DGroup.Children.Add(line.Model);
-
-            //// Наконечник стрелки (треугольник)
-            //var direction = (end - start).Normalized();
-            //var tipLength = 5; // Длина наконечника в модельных единицах
-            //var tip = new MeshBuilder();
-            //tip.AddArrow(start, end, tipLength, 4);
-
-            //var tipModel = new GeometryModel3D(
-            //    tip.ToMesh(),
-            //    new DiffuseMaterial(new SolidColorBrush(color))
-            //);
-            //group.Children.Add(tipModel);
-
-            //// Текстовая метка
-            //var textPosition = Point3D.Add(start, direction * ((end - start).Length / 2));
-            //var text = new TextVisual3D
-            //{
-            //    Position = textPosition,
-            //    Text = label,
-            //    FontSize = 14,
-            //    Foreground = Brushes.Black,
-            //    Background = Brushes.White,
-            //    UpDirection = new Vector3D(0, 0, 1) // Фиксирует ориентацию текста
-            //};
-            //group.Children.Add(text.Model);
-
-        }
         
         /// <summary>
         /// Выгрузка 3Д модели и файла
@@ -713,9 +670,10 @@ namespace ForRobot.Model.File3D
             _redoStack.Push(command);
             _isUndoRedoOperation = false;
 
-            if(this.CurrentDetal != null)
+            if (this.CurrentDetal != null)
                 UndoRedoStateChanged?.Invoke(this.CurrentDetal.Clone(), EventArgs.Empty);
         }
+
         /// <summary>
         /// Возврат изменения
         /// </summary>
@@ -729,7 +687,7 @@ namespace ForRobot.Model.File3D
             _undoStack.Push(command);
             _isUndoRedoOperation = false;
 
-            if(this.CurrentDetal != null)
+            if (this.CurrentDetal != null)
                 UndoRedoStateChanged?.Invoke(this.CurrentDetal.Clone(), EventArgs.Empty);
         }
 
