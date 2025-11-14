@@ -318,7 +318,48 @@ namespace ForRobot.ViewModels
              foreach (var file in App.Current.OpenedFiles)
                  this.SaveFile(file);
         }); }
-            //= new RelayCommand(obj => SaveAllFile(obj as ObservableCollection<Model.File3D.File3D>));
+        //= new RelayCommand(obj => SaveAllFile(obj as ObservableCollection<Model.File3D.File3D>));
+
+        /// <summary>
+        /// Экспорт параметров программы
+        /// </summary>
+        public ICommand ExportCommand { get => new RelayCommand(_ =>
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog()
+            {
+                Filter = "Json files (*.json)|*.json|Text files (*.txt)|*.txt",
+                Title = "Экспорт параметров программы",
+                FileName = this.SelectedFile.NameWithoutExtension
+            };
+            
+            if (saveFileDialog.ShowDialog() == DialogResult.Cancel && string.IsNullOrEmpty(saveFileDialog.FileName))
+                return;
+
+            this.SelectedFile.Save(saveFileDialog.FileName);
+        }); }
+
+        /// <summary>
+        /// Импорт параметров программы
+        /// </summary>
+        public ICommand ImportCommand { get => new RelayCommand(_ => 
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog()
+            {
+                Multiselect = false,
+                Filter = "Json files (*.json)|*.json|Text files (*.txt)|*.txt",
+                Title = "Импорт параметров программы"
+            };
+
+            if (openFileDialog.ShowDialog() == DialogResult.Cancel && string.IsNullOrEmpty(openFileDialog.FileName))
+                return;
+
+            this.SelectedFile.Load(openFileDialog.FileName);
+
+            App.Current.Logger.Info(new Exception($"Содержимое файла {openFileDialog.FileName}:\n" + File.ReadAllText(openFileDialog.FileName)),
+                                    $"Параметры программы импортированы из файла {openFileDialog.FileName}.");
+
+            GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Messages.UpdateCurrentDetalMessage(this.SelectedFile.CurrentDetal));
+        }); }
 
         /// <summary>
         /// Команда отмены действия

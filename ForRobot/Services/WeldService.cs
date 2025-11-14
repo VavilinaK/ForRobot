@@ -34,8 +34,8 @@ namespace ForRobot.Services
             double modelPlateWidth = (double)plate.PlateWidth * (double)ScaleFactor;
             double modelPlateHeight = (double)plate.PlateThickness * (double)ScaleFactor;
             double modelPlateLength = (double)plate.PlateLength * (double)ScaleFactor;
-            double modelRibHeight = (double)plate.RibHeight * (double)ScaleFactor;
-            double modelRibThickness = (double)plate.RibThickness * (double)ScaleFactor;
+            double modelRibHeight = (double)plate.RibsHeight * (double)ScaleFactor;
+            double modelRibThickness = (double)plate.RibsThickness * (double)ScaleFactor;
 
             List<Weld> welds = new List<Weld>();
 

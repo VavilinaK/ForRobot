@@ -11,6 +11,8 @@ namespace ForRobot.Model.Detals
     /// </summary>
     public class Rib : BaseClass, ICloneable
     {
+        private decimal _height;
+        private decimal _thickness;
         private decimal _distanceLeft;
         private decimal _distanceRight;
         private decimal _identToLeft;
@@ -20,50 +22,51 @@ namespace ForRobot.Model.Detals
         //private decimal _hightLeft;
         //private decimal _hightRight;
 
-        //[JsonIgnore]
-        //public bool IsSave { get; set; } = false;
-
-        [JsonProperty("d_dis1")]
+        [JsonProperty("wall_height")]
         /// <summary>
-        /// Расстояние до следующего ребра (общее или по левому краю)
+        /// Высота ребра
         /// </summary>
-        public decimal DistanceLeft
-        {
-            get => this._distanceLeft;
-            set
-            {
-                Set(ref this._distanceLeft, value);
-                this.ChangeDistanceLeft?.Invoke(this, null);
-            }
-        }
+        public decimal Height { get => this._height; set => Set(ref this._height, value); }
 
-        [JsonProperty("d_dis2")]
+        [JsonProperty("wall_thickness")]
+        /// <summary>
+        /// Толщина ребра
+        /// </summary>
+        public decimal Thickness { get => this._thickness; set => Set(ref this._thickness, value); }
+
+        [JsonProperty("wall_cross_dist_left")]
+        /// <summary>
+        /// Расстояние до следующего ребра по левому краю
+        /// </summary>
+        public decimal DistanceLeft  { get => this._distanceLeft; set => Set(ref this._distanceLeft, value); }
+
+        [JsonProperty("wall_cross_dist_right")]
         /// <summary>
         /// Расстояние до ребра по правому краю
         /// </summary>
         public decimal DistanceRight { get => this._distanceRight; set => Set(ref this._distanceRight, value); }
 
-        [JsonProperty("d_l1")]
+        [JsonProperty("wall_cross_dist_left")]
         /// <summary>
-        /// Отступ слева
+        /// Поперечное расстояние до ребра по левому краю
         /// </summary>
         public decimal IdentToLeft { get => this._identToLeft; set => Set(ref this._identToLeft, value); }
 
-        [JsonProperty("d_l2")]
+        [JsonProperty("wall_cross_dist_right")]
         /// <summary>
-        /// Отступ справа
+        /// Поперечное расстояние до ребра по правому краю
         /// </summary>
         public decimal IdentToRight { get => this._identToRight; set => Set(ref this._identToRight, value); }
 
-        [JsonProperty("l_r1")]
+        [JsonProperty("weld_offset_left")]
         /// <summary>
-        /// Роспуск слева
+        /// Отступ шва от левого края ребра
         /// </summary>
         public decimal DissolutionLeft { get => this._dissolutionLeft; set => Set(ref this._dissolutionLeft, value); }
 
-        [JsonProperty("l_r2")]
+        [JsonProperty("weld_offset_right")]
         /// <summary>
-        /// Роспуск справа
+        /// Отступ шва от правого края ребра
         /// </summary>
         public decimal DissolutionRight { get => this._dissolutionRight; set => Set(ref this._dissolutionRight, value); }
 
@@ -90,7 +93,7 @@ namespace ForRobot.Model.Detals
         /// <summary>
         /// Событие изменения расстояниия между рёбрами, при их параллельности
         /// </summary>
-        public event EventHandler ChangeDistanceLeft;
+        //public event EventHandler ChangeDistanceLeft;
 
         ///// <summary>
         ///// Событие изменения высоты ребра, если она одинаковая с 2-х сторон
@@ -99,7 +102,7 @@ namespace ForRobot.Model.Detals
 
         public Rib() { }
 
-        public void OnChangeDistanceLeftEvent() => this.ChangeDistanceLeft?.Invoke(this, null);
+        //public void OnChangeDistanceLeftEvent() => this.ChangeDistanceLeft?.Invoke(this, null);
 
         //public void OnChangeHightEvent(object sender, EventArgs e) => this.ChangeHight?.Invoke(sender, e);
 

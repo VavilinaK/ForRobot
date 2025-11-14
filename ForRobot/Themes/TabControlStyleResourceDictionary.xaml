@@ -291,7 +291,7 @@
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="ContentControl">
                                                     <StackPanel Orientation="Horizontal">
-                                                        <TextBox Text="{Binding Path=DistanceBetween, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
+                                                        <TextBox Text="{Binding Path=DistanceBetweenRibs, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
                                                                  Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type StackPanel}, Mode=FindAncestor}}" Padding="5" Height="37"/>
                                                     </StackPanel>
                                                 </ControlTemplate>
@@ -413,7 +413,7 @@
                 </TextBox.Style>
             </TextBox>
 
-            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Path=DistanceToFirst, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}">
+            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Path=DistanceToFirstRib, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}">
                 <TextBox.Style>
                     <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource TextBoxBase}">
                         <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
@@ -706,7 +706,7 @@
                 <TextBox.Style>
                     <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxBase}">
                         <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
-                        <Setter Property="Text" Value="{Binding Path=BevelToLeft, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                        <Setter Property="Text" Value="{Binding Path=PlateBevelToLeft, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
 
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Path=ScoseType}" Value="d_rect">
@@ -722,7 +722,7 @@
                 <TextBox.Style>
                     <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxBase}">
                         <Setter Property="Width" Value="{Binding Path=Width, RelativeSource={RelativeSource AncestorType={x:Type ColumnDefinition}, Mode=FindAncestor}}"/>
-                        <Setter Property="Text" Value="{Binding Path=BevelToRight, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                        <Setter Property="Text" Value="{Binding Path=PlateBevelToRight, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
 
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Path=DataContext.DetalObject.ScoseType, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}" Value="d_rect">
@@ -810,10 +810,10 @@
 
             <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=PlateThickness, Mode=TwoWay, TargetNullValue=00, FallbackValue=00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
 
-            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=RibThickness, Mode=TwoWay, TargetNullValue=00, FallbackValue=00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=RibsThickness, Mode=TwoWay, TargetNullValue=00, FallbackValue=00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
 
             <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Vertical">
-                <TextBox Name="textBoxHieght" Text="{Binding Path=RibHeight, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                <TextBox Name="textBoxHieght" Text="{Binding Path=RibsHeight, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
 
                 <Popup PlacementTarget="{Binding ElementName=textBoxHieght}"
                                        IsOpen="{Binding IsKeyboardFocused, ElementName=textBoxHieght, Mode=OneWay}"
@@ -929,7 +929,7 @@
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="ContentControl">
                                                     <StackPanel Orientation="Vertical">
-                                                        <TextBox Name="textBoxHieght" Text="{Binding Path=RibHeight, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                                                        <TextBox Name="textBoxHieght" Text="{Binding Path=RibsHeight, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
 
                                                         <Popup PlacementTarget="{Binding ElementName=textBoxHieght}"
                                                                IsOpen="{Binding IsKeyboardFocused, ElementName=textBoxHieght, Mode=OneWay}"
@@ -1517,10 +1517,10 @@
             <TextBlock Grid.Row="12" Grid.Column="0" Text="Обратный прогиб, мм."/>
 
             <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=PlateThickness, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
-            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=RibThickness, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+            <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=RibsThickness, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
 
             <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Vertical">
-                <TextBox Name="textBoxHieght" Text="{Binding Path=RibHeight, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                <TextBox Name="textBoxHieght" Text="{Binding Path=RibsHeight, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
 
                 <Popup PlacementTarget="{Binding ElementName=textBoxHieght}"
                        IsOpen="{Binding IsKeyboardFocused, ElementName=textBoxHieght, Mode=OneWay}"
@@ -1848,7 +1848,7 @@
                 </TextBox.Style>
             </TextBox>
 
-            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Path=DistanceToFirst, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
+            <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Path=DistanceToFirstRib, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
                      Style="{StaticResource TextBoxkDiferentDistance}"/>
 
             <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Path=IdentToLeft,  Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
@@ -1860,7 +1860,7 @@
             <TextBox Grid.Row="9" Grid.Column="1">
                 <TextBox.Style>
                     <Style TargetType="TextBox" BasedOn="{StaticResource textBoxBase}">
-                        <Setter Property="Text" Value="{Binding Path=BevelToLeft, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                        <Setter Property="Text" Value="{Binding Path=PlateBevelToLeft, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
 
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Path=ScoseType}" Value="d_rect">
@@ -1875,7 +1875,7 @@
             <TextBox Grid.Row="10" Grid.Column="1">
                 <TextBox.Style>
                     <Style TargetType="TextBox" BasedOn="{StaticResource textBoxBase}">
-                        <Setter Property="Text" Value="{Binding Path=BevelToRight, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
+                        <Setter Property="Text" Value="{Binding Path=PlateBevelToRight, Mode=TwoWay, TargetNullValue=0.00, FallbackValue=0.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"/>
 
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Path=ScoseType}" Value="d_rect">
@@ -1949,7 +1949,7 @@
                                         <Setter Property="Template">
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="ContentControl">
-                                                    <TextBox Text="{Binding Path=DistanceBetween, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
+                                                    <TextBox Text="{Binding Path=DistanceBetweenRibs, Mode=TwoWay, TargetNullValue=00.00, FallbackValue=00.00, ConverterCulture='en-us', StringFormat=F2, UpdateSourceTrigger=LostFocus}"
                                                              Margin="5"/>
                                                 </ControlTemplate>
                                             </Setter.Value>

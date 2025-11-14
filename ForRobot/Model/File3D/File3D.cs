@@ -163,8 +163,11 @@ namespace ForRobot.Model.File3D
         
         private void SetDetal(object value)
         {
-            if (_currentDetal == value)
+            if (this._currentDetal == value)
                 return;
+
+            var detals = new HashSet<Detal>();
+            detals.Add(this._currentDetal);
 
             if (this._currentDetal != null)
             {
@@ -498,7 +501,7 @@ namespace ForRobot.Model.File3D
             //this.ChangePropertyAnnotations(detal, e.PropertyName);
         }
 
-        private void SaveJsonFile()
+        private void SaveJsonString(string path)
         {
             //if (this.Path == System.IO.Path.Combine(System.IO.Path.GetTempPath(), this.Name))
             //    System.Windows.Application.Current.Dispatcher.Invoke(() =>
@@ -514,8 +517,7 @@ namespace ForRobot.Model.File3D
             //    });
 
             if (this.CurrentDetal.JsonForSave == string.Empty) return;
-            File.WriteAllText(this.Path, this.CurrentDetal.JsonForSave);
-            this.IsSaved = true;
+            File.WriteAllText(path, this.CurrentDetal.JsonForSave);
         }
         
         /// <summary>
@@ -538,6 +540,9 @@ namespace ForRobot.Model.File3D
         /// Вызов события оповещающего, что было измененно свойство класса <see cref="File3D"/>
         /// </summary>
         private void OnFileChanged() => this.FileChangedEvent?.Invoke(this, null);
+        /// <summary>
+        /// Вызов события сохранения файла
+        /// </summary>
         private void OnSave() => this.SaveEvent?.Invoke(this, null);
 
         #endregion Private functions
@@ -568,19 +573,30 @@ namespace ForRobot.Model.File3D
         }
 
         /// <summary>
-        /// Открывает <see cref="SaveFileDialog"/> 
+        /// Сохранение файла по пути <see cref="File3D.Path"/>
         /// </summary>
-        public void Save()
+        public void Save() => this.Save(this.Path);
+
+        /// <summary>
+        /// Сохранение файла
+        /// </summary>
+        /// <param name="path">Путь для сохранения</param>
+        /// <returns></returns>
+        public bool Save(string path)
         {
-            switch (System.IO.Path.GetExtension(this.Name))
+            switch (System.IO.Path.GetExtension(path))
             {
                 case ".json":
                 case ".txt":
-                    this.SaveJsonFile();
+                    this.SaveJsonString(path);
                     break;
+
+                default:
+                    return false;
             }
             this.IsSaved = true;
             this.OnSave();
+            return true;
         }
 
         #region Static

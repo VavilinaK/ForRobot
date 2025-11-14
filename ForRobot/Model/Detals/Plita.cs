@@ -40,6 +40,15 @@ namespace ForRobot.Model.Detals
         //private bool _diferentHight = false;
         //private bool _diferentHightLeftToRight = false;
 
+        private decimal _ribsHeight;
+        private decimal _ribsThickness;
+        private int _ribCount;
+        private decimal _distanceToFirstRib;
+        private decimal _distanceBetweenRibs;
+        private decimal _identToLeft;
+        private decimal _identToRight;
+        private decimal _dissolutionLeft;
+        private decimal _dissolutionRight;
         private decimal _bevelToLeft;
         private decimal _bevelToRight;
         private decimal _distanceForSearch;
@@ -150,10 +159,10 @@ namespace ForRobot.Model.Detals
 
                         if (i == 0)
                         {
-                            this.RibsCollection[i].DistanceLeft = this.DistanceToFirst;
+                            this.RibsCollection[i].DistanceLeft = this.DistanceToFirstRib;
                             continue;
                         }
-                        this.RibsCollection[i].DistanceLeft = this.DistanceBetween;
+                        this.RibsCollection[i].DistanceLeft = this.DistanceBetweenRibs;
                     }
                 }
                 //else
@@ -243,8 +252,8 @@ namespace ForRobot.Model.Detals
         //        {
         //            for (int i = 0; i < this.RibsCollection.Count; i++)
         //            {
-        //                this.RibsCollection[i].HightLeft = this.RibHeight;
-        //                this.RibsCollection[i].HightRight = this.RibHeight;
+        //                this.RibsCollection[i].HightLeft = this.RibsHeight;
+        //                this.RibsCollection[i].HightRight = this.RibsHeight;
         //            }
         //        }
         //        this.OnChangeProperty();
@@ -272,8 +281,8 @@ namespace ForRobot.Model.Detals
         //    }
         //}
 
-        [JsonProperty("l")]
-        [JsonConverter(typeof(JsonCommentConverter), "Длина настила")]
+        #region Detal's Properties
+
         /// <summary>
         /// Длина настила
         /// </summary>
@@ -287,8 +296,6 @@ namespace ForRobot.Model.Detals
             }
         }
 
-        [JsonProperty("w")]
-        [JsonConverter(typeof(JsonCommentConverter), "Ширина настила")]
         /// <summary>
         /// Ширина настила
         /// </summary>
@@ -302,8 +309,6 @@ namespace ForRobot.Model.Detals
             }
         }
 
-        [JsonProperty("t_p")]
-        [JsonConverter(typeof(JsonCommentConverter), "Толщина настила")]
         /// <summary>
         /// Толщина настила
         /// </summary>
@@ -317,131 +322,199 @@ namespace ForRobot.Model.Detals
             }
         }
 
-        [JsonProperty("h")]
-        [JsonConverter(typeof(JsonCommentConverter), "Высота ребра")]
+        /// <summary>
+        /// Скос слева
+        /// </summary>
+        public override decimal PlateBevelToLeft
+        {
+            get => base.PlateBevelToLeft;
+            set
+            {
+                base.PlateBevelToLeft = value;
+                this.OnChangeProperty(nameof(this.PlateBevelToLeft));
+            }
+        }
+
+        /// <summary>
+        /// Скос справа
+        /// </summary>
+        public override decimal PlateBevelToRight
+        {
+            get => base.PlateBevelToRight;
+            set
+            {
+                base.PlateBevelToRight = value;
+                this.OnChangeProperty(nameof(this.PlateBevelToRight));
+            }
+        }
+
+        /// <summary>
+        /// Смещение детали от 0 точки по осям XYZ
+        /// </summary>
+        public override decimal[] XYZOffset
+        {
+            get => base.XYZOffset;
+            set
+            {
+                base.XYZOffset = value;
+                this.OnChangeProperty();
+            }
+        }
+
+        #endregion Detal's Properties
+
+        #region Rib's Properties
+
+        [JsonProperty("wall_count")]
+        [JsonConverter(typeof(JsonCommentConverter), "Кол-во рёбер")]
+        /// <summary>
+        /// Количество ребер
+        /// </summary>
+        public int RibCount
+        {
+            get => this._ribCount;
+            set
+            {
+                if (value < MIN_RIB_COUNT)
+                    return;
+
+                this._ribCount = value;
+
+                this.ChangeRibCollection();
+                this.ChangeWeldingSchema();
+                this.OnChangeProperty(nameof(this.RibCount));
+            }
+        }
+
+        [JsonIgnore]
+        [SaveAttribute]
+        [JsonConverter(typeof(JsonCommentConverter), "Высота рёбер (вертикальной стенки)")]
         /// <summary>
         /// Высота ребра
         /// </summary>
-        public override decimal RibHeight
+        public decimal RibsHeight
         {
-            get => base.RibHeight;
+            get => this._ribsHeight;
             set
             {
-                base.RibHeight = value;
-                this.OnChangeProperty(nameof(this.RibHeight));
+                this._ribsHeight = value;
+                this.OnChangeProperty(nameof(this.RibsHeight));
             }
         }
 
         [JsonIgnore]
-        [JsonProperty("d_w1"), SaveAttribute]
-        [JsonConverter(typeof(JsonCommentConverter), "Расстояние по ширине до осевой линии первого ребра")]
-        /// <summary>
-        /// Расстояние по ширине до осевой линии первого ребра
-        /// </summary>
-        public override decimal DistanceToFirst
-        {
-            get => base.DistanceToFirst;
-            set
-            {
-                base.DistanceToFirst = value;
-                this.OnChangeProperty();
-            }
-        }
-
-        [JsonIgnore]
-        [JsonProperty("d_w2"), SaveAttribute]
-        [JsonConverter(typeof(JsonCommentConverter), "Расстояние между осевыми линиями рёбер")]
-        /// <summary>
-        /// Расстояние между осевыми линиями рёбер
-        /// </summary>
-        public override decimal DistanceBetween
-        {
-            get => base.DistanceBetween;
-            set
-            {
-                base.DistanceBetween = value;
-                this.OnChangeProperty();
-            }
-        }
-
-        [JsonIgnore]
-        [JsonProperty("d_l1"), SaveAttribute]
-        [JsonConverter(typeof(JsonCommentConverter), "Расстояние торца ребра слева")]
-        /// <summary>
-        /// Расстояние торца ребра слева
-        /// </summary>
-        public override decimal IdentToLeft
-        {
-            get => base.IdentToLeft;
-            set
-            {
-                base.IdentToLeft = value;
-                this.OnChangeProperty();
-            }
-        }
-
-        [JsonIgnore]
-        [JsonProperty("d_l2"), SaveAttribute]
-        [JsonConverter(typeof(JsonCommentConverter), "Расстояние торца справа")]
-        /// <summary>
-        /// Расстояние торца ребра справа
-        /// </summary>
-        public override decimal IdentToRight
-        {
-            get => base.IdentToRight;
-            set
-            {
-                base.IdentToRight = value;
-                this.OnChangeProperty();
-            }
-        }
-
-        [JsonIgnore]
-        [JsonProperty("l_r1"), SaveAttribute]
-        [JsonConverter(typeof(JsonCommentConverter), "Роспуск слева")]
-        /// <summary>
-        /// Роспуск в начале
-        /// </summary>
-        public override decimal DissolutionLeft
-        {
-            get => base.DissolutionLeft;
-            set
-            {
-                base.DissolutionLeft = value;
-                this.OnChangeProperty();
-            }
-        }
-
-        [JsonIgnore]
-        [JsonProperty("l_r2"), SaveAttribute]
-        [JsonConverter(typeof(JsonCommentConverter), "Роспуск справа")]
-        /// <summary>
-        /// Роспуск в конце
-        /// </summary>
-        public override decimal DissolutionRight
-        {
-            get => base.DissolutionRight;
-            set
-            {
-                base.DissolutionRight = value;
-                this.OnChangeProperty();
-            }
-        }
-
-        [JsonProperty("t_r")]
+        [SaveAttribute]
         [JsonConverter(typeof(JsonCommentConverter), "Толщина рёбер")]
         /// <summary>
         /// Толщина ребра
         /// </summary>
-        public override decimal RibThickness
+        public decimal RibsThickness
         {
-            get => base.RibThickness;
+            get => this._ribsThickness;
             set
             {
-                base.RibThickness = value;
-                this.OnChangeProperty(nameof(this.RibThickness));
+                this._ribsThickness = value;
+                this.OnChangeProperty(nameof(this.RibsThickness));
             }
         }
+
+        [JsonIgnore]
+        [SaveAttribute]
+        [JsonConverter(typeof(JsonCommentConverter), "Расстояние по ширине до осевой линии первого ребра")]
+        /// <summary>
+        /// Расстояние по ширине до осевой линии первого ребра
+        /// </summary>
+        public decimal DistanceToFirstRib
+        {
+            get => this._distanceToFirstRib;
+            set
+            {
+                this._distanceToFirstRib = value;
+                this.OnChangeProperty();
+            }
+        }
+
+        [JsonIgnore]
+        [SaveAttribute]
+        [JsonConverter(typeof(JsonCommentConverter), "Расстояние между осевыми линиями рёбер")]
+        /// <summary>
+        /// Расстояние между осевыми линиями рёбер
+        /// </summary>
+        public decimal DistanceBetweenRibs
+        {
+            get => this._distanceBetweenRibs;
+            set
+            {
+                this._distanceBetweenRibs = value;
+                this.OnChangeProperty();
+            }
+        }
+
+        [JsonIgnore]
+        [SaveAttribute]
+        [JsonConverter(typeof(JsonCommentConverter), "Расстояние торца ребра слева")]
+        /// <summary>
+        /// Расстояние торца ребра слева
+        /// </summary>
+        public decimal IdentToLeft
+        {
+            get => this._identToLeft;
+            set
+            {
+                this._identToLeft = value;
+                this.OnChangeProperty();
+            }
+        }
+
+        [JsonIgnore]
+        [SaveAttribute]
+        [JsonConverter(typeof(JsonCommentConverter), "Расстояние торца справа")]
+        /// <summary>
+        /// Расстояние торца ребра справа
+        /// </summary>
+        public decimal IdentToRight
+        {
+            get => this._identToRight;
+            set
+            {
+                this._identToRight = value;
+                this.OnChangeProperty();
+            }
+        }
+
+        [JsonIgnore]
+        [SaveAttribute]
+        [JsonConverter(typeof(JsonCommentConverter), "Роспуск слева")]
+        /// <summary>
+        /// Отступ шва от левого края ребра (роспуск, выкружка)
+        /// </summary>
+        public decimal DissolutionLeft
+        {
+            get => this._dissolutionLeft;
+            set
+            {
+                this._dissolutionLeft = value;
+                this.OnChangeProperty();
+            }
+        }
+
+        [JsonIgnore]
+        [SaveAttribute]
+        [JsonConverter(typeof(JsonCommentConverter), "Роспуск справа")]
+        /// <summary>
+        /// Отступ шва от правого края ребра (роспуск, выкружка)
+        /// </summary>
+        public decimal DissolutionRight
+        {
+            get => this._dissolutionRight;
+            set
+            {
+                this._dissolutionRight = value;
+                this.OnChangeProperty();
+            }
+        }
+
+        #endregion Rib's Properties
 
         [JsonProperty("d_s1")]
         [JsonConverter(typeof(JsonCommentConverter), "Отступ поиска в начале")]
@@ -518,36 +591,6 @@ namespace ForRobot.Model.Detals
             }
         }
 
-        [JsonProperty("d_b1")]
-        [JsonConverter(typeof(JsonCommentConverter), "Скос слева")]
-        /// <summary>
-        /// Скос слева
-        /// </summary>
-        public decimal BevelToLeft
-        {
-            get => this._bevelToLeft;
-            set
-            {
-                this._bevelToLeft = value;
-                this.OnChangeProperty(nameof(this.BevelToLeft));
-            }
-        }
-
-        [JsonProperty("d_b2")]
-        [JsonConverter(typeof(JsonCommentConverter), "Скос справа")]
-        /// <summary>
-        /// Скос справа
-        /// </summary>
-        public decimal BevelToRight
-        {
-            get => this._bevelToRight;
-            set
-            {
-                this._bevelToRight = value;
-                this.OnChangeProperty(nameof(this.BevelToRight));
-            }
-        }
-
         [JsonProperty("velocity")]
         [JsonConverter(typeof(JsonCommentConverter), "Скорость сварки")]
         /// <summary>
@@ -608,19 +651,6 @@ namespace ForRobot.Model.Detals
             }
         }
 
-        [JsonProperty("base_displace")]
-        /// <summary>
-        /// Смещение детали от 0 точки по осям XYZ
-        /// </summary>
-        public override decimal[] XYZOffset
-        {
-            get => base.XYZOffset;
-            set
-            {
-                base.XYZOffset = value;
-                this.OnChangeProperty();
-            }
-        }
 
         [JsonIgnore]
         /// <summary>
@@ -676,29 +706,6 @@ namespace ForRobot.Model.Detals
             {
                 base.ReverseDeflection = value;
                 this.OnChangeProperty(nameof(this.ReverseDeflection));
-            }
-        }
-
-        [JsonProperty("edge_count")]
-        [JsonConverter(typeof(JsonCommentConverter), "Кол-во рёбер")]
-        /// <summary>
-        /// Количество ребер
-        /// </summary>
-        public override int RibCount
-        {
-            get => base.RibCount;
-            set
-            {
-                if (value < MIN_RIB_COUNT)
-                    return;
-
-                base.RibCount = value;
-
-                this.ChangeRibCollection();
-
-                this.ChangeWeldingSchema();
-
-                this.OnChangeProperty(nameof(this.RibCount));
             }
         }
         
@@ -760,8 +767,8 @@ namespace ForRobot.Model.Detals
             this.ChangePropertyEvent += this.HandleChangeProperty;
 
             this.PlateWidth = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).Width;
-            this.BevelToLeft = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).BevelToStart;
-            this.BevelToRight = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).BevelToEnd;
+            this.PlateBevelToLeft = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).BevelToStart;
+            this.PlateBevelToRight = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).BevelToEnd;
             this.DistanceForWelding = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).DistanceForWelding;
             this.DistanceForSearch = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).DistanceForSearch;
 
@@ -806,22 +813,22 @@ namespace ForRobot.Model.Detals
         {
             switch (e.PropertyName)
             {
-                case nameof(this.DistanceToFirst):
+                case nameof(this.DistanceToFirstRib):
                     if (this.RibsCollection?.Count == 0)
                         return;
 
-                    this.RibsCollection[0].DistanceLeft = base.DistanceToFirst;
-                    this.RibsCollection[0].DistanceRight = base.DistanceToFirst;
+                    this.RibsCollection[0].DistanceLeft = base.DistanceToFirstRib;
+                    this.RibsCollection[0].DistanceRight = base.DistanceToFirstRib;
                     break;
 
-                case nameof(this.DistanceBetween):
+                case nameof(this.DistanceBetweenRibs):
                     if (this.RibsCollection?.Count == 0)
                         return;
 
                     for (int i = 1; i < this.RibsCollection.Count; i++)
                     {
-                        this.RibsCollection[i].DistanceLeft = base.DistanceBetween;
-                        this.RibsCollection[i].DistanceRight = base.DistanceBetween;
+                        this.RibsCollection[i].DistanceLeft = base.DistanceBetweenRibs;
+                        this.RibsCollection[i].DistanceRight = base.DistanceBetweenRibs;
                     }
                     break;
 
@@ -865,13 +872,13 @@ namespace ForRobot.Model.Detals
                     }
                     break;
 
-                case nameof(this.RibHeight):
+                case nameof(this.RibsHeight):
                     //if (this.RibsCollection?.Count > 0)
                     //{
                     //    for (int i = 0; i < this.RibsCollection.Count; i++)
                     //    {
-                    //        this.RibsCollection[i].HightLeft = base.RibHeight;
-                    //        this.RibsCollection[i].HightRight = base.RibHeight;
+                    //        this.RibsCollection[i].HightLeft = base.RibsHeight;
+                    //        this.RibsCollection[i].HightRight = base.RibsHeight;
                     //    }
                     //}
                     break;
@@ -897,19 +904,19 @@ namespace ForRobot.Model.Detals
                     IdentToRight = this.IdentToRight,
                     DissolutionLeft = this.DissolutionLeft,
                     DissolutionRight = this.DissolutionRight
-                    //HightLeft = this.RibHeight,
-                    //HightRight = this.RibHeight
+                    //HightLeft = this.RibsHeight,
+                    //HightRight = this.RibsHeight
                 };
 
                 if (i == 0)
                 {
-                    rib.DistanceLeft = this.DistanceToFirst;
-                    rib.DistanceRight = this.DistanceToFirst;
+                    rib.DistanceLeft = this.DistanceToFirstRib;
+                    rib.DistanceRight = this.DistanceToFirstRib;
                 }
                 else
                 {
-                    rib.DistanceLeft = this.DistanceBetween;
-                    rib.DistanceRight = this.DistanceBetween;
+                    rib.DistanceLeft = this.DistanceBetweenRibs;
+                    rib.DistanceRight = this.DistanceBetweenRibs;
                 }
 
                 ribsList.Add(rib);
@@ -1018,7 +1025,7 @@ namespace ForRobot.Model.Detals
                 //Font font = new Font("Lucida Console", image.PlateWidth / 14, System.Drawing.FontStyle.Regular);
                 //StringFormat stringFormat = new StringFormat(StringFormatFlags.DirectionVertical);
                 //graphics.DrawString(IndentionStart.ToString(), font, new SolidBrush(Color.Black), 206, 29);
-                //graphics.DrawString(RibHeight.ToString(), font, new SolidBrush(Color.Black), new PointF(102, 126 - RibHeight.ToString().Length * (font.Size - 8)), stringFormat);
+                //graphics.DrawString(RibsHeight.ToString(), font, new SolidBrush(Color.Black), new PointF(102, 126 - RibsHeight.ToString().Length * (font.Size - 8)), stringFormat);
             }
             return image;
         }
@@ -1144,7 +1151,7 @@ namespace ForRobot.Model.Detals
 
             //    // Текст
             //    Font font = new Font("Lucida Console", image.PlateWidth / 8, System.Drawing.FontStyle.Regular);
-            //    graphics.DrawString(DistanceBetween.ToString(), font, new SolidBrush(Color.Black), 51, 33);
+            //    graphics.DrawString(DistanceBetweenRibs.ToString(), font, new SolidBrush(Color.Black), 51, 33);
             //    graphics.DrawString(PlateLength.ToString(), font, new SolidBrush(Color.Black), 33, 234);
             //}
             return image;
@@ -1319,14 +1326,14 @@ namespace ForRobot.Model.Detals
                 {
                     graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
-                    graphics.DrawString(RibHeight.ToString(),
-                                        FontLibr.FindFont(graphics, RibHeight.ToString(), new System.Drawing.Size(80, 30), font),
+                    graphics.DrawString(RibsHeight.ToString(),
+                                        FontLibr.FindFont(graphics, RibsHeight.ToString(), new System.Drawing.Size(80, 30), font),
                                         new SolidBrush(Color.Black),
                                         new PointF(120, 126),
                                         stringFormat1);
 
-                    graphics.DrawString(DistanceToFirst.ToString(),
-                                        FontLibr.FindFont(graphics, DistanceToFirst.ToString(), new System.Drawing.Size(60, 25), font),
+                    graphics.DrawString(DistanceToFirstRib.ToString(),
+                                        FontLibr.FindFont(graphics, DistanceToFirstRib.ToString(), new System.Drawing.Size(60, 25), font),
                                         new SolidBrush(Color.Black),
                                         new PointF(300 + 150 * (RibCount - 2) + 205, 40),
                                         stringFormat2);
@@ -1338,8 +1345,8 @@ namespace ForRobot.Model.Detals
                                         stringFormat2);
 
                     if (RibCount > 1)
-                        graphics.DrawString(DistanceBetween.ToString(),
-                                            FontLibr.FindFont(graphics, DistanceBetween.ToString(), new System.Drawing.Size(90, 25), font),
+                        graphics.DrawString(DistanceBetweenRibs.ToString(),
+                                            FontLibr.FindFont(graphics, DistanceBetweenRibs.ToString(), new System.Drawing.Size(90, 25), font),
                                             new SolidBrush(Color.Black),
                                             new PointF(bitmap.Width - 375, 45),
                                             stringFormat2);
@@ -1463,8 +1470,8 @@ namespace ForRobot.Model.Detals
                                         new PointF(710, 420),
                                         stringFormat2);
 
-                    graphics.DrawString(RibThickness.ToString(),
-                                        FontLibr.FindFont(graphics, RibThickness.ToString(), new System.Drawing.Size(40, 25), font),
+                    graphics.DrawString(RibsThickness.ToString(),
+                                        FontLibr.FindFont(graphics, RibsThickness.ToString(), new System.Drawing.Size(40, 25), font),
                                         new SolidBrush(Color.Black),
                                         new PointF(795, 140),
                                         stringFormat1);
@@ -1504,26 +1511,26 @@ namespace ForRobot.Model.Detals
                         new PointF(550, 70),
                         stringFormatHorizont);
 
-                    graphics.DrawString(DistanceToFirst.ToString(),
-                        FontLibr.FindFont(graphics, DistanceToFirst.ToString(), new System.Drawing.Size(125, 30), font),
+                    graphics.DrawString(DistanceToFirstRib.ToString(),
+                        FontLibr.FindFont(graphics, DistanceToFirstRib.ToString(), new System.Drawing.Size(125, 30), font),
                         new SolidBrush(Color.Black),
                         new PointF(1220, 240),
                         stringFormatVertical);
 
-                    graphics.DrawString(DistanceBetween.ToString(),
-                        FontLibr.FindFont(graphics, DistanceBetween.ToString(), new System.Drawing.Size(100, 30), font),
+                    graphics.DrawString(DistanceBetweenRibs.ToString(),
+                        FontLibr.FindFont(graphics, DistanceBetweenRibs.ToString(), new System.Drawing.Size(100, 30), font),
                         new SolidBrush(Color.Black),
                         new PointF(1220, 365),
                         stringFormatVertical);
 
-                    graphics.DrawString(BevelToLeft.ToString(),
-                        FontLibr.FindFont(graphics, BevelToLeft.ToString(), new System.Drawing.Size(100, 30), font),
+                    graphics.DrawString(PlateBevelToLeft.ToString(),
+                        FontLibr.FindFont(graphics, PlateBevelToLeft.ToString(), new System.Drawing.Size(100, 30), font),
                         new SolidBrush(Color.Black),
                         new PointF(105, 680),
                         stringFormatHorizont);
 
-                    graphics.DrawString(BevelToRight.ToString(),
-                        FontLibr.FindFont(graphics, BevelToRight.ToString(), new System.Drawing.Size(80, 30), font),
+                    graphics.DrawString(PlateBevelToRight.ToString(),
+                        FontLibr.FindFont(graphics, PlateBevelToRight.ToString(), new System.Drawing.Size(80, 30), font),
                         new SolidBrush(Color.Black),
                         new PointF(1125, 150),
                         stringFormatHorizont);
@@ -1587,26 +1594,26 @@ namespace ForRobot.Model.Detals
                         new PointF(700, 60),
                         stringFormatHorizont);
 
-                    graphics.DrawString(DistanceToFirst.ToString(),
-                        FontLibr.FindFont(graphics, DistanceToFirst.ToString(), new System.Drawing.Size(125, 30), font),
+                    graphics.DrawString(DistanceToFirstRib.ToString(),
+                        FontLibr.FindFont(graphics, DistanceToFirstRib.ToString(), new System.Drawing.Size(125, 30), font),
                         new SolidBrush(Color.Black),
                         new PointF(80, 220),
                         stringFormatVertical);
 
-                    graphics.DrawString(DistanceBetween.ToString(),
-                        FontLibr.FindFont(graphics, DistanceBetween.ToString(), new System.Drawing.Size(100, 30), font),
+                    graphics.DrawString(DistanceBetweenRibs.ToString(),
+                        FontLibr.FindFont(graphics, DistanceBetweenRibs.ToString(), new System.Drawing.Size(100, 30), font),
                         new SolidBrush(Color.Black),
                         new PointF(80, 340),
                         stringFormatVertical);
 
-                    graphics.DrawString(BevelToLeft.ToString(),
-                        FontLibr.FindFont(graphics, BevelToLeft.ToString(), new System.Drawing.Size(70, 30), font),
+                    graphics.DrawString(PlateBevelToLeft.ToString(),
+                        FontLibr.FindFont(graphics, PlateBevelToLeft.ToString(), new System.Drawing.Size(70, 30), font),
                         new SolidBrush(Color.Black),
                         new PointF(190, 130),
                         stringFormatHorizont);
 
-                    graphics.DrawString(BevelToRight.ToString(),
-                        FontLibr.FindFont(graphics, BevelToRight.ToString(), new System.Drawing.Size(100, 30), font),
+                    graphics.DrawString(PlateBevelToRight.ToString(),
+                        FontLibr.FindFont(graphics, PlateBevelToRight.ToString(), new System.Drawing.Size(100, 30), font),
                         new SolidBrush(Color.Black),
                         new PointF(1220, 680),
                         stringFormatHorizont);
@@ -1670,26 +1677,26 @@ namespace ForRobot.Model.Detals
                         new PointF(600, 60),
                         stringFormatHorizont);
 
-                    graphics.DrawString(DistanceToFirst.ToString(),
-                        FontLibr.FindFont(graphics, DistanceToFirst.ToString(), new System.Drawing.Size(150, 30), font),
+                    graphics.DrawString(DistanceToFirstRib.ToString(),
+                        FontLibr.FindFont(graphics, DistanceToFirstRib.ToString(), new System.Drawing.Size(150, 30), font),
                         new SolidBrush(Color.Black),
                         new PointF(60, 300),
                         stringFormatVertical);
 
-                    graphics.DrawString(DistanceBetween.ToString(),
-                        FontLibr.FindFont(graphics, DistanceBetween.ToString(), new System.Drawing.Size(140, 30), font),
+                    graphics.DrawString(DistanceBetweenRibs.ToString(),
+                        FontLibr.FindFont(graphics, DistanceBetweenRibs.ToString(), new System.Drawing.Size(140, 30), font),
                         new SolidBrush(Color.Black),
                         new PointF(60, 465),
                         stringFormatVertical);
 
-                    graphics.DrawString(BevelToLeft.ToString(),
-                        FontLibr.FindFont(graphics, BevelToLeft.ToString(), new System.Drawing.Size(80, 30), font),
+                    graphics.DrawString(PlateBevelToLeft.ToString(),
+                        FontLibr.FindFont(graphics, PlateBevelToLeft.ToString(), new System.Drawing.Size(80, 30), font),
                         new SolidBrush(Color.Black),
                         new PointF(150, 190),
                         stringFormatHorizont);
 
-                    graphics.DrawString(BevelToRight.ToString(),
-                        FontLibr.FindFont(graphics, BevelToRight.ToString(), new System.Drawing.Size(100, 30), font),
+                    graphics.DrawString(PlateBevelToRight.ToString(),
+                        FontLibr.FindFont(graphics, PlateBevelToRight.ToString(), new System.Drawing.Size(100, 30), font),
                         new SolidBrush(Color.Black),
                         new PointF(1120, 140),
                         stringFormatHorizont);
@@ -1753,26 +1760,26 @@ namespace ForRobot.Model.Detals
                         new PointF(600, 60),
                         stringFormatHorizont);
 
-                    graphics.DrawString(DistanceToFirst.ToString(),
-                        FontLibr.FindFont(graphics, DistanceToFirst.ToString(), new System.Drawing.Size(130, 30), font),
+                    graphics.DrawString(DistanceToFirstRib.ToString(),
+                        FontLibr.FindFont(graphics, DistanceToFirstRib.ToString(), new System.Drawing.Size(130, 30), font),
                         new SolidBrush(Color.Black),
                         new PointF(100, 260),
                         stringFormatVertical);
 
-                    graphics.DrawString(DistanceBetween.ToString(),
-                        FontLibr.FindFont(graphics, DistanceBetween.ToString(), new System.Drawing.Size(110, 30), font),
+                    graphics.DrawString(DistanceBetweenRibs.ToString(),
+                        FontLibr.FindFont(graphics, DistanceBetweenRibs.ToString(), new System.Drawing.Size(110, 30), font),
                         new SolidBrush(Color.Black),
                         new PointF(100, 390),
                         stringFormatVertical);
 
-                    graphics.DrawString(BevelToLeft.ToString(),
-                        FontLibr.FindFont(graphics, BevelToLeft.ToString(), new System.Drawing.Size(110, 30), font),
+                    graphics.DrawString(PlateBevelToLeft.ToString(),
+                        FontLibr.FindFont(graphics, PlateBevelToLeft.ToString(), new System.Drawing.Size(110, 30), font),
                         new SolidBrush(Color.Black),
                         new PointF(185, 150),
                         stringFormatHorizont);
 
-                    graphics.DrawString(BevelToRight.ToString(),
-                        FontLibr.FindFont(graphics, BevelToRight.ToString(), new System.Drawing.Size(100, 30), font),
+                    graphics.DrawString(PlateBevelToRight.ToString(),
+                        FontLibr.FindFont(graphics, PlateBevelToRight.ToString(), new System.Drawing.Size(100, 30), font),
                         new SolidBrush(Color.Black),
                         new PointF(1130, 150),
                         stringFormatHorizont);

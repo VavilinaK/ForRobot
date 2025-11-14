@@ -13,6 +13,7 @@ using Newtonsoft.Json.Linq;
 using ForRobot.Model.File3D;
 using ForRobot.Libr;
 using ForRobot.Libr.Json;
+using ForRobot.Libr.Converters;
 using HelixToolkit.Wpf.SharpDX;
 using System.Threading;
 
@@ -63,111 +64,133 @@ namespace ForRobot.Model.Detals
         /// Тип детали
         /// </summary>
         public virtual string DetalType { get; }
-        
-        /// <summary>
-        /// Длина настила
-        /// </summary>
-        public virtual decimal PlateLength { get; set; }
 
+        [JsonProperty("base_width")]
+        [JsonConverter(typeof(JsonCommentConverter), "Ширина настила")]
         /// <summary>
         /// Ширина настила
         /// </summary>
         public virtual decimal PlateWidth { get; set; }
 
+        [JsonProperty("base_length")]
+        [JsonConverter(typeof(JsonCommentConverter), "Длина настила")]
+        /// <summary>
+        /// Длина настила
+        /// </summary>
+        public virtual decimal PlateLength { get; set; }
+
+        [JsonProperty("base_thickness")]
+        [JsonConverter(typeof(JsonCommentConverter), "Толщина настила")]
         /// <summary>
         /// Толщина настила
         /// </summary>
         public virtual decimal PlateThickness { get; set; }
 
+        [JsonProperty("base_bevel_left")]
+        [JsonConverter(typeof(JsonCommentConverter), "Скос настила слева")]
         /// <summary>
-        /// Расстояние до осевой линии первого ребра сверху
+        /// Скос настила слева
         /// </summary>
-        public virtual decimal DistanceToFirst { get; set; }
-        
-        /// <summary>
-        /// Расстояние между осевыми линиями рёбер
-        /// </summary>
-        public virtual decimal DistanceBetween { get; set; }
-        
-        /// <summary>
-        /// Расстояние торца ребра слева
-        /// </summary>
-        public virtual decimal IdentToLeft { get; set; }
-        
-        /// <summary>
-        /// Расстояние торца ребра справа
-        /// </summary>
-        public virtual decimal IdentToRight { get; set; }
-        
-        /// <summary>
-        /// Роспуск слева
-        /// </summary>
-        public virtual decimal DissolutionLeft { get; set; }
-        
-        /// <summary>
-        /// Роспуск справа
-        /// </summary>
-        public virtual decimal DissolutionRight { get; set; }
+        public virtual decimal PlateBevelToLeft { get; set; }
 
+        [JsonProperty("base_bevel_right")]
+        [JsonConverter(typeof(JsonCommentConverter), "Скос настила справа")]
         /// <summary>
-        /// Высота ребра
+        /// Скос настила справа
         /// </summary>
-        public virtual decimal RibHeight { get; set; }
+        public virtual decimal PlateBevelToRight { get; set; }
 
-        /// <summary>
-        /// Толщина ребра
-        /// </summary>
-        public virtual decimal RibThickness { get; set; }
-        
-        /// <summary>
-        /// Отступ поиска в начале
-        /// </summary>
-        public virtual decimal SearchOffsetStart { get; set; }
-        
-        /// <summary>
-        /// Отступ поиска в конце
-        /// </summary>
-        public virtual decimal SearchOffsetEnd { get; set; }
-        
-        /// <summary>
-        /// Перекрытие швов
-        /// </summary>
-        public virtual decimal SeamsOverlap { get; set; }
-
-        /// <summary>
-        /// Технологический отступ начала шва
-        /// </summary>
-        public virtual decimal TechOffsetSeamStart { get; set; }
-
-        /// <summary>
-        /// Технологический отступ конца шва
-        /// </summary>
-        public virtual decimal TechOffsetSeamEnd { get; set; }
-
+        [JsonProperty("base_displace")]
+        [JsonConverter(typeof(JsonCommentConverter), "Смещение настила от нулевой точки стола")]
         /// <summary>
         /// Смещение детали от 0 точки по осям XYZ
         /// </summary>
         public virtual decimal[] XYZOffset { get; set; } = new decimal[3] { 0, 0, 0 };
 
-        /// <summary>
-        /// Обратный прогиб
-        /// </summary>
-        public virtual decimal ReverseDeflection { get; set; }
-
-        /// <summary>
-        /// Скорость сварки
-        /// </summary>
-        public virtual int WildingSpead { get; set; }
+        ///// <summary>
+        ///// Расстояние до осевой линии первого ребра сверху
+        ///// </summary>
+        //public virtual decimal DistanceToFirstRib { get; set; }
         
-        /// <summary>
-        /// Номер сварочной программы
-        /// </summary>
-        public virtual int ProgramNom { get; set; }
+        ///// <summary>
+        ///// Расстояние между осевыми линиями рёбер
+        ///// </summary>
+        //public virtual decimal DistanceBetweenRibs { get; set; }
+        
+        ///// <summary>
+        ///// Расстояние торца ребра слева
+        ///// </summary>
+        //public virtual decimal IdentToLeft { get; set; }
+        
+        ///// <summary>
+        ///// Расстояние торца ребра справа
+        ///// </summary>
+        //public virtual decimal IdentToRight { get; set; }
+        
+        ///// <summary>
+        ///// Роспуск слева
+        ///// </summary>
+        //public virtual decimal DissolutionLeft { get; set; }
+        
+        ///// <summary>
+        ///// Роспуск справа
+        ///// </summary>
+        //public virtual decimal DissolutionRight { get; set; }
 
-        /// <summary>
-        /// Количество ребер
-        /// </summary>
-        public virtual int RibCount { get; set; }
+        ///// <summary>
+        ///// Высота ребра
+        ///// </summary>
+        //public virtual decimal RibsHeight { get; set; }
+
+        ///// <summary>
+        ///// Толщина ребра
+        ///// </summary>
+        //public virtual decimal RibsThickness { get; set; }
+        
+        ///// <summary>
+        ///// Отступ поиска в начале
+        ///// </summary>
+        //public virtual decimal SearchOffsetStart { get; set; }
+        
+        ///// <summary>
+        ///// Отступ поиска в конце
+        ///// </summary>
+        //public virtual decimal SearchOffsetEnd { get; set; }
+        
+        ///// <summary>
+        ///// Перекрытие швов
+        ///// </summary>
+        //public virtual decimal SeamsOverlap { get; set; }
+
+        ///// <summary>
+        ///// Технологический отступ начала шва
+        ///// </summary>
+        //public virtual decimal TechOffsetSeamStart { get; set; }
+
+        ///// <summary>
+        ///// Технологический отступ конца шва
+        ///// </summary>
+        //public virtual decimal TechOffsetSeamEnd { get; set; }
+
+        ///// <summary>
+        ///// Обратный прогиб
+        ///// </summary>
+        //public virtual decimal ReverseDeflection { get; set; }
+
+        ///// <summary>
+        ///// Скорость сварки
+        ///// </summary>
+        //public virtual int WildingSpead { get; set; }
+        
+        ///// <summary>
+        ///// Номер сварочной программы
+        ///// </summary>
+        //public virtual int ProgramNom { get; set; }
+
+        ///// <summary>
+        ///// Количество ребер
+        ///// </summary>
+        //public virtual int RibCount { get; set; }
 
         [JsonIgnore]
         /// <summary>
@@ -225,15 +248,15 @@ namespace ForRobot.Model.Detals
                     this.PlitaConfig = ConfigurationManager.GetSection("plita") as ForRobot.Libr.ConfigurationProperties.PlitaConfigurationSection;
                     this.PlateLength = PlitaConfig.Long;
                     this.PlateWidth = PlitaConfig.Width;
-                    this.RibHeight = PlitaConfig.Hight;
-                    this.DistanceToFirst = PlitaConfig.DistanceToFirst;
-                    this.DistanceBetween = PlitaConfig.DistanceBetween;
+                    this.RibsHeight = PlitaConfig.Hight;
+                    this.DistanceToFirstRib = PlitaConfig.DistanceToFirstRib;
+                    this.DistanceBetweenRibs = PlitaConfig.DistanceBetweenRibs;
                     this.IdentToLeft = PlitaConfig.DistanceToStart;
                     this.IdentToRight = PlitaConfig.DistanceToEnd;
                     this.DissolutionLeft = PlitaConfig.DissolutionStart;
                     this.DissolutionRight = PlitaConfig.DissolutionEnd;
                     this.PlateThickness = PlitaConfig.ThicknessPlita;
-                    this.RibThickness = PlitaConfig.ThicknessRebro;
+                    this.RibsThickness = PlitaConfig.ThicknessRebro;
                     this.SearchOffsetStart = PlitaConfig.SearchOffsetStart;
                     this.SearchOffsetEnd = PlitaConfig.SearchOffsetEnd;
                     this.SeamsOverlap = PlitaConfig.SeamsOverlap;
@@ -285,6 +308,13 @@ namespace ForRobot.Model.Detals
         //    var json = JsonConvert.SerializeObject(this);
         //    return JsonConvert.DeserializeObject(json, this.GetType());
         //}
+
+        public bool Equals(Detal detal)
+        {
+            var detals = new System.Collections.Generic.HashSet<Detal>();
+            detals.Add(this);
+            return detals.Contains(detal);
+        }
 
         public static Detal GetDetal(string detalType)
         {

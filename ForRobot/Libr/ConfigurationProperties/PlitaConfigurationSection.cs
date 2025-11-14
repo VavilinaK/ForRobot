@@ -36,18 +36,18 @@ namespace ForRobot.Libr.ConfigurationProperties
             set { this["Hight"] = value; }
         }
 
-        [ConfigurationProperty("DistanceToFirst")]
-        public decimal DistanceToFirst
+        [ConfigurationProperty("DistanceToFirstRib")]
+        public decimal DistanceToFirstRib
         {
-            get { return (decimal)this["DistanceToFirst"]; }
-            set { this["DistanceToFirst"] = value; }
+            get { return (decimal)this["DistanceToFirstRib"]; }
+            set { this["DistanceToFirstRib"] = value; }
         }
 
-        [ConfigurationProperty("DistanceBetween")]
-        public decimal DistanceBetween
+        [ConfigurationProperty("DistanceBetweenRibs")]
+        public decimal DistanceBetweenRibs
         {
-            get { return (decimal)this["DistanceBetween"]; }
-            set { this["DistanceBetween"] = value; }
+            get { return (decimal)this["DistanceBetweenRibs"]; }
+            set { this["DistanceBetweenRibs"] = value; }
         }
 
         [ConfigurationProperty("DistanceToStart")]

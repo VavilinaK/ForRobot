@@ -46,8 +46,10 @@
                     Command="{Binding Path=SaveFileCommand}"                    
                     CommandParameter="{Binding Path=SelectedFile}"/>
 
+        <KeyBinding Gesture="Ctrl+E" Command="{Binding Path=ExportCommand}"/>
+        <KeyBinding Gesture="Ctrl+I" Command="{Binding Path=ImportCommand}"/>
+        
         <KeyBinding Gesture="Ctrl+Z" Command="{Binding Path=UndoCommand}"/>
-
         <KeyBinding Gesture="Ctrl+V" Command="{Binding Path=RedoCommand}"/>
         
         <KeyBinding Gesture="Ctrl+F5" 
@@ -57,18 +59,7 @@
         <KeyBinding Gesture="Ctrl+Shift+S"
                     Command="{Binding Path=StandartParametrsCommand}"
                     CommandParameter="{Binding Path=SelectedFile}"/>
-
-        <KeyBinding Key="Plus" Command="{x:Static behavior:CameraControllerBehavior.ZoomViewCommand}">
-            <KeyBinding.CommandParameter>
-                <sys:Double>1</sys:Double>
-            </KeyBinding.CommandParameter>
-        </KeyBinding>
-
-        <KeyBinding Key="OemPlus" Command="{x:Static behavior:CameraControllerBehavior.ZoomViewCommand}">
-            <KeyBinding.CommandParameter>
-                <sys:Double>-50</sys:Double>
-            </KeyBinding.CommandParameter>
-        </KeyBinding>
+        
     </Page.InputBindings>
 
     <Page.Resources>
@@ -136,9 +127,9 @@
                 </Style>-->
                 <!--<Style TargetType="{x:Type MenuItem}" BasedOn="{StaticResource MenuItemTemplate}"></Style>-->
             </Menu.Resources>
-            
+
             <MenuItem Header="_Файл">
-                <MenuItem Header="_Создать"
+                <MenuItem Header="_Создать" IsEnabled="False"
                           Command="{Binding Path=CreateNewFileCommand}"
                           InputGestureText="Ctrl+Shift+N">
                     <MenuItem.Icon>
@@ -146,8 +137,8 @@
                               Data="{StaticResource NewFilePathGeomerty}"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                
-                <MenuItem Header="_Открыть"
+
+                <MenuItem Header="_Открыть" IsEnabled="False"
                           Command="{Binding Path=OpenedFileCommand}"
                           InputGestureText="Ctrl+O">
                     <MenuItem.Icon>
@@ -155,8 +146,9 @@
                               Data="{StaticResource OpenPathGeomerty}"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                
-                <MenuItem Command="{Binding Path=SaveFileCommand}" InputGestureText="Ctrl+S">
+
+                <MenuItem Command="{Binding Path=SaveFileCommand}" IsEnabled="False"
+                          InputGestureText="Ctrl+S">
                     <MenuItem.Header>
                         <MultiBinding Converter="{StaticResource StringFormatMultiConvert}" ConverterParameter="_Сохранить {0}">
                             <Binding Path="SelectedFile.Name" Mode="OneWay"/>
@@ -168,18 +160,17 @@
                               Data="{StaticResource SavePathGeomerty}"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                
-                <MenuItem Command="{Binding Path=SaveAsFileCommand}"
-                          CommandParameter="{Binding Path=SelectedFile}"
-                          IsEnabled="False">
+
+                <MenuItem Command="{Binding Path=SaveAsFileCommand}" IsEnabled="False"
+                          CommandParameter="{Binding Path=SelectedFile}">
                     <MenuItem.Header>
                         <MultiBinding Converter="{StaticResource StringFormatMultiConvert}" ConverterParameter="_Сохранить {0} как">
                             <Binding Path="SelectedFile.Name" Mode="OneWay"/>
                         </MultiBinding>
                     </MenuItem.Header>
                 </MenuItem>
-                
-                <MenuItem Header="_Сохранить все"
+
+                <MenuItem Header="_Сохранить все" IsEnabled="False"
                           Command="{Binding Path=SaveAsFileCommand}"
                           InputGestureText="Ctrl+K, S">
                     <MenuItem.Icon>
@@ -190,19 +181,29 @@
                 
                 <Separator/>
                 <!--<MenuItem Header="_Экспорт модели"/>-->
-                <MenuItem Header="_Экспорт параметров">
+                <MenuItem Header="_Экспорт параметров" InputGestureText="Ctrl+E"
+                          Command="{Binding Path=ExportCommand}">
                     <MenuItem.Icon>
                         <Path Fill="{StaticResource IconExportBrush}"
                               Data="{StaticResource ExportPathGeomerty}"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="_Импорт параметров">
+
+                <MenuItem Header="_Импорт параметров" InputGestureText="Ctrl+I"
+                          Command="{Binding Path=ImportCommand}">
                     <MenuItem.Icon>
                         <Path Fill="{StaticResource IconImportBrush}"
-                              Data="{StaticResource ImportPathGeomerty}"/>
+                              Data="{StaticResource ImportPathGeomerty}" Stretch="Fill">
+
+                            <!--<Path.LayoutTransform>
+                                <ScaleTransform ScaleX="2" ScaleY="2"/>
+                            </Path.LayoutTransform>-->
+                        </Path>
                     </MenuItem.Icon>
-                </MenuItem>                
+                </MenuItem>     
+                
                 <Separator/>
+                
                 <MenuItem Header="_Выход" InputGestureText="Alt+F4"/>
             </MenuItem>
 
@@ -381,27 +382,27 @@
                 </ItemsPanelTemplate>
             </Menu.ItemsPanel>
 
-            <MenuItem Header="Создать новый файл (Ctrl+Shift+N)"
+            <MenuItem Header="Создать новый файл (Ctrl+Shift+N)" IsEnabled="False"
                       Template="{StaticResource MenuItemTemplate1}"
                       Command="{Binding Path=CreateNewFileCommand}">
-                
+
                 <MenuItem.Icon>
                     <Path Fill="{StaticResource IconNewFileBrush}" StrokeThickness="0"
                           Data="{StaticResource NewFilePathGeomerty}"/>
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem Header="Открыть файл (Ctrl+O)"
+            <MenuItem Header="Открыть файл (Ctrl+O)" IsEnabled="False"
                       Template="{StaticResource MenuItemTemplate1}"
                       Command="{Binding Path=OpenedFileCommand}">
-                
+
                 <MenuItem.Icon>
                     <Path Fill="{StaticResource IconOpenFileBrush}"
                           Data="{StaticResource OpenPathGeomerty}"/>
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem Template="{StaticResource MenuItemTemplate1}"
+            <MenuItem Template="{StaticResource MenuItemTemplate1}" IsEnabled="False"
                       Command="{Binding Path=SaveFileCommand}"
                       CommandParameter="{Binding Path=SelectedFile}">
 
@@ -417,7 +418,7 @@
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem Header="Сохранить все"
+            <MenuItem Header="Сохранить все" IsEnabled="False"
                       Template="{StaticResource MenuItemTemplate1}"
                       Command="{Binding Path=SaveAllFilesCommand}"
                       CommandParameter="{Binding Path=OpenedFiles, Source={x:Static Application.Current}}">
@@ -480,13 +481,22 @@
                 </MenuItem.Template>
             </MenuItem>
 
-            <MenuItem Template="{StaticResource MenuItemTemplate2}" Header="Генерировать"
-                      Style="{StaticResource MenuItemDetalNull}" Margin="10,2">
+            <MenuItem Template="{StaticResource MenuItemTemplate2}" Header="Генерировать" Margin="10,2">
                 
                 <MenuItem.Icon>
                     <Path Fill="{StaticResource IconGenerateBrush}"
                           Data="{StaticResource GeneratePathGeomerty}"/>
                 </MenuItem.Icon>
+
+                <MenuItem.Style>
+                    <Style TargetType="{x:Type MenuItem}" BasedOn="{StaticResource MenuItemDetalNull}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path=RobotsCollection.Count}" Value="0">
+                                <Setter Property="IsEnabled" Value="False"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </MenuItem.Style>
 
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="Click">

@@ -245,8 +245,8 @@ namespace ForRobot.Libr.Behavior
 
             switch (propertyName)
             {
-                case nameof(ForRobot.Model.Detals.Detal.DistanceToFirst):
-                case nameof(ForRobot.Model.Detals.Detal.DistanceBetween):
+                case nameof(ForRobot.Model.Detals.Detal.DistanceToFirstRib):
+                case nameof(ForRobot.Model.Detals.Detal.DistanceBetweenRibs):
                 case nameof(Rib.DistanceLeft):
                 case nameof(Rib.DistanceRight):
                     foreach (var item in this.Items.Where(x => x != null && x.PropertyName.Contains("Distance")))
@@ -266,7 +266,7 @@ namespace ForRobot.Libr.Behavior
                     break;
 
                 default:
-                    foreach (var item in this.Items.Where(x => x != null && new List<string> { nameof(Plita.PlateLength), nameof(Plita.PlateWidth), nameof(Plita.BevelToLeft), nameof(Plita.BevelToRight) }.Contains(x.PropertyName)))
+                    foreach (var item in this.Items.Where(x => x != null && new List<string> { nameof(Plita.PlateLength), nameof(Plita.PlateWidth), nameof(Plita.PlateBevelToLeft), nameof(Plita.PlateBevelToRight) }.Contains(x.PropertyName)))
                         item.IsVisible = true;
                     break;
             }

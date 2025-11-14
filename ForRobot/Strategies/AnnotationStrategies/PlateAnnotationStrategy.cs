@@ -112,7 +112,7 @@ namespace ForRobot.Strategies.AnnotationStrategies
             return this.GetAnnotation(points, nameof(plate.PlateWidth), ToString(plate.PlateWidth));
         }
 
-        [PropertyName(nameof(Plita.BevelToLeft))]
+        [PropertyName(nameof(Plita.PlateBevelToLeft))]
         private Annotation GetBevelToLeftAnnotation(Plita plate)
         {
             double halfLength = (double)plate.PlateLength * (double)this._scaleFactor / 2;
@@ -162,10 +162,10 @@ namespace ForRobot.Strategies.AnnotationStrategies
             }
 
             Point3DCollection points = new Point3DCollection() { A, B, C, D };
-            return this.GetAnnotation(points, nameof(plate.BevelToLeft), ToString(plate.BevelToLeft), arrowSide);
+            return this.GetAnnotation(points, nameof(plate.PlateBevelToLeft), ToString(plate.PlateBevelToLeft), arrowSide);
         }
 
-        [PropertyName(nameof(Plita.BevelToRight))]
+        [PropertyName(nameof(Plita.PlateBevelToRight))]
         private Annotation GetBevelToRightAnnotation(Plita plate)
         {
             double halfLength = (double)plate.PlateLength * (double)this._scaleFactor / 2;
@@ -215,7 +215,7 @@ namespace ForRobot.Strategies.AnnotationStrategies
             }
 
             Point3DCollection points = new Point3DCollection() { A, B, C, D };
-            return this.GetAnnotation(points, nameof(plate.BevelToRight), ToString(plate.BevelToRight), arrowSide);
+            return this.GetAnnotation(points, nameof(plate.PlateBevelToRight), ToString(plate.PlateBevelToRight), arrowSide);
         }
 
         [PropertyName("Distance")]
@@ -225,7 +225,7 @@ namespace ForRobot.Strategies.AnnotationStrategies
             double modelPlateLength = (double)plate.PlateLength * (double)this._scaleFactor;
             double modelPlateWidth = (double)plate.PlateWidth * (double)this._scaleFactor;
             double modelPlateHeight = (double)plate.PlateThickness * (double)this._scaleFactor;
-            double modelRibThickness = (double)plate.RibThickness * (double)this._scaleFactor;
+            double modelRibThickness = (double)plate.RibsThickness * (double)this._scaleFactor;
 
             double ribLeftPositionY = -modelPlateWidth / 2; // Начальная позиция по Y
             double ribRightPositionY = -modelPlateWidth / 2;
@@ -324,7 +324,7 @@ namespace ForRobot.Strategies.AnnotationStrategies
             double halfModelPlateLength = (double)plate.PlateLength * (double)this._scaleFactor / 2;
             double modelPlateWidth = (double)plate.PlateWidth * (double)this._scaleFactor;
             double modelPlateHeight = (double)plate.PlateThickness * (double)this._scaleFactor;
-            double modelRibThickness = (double)plate.RibThickness * (double)this._scaleFactor;
+            double modelRibThickness = (double)plate.RibsThickness * (double)this._scaleFactor;
 
             double ribLeftPositionY = -modelPlateWidth / 2;
             double ribRightPositionY = -modelPlateWidth / 2;
@@ -407,7 +407,7 @@ namespace ForRobot.Strategies.AnnotationStrategies
             double halfModelPlateLength = (double)plate.PlateLength * (double)this._scaleFactor / 2;
             double modelPlateWidth = (double)plate.PlateWidth * (double)this._scaleFactor;
             double modelPlateHeight = (double)plate.PlateThickness * (double)this._scaleFactor;
-            double modelRibThickness = (double)plate.RibThickness * (double)this._scaleFactor;
+            double modelRibThickness = (double)plate.RibsThickness * (double)this._scaleFactor;
 
             double ribLeftPositionY = -modelPlateWidth / 2;
             double ribRightPositionY = -modelPlateWidth / 2;

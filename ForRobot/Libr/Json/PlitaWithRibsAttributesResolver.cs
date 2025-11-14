@@ -35,8 +35,8 @@ namespace ForRobot.Libr.Json
                 if (this._scoseType == ScoseTypes.Rect)
                 {
                     props.Where(item => item.UnderlyingName == "PlateWidth").First().Ignored = true;
-                    props.Where(item => item.UnderlyingName == "BevelToLeft").First().Ignored = true;
-                    props.Where(item => item.UnderlyingName == "BevelToRight").First().Ignored = true;
+                    props.Where(item => item.UnderlyingName == "PlateBevelToLeft").First().Ignored = true;
+                    props.Where(item => item.UnderlyingName == "PlateBevelToRight").First().Ignored = true;
                 }
             }
 

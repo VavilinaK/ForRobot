@@ -193,8 +193,8 @@ namespace ForRobot.Strategies.ModelingStrategies
             double modelPlateWidth = (double)plate.PlateWidth * this._scaleFactor;
             double modelPlateHeight = (double)plate.PlateThickness * this._scaleFactor;
             double modelPlateLength = (double)plate.PlateLength * this._scaleFactor;
-            double modelRibHeight = (double)plate.RibHeight * this._scaleFactor;
-            double modelRibThickness = (double)plate.RibThickness * this._scaleFactor;
+            double modelRibHeight = (double)plate.RibsHeight * this._scaleFactor;
+            double modelRibThickness = (double)plate.RibsThickness * this._scaleFactor;
 
             double ribLeftPositionY = -modelPlateWidth / 2; // Начальная позиция по Y.
             double ribRightPositionY = -modelPlateWidth / 2;
@@ -289,16 +289,16 @@ namespace ForRobot.Strategies.ModelingStrategies
         {
             if (plate.ScoseType == ScoseTypes.Rect) return;
 
-            if (plate.BevelToLeft < 0 || plate.BevelToRight < 0)
+            if (plate.PlateBevelToLeft < 0 || plate.PlateBevelToRight < 0)
                 throw new ArgumentException("Скосы не могут быть отрицательными.", nameof(plate));
 
-            if (plate.BevelToLeft + plate.BevelToRight >= plate.PlateWidth)
+            if (plate.PlateBevelToLeft + plate.PlateBevelToRight >= plate.PlateWidth)
                 throw new ArgumentException("Сумма скосов превышает ширину плиты.", nameof(plate));
 
             //if (plate.RibsCollection.Sum(item => item.DistanceLeft) >= plate.PlateWidth || plate.RibsCollection.Sum(item => item.DistanceRight) >= plate.PlateWidth)
             //    throw new ArgumentException("Расстояние между плитами не может превышать ширину плиты.", nameof(plate));
 
-            //if (plate.ScoseType == ScoseTypes.SlopeLeft && plate.BevelToLeft > plate.PlateWidth)
+            //if (plate.ScoseType == ScoseTypes.SlopeLeft && plate.PlateBevelToLeft > plate.PlateWidth)
             //    throw new ArgumentException("Смещение параллелограмма и скосы недопустимы.", nameof(plate));
 
             if (this._trapezoidRatio < 0.1 || this._trapezoidRatio > 0.9)
