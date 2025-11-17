@@ -734,7 +734,7 @@
                 </TextBox.Style>
             </TextBox>
 
-            <TextBox Grid.Row="11" Grid.Column="1" Text="{Binding Path=RibCount, Mode=TwoWay, FallbackValue=4, UpdateSourceTrigger=LostFocus}" />
+            <TextBox Grid.Row="11" Grid.Column="1" Text="{Binding Path=RibsCount, Mode=TwoWay, FallbackValue=4, UpdateSourceTrigger=LostFocus}" />
         </Grid>
     </DataTemplate>
 
@@ -1887,7 +1887,7 @@
                 </TextBox.Style>
             </TextBox>
 
-            <TextBox Grid.Row="11" Grid.Column="1" Text="{Binding Path=RibCount, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
+            <TextBox Grid.Row="11" Grid.Column="1" Text="{Binding Path=RibsCount, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"/>
 
             <GroupBox Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Header="Расстояние между осевыми линиями рёбер, мм.">
                 <Grid>

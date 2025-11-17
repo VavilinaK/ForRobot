@@ -43,7 +43,7 @@ namespace ForRobot.Services
             double weldLeftPositionY = weldPositionY;
             double weldRightPositionY = weldPositionY;
 
-            for (int i = 0; i < plate.RibCount; i++)
+            for (int i = 0; i < plate.RibsCount; i++)
             {
                 var rib = plate.RibsCollection[i];
 

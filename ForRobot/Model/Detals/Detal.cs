@@ -23,11 +23,14 @@ namespace ForRobot.Model.Detals
     {
         #region Private variables
 
-        /// <summary>
-        /// Экземпляр детали из app.config
-        /// </summary>
-        private ForRobot.Libr.ConfigurationProperties.PlitaConfigurationSection PlitaConfig { get; set; }
-
+        private decimal _reverseDeflection;
+        private decimal _plateWidth;
+        private decimal _plateLength;
+        private decimal _plateThickness;
+        private decimal _plateBevelToLeft;
+        private decimal _plateBevelToRight;
+        private decimal[] _XYZOffset = new decimal[3] { 0, 0, 0 };
+        
         protected readonly JsonSerializerSettings _jsonDeserializerSettings = new JsonSerializerSettings()
         {
             ContractResolver = new ForRobot.Libr.Json.SaveAttributesResolver(),
@@ -65,156 +68,164 @@ namespace ForRobot.Model.Detals
         /// </summary>
         public virtual string DetalType { get; }
 
+        [JsonProperty("reverse_deflection")]
+        [JsonConverter(typeof(JsonCommentConverter), "Обратный прогиб детали")]
+        /// <summary>
+        /// Обратный прогиб детали
+        /// </summary>
+        public decimal ReverseDeflection
+        {
+            get => this._reverseDeflection;
+            set
+            {
+                this._reverseDeflection = value;
+                this.OnChangeProperty(nameof(this.ReverseDeflection));
+            }
+        }
+
         [JsonProperty("base_width")]
         [JsonConverter(typeof(JsonCommentConverter), "Ширина настила")]
         /// <summary>
         /// Ширина настила
         /// </summary>
-        public virtual decimal PlateWidth { get; set; }
+        public decimal PlateWidth
+        {
+            get => this._plateWidth;
+            set
+            {
+                this._plateWidth = value;
+                this.OnChangeProperty(nameof(this.PlateWidth));
+            }
+        }
 
         [JsonProperty("base_length")]
         [JsonConverter(typeof(JsonCommentConverter), "Длина настила")]
         /// <summary>
         /// Длина настила
         /// </summary>
-        public virtual decimal PlateLength { get; set; }
+        public decimal PlateLength
+        {
+            get => this._plateWidth;
+            set
+            {
+                this._plateWidth = value;
+                this.OnChangeProperty(nameof(this.PlateLength));
+            }
+        }
 
         [JsonProperty("base_thickness")]
         [JsonConverter(typeof(JsonCommentConverter), "Толщина настила")]
         /// <summary>
         /// Толщина настила
         /// </summary>
-        public virtual decimal PlateThickness { get; set; }
+        public decimal PlateThickness
+        {
+            get => this._plateThickness;
+            set
+            {
+                this._plateThickness = value;
+                this.OnChangeProperty(nameof(this.PlateThickness));
+            }
+        }
 
         [JsonProperty("base_bevel_left")]
         [JsonConverter(typeof(JsonCommentConverter), "Скос настила слева")]
         /// <summary>
         /// Скос настила слева
         /// </summary>
-        public virtual decimal PlateBevelToLeft { get; set; }
+        public decimal PlateBevelToLeft
+        {
+            get => this._plateBevelToLeft;
+            set
+            {
+                this._plateBevelToLeft = value;
+                this.OnChangeProperty(nameof(this.PlateBevelToLeft));
+            }
+        }
 
         [JsonProperty("base_bevel_right")]
         [JsonConverter(typeof(JsonCommentConverter), "Скос настила справа")]
         /// <summary>
         /// Скос настила справа
         /// </summary>
-        public virtual decimal PlateBevelToRight { get; set; }
+        public decimal PlateBevelToRight
+        {
+            get => this._plateBevelToRight;
+            set
+            {
+                this._plateBevelToRight = value;
+                this.OnChangeProperty(nameof(this.PlateBevelToRight));
+            }
+        }
 
         [JsonProperty("base_displace")]
         [JsonConverter(typeof(JsonCommentConverter), "Смещение настила от нулевой точки стола")]
         /// <summary>
         /// Смещение детали от 0 точки по осям XYZ
         /// </summary>
-        public virtual decimal[] XYZOffset { get; set; } = new decimal[3] { 0, 0, 0 };
-
-        ///// <summary>
-        ///// Расстояние до осевой линии первого ребра сверху
-        ///// </summary>
-        //public virtual decimal DistanceToFirstRib { get; set; }
-        
-        ///// <summary>
-        ///// Расстояние между осевыми линиями рёбер
-        ///// </summary>
-        //public virtual decimal DistanceBetweenRibs { get; set; }
-        
-        ///// <summary>
-        ///// Расстояние торца ребра слева
-        ///// </summary>
-        //public virtual decimal IdentToLeft { get; set; }
-        
-        ///// <summary>
-        ///// Расстояние торца ребра справа
-        ///// </summary>
-        //public virtual decimal IdentToRight { get; set; }
-        
-        ///// <summary>
-        ///// Роспуск слева
-        ///// </summary>
-        //public virtual decimal DissolutionLeft { get; set; }
-        
-        ///// <summary>
-        ///// Роспуск справа
-        ///// </summary>
-        //public virtual decimal DissolutionRight { get; set; }
-
-        ///// <summary>
-        ///// Высота ребра
-        ///// </summary>
-        //public virtual decimal RibsHeight { get; set; }
-
-        ///// <summary>
-        ///// Толщина ребра
-        ///// </summary>
-        //public virtual decimal RibsThickness { get; set; }
-        
-        ///// <summary>
-        ///// Отступ поиска в начале
-        ///// </summary>
-        //public virtual decimal SearchOffsetStart { get; set; }
-        
-        ///// <summary>
-        ///// Отступ поиска в конце
-        ///// </summary>
-        //public virtual decimal SearchOffsetEnd { get; set; }
-        
-        ///// <summary>
-        ///// Перекрытие швов
-        ///// </summary>
-        //public virtual decimal SeamsOverlap { get; set; }
-
-        ///// <summary>
-        ///// Технологический отступ начала шва
-        ///// </summary>
-        //public virtual decimal TechOffsetSeamStart { get; set; }
-
-        ///// <summary>
-        ///// Технологический отступ конца шва
-        ///// </summary>
-        //public virtual decimal TechOffsetSeamEnd { get; set; }
-
-        ///// <summary>
-        ///// Обратный прогиб
-        ///// </summary>
-        //public virtual decimal ReverseDeflection { get; set; }
-
-        ///// <summary>
-        ///// Скорость сварки
-        ///// </summary>
-        //public virtual int WildingSpead { get; set; }
-        
-        ///// <summary>
-        ///// Номер сварочной программы
-        ///// </summary>
-        //public virtual int ProgramNom { get; set; }
-
-        ///// <summary>
-        ///// Количество ребер
-        ///// </summary>
-        //public virtual int RibCount { get; set; }
+        public decimal[] XYZOffset
+        {
+            get => this._XYZOffset;
+            set
+            {
+                this._XYZOffset = value;
+                this.OnChangeProperty(nameof(this.XYZOffset));
+            }
+        }            
 
         [JsonIgnore]
         /// <summary>
-        /// Общее изображение детали
+        /// Смещение детали от 0 точки по оси X
         /// </summary>
-        public virtual BitmapImage GenericImage { get; set; }
+        public decimal XOffset
+        {
+            get => this.XYZOffset[0];
+            set
+            {
+                this.XYZOffset[0] = value;
+                this.OnChangeProperty(nameof(this.XOffset));
+            }
+        }
 
         [JsonIgnore]
         /// <summary>
-        /// Изображение рёбер
+        /// Смещение детали от 0 точки по оси Y
         /// </summary>
-        public virtual BitmapImage RebraImage { get; set; }
+        public decimal YOffset
+        {
+            get => this.XYZOffset[1];
+            set
+            {
+                this.XYZOffset[1] = value;
+                this.OnChangeProperty(nameof(this.YOffset));
+            }
+        }
 
         [JsonIgnore]
         /// <summary>
-        /// Продольная привязка
+        /// Смещение детали от 0 точки по оси Z
         /// </summary>
-        public virtual Privyazka LongitudinalPrivyazka { get; set; } = Privyazka.FromLeftToRight;
+        public decimal ZOffset
+        {
+            get => this.XYZOffset[2];
+            set
+            {
+                this.XYZOffset[2] = value;
+                this.OnChangeProperty(nameof(this.ZOffset));
+            }
+        }
 
-        [JsonIgnore]
-        /// <summary>
-        /// Поперечная привязка
-        /// </summary>
-        public virtual Privyazka TransversePrivyazka { get; set; } = Privyazka.FromLeftToRight;
+        //[JsonIgnore]
+        ///// <summary>
+        ///// Продольная привязка
+        ///// </summary>
+        //public virtual Privyazka LongitudinalPrivyazka { get; set; } = Privyazka.FromLeftToRight;
+
+        //[JsonIgnore]
+        ///// <summary>
+        ///// Поперечная привязка
+        ///// </summary>
+        //public virtual Privyazka TransversePrivyazka { get; set; } = Privyazka.FromLeftToRight;
        
         #endregion
 
@@ -232,43 +243,13 @@ namespace ForRobot.Model.Detals
         /// </summary>
         public event EventHandler SavePropertiesEvent;
 
-        //public virtual event Func<object, EventArgs, Task> Change;
-
         #endregion
 
         #region Constructors
 
         public Detal() { }
 
-        public Detal(DetalType type) 
-        {
-            switch (type)
-            {
-                case ForRobot.Model.Detals.DetalType.Plita:
-                    this.PlitaConfig = ConfigurationManager.GetSection("plita") as ForRobot.Libr.ConfigurationProperties.PlitaConfigurationSection;
-                    this.PlateLength = PlitaConfig.Long;
-                    this.PlateWidth = PlitaConfig.Width;
-                    this.RibsHeight = PlitaConfig.Hight;
-                    this.DistanceToFirstRib = PlitaConfig.DistanceToFirstRib;
-                    this.DistanceBetweenRibs = PlitaConfig.DistanceBetweenRibs;
-                    this.IdentToLeft = PlitaConfig.DistanceToStart;
-                    this.IdentToRight = PlitaConfig.DistanceToEnd;
-                    this.DissolutionLeft = PlitaConfig.DissolutionStart;
-                    this.DissolutionRight = PlitaConfig.DissolutionEnd;
-                    this.PlateThickness = PlitaConfig.ThicknessPlita;
-                    this.RibsThickness = PlitaConfig.ThicknessRebro;
-                    this.SearchOffsetStart = PlitaConfig.SearchOffsetStart;
-                    this.SearchOffsetEnd = PlitaConfig.SearchOffsetEnd;
-                    this.SeamsOverlap = PlitaConfig.SeamsOverlap;
-                    this.TechOffsetSeamStart = PlitaConfig.TechOffsetSeamStart;
-                    this.TechOffsetSeamEnd = PlitaConfig.TechOffsetSeamEnd;
-                    this.ReverseDeflection = PlitaConfig.ReverseDeflection;
-                    this.WildingSpead = PlitaConfig.WildingSpead;
-                    this.ProgramNom = PlitaConfig.ProgramNom;
-                    this.RibCount = PlitaConfig.SumReber;
-                    break;
-            }
-        }
+        public Detal(DetalType type) { }
 
         #endregion
 

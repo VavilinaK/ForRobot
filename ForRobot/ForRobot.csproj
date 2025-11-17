@@ -311,7 +311,7 @@
     <Compile Include="Libr\Behavior\HelixWeldsBehavior.cs" />
     <Compile Include="Libr\Behavior\SelectLayoutDocumentPane.cs" />
     <Compile Include="Libr\Collections\ItemPropertyChangedEventArgs.cs" />
-    <Compile Include="Libr\ConfigurationProperties\AppConfigurationSection.cs" />
+    <Compile Include="Libr\Xml\ConfigurationProperties\AppConfigurationSection.cs" />
     <Compile Include="Libr\Converters\ArrayMultiValueConverter.cs" />
     <Compile Include="Libr\Converters\BindingToTagConverter.cs" />
     <Compile Include="Libr\Converters\BoundsConverter.cs" />
@@ -333,6 +333,8 @@
     <Compile Include="Libr\Messages\UpdateCurrentDetalMessage.cs" />
     <Compile Include="Libr\UndoRedo\IUndoRedo.cs" />
     <Compile Include="Libr\ValueChangedEventArgs.cs" />
+    <Compile Include="Libr\Xml\ConfigurationProperties\PlateWeldingConfigurationSection.cs" />
+    <Compile Include="Model\Detals\WeldingProperties.cs" />
     <Compile Include="Themes\Colors.cs" />
     <Compile Include="Model\Settings\ApplicationInfo.cs" />
     <Compile Include="Model\Settings\PropertyColor.cs" />
@@ -459,8 +461,8 @@
     <Compile Include="Libr\Behavior\AutoScrollBehavior.cs" />
     <Compile Include="Libr\Attributes\SaveAttribute.cs" />
     <Compile Include="Libr\Json\SaveAttributesResolver.cs" />
-    <Compile Include="Libr\ConfigurationProperties\PlitaConfigurationSection.cs" />
-    <Compile Include="Libr\ConfigurationProperties\RobotConfigurationSection.cs" />
+    <Compile Include="Libr\Xml\ConfigurationProperties\PlateConfigurationSection.cs" />
+    <Compile Include="Libr\Xml\ConfigurationProperties\RobotConfigurationSection.cs" />
     <Compile Include="Libr\ScrollViewerAttachedProperties.cs" />
     <Compile Include="Libr\Converters\StatusColorConverter.cs" />
     <Compile Include="Libr\Converters\StringFormatConverter.cs" />

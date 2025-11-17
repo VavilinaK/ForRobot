@@ -36,25 +36,25 @@ namespace ForRobot.Model.Detals
 
         [JsonProperty("wall_cross_dist_left")]
         /// <summary>
-        /// Расстояние до следующего ребра по левому краю
+        /// Поперечное расстояние до следующего ребра по левому краю
         /// </summary>
         public decimal DistanceLeft  { get => this._distanceLeft; set => Set(ref this._distanceLeft, value); }
 
         [JsonProperty("wall_cross_dist_right")]
         /// <summary>
-        /// Расстояние до ребра по правому краю
+        /// Поперечное расстояние до ребра по правому краю
         /// </summary>
         public decimal DistanceRight { get => this._distanceRight; set => Set(ref this._distanceRight, value); }
 
         [JsonProperty("wall_cross_dist_left")]
         /// <summary>
-        /// Поперечное расстояние до ребра по левому краю
+        /// Продольное расстояние до ребра по левому краю
         /// </summary>
         public decimal IdentToLeft { get => this._identToLeft; set => Set(ref this._identToLeft, value); }
 
         [JsonProperty("wall_cross_dist_right")]
         /// <summary>
-        /// Поперечное расстояние до ребра по правому краю
+        /// Продольное расстояние до ребра по правому краю
         /// </summary>
         public decimal IdentToRight { get => this._identToRight; set => Set(ref this._identToRight, value); }
 
@@ -90,21 +90,7 @@ namespace ForRobot.Model.Detals
         ///// </summary>
         //public decimal HightRight { get => this._hightRight; set => Set(ref this._hightRight, value); }
 
-        /// <summary>
-        /// Событие изменения расстояниия между рёбрами, при их параллельности
-        /// </summary>
-        //public event EventHandler ChangeDistanceLeft;
-
-        ///// <summary>
-        ///// Событие изменения высоты ребра, если она одинаковая с 2-х сторон
-        ///// </summary>
-        //public event EventHandler ChangeHight;
-
         public Rib() { }
-
-        //public void OnChangeDistanceLeftEvent() => this.ChangeDistanceLeft?.Invoke(this, null);
-
-        //public void OnChangeHightEvent(object sender, EventArgs e) => this.ChangeHight?.Invoke(sender, e);
 
         public object Clone() => (Rib)this.MemberwiseClone();
     }

@@ -40,6 +40,7 @@ namespace ForRobot.Model.Detals
         //private bool _diferentHight = false;
         //private bool _diferentHightLeftToRight = false;
 
+        private decimal _reverseDeflection;
         private decimal _ribsHeight;
         private decimal _ribsThickness;
         private int _ribCount;
@@ -51,8 +52,6 @@ namespace ForRobot.Model.Detals
         private decimal _dissolutionRight;
         private decimal _bevelToLeft;
         private decimal _bevelToRight;
-        private decimal _distanceForSearch;
-        private decimal _distanceForWelding;
 
         private BitmapImage _rebraImage;
         private BitmapImage _plitaImage;
@@ -119,11 +118,11 @@ namespace ForRobot.Model.Detals
             }
         }
 
-        [JsonIgnore]
-        [SaveAttribute]
-        /// <summary>
-        /// Выбранная схема сварки рёбер
-        /// </summary>
+        //[JsonIgnore]
+        //[SaveAttribute]
+        ///// <summary>
+        ///// Выбранная схема сварки рёбер
+        ///// </summary>
         public string SelectedWeldingSchema
         {
             get => this._selectedWeldingSchema;
@@ -133,7 +132,7 @@ namespace ForRobot.Model.Detals
 
                 if (this._selectedWeldingSchema != ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit))
                     this.WeldingSchema = this.FillWeldingSchema();
-                
+
                 this.OnChangeProperty(nameof(this.SelectedWeldingSchema));
             }
         }
@@ -281,111 +280,6 @@ namespace ForRobot.Model.Detals
         //    }
         //}
 
-        #region Detal's Properties
-
-        /// <summary>
-        /// Длина настила
-        /// </summary>
-        public override decimal PlateLength
-        {
-            get => base.PlateLength;
-            set
-            {
-                base.PlateLength = value;
-                this.OnChangeProperty(nameof(this.PlateLength));
-            }
-        }
-
-        /// <summary>
-        /// Ширина настила
-        /// </summary>
-        public override decimal PlateWidth
-        {
-            get => base.PlateWidth;
-            set
-            {
-                base.PlateWidth = value;
-                this.OnChangeProperty(nameof(this.PlateWidth));
-            }
-        }
-
-        /// <summary>
-        /// Толщина настила
-        /// </summary>
-        public override decimal PlateThickness
-        {
-            get => base.PlateThickness;
-            set
-            {
-                base.PlateThickness = value;
-                this.OnChangeProperty(nameof(this.PlateThickness));
-            }
-        }
-
-        /// <summary>
-        /// Скос слева
-        /// </summary>
-        public override decimal PlateBevelToLeft
-        {
-            get => base.PlateBevelToLeft;
-            set
-            {
-                base.PlateBevelToLeft = value;
-                this.OnChangeProperty(nameof(this.PlateBevelToLeft));
-            }
-        }
-
-        /// <summary>
-        /// Скос справа
-        /// </summary>
-        public override decimal PlateBevelToRight
-        {
-            get => base.PlateBevelToRight;
-            set
-            {
-                base.PlateBevelToRight = value;
-                this.OnChangeProperty(nameof(this.PlateBevelToRight));
-            }
-        }
-
-        /// <summary>
-        /// Смещение детали от 0 точки по осям XYZ
-        /// </summary>
-        public override decimal[] XYZOffset
-        {
-            get => base.XYZOffset;
-            set
-            {
-                base.XYZOffset = value;
-                this.OnChangeProperty();
-            }
-        }
-
-        #endregion Detal's Properties
-
-        #region Rib's Properties
-
-        [JsonProperty("wall_count")]
-        [JsonConverter(typeof(JsonCommentConverter), "Кол-во рёбер")]
-        /// <summary>
-        /// Количество ребер
-        /// </summary>
-        public int RibCount
-        {
-            get => this._ribCount;
-            set
-            {
-                if (value < MIN_RIB_COUNT)
-                    return;
-
-                this._ribCount = value;
-
-                this.ChangeRibCollection();
-                this.ChangeWeldingSchema();
-                this.OnChangeProperty(nameof(this.RibCount));
-            }
-        }
-
         [JsonIgnore]
         [SaveAttribute]
         [JsonConverter(typeof(JsonCommentConverter), "Высота рёбер (вертикальной стенки)")]
@@ -418,11 +312,32 @@ namespace ForRobot.Model.Detals
             }
         }
 
+        [JsonProperty("wall_count")]
+        [JsonConverter(typeof(JsonCommentConverter), "Кол-во рёбер")]
+        /// <summary>
+        /// Количество ребер
+        /// </summary>
+        public int RibsCount
+        {
+            get => this._ribCount;
+            set
+            {
+                if (value < MIN_RIB_COUNT)
+                    return;
+
+                this._ribCount = value;
+
+                this.ChangeRibCollection();
+                this.ChangeWeldingSchema();
+                this.OnChangeProperty(nameof(this.RibsCount));
+            }
+        }
+
         [JsonIgnore]
         [SaveAttribute]
         [JsonConverter(typeof(JsonCommentConverter), "Расстояние по ширине до осевой линии первого ребра")]
         /// <summary>
-        /// Расстояние по ширине до осевой линии первого ребра
+        /// Поперечное расстояние по ширине до осевой линии первого ребра
         /// </summary>
         public decimal DistanceToFirstRib
         {
@@ -438,7 +353,7 @@ namespace ForRobot.Model.Detals
         [SaveAttribute]
         [JsonConverter(typeof(JsonCommentConverter), "Расстояние между осевыми линиями рёбер")]
         /// <summary>
-        /// Расстояние между осевыми линиями рёбер
+        /// Поперечное расстояние между осевыми линиями рёбер
         /// </summary>
         public decimal DistanceBetweenRibs
         {
@@ -452,9 +367,9 @@ namespace ForRobot.Model.Detals
 
         [JsonIgnore]
         [SaveAttribute]
-        [JsonConverter(typeof(JsonCommentConverter), "Расстояние торца ребра слева")]
+        [JsonConverter(typeof(JsonCommentConverter), "Продольное расстояние до ребра по левому краю")]
         /// <summary>
-        /// Расстояние торца ребра слева
+        /// Продольное расстояние до ребер по левому краю
         /// </summary>
         public decimal IdentToLeft
         {
@@ -468,9 +383,9 @@ namespace ForRobot.Model.Detals
 
         [JsonIgnore]
         [SaveAttribute]
-        [JsonConverter(typeof(JsonCommentConverter), "Расстояние торца справа")]
+        [JsonConverter(typeof(JsonCommentConverter), "Продольное расстояние до ребра по правому краю")]
         /// <summary>
-        /// Расстояние торца ребра справа
+        /// Продольное расстояние до ребер по правому краю
         /// </summary>
         public decimal IdentToRight
         {
@@ -486,7 +401,7 @@ namespace ForRobot.Model.Detals
         [SaveAttribute]
         [JsonConverter(typeof(JsonCommentConverter), "Роспуск слева")]
         /// <summary>
-        /// Отступ шва от левого края ребра (роспуск, выкружка)
+        /// Отступ шва от левого края ребер (роспуск, выкружка)
         /// </summary>
         public decimal DissolutionLeft
         {
@@ -502,7 +417,7 @@ namespace ForRobot.Model.Detals
         [SaveAttribute]
         [JsonConverter(typeof(JsonCommentConverter), "Роспуск справа")]
         /// <summary>
-        /// Отступ шва от правого края ребра (роспуск, выкружка)
+        /// Отступ шва от правого края ребер (роспуск, выкружка)
         /// </summary>
         public decimal DissolutionRight
         {
@@ -514,200 +429,7 @@ namespace ForRobot.Model.Detals
             }
         }
 
-        #endregion Rib's Properties
-
-        [JsonProperty("d_s1")]
-        [JsonConverter(typeof(JsonCommentConverter), "Отступ поиска в начале")]
-        /// <summary>
-        /// Отступ поиска в начале
-        /// </summary>
-        public override decimal SearchOffsetStart
-        {
-            get => base.SearchOffsetStart;
-            set
-            {
-                base.SearchOffsetStart = value;
-                this.OnChangeProperty(nameof(this.SearchOffsetStart));
-            }
-        }
-
-        [JsonProperty("d_s2")]
-        [JsonConverter(typeof(JsonCommentConverter), "Отступ поиска в конце")]
-        /// <summary>
-        /// Отступ поиска в конце
-        /// </summary>
-        public override decimal SearchOffsetEnd
-        {
-            get => base.SearchOffsetEnd;
-            set
-            {
-                base.SearchOffsetEnd = value;
-                this.OnChangeProperty(nameof(this.SearchOffsetEnd));
-            }
-        }
-
-        [JsonProperty("l_overlap")]
-        [JsonConverter(typeof(JsonCommentConverter), "Перекрытие швов")]
-        /// <summary>
-        /// Перекрытие швов
-        /// </summary>
-        public override decimal SeamsOverlap
-        {
-            get => base.SeamsOverlap;
-            set
-            {
-                base.SeamsOverlap = value;
-                this.OnChangeProperty(nameof(this.SeamsOverlap));
-            }
-        }
-
-        [JsonProperty("d_t1")]
-        [JsonConverter(typeof(JsonCommentConverter), "Технологический отступ начала шва")]
-        /// <summary>
-        /// Технологический отступ начала шва
-        /// </summary>
-        public override decimal TechOffsetSeamStart
-        {
-            get => base.TechOffsetSeamStart;
-            set
-            {
-                base.TechOffsetSeamStart = value;
-                this.OnChangeProperty(nameof(this.TechOffsetSeamStart));
-            }
-        }
-
-        [JsonProperty("d_t2")]
-        [JsonConverter(typeof(JsonCommentConverter), "Технологический отступ конца шва")]
-        /// <summary>
-        /// Технологический отступ конца шва
-        /// </summary>
-        public override decimal TechOffsetSeamEnd
-        {
-            get => base.TechOffsetSeamEnd;
-            set
-            {
-                base.TechOffsetSeamEnd = value;
-                this.OnChangeProperty(nameof(this.TechOffsetSeamEnd));
-            }
-        }
-
-        [JsonProperty("velocity")]
-        [JsonConverter(typeof(JsonCommentConverter), "Скорость сварки")]
-        /// <summary>
-        /// Скорость сварки
-        /// </summary>
-        public override int WildingSpead
-        {
-            get => base.WildingSpead;
-            set
-            {
-                base.WildingSpead = value;
-                this.OnChangeProperty(nameof(this.WildingSpead));
-            }
-        }
-
-        [JsonProperty("job")]
-        [JsonConverter(typeof(JsonCommentConverter), "Номер сварочной программы")]
-        /// <summary>
-        /// Номер сварочной программы
-        /// </summary>
-        public override int ProgramNom
-        {
-            get => base.ProgramNom;
-            set
-            {
-                base.ProgramNom = value;
-                this.OnChangeProperty(nameof(this.ProgramNom));
-            }
-        }
-
-        [JsonProperty("weld_gantry_radius")]
-        [JsonConverter(typeof(JsonCommentConverter), "Дистанция до позиционера для сварки")]
-        /// <summary>
-        /// Дистанция до позиционера для сварки
-        /// </summary>
-        public decimal DistanceForWelding
-        {
-            get => this._distanceForWelding;
-            set
-            {
-                this._distanceForWelding = value;
-                this.OnChangeProperty(nameof(this.DistanceForWelding));
-            }
-        }
-
-        [JsonProperty("search_gantry_radius")]
-        [JsonConverter(typeof(JsonCommentConverter), "Дистанция до позиционера для поиска")]
-        /// <summary>
-        /// Дистанция до позиционера для поиска
-        /// </summary>
-        public decimal DistanceForSearch
-        {
-            get => this._distanceForSearch;
-            set
-            {
-                this._distanceForSearch = value;
-                this.OnChangeProperty(nameof(this.DistanceForSearch));
-            }
-        }
-
-
-        [JsonIgnore]
-        /// <summary>
-        /// Смещение детали от 0 точки по X
-        /// </summary>
-        public decimal XOffset
-        {
-            get => this.XYZOffset[0];
-            set
-            {
-                this.XYZOffset[0] = value;
-                this.OnChangeProperty(nameof(this.XOffset));
-            }
-        }
-
-        [JsonIgnore]
-        /// <summary>
-        /// Смещение детали от 0 точки по Y
-        /// </summary>
-        public decimal YOffset
-        {
-            get => this.XYZOffset[1];
-            set
-            {
-                this.XYZOffset[1] = value;
-                this.OnChangeProperty(nameof(this.YOffset));
-            }
-        }
-
-        [JsonIgnore]
-        /// <summary>
-        /// Смещение детали от 0 точки по Z
-        /// </summary>
-        public decimal ZOffset
-        {
-            get => this.XYZOffset[2];
-            set
-            {
-                this.XYZOffset[2] = value;
-                this.OnChangeProperty(nameof(this.ZOffset));
-            }
-        }
-
-        [JsonProperty("reverse_deflection")]
-        [JsonConverter(typeof(JsonCommentConverter), "Обратный прогиб")]
-        /// <summary>
-        /// Обратный прогиб
-        /// </summary>
-        public override decimal ReverseDeflection
-        {
-            get => base.ReverseDeflection;
-            set
-            {
-                base.ReverseDeflection = value;
-                this.OnChangeProperty(nameof(this.ReverseDeflection));
-            }
-        }
+        #region Weld's Properties
         
         [JsonProperty("d_W2")]
         /// <summary>
@@ -738,9 +460,7 @@ namespace ForRobot.Model.Detals
             }
         }
 
-        [JsonIgnore]
-        [SaveAttribute]
-        public FullyObservableCollection<WeldingSchemas.SchemaRib> WeldingSchema { get; private set; }
+        #endregion Weld's Properties
         
         [JsonIgnore]
         /// <summary>
@@ -765,15 +485,16 @@ namespace ForRobot.Model.Detals
         public Plita(DetalType type) : base(type)
         {
             this.ChangePropertyEvent += this.HandleChangeProperty;
+            this.SelectDefoultPlateProperties();
 
-            this.PlateWidth = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).Width;
-            this.PlateBevelToLeft = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).BevelToStart;
-            this.PlateBevelToRight = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).BevelToEnd;
-            this.DistanceForWelding = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).DistanceForWelding;
-            this.DistanceForSearch = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).DistanceForSearch;
+            //this.PlateWidth = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).Width;
+            //this.PlateBevelToLeft = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).BevelToStart;
+            //this.PlateBevelToRight = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).BevelToEnd;
+            //this.DistanceForWelding = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).DistanceForWelding;
+            //this.DistanceForSearch = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).DistanceForSearch;
 
-            this.RibsCollection = this.FillRibsCollection();
-            this.WeldingSchema = this.FillWeldingSchema();
+            //this.RibsCollection = this.FillRibsCollection();
+            //this.WeldingSchema = this.FillWeldingSchema();
         }
 
         #endregion
@@ -888,6 +609,51 @@ namespace ForRobot.Model.Detals
         #endregion Handle
 
         /// <summary>
+        /// Выгрузка стандартных для <see cref="ForRobot.Model.Detals.Plita"/> параметров
+        /// </summary>
+        private void SelectDefoultPlateProperties()
+        {
+            ForRobot.Libr.ConfigurationProperties.PlateConfigurationSection plateConfig = ConfigurationManager.GetSection("plate") as ForRobot.Libr.ConfigurationProperties.PlateConfigurationSection;
+            this.ReverseDeflection = plateConfig.ReverseDeflection;
+            this.PlateWidth = plateConfig.PlateWidth;
+            this.PlateLength = plateConfig.PlateLength;
+            this.PlateThickness = plateConfig.PlateThickness;
+            this.PlateBevelToLeft = plateConfig.PlateBevelToLeft;
+            this.PlateBevelToRight = plateConfig.PlateBevelToRight;
+
+            this.RibsHeight = plateConfig.RibsHeight;
+            this.RibsThickness = plateConfig.RibsThickness;
+            this.RibsCount = plateConfig.RibsCount;
+            this.DistanceToFirstRib = plateConfig.DistanceToFirstRib;
+            this.DistanceBetweenRibs = plateConfig.DistanceBetweenRibs;
+            this.IdentToLeft = plateConfig.IdentToLeft;
+            this.IdentToRight = plateConfig.IdentToRight;
+            this.DissolutionLeft = plateConfig.DissolutionLeft;
+            this.DissolutionRight = plateConfig.DissolutionRight;
+
+            //this.PlateLength = PlitaConfig.Long;
+            //this.PlateWidth = PlitaConfig.Width;
+            //this.RibsHeight = PlitaConfig.Hight;
+            //this.DistanceToFirstRib = PlitaConfig.DistanceToFirstRib;
+            //this.DistanceBetweenRibs = PlitaConfig.DistanceBetweenRibs;
+            //this.IdentToLeft = PlitaConfig.DistanceToStart;
+            //this.IdentToRight = PlitaConfig.DistanceToEnd;
+            //this.DissolutionLeft = PlitaConfig.DissolutionStart;
+            //this.DissolutionRight = PlitaConfig.DissolutionEnd;
+            //this.PlateThickness = PlitaConfig.ThicknessPlita;
+            //this.RibsThickness = PlitaConfig.ThicknessRebro;
+            //this.SearchOffsetStart = PlitaConfig.SearchOffsetStart;
+            //this.SearchOffsetEnd = PlitaConfig.SearchOffsetEnd;
+            //this.SeamsOverlap = PlitaConfig.SeamsOverlap;
+            //this.TechOffsetSeamStart = PlitaConfig.TechOffsetSeamStart;
+            //this.TechOffsetSeamEnd = PlitaConfig.TechOffsetSeamEnd;
+            //this.ReverseDeflection = PlitaConfig.ReverseDeflection;
+            //this.WildingSpead = PlitaConfig.WildingSpead;
+            //this.ProgramNom = PlitaConfig.ProgramNom;
+            //this.RibsCount = PlitaConfig.SumReber;
+        }
+
+        /// <summary>
         /// Заполнение коллекции расстояний
         /// </summary>
         /// <returns></returns>
@@ -896,7 +662,7 @@ namespace ForRobot.Model.Detals
             Rib rib;
             List<Rib> ribsList = new List<Rib>();
 
-            for (int i = 0; i < this.RibCount; i++)
+            for (int i = 0; i < this.RibsCount; i++)
             {
                 rib = new Rib()
                 {
@@ -924,926 +690,55 @@ namespace ForRobot.Model.Detals
             return new FullyObservableCollection<Rib>(ribsList);
         }
 
-        private FullyObservableCollection<WeldingSchemas.SchemaRib> FillWeldingSchema()
-        {
-            if (string.IsNullOrEmpty(this.SelectedWeldingSchema))
-                return null;
+        //private FullyObservableCollection<WeldingSchemas.SchemaRib> FillWeldingSchema()
+        //{
+        //    if (string.IsNullOrEmpty(this.SelectedWeldingSchema))
+        //        return null;
 
-            FullyObservableCollection<WeldingSchemas.SchemaRib> schema = ForRobot.Model.Detals.WeldingSchemas.BuildingSchema(ForRobot.Model.Detals.WeldingSchemas.GetSchemaType(this.SelectedWeldingSchema), base.RibCount);
-            schema.ItemPropertyChanged += (s, e) =>
-            {
-                if (this.SelectedWeldingSchema != WeldingSchemas.GetDescription(WeldingSchemas.SchemasTypes.Edit))
-                    this.SelectedWeldingSchema = ForRobot.Model.Detals.WeldingSchemas.GetDescription(WeldingSchemas.SchemasTypes.Edit);
+        //    FullyObservableCollection<WeldingSchemas.SchemaRib> schema = ForRobot.Model.Detals.WeldingSchemas.BuildingSchema(ForRobot.Model.Detals.WeldingSchemas.GetSchemaType(this.SelectedWeldingSchema), base.RibsCount);
+        //    schema.ItemPropertyChanged += (s, e) =>
+        //    {
+        //        if (this.SelectedWeldingSchema != WeldingSchemas.GetDescription(WeldingSchemas.SchemasTypes.Edit))
+        //            this.SelectedWeldingSchema = ForRobot.Model.Detals.WeldingSchemas.GetDescription(WeldingSchemas.SchemasTypes.Edit);
 
-                this.OnChangeProperty(nameof(this.WeldingSchema));
-            };
-            return schema;
-        }
+        //        this.OnChangeProperty(nameof(this.WeldingSchema));
+        //    };
+        //    return schema;
+        //}
 
         private void ChangeRibCollection()
         {
             if (this.RibsCollection == null || this.RibsCollection?.Count == 0)
                 return;
 
-            if (this.RibCount > this.RibsCollection.Count)
-                for (int i = this.RibsCollection.Count; i < this.RibCount; i++)
+            if (this.RibsCount > this.RibsCollection.Count)
+                for (int i = this.RibsCollection.Count; i < this.RibsCount; i++)
                 {
                     this.RibsCollection.Add(this.RibsCollection.Last<Rib>().Clone() as Rib);
                 }
             else
             {
-                for(int i = this.RibsCollection.Count - 1; i >= this.RibCount; i--)
+                for(int i = this.RibsCollection.Count - 1; i >= this.RibsCount; i--)
                     this.RibsCollection.RemoveAt(i);
             }
         }
 
-        private void ChangeWeldingSchema()
-        {
-            if (this.WeldingSchema == null || this.WeldingSchema?.Count == 0)
-                return;
-
-            if (this.RibCount > this.WeldingSchema.Count)
-                for (int i = this.WeldingSchema.Count; i < this.RibCount; i++)
-                    this.WeldingSchema.Add(new WeldingSchemas.SchemaRib());
-            else
-            {
-                for (int i = this.WeldingSchema.Count - 1; i >= this.RibCount; i--)
-                    this.WeldingSchema.RemoveAt(i);
-            }
-
-            this.SelectedWeldingSchema = this.SelectedWeldingSchema;
-        }
-
-        #region Рёбра
-
-        /// <summary>
-        /// Отрисовка первого ребра
-        /// </summary>
-        /// <returns></returns>
-        private Bitmap GetStartRebraImage()
-        {
-            Bitmap image = new Bitmap(300, 310);
-            using (Graphics graphics = Graphics.FromImage(image))
-            {
-                graphics.Clear(Color.White);
-                Pen pen = new Pen(Color.Black, 7);
-                PointF[] points =
-                {
-                 new PointF(135,  177),
-                 new PointF(146, 177),
-                 new PointF(146,  61),
-                 new PointF(136, 61)
-                };
-
-                graphics.DrawLines(pen, points);
-                graphics.DrawLine(pen, new PointF(145, 191), new PointF(145, 294));
-
-                // Плита
-                graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(148, 180, 151, 11));
-                graphics.FillRectangle(new SolidBrush(Color.FromArgb(171, 171, 171)), new Rectangle(149, 182, 151, 7));
-                graphics.FillRectangle(new SolidBrush(Color.FromArgb(135, 135, 135)), new Rectangle(149, 184, 151, 5));
-
-                // Верхняя стрелка
-                //graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(149, 58, 151, 3));
-                //graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(157, 56, 21, 7));
-                //graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(178, 54, 17, 11));
-                //graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(195, 51, 6, 17));
-
-                //// Нижняя стрелка
-                //graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(149, 258, 151, 3));
-                //graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(157, 256, 21, 7));
-                //graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(178, 254, 17, 11));
-                //graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(195, 251, 6, 17));
-
-                // Ребро
-                graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(284, 58, 17, 125));
-                graphics.FillRectangle(new SolidBrush(Color.FromArgb(85, 255, 66)), new Rectangle(287, 61, 11, 122));
-                graphics.FillRectangle(new SolidBrush(Color.FromArgb(36, 110, 27)), new Rectangle(291, 61, 7, 122));
-                graphics.DrawEllipse(new Pen(Color.Black, 3), 284, 180, 17, 6);
-
-                //// Текст
-                //Font font = new Font("Lucida Console", image.PlateWidth / 14, System.Drawing.FontStyle.Regular);
-                //StringFormat stringFormat = new StringFormat(StringFormatFlags.DirectionVertical);
-                //graphics.DrawString(IndentionStart.ToString(), font, new SolidBrush(Color.Black), 206, 29);
-                //graphics.DrawString(RibsHeight.ToString(), font, new SolidBrush(Color.Black), new PointF(102, 126 - RibsHeight.ToString().Length * (font.Size - 8)), stringFormat);
-            }
-            return image;
-        }
-
-        /// <summary>
-        /// Отрисовка всех рёбер, кроме первого и последнего
-        /// </summary>
-        /// <returns></returns>
-        private Bitmap GetBodyRebraImage()
-        {
-            Bitmap image = new Bitmap(150, 310);
-            using (Graphics graphics = Graphics.FromImage(image))
-            {
-                graphics.Clear(Color.White);
-
-                // Плита
-                graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(0, 180, 150, 11));
-                graphics.FillRectangle(new SolidBrush(Color.FromArgb(171, 171, 171)), new Rectangle(0, 182, 150, 7));
-                graphics.FillRectangle(new SolidBrush(Color.FromArgb(135, 135, 135)), new Rectangle(0, 184, 150, 5));
-
-                //// Нижняя стрелка
-                //graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(0, 258, 150, 3));
-
-                // Ребро
-                graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(135, 58, 17, 125));
-                graphics.FillRectangle(new SolidBrush(Color.FromArgb(85, 255, 66)), new Rectangle(137, 61, 11, 122));
-                graphics.FillRectangle(new SolidBrush(Color.FromArgb(36, 110, 27)), new Rectangle(141, 61, 7, 122));
-                graphics.DrawEllipse(new Pen(Color.Black, 3), 135, 180, 16, 6);
-            }
-            return image;
-        }
-
-        /// <summary>
-        /// Отрисовка последнего ребра
-        /// </summary>
-        /// <returns></returns>
-        private Bitmap GetEndRebraImage()
-        {
-            Bitmap image = new Bitmap(450, 310);
-            using (Graphics graphics = Graphics.FromImage(image))
-            {
-                graphics.Clear(Color.White);
-                graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(300, 47, 7, 250));
-
-                // Плита
-                graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(0, 180, 301, 11));
-                graphics.FillRectangle(new SolidBrush(Color.FromArgb(171, 171, 171)), new Rectangle(0, 182, 300, 7));
-                graphics.FillRectangle(new SolidBrush(Color.FromArgb(135, 135, 135)), new Rectangle(0, 184, 300, 5));
-
-                //// Верхняя стрелка
-                //if (RibCount == 1)
-                //{
-                //    graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(0, 58, 301, 3));
-
-                //    graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(274, 56, 21, 7));
-                //    graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(257, 54, 17, 11));
-                //    graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(251, 51, 6, 17));
-
-                //}
-                //else
-                graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(150, 58, 151, 3));
-
-                graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(274, 56, 21, 7));
-                graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(257, 54, 17, 11));
-                graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(251, 51, 6, 17));
-
-                // Нижняя стрелка
-                //graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(0, 258, 301, 3));
-                //graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(274, 256, 21, 7));
-                //graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(257, 254, 17, 11));
-                //graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(251, 251, 6, 17));
-
-                //if (RibCount == 1)
-                //{
-                //    // Нижняя стрелка в начале
-                //    graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(149, 258, 151, 3));
-                //    graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(157, 256, 21, 7));
-                //    graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(178, 254, 17, 11));
-                //    graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(195, 251, 6, 17));
-                //}
-
-                // Ребро
-                graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(150, 58, 17, 125));
-                graphics.FillRectangle(new SolidBrush(Color.FromArgb(85, 255, 66)), new Rectangle(154, 61, 11, 122));
-                graphics.FillRectangle(new SolidBrush(Color.FromArgb(36, 110, 27)), new Rectangle(158, 61, 7, 122));
-                graphics.DrawEllipse(new Pen(Color.Black, 3), 150, 180, 16, 6);
-
-                // Толщина
-                graphics.DrawRectangle(new Pen(Color.FromArgb(27, 214, 242), 4), 309, 180, 12, 12);
-                graphics.DrawLine(new Pen(Color.FromArgb(27, 214, 242), 4), 309, 192, 442, 192);
-
-                //// Текст
-                //Font font = new Font("Lucida Console", image.PlateWidth / 22, System.Drawing.FontStyle.Regular);
-                //graphics.DrawString(IndentionEnd.ToString(), font, new SolidBrush(Color.Black), 205, 15);
-                //graphics.DrawString(PlateThickness.ToString(), font, new SolidBrush(Color.Black), 334, 156);
-            }
-            return image;
-        }
-
-        /// <summary>
-        /// Добавление дистанции междурёбрами и ширены плиты
-        /// </summary>
-        /// <param name="oldImage"></param>
-        /// <returns></returns>
-        private Bitmap PaintDistanceBetween_And_WightImage(Bitmap oldImage)
-        {
-            Bitmap image = new Bitmap(oldImage);
-            //using (Graphics graphics = Graphics.FromImage(image))
-            //{
-            //    graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(0, 59, 135, 3));
-
-            //    // Стрелка левая
-            //    graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(3, 58, 4, 5));
-            //    graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(7, 57, 5, 7));
-            //    graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(12, 56, 4, 9));
-            //    graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(16, 54, 4, 13));
-
-            //    // Стрелка правая
-            //    graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(128, 58, 4, 5));
-            //    graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(123, 57, 5, 7));
-            //    graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(119, 56, 4, 9));
-            //    graphics.FillRectangle(new SolidBrush(Color.Black), new Rectangle(115, 54, 4, 13));
-
-            //    // Текст
-            //    Font font = new Font("Lucida Console", image.PlateWidth / 8, System.Drawing.FontStyle.Regular);
-            //    graphics.DrawString(DistanceBetweenRibs.ToString(), font, new SolidBrush(Color.Black), 51, 33);
-            //    graphics.DrawString(PlateLength.ToString(), font, new SolidBrush(Color.Black), 33, 234);
-            //}
-            return image;
-        }
-
-        private Bitmap GetArrowsPlita(Bitmap bitmap)
-        {
-            using (Graphics graphics = Graphics.FromImage(bitmap))
-            {
-                Pen pen = new Pen(Color.Black, 2);
-
-                #region Стрелка ширины
-
-                PointF[] point =
-                {
-                    new PointF(149, 258),
-                    new PointF(bitmap.Width - 145, 258)
-                };
-                graphics.DrawLines(pen, point);
-
-                point = new PointF[]
-                {
-                    new PointF(149, 258),
-                    new PointF(149, 259),
-                    new PointF(157, 259),
-                    new PointF(157, 261),
-                    new PointF(175, 261),
-                    new PointF(175, 264),
-                    new PointF(187, 264),
-                    new PointF(187, 266),
-                    new PointF(194, 266),
-                    new PointF(194, 251),
-                    new PointF(187, 251),
-                    new PointF(187, 253),
-                    new PointF(175, 253),
-                    new PointF(175, 256),
-                    new PointF(157, 256),
-                    new PointF(157, 258),
-                    new PointF(149, 258)
-                };
-                graphics.FillPolygon(new SolidBrush(Color.Black), point);
-
-                point = new PointF[]
-{
-                    new PointF(300 + 150 * (RibCount - 2) + 256, 251),
-                    new PointF(300 + 150 * (RibCount - 2) + 256, 266),
-                    new PointF(300 + 150 * (RibCount - 2) + 262, 266),
-                    new PointF(300 + 150 * (RibCount - 2) + 262, 264),
-                    new PointF(300 + 150 * (RibCount - 2) + 275, 264),
-                    new PointF(300 + 150 * (RibCount - 2) + 275, 261),
-                    new PointF(300 + 150 * (RibCount - 2) + 293, 261),
-                    new PointF(300 + 150 * (RibCount - 2) + 293, 259),
-                    new PointF(300 + 150 * (RibCount - 2) + 299, 259),
-                    new PointF(300 + 150 * (RibCount - 2) + 299, 258),
-                    new PointF(300 + 150 * (RibCount - 2) + 293, 258),
-                    new PointF(300 + 150 * (RibCount - 2) + 293, 256),
-                    new PointF(300 + 150 * (RibCount - 2) + 275, 256),
-                    new PointF(300 + 150 * (RibCount - 2) + 275, 253),
-                    new PointF(300 + 150 * (RibCount - 2) + 263, 253),
-                    new PointF(300 + 150 * (RibCount - 2) + 263, 251),
-};
-                graphics.FillPolygon(new SolidBrush(Color.Black), point);
-
-                if (RibCount == 1)
-                {
-                    pen.Width = 3;
-                    graphics.DrawLine(pen, new PointF(149, 59), new PointF(304, 59));
-
-                    pen.Width = 1;
-                    point = new PointF[]
-                    {
-                        new PointF(149, 59),
-                        new PointF(149, 61),
-                        new PointF(157, 61),
-                        new PointF(157, 63),
-                        new PointF(178, 63),
-                        new PointF(178, 65),
-                        new PointF(195, 65),
-                        new PointF(195, 67),
-                        new PointF(200, 67),
-                        new PointF(200, 52),
-                        new PointF(195, 52),
-                        new PointF(195, 55),
-                        new PointF(178, 55),
-                        new PointF(178, 57),
-                        new PointF(157, 57),
-                        new PointF(157, 58)
-                    };
-
-                    graphics.FillPolygon(new SolidBrush(Color.Black), point);
-                }
-
-                #endregion
-
-                #region Расстояние между рёбрами
-
-                if (RibCount > 1)
-                {
-                    pen.Width = 3;
-                    graphics.DrawLine(pen, new PointF(bitmap.Width - 300, 59), new PointF(bitmap.Width - 450, 59));
-
-                    point = new PointF[]
-                    {
-                            new PointF(300 + 150 * (RibCount - 2) + 1, 59),
-                            new PointF(300 + 150 * (RibCount - 2) + 1, 61),
-                            new PointF(300 + 150 * (RibCount - 2) + 5, 61),
-                            new PointF(300 + 150 * (RibCount - 2) + 5, 63),
-                            new PointF(300 + 150 * (RibCount - 2) + 9, 63),
-                            new PointF(300 + 150 * (RibCount - 2) + 9, 65),
-                            new PointF(300 + 150 * (RibCount - 2) + 13, 65),
-                            new PointF(300 + 150 * (RibCount - 2) + 13, 67),
-                            new PointF(300 + 150 * (RibCount - 2) + 16, 67),
-                            new PointF(300 + 150 * (RibCount - 2) + 16, 54),
-                            new PointF(300 + 150 * (RibCount - 2) + 13, 54),
-                            new PointF(300 + 150 * (RibCount - 2) + 13, 55),
-                            new PointF(300 + 150 * (RibCount - 2) + 9, 55),
-                            new PointF(300 + 150 * (RibCount - 2) + 9, 57),
-                            new PointF(300 + 150 * (RibCount - 2) + 5, 57),
-                            new PointF(300 + 150 * (RibCount - 2) + 5, 58)
-                    };
-                    graphics.FillPolygon(new SolidBrush(Color.Black), point);
-
-                    point = new PointF[]
-                    {
-                            new PointF(300 + 150 * (RibCount - 2) + 149, 59),
-                            new PointF(300 + 150 * (RibCount - 2) + 149, 61),
-                            new PointF(300 + 150 * (RibCount - 2) + 145, 61),
-                            new PointF(300 + 150 * (RibCount - 2) + 145, 63),
-                            new PointF(300 + 150 * (RibCount - 2) + 141, 63),
-                            new PointF(300 + 150 * (RibCount - 2) + 141, 65),
-                            new PointF(300 + 150 * (RibCount - 2) + 137, 65),
-                            new PointF(300 + 150 * (RibCount - 2) + 137, 67),
-                            new PointF(300 + 150 * (RibCount - 2) + 134, 67),
-                            new PointF(300 + 150 * (RibCount - 2) + 134, 54),
-                            new PointF(300 + 150 * (RibCount - 2) + 137, 54),
-                            new PointF(300 + 150 * (RibCount - 2) + 137, 55),
-                            new PointF(300 + 150 * (RibCount - 2) + 141, 55),
-                            new PointF(300 + 150 * (RibCount - 2) + 141, 57),
-                            new PointF(300 + 150 * (RibCount - 2) + 145, 57),
-                            new PointF(300 + 150 * (RibCount - 2) + 145, 58)
-                    };
-                    graphics.FillPolygon(new SolidBrush(Color.Black), point);
-                }
-
-                #endregion
-            }
-            return bitmap;
-        }
-
-        /// <summary>
-        /// Добавление текста на изображение рёбер
-        /// </summary>
-        /// <param name="bitmap"></param>
-        /// <returns></returns>
-        private Bitmap GetTextPlita(Bitmap bitmap)
-        {
-            using (Graphics graphics = Graphics.FromImage(bitmap))
-            {
-                StringFormat stringFormat1 = new StringFormat(StringFormatFlags.DirectionVertical)
-                {
-                    Alignment = StringAlignment.Center,
-                    LineAlignment = StringAlignment.Center
-                };
-
-                StringFormat stringFormat2 = new StringFormat
-                {
-                    Alignment = StringAlignment.Center,
-                    LineAlignment = StringAlignment.Center
-                };
-
-                using (Font font = new Font("Lucida Console", 18, System.Drawing.FontStyle.Regular))
-                {
-                    graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
-
-                    graphics.DrawString(RibsHeight.ToString(),
-                                        FontLibr.FindFont(graphics, RibsHeight.ToString(), new System.Drawing.Size(80, 30), font),
-                                        new SolidBrush(Color.Black),
-                                        new PointF(120, 126),
-                                        stringFormat1);
-
-                    graphics.DrawString(DistanceToFirstRib.ToString(),
-                                        FontLibr.FindFont(graphics, DistanceToFirstRib.ToString(), new System.Drawing.Size(60, 25), font),
-                                        new SolidBrush(Color.Black),
-                                        new PointF(300 + 150 * (RibCount - 2) + 205, 40),
-                                        stringFormat2);
-
-                    graphics.DrawString(PlateThickness.ToString(),
-                                        FontLibr.FindFont(graphics, PlateThickness.ToString(), new System.Drawing.Size(60, 25), font),
-                                        new SolidBrush(Color.Black),
-                                        new PointF(300 + 150 * (RibCount - 2) + 360, 180),
-                                        stringFormat2);
-
-                    if (RibCount > 1)
-                        graphics.DrawString(DistanceBetweenRibs.ToString(),
-                                            FontLibr.FindFont(graphics, DistanceBetweenRibs.ToString(), new System.Drawing.Size(90, 25), font),
-                                            new SolidBrush(Color.Black),
-                                            new PointF(bitmap.Width - 375, 45),
-                                            stringFormat2);
-                }
-            }
-            return bitmap;
-        }
-
-        /// <summary>
-        /// Объединение изображений
-        /// </summary>
-        /// <param name="png1">Изображение первого ребра</param>
-        /// <param name="png2">Все рёбра кроме первого и последнего</param>
-        /// <param name="png3">Последнее ребро</param>
-        /// <returns></returns>
-        private BitmapImage JoinRebra(Bitmap png1, Bitmap png2, Bitmap png3)
-        {
-            BitmapImage imageSource = new BitmapImage();
-            using (Bitmap result = new Bitmap(png1.Width + png2.Width * (this.RibCount - 2) + png3.Width, 310))
-            {
-                using (Graphics g = Graphics.FromImage(result))
-                {
-                    g.DrawImage(png1, 0, 0);
-
-                    for (int i = 1; i < RibCount; i++)
-                    {
-                        if (i == 1)
-                            g.DrawImage(png2, 300, 0);
-                        else
-                            g.DrawImage(png2, i * 150, 0);
-                    }
-                    g.DrawImage(png3, (RibCount - 2) * 150 + 300, 0);
-                }
-                imageSource = ForRobot.Libr.Converters.ImageConverter.BitmapToBitmapImage(GetTextPlita(GetArrowsPlita(result)));
-            }
-            return imageSource;
-        }
-
-        #endregion
-
-        #region Плита
-
-        /// <summary>
-        /// Вывод изображения плиты исхотя из типа настила
-        /// </summary>
-        /// <returns></returns>
-        private BitmapImage GetGenericImage()
-        {
-            switch (this.ScoseType)
-            {
-                case ScoseTypes.Rect:
-                    return JoinPlita(new Bitmap(ForRobot.Libr.Converters.ImageConverter.BitmapImagetoBitmap((BitmapImage)Application.Current.TryFindResource("ImagePlitaStart"))),
-                                     new Bitmap(ForRobot.Libr.Converters.ImageConverter.BitmapImagetoBitmap((BitmapImage)Application.Current.TryFindResource("ImagePlitaBody"))),
-                                     new Bitmap(ForRobot.Libr.Converters.ImageConverter.BitmapImagetoBitmap((BitmapImage)Application.Current.TryFindResource("ImagePlitaEnd"))));
-                //new Bitmap(ForRobot.Libr.Converters.ImageConverter.BitmapImagetoBitmap(new BitmapImage(new Uri("pack://application:,,,/InterfaceOfRobots;component/Themes/Images/EndPlita.png")))));
-                //new Bitmap(ForRobot.Libr.Converters.ImageConverter.BitmapImagetoBitmap((BitmapImage)Application.Current.TryFindResource("ImagePlitaEnd"))));
-
-                case ScoseTypes.SlopeLeft:
-                    return ForRobot.Libr.Converters.ImageConverter.BitmapToBitmapImage(GetTextSlopeLeft(new Bitmap(ForRobot.Libr.Converters.ImageConverter.BitmapImagetoBitmap((BitmapImage)Application.Current.TryFindResource("ImageSlopeLeft")), new System.Drawing.Size(1280, 720))));
-
-                case ScoseTypes.SlopeRight:
-                    return ForRobot.Libr.Converters.ImageConverter.BitmapToBitmapImage(GetTextSlopeRight(new Bitmap(ForRobot.Libr.Converters.ImageConverter.BitmapImagetoBitmap((BitmapImage)Application.Current.TryFindResource("ImageSlopeRight")), new System.Drawing.Size(1280, 720))));
-
-                case ScoseTypes.TrapezoidTop:
-                    return ForRobot.Libr.Converters.ImageConverter.BitmapToBitmapImage(GetTextTrapezoidTop(new Bitmap(ForRobot.Libr.Converters.ImageConverter.BitmapImagetoBitmap((BitmapImage)Application.Current.TryFindResource("ImageTrapezoidTopParam")), new System.Drawing.Size(1280, 720))));
-
-                case ScoseTypes.TrapezoidBottom:
-                    return ForRobot.Libr.Converters.ImageConverter.BitmapToBitmapImage(GetTextTrapezoidBottom(new Bitmap(ForRobot.Libr.Converters.ImageConverter.BitmapImagetoBitmap((BitmapImage)Application.Current.TryFindResource("ImageTrapezoidBottomParam")), new System.Drawing.Size(1280, 720))));
-
-                default:
-                    return this._plitaImage;
-            }
-        }
-
-        /// <summary>
-        /// Добавление текста на изображение плиты прямоугольной формы
-        /// </summary>
-        /// <param name="bitmap"></param>
-        /// <returns></returns>
-        private Bitmap GetText(Bitmap bitmap)
-        {
-            using (Graphics graphics = Graphics.FromImage(bitmap))
-            {
-                StringFormat stringFormat1 = new StringFormat(StringFormatFlags.DirectionVertical)
-                {
-                    Alignment = StringAlignment.Center,
-                    LineAlignment = StringAlignment.Center
-                };
-
-                StringFormat stringFormat2 = new StringFormat
-                {
-                    Alignment = StringAlignment.Center,
-                    LineAlignment = StringAlignment.Center
-                };
-
-                using (Font font = new Font("Lucida Console", 18, System.Drawing.FontStyle.Regular))
-                {
-                    graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
-
-                    graphics.DrawString(PlateLength.ToString(),
-                                        FontLibr.FindFont(graphics, PlateLength.ToString(), new System.Drawing.Size(100, 30), font),
-                                        new SolidBrush(Color.Black),
-                                        new PointF(420, 475),
-                                        stringFormat2);
-
-                    //graphics.DrawString(PlateWidth.ToString(),
-                    //                    FontLibr.FindFont(graphics, PlateWidth.ToString(), new System.Drawing.Size(100, 30), font),
-                    //                    new SolidBrush(Color.Black), 
-                    //                    new PointF(840, bitmap.Height/2),
-                    //                    stringFormat1);
-
-                    graphics.DrawString(DissolutionLeft.ToString(),
-                                        FontLibr.FindFont(graphics, DissolutionLeft.ToString(), new System.Drawing.Size(48, 22), font),
-                                        new SolidBrush(Color.Black),
-                                        new PointF(95, 420),
-                                        stringFormat2);
-
-                    graphics.DrawString(DissolutionRight.ToString(),
-                                        FontLibr.FindFont(graphics, DissolutionRight.ToString(), new System.Drawing.Size(48, 22), font),
-                                        new SolidBrush(Color.Black),
-                                        new PointF(710, 420),
-                                        stringFormat2);
-
-                    graphics.DrawString(RibsThickness.ToString(),
-                                        FontLibr.FindFont(graphics, RibsThickness.ToString(), new System.Drawing.Size(40, 25), font),
-                                        new SolidBrush(Color.Black),
-                                        new PointF(795, 140),
-                                        stringFormat1);
-                }
-            }
-            return bitmap;
-        }
-
-        /// <summary>
-        /// Добавление текста на изображение плиты со скосом влево
-        /// </summary>
-        /// <param name="bitmap"></param>
-        /// <returns></returns>
-        private Bitmap GetTextSlopeLeft(Bitmap bitmap)
-        {
-            using (Graphics graphics = Graphics.FromImage(bitmap))
-            {
-                StringFormat stringFormatHorizont = new StringFormat
-                {
-                    Alignment = StringAlignment.Center,
-                    LineAlignment = StringAlignment.Center
-                };
-
-                StringFormat stringFormatVertical = new StringFormat(StringFormatFlags.DirectionVertical)
-                {
-                    Alignment = StringAlignment.Center,
-                    LineAlignment = StringAlignment.Center
-                };
-
-                using (Font font = new Font("Lucida Console", 18, System.Drawing.FontStyle.Regular))
-                {
-                    graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
-
-                    graphics.DrawString(PlateLength.ToString(),
-                        FontLibr.FindFont(graphics, PlateLength.ToString(), new System.Drawing.Size(250, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(550, 70),
-                        stringFormatHorizont);
-
-                    graphics.DrawString(DistanceToFirstRib.ToString(),
-                        FontLibr.FindFont(graphics, DistanceToFirstRib.ToString(), new System.Drawing.Size(125, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(1220, 240),
-                        stringFormatVertical);
-
-                    graphics.DrawString(DistanceBetweenRibs.ToString(),
-                        FontLibr.FindFont(graphics, DistanceBetweenRibs.ToString(), new System.Drawing.Size(100, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(1220, 365),
-                        stringFormatVertical);
-
-                    graphics.DrawString(PlateBevelToLeft.ToString(),
-                        FontLibr.FindFont(graphics, PlateBevelToLeft.ToString(), new System.Drawing.Size(100, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(105, 680),
-                        stringFormatHorizont);
-
-                    graphics.DrawString(PlateBevelToRight.ToString(),
-                        FontLibr.FindFont(graphics, PlateBevelToRight.ToString(), new System.Drawing.Size(80, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(1125, 150),
-                        stringFormatHorizont);
-
-                    graphics.DrawString(IdentToLeft.ToString(),
-                        FontLibr.FindFont(graphics, IdentToLeft.ToString(), new System.Drawing.Size(110, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(215, 600),
-                        stringFormatHorizont);
-
-                    graphics.DrawString(IdentToRight.ToString(),
-                        FontLibr.FindFont(graphics, IdentToRight.ToString(), new System.Drawing.Size(110, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(1080, 600),
-                        stringFormatHorizont);
-
-                    graphics.DrawString(DissolutionLeft.ToString(),
-                        FontLibr.FindFont(graphics, DissolutionLeft.ToString(), new System.Drawing.Size(80, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(320, 600),
-                        stringFormatHorizont);
-
-                    graphics.DrawString(DissolutionRight.ToString(),
-                        FontLibr.FindFont(graphics, DissolutionRight.ToString(), new System.Drawing.Size(50, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(995, 600),
-                        stringFormatHorizont);
-                }
-            }
-            return bitmap;
-        }
-
-        /// <summary>
-        /// Добавление текста на изображение плиты со скосом вправо
-        /// </summary>
-        /// <param name="bitmap"></param>
-        /// <returns></returns>
-        private Bitmap GetTextSlopeRight(Bitmap bitmap)
-        {
-            using (Graphics graphics = Graphics.FromImage(bitmap))
-            {
-                StringFormat stringFormatHorizont = new StringFormat
-                {
-                    Alignment = StringAlignment.Center,
-                    LineAlignment = StringAlignment.Center
-                };
-
-                StringFormat stringFormatVertical = new StringFormat(StringFormatFlags.DirectionVertical)
-                {
-                    Alignment = StringAlignment.Center,
-                    LineAlignment = StringAlignment.Center
-                };
-
-                using (Font font = new Font("Lucida Console", 18, System.Drawing.FontStyle.Regular))
-                {
-                    graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
-
-                    graphics.DrawString(PlateLength.ToString(),
-                        FontLibr.FindFont(graphics, PlateLength.ToString(), new System.Drawing.Size(250, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(700, 60),
-                        stringFormatHorizont);
-
-                    graphics.DrawString(DistanceToFirstRib.ToString(),
-                        FontLibr.FindFont(graphics, DistanceToFirstRib.ToString(), new System.Drawing.Size(125, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(80, 220),
-                        stringFormatVertical);
-
-                    graphics.DrawString(DistanceBetweenRibs.ToString(),
-                        FontLibr.FindFont(graphics, DistanceBetweenRibs.ToString(), new System.Drawing.Size(100, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(80, 340),
-                        stringFormatVertical);
-
-                    graphics.DrawString(PlateBevelToLeft.ToString(),
-                        FontLibr.FindFont(graphics, PlateBevelToLeft.ToString(), new System.Drawing.Size(70, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(190, 130),
-                        stringFormatHorizont);
-
-                    graphics.DrawString(PlateBevelToRight.ToString(),
-                        FontLibr.FindFont(graphics, PlateBevelToRight.ToString(), new System.Drawing.Size(100, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(1220, 680),
-                        stringFormatHorizont);
-
-                    graphics.DrawString(IdentToLeft.ToString(),
-                        FontLibr.FindFont(graphics, IdentToLeft.ToString(), new System.Drawing.Size(110, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(240, 600),
-                        stringFormatHorizont);
-
-                    graphics.DrawString(IdentToRight.ToString(),
-                        FontLibr.FindFont(graphics, IdentToRight.ToString(), new System.Drawing.Size(110, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(1105, 600),
-                        stringFormatHorizont);
-
-                    graphics.DrawString(DissolutionLeft.ToString(),
-                        FontLibr.FindFont(graphics, DissolutionLeft.ToString(), new System.Drawing.Size(43, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(322, 600),
-                        stringFormatHorizont);
-
-                    graphics.DrawString(DissolutionRight.ToString(),
-                        FontLibr.FindFont(graphics, DissolutionRight.ToString(), new System.Drawing.Size(140, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(965, 600),
-                        stringFormatHorizont);
-                }
-            }
-            return bitmap;
-        }
-
-        /// <summary>
-        /// Добавление текста на изображение плиты трапецией
-        /// </summary>
-        /// <param name="bitmap"></param>
-        /// <returns></returns>
-        private Bitmap GetTextTrapezoidTop(Bitmap bitmap)
-        {
-            using (Graphics graphics = Graphics.FromImage(bitmap))
-            {
-                StringFormat stringFormatHorizont = new StringFormat
-                {
-                    Alignment = StringAlignment.Center,
-                    LineAlignment = StringAlignment.Center
-                };
-
-                StringFormat stringFormatVertical = new StringFormat(StringFormatFlags.DirectionVertical)
-                {
-                    Alignment = StringAlignment.Center,
-                    LineAlignment = StringAlignment.Center
-                };
-
-                using (Font font = new Font("Lucida Console", 18, System.Drawing.FontStyle.Regular))
-                {
-                    graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
-
-                    graphics.DrawString(PlateLength.ToString(),
-                        FontLibr.FindFont(graphics, PlateLength.ToString(), new System.Drawing.Size(250, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(600, 60),
-                        stringFormatHorizont);
-
-                    graphics.DrawString(DistanceToFirstRib.ToString(),
-                        FontLibr.FindFont(graphics, DistanceToFirstRib.ToString(), new System.Drawing.Size(150, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(60, 300),
-                        stringFormatVertical);
-
-                    graphics.DrawString(DistanceBetweenRibs.ToString(),
-                        FontLibr.FindFont(graphics, DistanceBetweenRibs.ToString(), new System.Drawing.Size(140, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(60, 465),
-                        stringFormatVertical);
-
-                    graphics.DrawString(PlateBevelToLeft.ToString(),
-                        FontLibr.FindFont(graphics, PlateBevelToLeft.ToString(), new System.Drawing.Size(80, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(150, 190),
-                        stringFormatHorizont);
-
-                    graphics.DrawString(PlateBevelToRight.ToString(),
-                        FontLibr.FindFont(graphics, PlateBevelToRight.ToString(), new System.Drawing.Size(100, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(1120, 140),
-                        stringFormatHorizont);
-
-                    graphics.DrawString(IdentToLeft.ToString(),
-                        FontLibr.FindFont(graphics, IdentToLeft.ToString(), new System.Drawing.Size(125, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(200, 620),
-                        stringFormatHorizont);
-
-                    graphics.DrawString(IdentToRight.ToString(),
-                        FontLibr.FindFont(graphics, IdentToRight.ToString(), new System.Drawing.Size(130, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(1060, 620),
-                        stringFormatHorizont);
-
-                    graphics.DrawString(DissolutionLeft.ToString(),
-                        FontLibr.FindFont(graphics, DissolutionLeft.ToString(), new System.Drawing.Size(50, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(295, 620),
-                        stringFormatHorizont);
-
-                    graphics.DrawString(DissolutionRight.ToString(),
-                        FontLibr.FindFont(graphics, DissolutionRight.ToString(), new System.Drawing.Size(80, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(940, 620),
-                        stringFormatHorizont);
-                }
-            }
-            return bitmap;
-        }
-
-        /// <summary>
-        /// Добавление текста на изображение плиты перевернутой трапецией
-        /// </summary>
-        /// <param name="bitmap"></param>
-        /// <returns></returns>
-        private Bitmap GetTextTrapezoidBottom(Bitmap bitmap)
-        {
-            using (Graphics graphics = Graphics.FromImage(bitmap))
-            {
-                StringFormat stringFormatHorizont = new StringFormat
-                {
-                    Alignment = StringAlignment.Center,
-                    LineAlignment = StringAlignment.Center
-                };
-
-                StringFormat stringFormatVertical = new StringFormat(StringFormatFlags.DirectionVertical)
-                {
-                    Alignment = StringAlignment.Center,
-                    LineAlignment = StringAlignment.Center
-                };
-
-                using (Font font = new Font("Lucida Console", 18, System.Drawing.FontStyle.Regular))
-                {
-                    graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
-
-                    graphics.DrawString(PlateLength.ToString(),
-                        FontLibr.FindFont(graphics, PlateLength.ToString(), new System.Drawing.Size(250, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(600, 60),
-                        stringFormatHorizont);
-
-                    graphics.DrawString(DistanceToFirstRib.ToString(),
-                        FontLibr.FindFont(graphics, DistanceToFirstRib.ToString(), new System.Drawing.Size(130, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(100, 260),
-                        stringFormatVertical);
-
-                    graphics.DrawString(DistanceBetweenRibs.ToString(),
-                        FontLibr.FindFont(graphics, DistanceBetweenRibs.ToString(), new System.Drawing.Size(110, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(100, 390),
-                        stringFormatVertical);
-
-                    graphics.DrawString(PlateBevelToLeft.ToString(),
-                        FontLibr.FindFont(graphics, PlateBevelToLeft.ToString(), new System.Drawing.Size(110, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(185, 150),
-                        stringFormatHorizont);
-
-                    graphics.DrawString(PlateBevelToRight.ToString(),
-                        FontLibr.FindFont(graphics, PlateBevelToRight.ToString(), new System.Drawing.Size(100, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(1130, 150),
-                        stringFormatHorizont);
-
-                    graphics.DrawString(IdentToLeft.ToString(),
-                        FontLibr.FindFont(graphics, IdentToLeft.ToString(), new System.Drawing.Size(110, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(260, 640),
-                        stringFormatHorizont);
-
-                    graphics.DrawString(IdentToRight.ToString(),
-                        FontLibr.FindFont(graphics, IdentToRight.ToString(), new System.Drawing.Size(110, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(1055, 640),
-                        stringFormatHorizont);
-
-                    graphics.DrawString(DissolutionLeft.ToString(),
-                        FontLibr.FindFont(graphics, DissolutionLeft.ToString(), new System.Drawing.Size(45, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(343, 640),
-                        stringFormatHorizont);
-
-                    graphics.DrawString(DissolutionRight.ToString(),
-                        FontLibr.FindFont(graphics, DissolutionRight.ToString(), new System.Drawing.Size(80, 30), font),
-                        new SolidBrush(Color.Black),
-                        new PointF(955, 640),
-                        stringFormatHorizont);
-                }
-            }
-            return bitmap;
-        }
-
-        /// <summary>
-        /// Объединение изображений плиты
-        /// </summary>
-        /// <param name="png1"></param>
-        /// <param name="png2"></param>
-        /// <param name="png3"></param>
-        /// <returns></returns>
-        private BitmapImage JoinPlita(Bitmap png1, Bitmap png2, Bitmap png3)
-        {
-            BitmapImage imageSource = new BitmapImage();
-            using (Bitmap result = new Bitmap(980, png1.Height + png2.Height * 2 + png3.Height ))
-            {
-                using (Graphics g = Graphics.FromImage(result))
-                {
-                    g.DrawImage(png1, 0, 0);
-
-                    for (int i = 1; i < 4; i++)
-                    {
-                        if (i == 1)
-                            g.DrawImage(png2, 0, 150);
-                        else
-                            g.DrawImage(png2, 0, (i - 1) * 88 + 150);
-                    }
-
-                    g.DrawImage(png3, 0, 2 * 88 + 150);
-                }
-                imageSource = ForRobot.Libr.Converters.ImageConverter.BitmapToBitmapImage(GetText(result));
-            }
-            return imageSource;
-        }
-
-        #endregion
+        //private void ChangeWeldingSchema()
+        //{
+        //    if (this.WeldingSchema == null || this.WeldingSchema?.Count == 0)
+        //        return;
+
+        //    if (this.RibsCount > this.WeldingSchema.Count)
+        //        for (int i = this.WeldingSchema.Count; i < this.RibsCount; i++)
+        //            this.WeldingSchema.Add(new WeldingSchemas.SchemaRib());
+        //    else
+        //    {
+        //        for (int i = this.WeldingSchema.Count - 1; i >= this.RibsCount; i--)
+        //            this.WeldingSchema.RemoveAt(i);
+        //    }
+
+        //    this.SelectedWeldingSchema = this.SelectedWeldingSchema;
+        //}
 
         #endregion Private functions
 
@@ -1854,7 +749,7 @@ namespace ForRobot.Model.Detals
         /// </summary>
         /// <param name="sJsonString">JSON-строка</param>
         /// <returns></returns>
-        public Plita DeserializeDetal(string sJsonString)
+        public new Plita DeserializeDetal(string sJsonString = null)
         {
             if (string.IsNullOrEmpty(sJsonString))
                 return new Plita(Detals.DetalType.Plita);

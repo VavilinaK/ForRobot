@@ -229,7 +229,7 @@ namespace ForRobot.Strategies.AnnotationStrategies
 
             double ribLeftPositionY = -modelPlateWidth / 2; // Начальная позиция по Y
             double ribRightPositionY = -modelPlateWidth / 2;
-            for (int i = 0; i < plate.RibCount; i++)
+            for (int i = 0; i < plate.RibsCount; i++)
             {
                 var rib = plate.RibsCollection[i];
                 double modelRibDistanceLeft = (double)rib.DistanceLeft * (double)this._scaleFactor;
@@ -328,7 +328,7 @@ namespace ForRobot.Strategies.AnnotationStrategies
 
             double ribLeftPositionY = -modelPlateWidth / 2;
             double ribRightPositionY = -modelPlateWidth / 2;
-            for (int i = 0; i < plate.RibCount; i++)
+            for (int i = 0; i < plate.RibsCount; i++)
             {
                 var rib = plate.RibsCollection[i];
                 double modelRibDistanceLeft = (double)rib.DistanceLeft * (double)this._scaleFactor;
@@ -411,7 +411,7 @@ namespace ForRobot.Strategies.AnnotationStrategies
 
             double ribLeftPositionY = -modelPlateWidth / 2;
             double ribRightPositionY = -modelPlateWidth / 2;
-            for (int i = 0; i < plate.RibCount; i++)
+            for (int i = 0; i < plate.RibsCount; i++)
             {
                 var rib = plate.RibsCollection[i];
                 double modelRibDistanceLeft = (double)rib.DistanceLeft * (double)this._scaleFactor;
