@@ -9,7 +9,7 @@ using ForRobot.Model.Detals;
 using ForRobot.Libr.UndoRedo;
 using ForRobot.Strategies.ModelingStrategies;
 
-namespace ForRobot.Services
+namespace ForRobot.Libr.Services
 {
     public class ChangeService : BaseClass, IDisposable
     {

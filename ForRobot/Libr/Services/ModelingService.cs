@@ -11,7 +11,7 @@ using ForRobot.Libr.Collections;
 using ForRobot.Model.Detals;
 using ForRobot.Strategies.ModelingStrategies;
 
-namespace ForRobot.Services
+namespace ForRobot.Libr.Services
 {
     /// <summary>
     /// Класс сервис для сборки 3д сцены

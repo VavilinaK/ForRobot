@@ -4,7 +4,7 @@ using System.Windows.Media.Media3D;
 
 using HelixToolkit.Wpf;
 
-namespace ForRobot.Services
+namespace ForRobot.Libr.Services
 {
     public interface IModelExporter
     {

@@ -204,8 +204,8 @@ namespace ForRobot.Strategies.ModelingStrategies
                 var rib = plate.RibsCollection[i];
                 double modelRibDistanceLeft = (double)rib.DistanceLeft * this._scaleFactor;
                 double modelRibDistanceRight = (double)rib.DistanceRight * this._scaleFactor;
-                double modelRibIdentToLeft = (double)rib.IdentToLeft * this._scaleFactor;
-                double modelRibIdentToRight = (double)rib.IdentToRight * this._scaleFactor;
+                double modelRibIdentToLeft = (double)rib.RibsIdentToLeft * this._scaleFactor;
+                double modelRibIdentToRight = (double)rib.RibsIdentToRight * this._scaleFactor;
 
                 ribLeftPositionY += modelRibDistanceLeft;
                 ribRightPositionY += modelRibDistanceRight;

@@ -163,8 +163,7 @@ namespace ForRobot.Model.Detals
             }
         }
 
-        [JsonIgnore]
-        //[SaveAttribute]
+        [JsonConverter(typeof(JsonCommentConverter), "Выбранная схема сварки рёбер")]
         /// <summary>
         /// Выбранная схема сварки рёбер
         /// </summary>
@@ -175,8 +174,8 @@ namespace ForRobot.Model.Detals
             {
                 this._selectedWeldingSchema = value;
 
-                if (this._selectedWeldingSchema != ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit))
-                    this.WeldingSchema = this.FillWeldingSchema(this.SelectedWeldingSchema);
+                //if (this._selectedWeldingSchema != ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit))
+                //    this.WeldingSchema = this.FillWeldingSchema(this.SelectedWeldingSchema);
 
                 this.OnChangeProperty(nameof(this.SelectedWeldingSchema));
             }
@@ -199,21 +198,21 @@ namespace ForRobot.Model.Detals
 
         #endregion Public variables
 
-        //public FullyObservableCollection<WeldingSchemas.SchemaRib> FillWeldingSchema()
-        //{
-        //    if (string.IsNullOrEmpty(this.SelectedWeldingSchema) || )
-        //        throw new ArgumentNullException(nameof(this.SelectedWeldingSchema), "Неверный формат схемы сварки");
+        public FullyObservableCollection<WeldingSchemas.SchemaRib> FillWeldingSchema()
+        {
+            //if (string.IsNullOrEmpty(this.SelectedWeldingSchema) || )
+            //    throw new ArgumentNullException(nameof(this.SelectedWeldingSchema), "Неверный формат схемы сварки");
 
-        //    FullyObservableCollection<WeldingSchemas.SchemaRib> schema = ForRobot.Model.Detals.WeldingSchemas.BuildingSchema(ForRobot.Model.Detals.WeldingSchemas.GetSchemaType(this.SelectedWeldingSchema), base.RibsCount);
-        //    schema.ItemPropertyChanged += (s, e) =>
-        //    {
-        //        if (this.SelectedWeldingSchema != WeldingSchemas.GetDescription(WeldingSchemas.SchemasTypes.Edit))
-        //            this.SelectedWeldingSchema = ForRobot.Model.Detals.WeldingSchemas.GetDescription(WeldingSchemas.SchemasTypes.Edit);
+            FullyObservableCollection<WeldingSchemas.SchemaRib> schema = ForRobot.Model.Detals.WeldingSchemas.BuildingSchema(ForRobot.Model.Detals.WeldingSchemas.GetSchemaType(this.SelectedWeldingSchema), base.RibsCount);
+            schema.ItemPropertyChanged += (s, e) =>
+            {
+                if (this.SelectedWeldingSchema != WeldingSchemas.GetDescription(WeldingSchemas.SchemasTypes.Edit))
+                    this.SelectedWeldingSchema = ForRobot.Model.Detals.WeldingSchemas.GetDescription(WeldingSchemas.SchemasTypes.Edit);
 
-        //        this.OnChangeProperty(nameof(this.WeldingSchema));
-        //    };
-        //    return schema;
-        //}
+                this.OnChangeProperty(nameof(this.WeldingSchema));
+            };
+            return schema;
+        }
 
         /// <summary>
         /// Вызов события изменения свойства

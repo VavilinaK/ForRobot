@@ -35,8 +35,9 @@ namespace ForRobot.Model.File3D
 
         private Model3DGroup _currentModel = new Model3DGroup();
 
-        private Detal _currentDetal;
         private Detal _oldDetal;
+        private Detal _currentDetal;
+        private WeldingProperties _currentWeldingProperties;
 
         private ObservableCollection<Weld> _weldsCollection = new ObservableCollection<Weld>();
         
@@ -89,6 +90,7 @@ namespace ForRobot.Model.File3D
         }
 
         public Detal CurrentDetal { get => this._currentDetal; set => this.SetDetal(value); }
+        public WeldingProperties CurrentWeldingProperties { get; set; }
 
         public static readonly string FilterForFileDialog = "3D model files (*.3ds;*.obj;*.off;*.lwo;*.stl;*.ply;)|*.3ds;*.obj;*.objz;*.off;*.lwo;*.stl;*.ply;";
 
@@ -191,7 +193,12 @@ namespace ForRobot.Model.File3D
 
             //this.DetalChangedEvent += (s, o) => SceneUpdate();
         }
-        
+
+        private void SetCurrentWeldingProperties(object value)
+        {
+
+        }
+
         /// <summary>
         /// Выгрузка 3Д модели и файла
         /// </summary>

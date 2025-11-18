@@ -9,7 +9,7 @@ using System.ComponentModel;
 using ForRobot.Model.Detals;
 using ForRobot.Model.File3D;
 
-namespace ForRobot.Services
+namespace ForRobot.Libr.Services
 {
     public static class File3DService
     {

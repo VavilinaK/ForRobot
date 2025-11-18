@@ -30,7 +30,6 @@ namespace ForRobot.Model.Detals
     {
         #region Private variables
 
-        private string _scoseType;
         private string _selectedWeldingSchema = WeldingSchemas.GetDescription(WeldingSchemas.SchemasTypes.LeftEvenOdd_RightEvenOdd);
 
         private bool _diferentDistance = false;
@@ -46,10 +45,10 @@ namespace ForRobot.Model.Detals
         private int _ribCount;
         private decimal _distanceToFirstRib;
         private decimal _distanceBetweenRibs;
-        private decimal _identToLeft;
-        private decimal _identToRight;
-        private decimal _dissolutionLeft;
-        private decimal _dissolutionRight;
+        private decimal _ribsIdentToLeft;
+        private decimal _ribsIdentToRight;
+        private decimal _weldsDissolutionLeft;
+        private decimal _weldsDissolutionRight;
         private decimal _bevelToLeft;
         private decimal _bevelToRight;
 
@@ -66,11 +65,13 @@ namespace ForRobot.Model.Detals
 
         #region Public variables
 
-        [JsonIgnore]
-        /// <summary>
-        /// Игнорируемы для Undo/Redo свойства
-        /// </summary>
-        public override string[] NotSaveProperties { get; } = new string[] { nameof(SelectedWeldingSchema) };
+        public const int MIN_RIB_COUNT = 1;
+
+        //[JsonIgnore]
+        ///// <summary>
+        ///// Игнорируемы для Undo/Redo свойства
+        ///// </summary>
+        //public override string[] NotSaveProperties { get; } = new string[] { nameof(SelectedWeldingSchema) };
 
         /// <summary>
         /// Json-строка для передачи
@@ -98,44 +99,29 @@ namespace ForRobot.Model.Detals
             }
         }
 
-        [JsonIgnore]
-        [SaveAttribute]
+        //[JsonIgnore]
+        //[SaveAttribute]
         /// <inheritdoc cref="Detal.DetalType"/>
         public override string DetalType { get => DetalTypes.Plita; }
 
-        [JsonProperty("d_type")]
-        [JsonConverter(typeof(JsonCommentConverter), "Тип скоса")]
-        /// <summary>
-        /// Тип скоса
-        /// </summary>
-        public string ScoseType
-        {
-            get => this._scoseType ?? (this._scoseType = ScoseTypes.Rect);
-            set
-            {
-                this._scoseType = value;
-                this.OnChangeProperty(nameof(this.ScoseType));
-            }
-        }
-
-        //[JsonIgnore]
-        //[SaveAttribute]
+        ////[JsonIgnore]
+        ////[SaveAttribute]
         ///// <summary>
         ///// Выбранная схема сварки рёбер
         ///// </summary>
-        public string SelectedWeldingSchema
-        {
-            get => this._selectedWeldingSchema;
-            set
-            {
-                this._selectedWeldingSchema = value;
+        //public string SelectedWeldingSchema
+        //{
+        //    get => this._selectedWeldingSchema;
+        //    set
+        //    {
+        //        this._selectedWeldingSchema = value;
 
-                if (this._selectedWeldingSchema != ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit))
-                    this.WeldingSchema = this.FillWeldingSchema();
+        //        if (this._selectedWeldingSchema != ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit))
+        //            this.WeldingSchema = this.FillWeldingSchema();
 
-                this.OnChangeProperty(nameof(this.SelectedWeldingSchema));
-            }
-        }
+        //        this.OnChangeProperty(nameof(this.SelectedWeldingSchema));
+        //    }
+        //}
 
         [JsonIgnore]
         [SaveAttribute]
@@ -148,26 +134,7 @@ namespace ForRobot.Model.Detals
             get => this._diferentDistance;
             set
             {
-                this._diferentDistance = value;
-                if (!this._diferentDistance && this.RibsCollection?.Count > 0)
-                {
-                    for (int i = 0; i < this.RibsCollection.Count; i++)
-                    {
-                        this.RibsCollection[i].IdentToLeft = this.IdentToLeft;
-                        this.RibsCollection[i].IdentToRight = this.IdentToRight;
-
-                        if (i == 0)
-                        {
-                            this.RibsCollection[i].DistanceLeft = this.DistanceToFirstRib;
-                            continue;
-                        }
-                        this.RibsCollection[i].DistanceLeft = this.DistanceBetweenRibs;
-                    }
-                }
-                //else
-                //    foreach(var rib in this.RibsCollection)
-                //        rib.IsSave = true;
-                        
+                this._diferentDistance = value;   
                 this.OnChangeProperty(nameof(this.DiferentDistance));
             }
         }
@@ -184,11 +151,6 @@ namespace ForRobot.Model.Detals
             set
             {
                 this._paralleleRibs = value;
-                if (this._paralleleRibs && this.RibsCollection?.Count > 0) // Изменение расстояния для параллельных рёбер.
-                    for (int i = 0; i < this.RibsCollection.Count; i++)
-                    {
-                        this.RibsCollection[i].OnChangeDistanceLeftEvent();
-                    }
                 this.OnChangeProperty(nameof(this.ParalleleRibs));
             }
         }
@@ -205,11 +167,6 @@ namespace ForRobot.Model.Detals
             set
             {
                 this._diferentDissolutionLeft = value;
-                if (!_diferentDissolutionLeft && this.RibsCollection?.Count > 0)
-                    for (int i = 0; i < this.RibsCollection.Count; i++)
-                    {
-                        this.RibsCollection[i].DissolutionLeft = this.DissolutionLeft;
-                    }
                 this.OnChangeProperty(nameof(this.DiferentDissolutionLeft));
             }
         }
@@ -226,11 +183,6 @@ namespace ForRobot.Model.Detals
             set
             {
                 this._diferentDissolutionRight = value;
-                if (!_diferentDissolutionRight && this.RibsCollection?.Count > 0)
-                    for (int i = 0; i < this.RibsCollection.Count; i++)
-                    {
-                        this.RibsCollection[i].DissolutionRight = this.DissolutionRight;
-                    }
                 this.OnChangeProperty(nameof(this.DiferentDissolutionRight));
             }
         }
@@ -327,8 +279,8 @@ namespace ForRobot.Model.Detals
 
                 this._ribCount = value;
 
-                this.ChangeRibCollection();
-                this.ChangeWeldingSchema();
+                //this.ChangeRibCollection();
+                //this.ChangeWeldingSchema();
                 this.OnChangeProperty(nameof(this.RibsCount));
             }
         }
@@ -371,12 +323,12 @@ namespace ForRobot.Model.Detals
         /// <summary>
         /// Продольное расстояние до ребер по левому краю
         /// </summary>
-        public decimal IdentToLeft
+        public decimal RibsIdentToLeft
         {
-            get => this._identToLeft;
+            get => this._ribsIdentToLeft;
             set
             {
-                this._identToLeft = value;
+                this._ribsIdentToLeft = value;
                 this.OnChangeProperty();
             }
         }
@@ -387,12 +339,12 @@ namespace ForRobot.Model.Detals
         /// <summary>
         /// Продольное расстояние до ребер по правому краю
         /// </summary>
-        public decimal IdentToRight
+        public decimal RibsIdentToRight
         {
-            get => this._identToRight;
+            get => this._ribsIdentToRight;
             set
             {
-                this._identToRight = value;
+                this._ribsIdentToRight = value;
                 this.OnChangeProperty();
             }
         }
@@ -403,12 +355,12 @@ namespace ForRobot.Model.Detals
         /// <summary>
         /// Отступ шва от левого края ребер (роспуск, выкружка)
         /// </summary>
-        public decimal DissolutionLeft
+        public decimal WeldsDissolutionLeft
         {
-            get => this._dissolutionLeft;
+            get => this._weldsDissolutionLeft;
             set
             {
-                this._dissolutionLeft = value;
+                this._weldsDissolutionLeft = value;
                 this.OnChangeProperty();
             }
         }
@@ -419,19 +371,17 @@ namespace ForRobot.Model.Detals
         /// <summary>
         /// Отступ шва от правого края ребер (роспуск, выкружка)
         /// </summary>
-        public decimal DissolutionRight
+        public decimal WeldsDissolutionRight
         {
-            get => this._dissolutionRight;
+            get => this._weldsDissolutionRight;
             set
             {
-                this._dissolutionRight = value;
+                this._weldsDissolutionRight = value;
                 this.OnChangeProperty();
             }
         }
-
-        #region Weld's Properties
-        
-        [JsonProperty("d_W2")]
+                
+        [JsonProperty("walls_list")]
         /// <summary>
         /// Коллекция рёбер
         /// </summary>
@@ -441,89 +391,32 @@ namespace ForRobot.Model.Detals
             private set
             {
                 if(this._ribsCollection != null)
-                {
                     this._ribsCollection.ItemPropertyChanged -= (s, e) => this.OnChangeProperty();
-
-                    foreach (var rib in this._ribsCollection)
-                        rib.ChangeDistanceLeft -= HandleChangeDistanceLeft;
-                }
-
+                    
                 this._ribsCollection = value;
 
                 if (this._ribsCollection != null)
-                {
                     this._ribsCollection.ItemPropertyChanged += (s, e) => this.OnChangeProperty();
-
-                    foreach (var rib in this._ribsCollection)
-                        rib.ChangeDistanceLeft += HandleChangeDistanceLeft;
-                }
             }
         }
-
-        #endregion Weld's Properties
         
-        [JsonIgnore]
-        /// <summary>
-        /// Изображение рёбер плиты
-        /// </summary>
-        public override sealed BitmapImage RebraImage
-        {
-            get => Equals(this.ScoseType, ScoseTypes.Rect) ? (this._rebraImage = JoinRebra(GetStartRebraImage(), GetBodyRebraImage(), GetEndRebraImage())) : null;
-            set => this._rebraImage = value;
-        }
-
-        [JsonIgnore]
-        /// <summary>
-        /// Общее изображение плиты
-        /// </summary>
-        public override sealed BitmapImage GenericImage { get => this.GetGenericImage(); set => this._plitaImage = value; }
-
         #endregion
 
         #region Constructor
 
-        public Plita(DetalType type) : base(type)
+        public Plita() : base()
         {
-            this.ChangePropertyEvent += this.HandleChangeProperty;
-            this.SelectDefoultPlateProperties();
-
-            //this.PlateWidth = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).Width;
-            //this.PlateBevelToLeft = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).BevelToStart;
-            //this.PlateBevelToRight = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).BevelToEnd;
-            //this.DistanceForWelding = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).DistanceForWelding;
-            //this.DistanceForSearch = (ConfigurationManager.GetSection("plita") as PlitaConfigurationSection).DistanceForSearch;
-
-            //this.RibsCollection = this.FillRibsCollection();
+            this.RibsCollection = this.FillRibsCollection();
             //this.WeldingSchema = this.FillWeldingSchema();
+
+            this.ChangePropertyEvent += this.HandleChangeProperty;
         }
-
-        #endregion
-
-        #region Public functions
-
-        //public async Task OnChange() => this.Change;
-
-        //public async Task OnChange() => await base.OnChange(this.Change);
 
         #endregion
 
         #region Private functions
 
         #region Handle
-
-        /// <summary>
-        /// Делегат изменения расстояния до следующего ребра слева
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void HandleChangeDistanceLeft(object sender, EventArgs e)
-        {
-            if (sender == null || !(sender is Rib rib))
-                return;
-
-            if (this.ParalleleRibs)
-                rib.DistanceRight = rib.DistanceLeft;
-        }
 
         /// <summary>
         /// Делегат изменения свойства детали
@@ -534,124 +427,160 @@ namespace ForRobot.Model.Detals
         {
             switch (e.PropertyName)
             {
-                case nameof(this.DistanceToFirstRib):
-                    if (this.RibsCollection?.Count == 0)
-                        return;
-
-                    this.RibsCollection[0].DistanceLeft = base.DistanceToFirstRib;
-                    this.RibsCollection[0].DistanceRight = base.DistanceToFirstRib;
-                    break;
-
-                case nameof(this.DistanceBetweenRibs):
-                    if (this.RibsCollection?.Count == 0)
-                        return;
-
-                    for (int i = 1; i < this.RibsCollection.Count; i++)
+                case nameof(this.DiferentDistance):
+                    if (!this.DiferentDistance && this.RibsCollection?.Count > 0)
                     {
-                        this.RibsCollection[i].DistanceLeft = base.DistanceBetweenRibs;
-                        this.RibsCollection[i].DistanceRight = base.DistanceBetweenRibs;
+                        for (int i = 0; i < this.RibsCollection.Count; i++)
+                        {
+                            this.RibsCollection[i].IdentToLeft = this.RibsIdentToLeft;
+                            this.RibsCollection[i].IdentToRight = this.RibsIdentToRight;
+
+                            if (i == 0)
+                            {
+                                this.RibsCollection[i].DistanceLeft = this.DistanceToFirstRib;
+                                continue;
+                            }
+                            this.RibsCollection[i].DistanceLeft = this.DistanceBetweenRibs;
+                        }
                     }
                     break;
 
-                case nameof(this.DissolutionRight):
-                    if (this.RibsCollection?.Count == 0)
-                        return;
-
-                    for (int i = 0; i < this.RibsCollection.Count; i++)
+                case nameof(this.ParalleleRibs):
+                    if (this.ParalleleRibs && this.RibsCollection?.Count > 0)
                     {
-                        this.RibsCollection[i].DissolutionRight = base.DissolutionRight;
+                        for (int i = 0; i < this.RibsCollection.Count; i++)
+                        {
+                            Rib rib = this.RibsCollection[i];
+
+                            if (i == 0)
+                                (rib.DistanceLeft, rib.DistanceRight) = (this.DistanceToFirstRib, this.DistanceToFirstRib);
+
+                            (rib.DistanceLeft, rib.DistanceRight) = (this.DistanceBetweenRibs, this.DistanceBetweenRibs);
+                        }
                     }
                     break;
 
-                case nameof(this.DissolutionLeft):
-                    if (this.RibsCollection?.Count == 0)
-                        return;
-
-                    for (int i = 0; i < this.RibsCollection.Count; i++)
+                case nameof(this.DiferentDissolutionLeft):
+                    if (!this.DiferentDissolutionLeft && this.RibsCollection?.Count > 0)
                     {
-                        this.RibsCollection[i].DissolutionLeft = base.DissolutionLeft;
+                        for (int i = 0; i < this.RibsCollection.Count; i++)
+                        {
+                            this.RibsCollection[i].DissolutionLeft = this.WeldsDissolutionLeft;
+                        }
                     }
                     break;
 
-                case nameof(this.IdentToRight):
-                    if (this.RibsCollection?.Count == 0)
-                        return;
-
-                    for (int i = 0; i < this.RibsCollection.Count; i++)
+                case nameof(this.DiferentDissolutionRight):
+                    if (!this.DiferentDissolutionRight && this.RibsCollection?.Count > 0)
                     {
-                        this.RibsCollection[i].IdentToRight = base.IdentToRight;
-                    }
-                    break;
-                    
-                case nameof(this.IdentToLeft):
-                    if (this.RibsCollection?.Count == 0)
-                        return;
-
-                    for (int i = 0; i < this.RibsCollection.Count; i++)
-                    {
-                        this.RibsCollection[i].IdentToLeft = base.IdentToLeft;
+                        for (int i = 0; i < this.RibsCollection.Count; i++)
+                        {
+                            this.RibsCollection[i].DissolutionRight = this.WeldsDissolutionRight;
+                        }
                     }
                     break;
 
                 case nameof(this.RibsHeight):
-                    //if (this.RibsCollection?.Count > 0)
-                    //{
-                    //    for (int i = 0; i < this.RibsCollection.Count; i++)
-                    //    {
-                    //        this.RibsCollection[i].HightLeft = base.RibsHeight;
-                    //        this.RibsCollection[i].HightRight = base.RibsHeight;
-                    //    }
-                    //}
+                    for (int i = 0; i < this.RibsCollection?.Count; i++)
+                    {
+                        this.RibsCollection[i].Height = this.RibsHeight;
+                    }
+                    break;
+
+                case nameof(this.RibsThickness):
+                    for (int i = 0; i < this.RibsCollection?.Count; i++)
+                    {
+                        this.RibsCollection[i].Thickness = this.RibsThickness;
+                    }
+                    break;
+
+                case nameof(this.DistanceToFirstRib):
+                    if (this.RibsCollection?.Count == 0)
+                        break;
+
+                    this.RibsCollection[0].DistanceLeft = this.DistanceToFirstRib;
+                    this.RibsCollection[0].DistanceRight = this.DistanceToFirstRib;
+                    break;
+
+                case nameof(this.DistanceBetweenRibs):
+                    for (int i = 1; i < this.RibsCollection?.Count; i++)
+                    {
+                        this.RibsCollection[i].DistanceLeft = this.DistanceBetweenRibs;
+                        this.RibsCollection[i].DistanceRight = this.DistanceBetweenRibs;
+                    }
+                    break;
+
+                case nameof(this.RibsIdentToLeft):
+                    for (int i = 0; i < this.RibsCollection?.Count; i++)
+                    {
+                        this.RibsCollection[i].IdentToLeft = this.RibsIdentToLeft;
+                    }
+                    break;
+
+                case nameof(this.RibsIdentToRight):
+                    for (int i = 0; i < this.RibsCollection?.Count; i++)
+                    {
+                        this.RibsCollection[i].IdentToRight = this.RibsIdentToRight;
+                    }
+                    break;
+
+                case nameof(this.WeldsDissolutionLeft):
+                    for (int i = 0; i < this.RibsCollection?.Count; i++)
+                    {
+                        this.RibsCollection[i].DissolutionLeft = this.WeldsDissolutionLeft;
+                    }
+                    break;
+
+                case nameof(this.WeldsDissolutionRight):
+                    for (int i = 0; i < this.RibsCollection?.Count; i++)
+                    {
+                        this.RibsCollection[i].DissolutionRight = this.WeldsDissolutionRight;
+                    }
+                    break;
+
+                case nameof(this.RibsCount):
+                    if (this.RibsCollection == null || this.RibsCollection?.Count == 0)
+                        break;
+
+                    if (this.RibsCount > this.RibsCollection.Count)
+                        for (int i = this.RibsCollection.Count; i < this.RibsCount; i++)
+                        {
+                            this.RibsCollection.Add(this.RibsCollection.Last<Rib>().Clone() as Rib);
+                        }
+                    else
+                    {
+                        for (int i = this.RibsCollection.Count - 1; i >= this.RibsCount; i--)
+                            this.RibsCollection.RemoveAt(i);
+                    }
                     break;
             }
         }
 
         #endregion Handle
 
-        /// <summary>
-        /// Выгрузка стандартных для <see cref="ForRobot.Model.Detals.Plita"/> параметров
-        /// </summary>
-        private void SelectDefoultPlateProperties()
-        {
-            ForRobot.Libr.ConfigurationProperties.PlateConfigurationSection plateConfig = ConfigurationManager.GetSection("plate") as ForRobot.Libr.ConfigurationProperties.PlateConfigurationSection;
-            this.ReverseDeflection = plateConfig.ReverseDeflection;
-            this.PlateWidth = plateConfig.PlateWidth;
-            this.PlateLength = plateConfig.PlateLength;
-            this.PlateThickness = plateConfig.PlateThickness;
-            this.PlateBevelToLeft = plateConfig.PlateBevelToLeft;
-            this.PlateBevelToRight = plateConfig.PlateBevelToRight;
+        ///// <summary>
+        ///// Выгрузка стандартных для <see cref="ForRobot.Model.Detals.Plita"/> параметров
+        ///// </summary>
+        //private void SelectDefoultPlateProperties()
+        //{
+        //    ForRobot.Libr.ConfigurationProperties.PlateConfigurationSection plateConfig = ConfigurationManager.GetSection("plate") as ForRobot.Libr.ConfigurationProperties.PlateConfigurationSection;
+        //    this.ReverseDeflection = plateConfig.ReverseDeflection;
+        //    this.PlateWidth = plateConfig.PlateWidth;
+        //    this.PlateLength = plateConfig.PlateLength;
+        //    this.PlateThickness = plateConfig.PlateThickness;
+        //    this.PlateBevelToLeft = plateConfig.PlateBevelToLeft;
+        //    this.PlateBevelToRight = plateConfig.PlateBevelToRight;
 
-            this.RibsHeight = plateConfig.RibsHeight;
-            this.RibsThickness = plateConfig.RibsThickness;
-            this.RibsCount = plateConfig.RibsCount;
-            this.DistanceToFirstRib = plateConfig.DistanceToFirstRib;
-            this.DistanceBetweenRibs = plateConfig.DistanceBetweenRibs;
-            this.IdentToLeft = plateConfig.IdentToLeft;
-            this.IdentToRight = plateConfig.IdentToRight;
-            this.DissolutionLeft = plateConfig.DissolutionLeft;
-            this.DissolutionRight = plateConfig.DissolutionRight;
-
-            //this.PlateLength = PlitaConfig.Long;
-            //this.PlateWidth = PlitaConfig.Width;
-            //this.RibsHeight = PlitaConfig.Hight;
-            //this.DistanceToFirstRib = PlitaConfig.DistanceToFirstRib;
-            //this.DistanceBetweenRibs = PlitaConfig.DistanceBetweenRibs;
-            //this.IdentToLeft = PlitaConfig.DistanceToStart;
-            //this.IdentToRight = PlitaConfig.DistanceToEnd;
-            //this.DissolutionLeft = PlitaConfig.DissolutionStart;
-            //this.DissolutionRight = PlitaConfig.DissolutionEnd;
-            //this.PlateThickness = PlitaConfig.ThicknessPlita;
-            //this.RibsThickness = PlitaConfig.ThicknessRebro;
-            //this.SearchOffsetStart = PlitaConfig.SearchOffsetStart;
-            //this.SearchOffsetEnd = PlitaConfig.SearchOffsetEnd;
-            //this.SeamsOverlap = PlitaConfig.SeamsOverlap;
-            //this.TechOffsetSeamStart = PlitaConfig.TechOffsetSeamStart;
-            //this.TechOffsetSeamEnd = PlitaConfig.TechOffsetSeamEnd;
-            //this.ReverseDeflection = PlitaConfig.ReverseDeflection;
-            //this.WildingSpead = PlitaConfig.WildingSpead;
-            //this.ProgramNom = PlitaConfig.ProgramNom;
-            //this.RibsCount = PlitaConfig.SumReber;
-        }
+        //    this.RibsHeight = plateConfig.RibsHeight;
+        //    this.RibsThickness = plateConfig.RibsThickness;
+        //    this.RibsCount = plateConfig.RibsCount;
+        //    this.DistanceToFirstRib = plateConfig.DistanceToFirstRib;
+        //    this.DistanceBetweenRibs = plateConfig.DistanceBetweenRibs;
+        //    this.RibsIdentToLeft = plateConfig.RibsIdentToLeft;
+        //    this.RibsIdentToRight = plateConfig.RibsIdentToRight;
+        //    this.WeldsDissolutionLeft = plateConfig.WeldsDissolutionLeft;
+        //    this.WeldsDissolutionRight = plateConfig.WeldsDissolutionRight;
+        //}
 
         /// <summary>
         /// Заполнение коллекции расстояний
@@ -666,10 +595,10 @@ namespace ForRobot.Model.Detals
             {
                 rib = new Rib()
                 {
-                    IdentToLeft = this.IdentToLeft,
-                    IdentToRight = this.IdentToRight,
-                    DissolutionLeft = this.DissolutionLeft,
-                    DissolutionRight = this.DissolutionRight
+                    IdentToLeft = this.RibsIdentToLeft,
+                    IdentToRight = this.RibsIdentToRight,
+                    DissolutionLeft = this.WeldsDissolutionLeft,
+                    DistanceRight = this.WeldsDissolutionRight
                     //HightLeft = this.RibsHeight,
                     //HightRight = this.RibsHeight
                 };
@@ -706,23 +635,6 @@ namespace ForRobot.Model.Detals
         //    return schema;
         //}
 
-        private void ChangeRibCollection()
-        {
-            if (this.RibsCollection == null || this.RibsCollection?.Count == 0)
-                return;
-
-            if (this.RibsCount > this.RibsCollection.Count)
-                for (int i = this.RibsCollection.Count; i < this.RibsCount; i++)
-                {
-                    this.RibsCollection.Add(this.RibsCollection.Last<Rib>().Clone() as Rib);
-                }
-            else
-            {
-                for(int i = this.RibsCollection.Count - 1; i >= this.RibsCount; i--)
-                    this.RibsCollection.RemoveAt(i);
-            }
-        }
-
         //private void ChangeWeldingSchema()
         //{
         //    if (this.WeldingSchema == null || this.WeldingSchema?.Count == 0)
@@ -752,7 +664,7 @@ namespace ForRobot.Model.Detals
         public new Plita DeserializeDetal(string sJsonString = null)
         {
             if (string.IsNullOrEmpty(sJsonString))
-                return new Plita(Detals.DetalType.Plita);
+                return new Plita();
             else
                 return JsonConvert.DeserializeObject<Plita>(JObject.Parse(sJsonString, this._jsonLoadSettings).ToString(), this._jsonDeserializerSettings);
         }

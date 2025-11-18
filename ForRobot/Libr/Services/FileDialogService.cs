@@ -3,7 +3,7 @@ using System.IO;
 
 using Microsoft.Win32;
 
-namespace ForRobot.Services
+namespace ForRobot.Libr.Services
 {
     public interface IFileDialogService
     {

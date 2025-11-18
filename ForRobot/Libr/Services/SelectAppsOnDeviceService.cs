@@ -13,7 +13,7 @@ using Microsoft.Win32;
 
 using ForRobot.Model.Settings;
 
-namespace ForRobot.Services
+namespace ForRobot.Libr.Services
 {
     public static class SelectAppsOnDeviceService
     {

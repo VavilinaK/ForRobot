@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Media.Media3D;
 
-namespace ForRobot.Services
+namespace ForRobot.Libr.Services
 {
     public interface IWeldService
     {
@@ -49,10 +49,10 @@ namespace ForRobot.Services
 
                 double modelRibDistanceLeft = (double)rib.DistanceLeft * (double)ScaleFactor;
                 double modelRibDistanceRight = (double)rib.DistanceRight * (double)ScaleFactor;
-                double modelRibIdentToLeft = (double)rib.IdentToLeft * (double)ScaleFactor;
-                double modelRibIdentToRight = (double)rib.IdentToRight * (double)ScaleFactor;
-                double modelRibDissolutionLeft = (double)rib.DissolutionLeft * (double)ScaleFactor;
-                double modelRibDissolutionRight = (double)rib.DissolutionRight * (double)ScaleFactor;
+                double modelRibIdentToLeft = (double)rib.RibsIdentToLeft * (double)ScaleFactor;
+                double modelRibIdentToRight = (double)rib.RibsIdentToRight * (double)ScaleFactor;
+                double modelRibDissolutionLeft = (double)rib.WeldsDissolutionLeft * (double)ScaleFactor;
+                double modelRibDissolutionRight = (double)rib.WeldsDissolutionRight * (double)ScaleFactor;
 
                 double centerX = (modelRibIdentToLeft - modelRibIdentToRight) / 2;
 

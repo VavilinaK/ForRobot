@@ -253,14 +253,14 @@ namespace ForRobot.Libr.Behavior
                         item.IsVisible = true;
                     break;
 
-                case nameof(ForRobot.Model.Detals.Detal.IdentToLeft):
-                case nameof(ForRobot.Model.Detals.Detal.IdentToRight):
+                case nameof(ForRobot.Model.Detals.Detal.RibsIdentToLeft):
+                case nameof(ForRobot.Model.Detals.Detal.RibsIdentToRight):
                     foreach (var item in this.Items.Where(x => x != null && x.PropertyName.Contains("Ident")))
                         item.IsVisible = true;
                     break;
 
-                case nameof(Rib.DissolutionLeft):
-                case nameof(Rib.DissolutionRight):
+                case nameof(Rib.WeldsDissolutionLeft):
+                case nameof(Rib.WeldsDissolutionRight):
                     foreach (var item in this.Items.Where(x => x != null && x.PropertyName.Contains("Dissolution")))
                         item.IsVisible = true;
                     break;

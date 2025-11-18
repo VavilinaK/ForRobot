@@ -23,12 +23,15 @@ namespace ForRobot.Model.Detals
     {
         #region Private variables
 
+        private string _scoseType = ScoseTypes.Rect;
         private decimal _reverseDeflection;
         private decimal _plateWidth;
         private decimal _plateLength;
         private decimal _plateThickness;
         private decimal _plateBevelToLeft;
         private decimal _plateBevelToRight;
+        private decimal _plateBevelToLeftSave;
+        private decimal _plateBevelToRightSave;
         private decimal[] _XYZOffset = new decimal[3] { 0, 0, 0 };
         
         protected readonly JsonSerializerSettings _jsonDeserializerSettings = new JsonSerializerSettings()
@@ -45,14 +48,6 @@ namespace ForRobot.Model.Detals
 
         #region Public variables
 
-        public const int MIN_RIB_COUNT = 1;
-        
-        #region Static
-
-        #endregion Static
-
-        #region Virtual
-
         [JsonIgnore]
         /// <summary>
         /// Игнорируемы для Undo/Redo свойства
@@ -67,6 +62,21 @@ namespace ForRobot.Model.Detals
         /// Тип детали
         /// </summary>
         public virtual string DetalType { get; }
+
+        [JsonProperty("d_type")]
+        [JsonConverter(typeof(JsonCommentConverter), "Тип скоса")]
+        /// <summary>
+        /// Тип скоса
+        /// </summary>
+        public string ScoseType
+        {
+            get => this._scoseType;
+            set
+            {
+                this._scoseType = value;
+                this.OnChangeProperty(nameof(this.ScoseType));
+            }
+        }
 
         [JsonProperty("reverse_deflection")]
         [JsonConverter(typeof(JsonCommentConverter), "Обратный прогиб детали")]
@@ -229,8 +239,6 @@ namespace ForRobot.Model.Detals
        
         #endregion
 
-        #endregion
-
         #region Event
 
         /// <summary>
@@ -247,13 +255,35 @@ namespace ForRobot.Model.Detals
 
         #region Constructors
 
-        public Detal() { }
-
-        public Detal(DetalType type) { }
+        public Detal()
+        {
+            this.ChangePropertyEvent += this.HandleChangeProperty;
+        }
 
         #endregion
 
         #region Private functions
+
+        /// <summary>
+        /// Делегат изменения свойства детали
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void HandleChangeProperty(object sender, PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName == nameof(this.ScoseType))
+            {
+                if(this.ScoseType == ScoseTypes.Rect)
+                {
+                    (this._plateBevelToLeftSave, this._plateBevelToRightSave) = (this.PlateBevelToLeft, this.PlateBevelToRight);
+                    (this.PlateBevelToLeft, this.PlateBevelToRight) = (0, 0);
+                }
+                else if(this.PlateBevelToLeft == 0 || this.PlateBevelToRight == 0)
+                {
+                    (this.PlateBevelToLeft, this.PlateBevelToRight) = (this._plateBevelToLeftSave, this._plateBevelToRightSave);
+                }
+            }
+        }
 
         #endregion
 
@@ -342,6 +372,7 @@ namespace ForRobot.Model.Detals
             {
                 if (disposing)
                 {
+                    this.ChangePropertyEvent -= this.HandleChangeProperty;
                     GC.SuppressFinalize(this);
                 }
             }

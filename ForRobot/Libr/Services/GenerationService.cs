@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 using ForRobot.Model.Detals;
 
-namespace ForRobot.Services
+namespace ForRobot.Libr.Services
 {
     public class GenerationService
     {

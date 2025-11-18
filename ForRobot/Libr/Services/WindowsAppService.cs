@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ForRobot.Views.Windows;
 
-namespace ForRobot.Services
+namespace ForRobot.Libr.Services
 {
     public interface IWindowsAppService
     {

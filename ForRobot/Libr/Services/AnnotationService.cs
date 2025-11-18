@@ -8,7 +8,7 @@ using ForRobot.Strategies.AnnotationStrategies;
 using ForRobot.Model.Detals;
 using ForRobot.Model.File3D;
 
-namespace ForRobot.Services
+namespace ForRobot.Libr.Services
 {
     /// <summary>
     /// Класс сервис для составления коллекции <see cref="Annotation"/>, т.е. параметров детали
