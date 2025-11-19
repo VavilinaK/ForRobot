@@ -7,7 +7,7 @@
       xmlns:vm="clr-namespace:ForRobot.ViewModels"
       xmlns:lib="clr-namespace:ForRobot.Libr"
       xmlns:client="clr-namespace:ForRobot.Libr.Client"
-      xmlns:model="clr-namespace:ForRobot.Model"
+      xmlns:model="clr-namespace:ForRobot.Models"
       xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
       xmlns:control="clr-namespace:ForRobot.Views.Controls"

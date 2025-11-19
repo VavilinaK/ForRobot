@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-using ForRobot.Model.Controls;
+using ForRobot.Models.Controls;
 
 namespace ForRobot.ViewModels.Controls
 {

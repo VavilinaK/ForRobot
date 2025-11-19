@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-using ForRobot.Model;
+using ForRobot.Models;
 
 namespace ForRobot.ViewModels
 {
@@ -67,18 +67,18 @@ namespace ForRobot.ViewModels
         /// </summary>
         /// <param name="files">Корневой каталог</param>
         /// <returns></returns>
-        private static List<ForRobot.Model.Controls.IFile> SelectCheckedFiles(ForRobot.Model.Controls.IFile files)
+        private static List<ForRobot.Models.Controls.IFile> SelectCheckedFiles(ForRobot.Models.Controls.IFile files)
         {
-            List<ForRobot.Model.Controls.IFile> checkedFiles = new List<ForRobot.Model.Controls.IFile>(); // Список отмеченных файлов
+            List<ForRobot.Models.Controls.IFile> checkedFiles = new List<ForRobot.Models.Controls.IFile>(); // Список отмеченных файлов
             foreach (var file in files.Children)
             {
-                Stack<ForRobot.Model.Controls.IFile> stack = new Stack<Model.Controls.IFile>();
+                Stack<ForRobot.Models.Controls.IFile> stack = new Stack<Models.Controls.IFile>();
                 stack.Push(file);
-                ForRobot.Model.Controls.IFile current;
+                ForRobot.Models.Controls.IFile current;
                 do
                 {
                     current = stack.Pop();
-                    IEnumerable<ForRobot.Model.Controls.IFile> children = current.Children;
+                    IEnumerable<ForRobot.Models.Controls.IFile> children = current.Children;
 
                     if (current.IsCheck)
                         checkedFiles.Add(current);
@@ -98,7 +98,7 @@ namespace ForRobot.ViewModels
         /// </summary>
         /// <param name="files">Коренной каталог</param>
         /// <returns></returns>
-        private static async ValueTask<List<ForRobot.Model.Controls.IFile>> SelectCheckedFilesAsync(ForRobot.Model.Controls.IFile files) => await Task.Run(() => SelectCheckedFiles(files));
+        private static async ValueTask<List<ForRobot.Models.Controls.IFile>> SelectCheckedFilesAsync(ForRobot.Models.Controls.IFile files) => await Task.Run(() => SelectCheckedFiles(files));
 
         /// <summary>
         /// Асинхронная отправка файлов

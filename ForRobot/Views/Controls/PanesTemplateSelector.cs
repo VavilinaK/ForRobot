@@ -17,10 +17,10 @@ namespace ForRobot.Views.Controls
         {
             var itemAsLayoutContent = item as LayoutContent;
 
-            if (item is Model.File3D.File3D)
+            if (item is Models.File3D.File3D)
                 return FileViewTemplate;
 
-            if (item is Model.File3D.File3D)
+            if (item is Models.File3D.File3D)
                 return FileStatsViewTemplate;
 
             return base.SelectTemplate(item, container);

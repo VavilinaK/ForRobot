@@ -4,10 +4,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-using ForRobot.Model.File3D;
-using ForRobot.Model.Detals;
+using ForRobot.Models.File3D;
+using ForRobot.Models.Detals;
 using ForRobot.Libr.UndoRedo;
-using ForRobot.Strategies.ModelingStrategies;
+using ForRobot.Libr.Strategies.ModelingStrategies;
 
 namespace ForRobot.Libr.Services
 {
@@ -17,11 +17,11 @@ namespace ForRobot.Libr.Services
         private CancellationTokenSource _cancellationTokenSource;
         private readonly object _updateLock = new object();
         private readonly int _debounceDelayMs = 150;
-        private readonly ForRobot.Services.ModelingService _modelingService;
+        private readonly ForRobot.Libr.Services.ModelingService _modelingService;
         
         public ChangeService()
         {
-            double scaleFactor = (double)ForRobot.Model.Settings.Settings.ScaleFactor;
+            double scaleFactor = (double)ForRobot.Models.Settings.Settings.ScaleFactor;
             var strategies = new List<IDetalModelingStrategy>
             {
                 new PlateModelingStrategy(scaleFactor)
@@ -30,18 +30,18 @@ namespace ForRobot.Libr.Services
         }
 
         /// <summary>
-        /// Делегат изменения <see cref="ForRobot.Model.Detals.Detal"/> оповещающий о изменению его свойств
+        /// Делегат изменения <see cref="ForRobot.Models.Detals.Detal"/> оповещающий о изменению его свойств
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         public void HandleDetalChanged_Properties(object sender, Libr.ValueChangedEventArgs<Detal> e)
         {
-            Model.File3D.File3D file3D = sender as Model.File3D.File3D;
+            Models.File3D.File3D file3D = sender as Models.File3D.File3D;
             RaisePropertyChanged(nameof(file3D.CurrentDetal));
 
-            if (file3D.CurrentDetal is ForRobot.Model.Detals.Plita)
+            if (file3D.CurrentDetal is ForRobot.Models.Detals.Plita)
             {
-                Plita plita = file3D.CurrentDetal as ForRobot.Model.Detals.Plita;
+                Plita plita = file3D.CurrentDetal as ForRobot.Models.Detals.Plita;
                 RaisePropertyChanged(nameof(plita.SelectedWeldingSchema));
                 RaisePropertyChanged(nameof(plita.WeldingSchema));
             }
@@ -58,7 +58,7 @@ namespace ForRobot.Libr.Services
         }
 
         /// <summary>
-        /// Делегат изменения <see cref="ForRobot.Model.Detals.Detal"/>, изменяющий CurrentModel в классе <see cref="File3D"/>
+        /// Делегат изменения <see cref="ForRobot.Models.Detals.Detal"/>, изменяющий CurrentModel в классе <see cref="File3D"/>
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -76,24 +76,24 @@ namespace ForRobot.Libr.Services
         }
 
         /// <summary>
-        /// Делегат изменения CurrentModel в <see cref="ForRobot.Model.File3D.File3D"/>
+        /// Делегат изменения CurrentModel в <see cref="ForRobot.Models.File3D.File3D"/>
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         public void HandleModelChanged(object sender, EventArgs e)
         {
-            Model.File3D.File3D file3D = sender as Model.File3D.File3D;
+            Models.File3D.File3D file3D = sender as Models.File3D.File3D;
             RaisePropertyChanged(nameof(file3D.CurrentModel));
         }
 
         /// <summary>
-        /// Делегат изменения свойств <see cref="ForRobot.Model.File3D.File3D"/>, изменяющий CurrentModel
+        /// Делегат изменения свойств <see cref="ForRobot.Models.File3D.File3D"/>, изменяющий CurrentModel
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         public void HandleFileChange(object sender, EventArgs e)
         {
-            Model.File3D.File3D file3D = sender as Model.File3D.File3D;
+            Models.File3D.File3D file3D = sender as Models.File3D.File3D;
             RaisePropertyChanged(nameof(file3D));
         }
 

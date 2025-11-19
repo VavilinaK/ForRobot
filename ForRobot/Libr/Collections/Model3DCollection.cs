@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 using HelixToolkit.Wpf;
 
-using ForRobot.Model.File3D;
+using ForRobot.Models.File3D;
 
 namespace ForRobot.Libr.Collections
 {

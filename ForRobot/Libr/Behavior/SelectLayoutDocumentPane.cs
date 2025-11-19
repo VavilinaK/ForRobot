@@ -8,9 +8,9 @@ namespace ForRobot.Libr.Behavior
 {
     public class SelectLayoutDocumentPane
     {
-        public ForRobot.Model.File3D.File3D SelectedFile { get; private set; }
+        public ForRobot.Models.File3D.File3D SelectedFile { get; private set; }
 
-        public SelectLayoutDocumentPane(ForRobot.Model.File3D.File3D file)
+        public SelectLayoutDocumentPane(ForRobot.Models.File3D.File3D file)
         {
             this.SelectedFile = file;
         }

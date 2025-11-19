@@ -1,13 +1,13 @@
 ﻿using System;
 
-using ForRobot.Model.Detals;
+using ForRobot.Models.Detals;
 
 namespace ForRobot.Libr.Messages
 {
     /// <summary>
     /// Сообщение обновления/передачи детали
     /// <para/>
-    /// Используется для обновления свойства <see cref="ForRobot.Model.Detals.Detal"/> в HelixAnnotationsBehavior и HelixWeldsBehavior
+    /// Используется для обновления свойства <see cref="ForRobot.Models.Detals.Detal"/> в HelixAnnotationsBehavior и HelixWeldsBehavior
     /// </summary>
     public class UpdateCurrentDetalMessage
     {

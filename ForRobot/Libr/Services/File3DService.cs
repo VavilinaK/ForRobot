@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.ComponentModel;
 
-using ForRobot.Model.Detals;
-using ForRobot.Model.File3D;
+using ForRobot.Models.Detals;
+using ForRobot.Models.File3D;
 
 namespace ForRobot.Libr.Services
 {

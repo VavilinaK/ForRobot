@@ -33,7 +33,7 @@ namespace ForRobot.Libr.Services
         /// <summary>
         /// Открытие окна создание файла
         /// </summary>
-        void OpenCreateWindow(ForRobot.Model.Detals.DetalType detalType, string path = null);
+        void OpenCreateWindow(ForRobot.Models.Detals.DetalType detalType, string path = null);
 
         /// <summary>
         /// Открытие окна настроек
@@ -89,7 +89,7 @@ namespace ForRobot.Libr.Services
             return selectedItems;
         }
 
-        public void OpenCreateWindow(ForRobot.Model.Detals.DetalType detalType, string path = null)
+        public void OpenCreateWindow(ForRobot.Models.Detals.DetalType detalType, string path = null)
         {
             using (this.CreateWindow = new ForRobot.Views.Windows.CreateWindow(detalType, path))
             {

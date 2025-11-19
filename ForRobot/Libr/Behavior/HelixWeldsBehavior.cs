@@ -6,8 +6,8 @@ using System.ComponentModel;
 
 using GalaSoft.MvvmLight.Messaging;
 
-using ForRobot.Model.File3D;
-using ForRobot.Model.Detals;
+using ForRobot.Models.File3D;
+using ForRobot.Models.Detals;
 
 namespace ForRobot.Libr.Behavior
 {
@@ -100,7 +100,7 @@ namespace ForRobot.Libr.Behavior
 
         private void UpdateWelds()
         {
-            ForRobot.Services.IWeldService weldService = new ForRobot.Services.WeldService(ForRobot.Model.Settings.Settings.ScaleFactor);
+            ForRobot.Services.IWeldService weldService = new ForRobot.Services.WeldService(ForRobot.Models.Settings.Settings.ScaleFactor);
 
             //if (this.Detal == null)
             //    return;

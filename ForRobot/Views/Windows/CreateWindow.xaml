@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ForRobot.Views.Windows"
-        xmlns:detals="clr-namespace:ForRobot.Model.Detals"
+        xmlns:detals="clr-namespace:ForRobot.Models.Detals"
         xmlns:vm="clr-namespace:ForRobot.ViewModels"
         xmlns:h="http://helix-toolkit.org/wpf"
         mc:Ignorable="d"

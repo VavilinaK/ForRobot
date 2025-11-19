@@ -1,6 +1,6 @@
 ﻿using System;
 
-using ForRobot.Model.Detals;
+using ForRobot.Models.Detals;
 
 namespace ForRobot.Libr.Factories.DetalFactory
 {

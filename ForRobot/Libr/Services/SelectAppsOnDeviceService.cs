@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 using Microsoft.Win32;
 
-using ForRobot.Model.Settings;
+using ForRobot.Models.Settings;
 
 namespace ForRobot.Libr.Services
 {

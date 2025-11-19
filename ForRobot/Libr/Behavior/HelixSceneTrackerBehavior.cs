@@ -9,7 +9,7 @@ using System.Collections.Specialized;
 using GalaSoft.MvvmLight.Messaging;
 using HelixToolkit.Wpf;
 
-using ForRobot.Model.File3D;
+using ForRobot.Models.File3D;
 
 namespace ForRobot.Libr.Behavior
 {

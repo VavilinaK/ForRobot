@@ -46,12 +46,12 @@ namespace ForRobot
         /// </summary>
         private string FilePathOnPC { get => Directory.GetCurrentDirectory(); }
 
-        /// <summary>
-        /// Экземпляр app из app.config
-        /// </summary>
-        private ForRobot.Libr.ConfigurationProperties.AppConfigurationSection AppConfig { get; set; } = (ConfigurationManager.GetSection("app") as ForRobot.Libr.ConfigurationProperties.AppConfigurationSection);
+        ///// <summary>
+        ///// Экземпляр app из app.config
+        ///// </summary>
+        //private ForRobot.Libr.ConfigurationProperties.AppConfigurationSection AppConfig { get; set; } = (ConfigurationManager.GetSection("app") as ForRobot.Libr.ConfigurationProperties.AppConfigurationSection);
 
-        private static ForRobot.Model.Settings.Settings _settings;
+        private static ForRobot.Models.Settings.Settings _settings;
 
         #endregion
 
@@ -62,7 +62,7 @@ namespace ForRobot
         /// <summary>
         /// Сервис открытия окон приложения
         /// </summary>
-        public readonly ForRobot.Services.IWindowsAppService WindowsAppService = new ForRobot.Services.WindowsAppService();
+        public readonly ForRobot.Libr.Services.IWindowsAppService WindowsAppService = new ForRobot.Libr.Services.WindowsAppService();
 
         /// <summary>
         /// Директория AvalonDock.config файла, в котором сохраняется макет интерфейса.
@@ -78,9 +78,9 @@ namespace ForRobot
         /// Настройки приложения
         /// (выгружаются из временных файлов, иначе инициализируются как класс)
         /// </summary>
-        public ForRobot.Model.Settings.Settings Settings
+        public ForRobot.Models.Settings.Settings Settings
         {
-            get => _settings ?? (_settings = ForRobot.Model.Settings.Settings.GetSettings());
+            get => _settings ?? (_settings = ForRobot.Models.Settings.Settings.GetSettings());
             set
             {
                 _settings = value;
@@ -90,7 +90,7 @@ namespace ForRobot
         /// <summary>
         /// Открытые файлы 3D моделей
         /// </summary>
-        public System.Collections.ObjectModel.ObservableCollection<Model.File3D.File3D> OpenedFiles { get; set; } = new System.Collections.ObjectModel.ObservableCollection<Model.File3D.File3D>();
+        public System.Collections.ObjectModel.ObservableCollection<Models.File3D.File3D> OpenedFiles { get; set; } = new System.Collections.ObjectModel.ObservableCollection<Models.File3D.File3D>();
 
         /// <summary>
         /// Обработчик сохранения настроек
@@ -123,7 +123,7 @@ namespace ForRobot
                 this.Logger.Trace("Запуск приложения");
 
                 foreach (var i in e.Args) // Исп. для открытия файла модели "с помощью"
-                    this.OpenedFiles.Add(new Model.File3D.File3D(i));
+                    this.OpenedFiles.Add(new Models.File3D.File3D(i));
 
                 RunApp(e.Args);
                 await Task.Run(() => StartPipeServer());
@@ -391,7 +391,7 @@ namespace ForRobot
                 {
                     if (File.Exists(arg))
                     {
-                        this.OpenedFiles.Add(new Model.File3D.File3D(arg));
+                        this.OpenedFiles.Add(new Models.File3D.File3D(arg));
                     }
                 }
             }
@@ -440,7 +440,7 @@ namespace ForRobot
         /// <returns>Верный ли введенный пользователем пин-код</returns>
         public static bool EqualsPinCode()
         {
-            string pin = new ForRobot.Services.WindowsAppService().InputWindowShow();
+            string pin = new ForRobot.Libr.Services.WindowsAppService().InputWindowShow();
             return !string.IsNullOrEmpty(pin) && Sha256(pin) == ForRobot.Properties.Settings.Default.PinCode;
         }
 

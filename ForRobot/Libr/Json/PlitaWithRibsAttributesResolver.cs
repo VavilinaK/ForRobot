@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-using ForRobot.Model.Detals;
+using ForRobot.Models.Detals;
 
 namespace ForRobot.Libr.Json
 {
@@ -30,7 +30,7 @@ namespace ForRobot.Libr.Json
         {
             IList<Newtonsoft.Json.Serialization.JsonProperty> props = base.CreateProperties(type, memberSerialization);
 
-            if(props.Count > 0 && props[0].DeclaringType.FullName == "ForRobot.Model.Detals.Plita")
+            if(props.Count > 0 && props[0].DeclaringType.FullName == "ForRobot.Models.Detals.Plita")
             {
                 if (this._scoseType == ScoseTypes.Rect)
                 {

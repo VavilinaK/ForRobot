@@ -7,9 +7,9 @@ namespace ForRobot.Libr.Configuration
 {
     public class ConfigurationProvider : ForRobot.Libr.Services.Providers.IConfigurationProvider
     {
-        public PlateWeldingConfigurationSection GetPlateWeldingConfig() => this.SelectConfig("plateWelding") as PlateWeldingConfigurationSection;
-
         public PlateConfigurationSection GetPlitaConfig() => this.SelectConfig("plate") as PlateConfigurationSection;
+
+        public RobotConfigurationSection GetRobotConfig() => this.SelectConfig("robot") as RobotConfigurationSection;
 
         private System.Configuration.ConfigurationSection SelectConfig(string configName)
         {

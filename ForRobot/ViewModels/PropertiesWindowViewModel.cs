@@ -14,8 +14,8 @@ using System.Collections.ObjectModel;
 
 using AvalonDock.Layout;
 
-using ForRobot.Model.Detals;
-using ForRobot.Model.Settings;
+using ForRobot.Models.Detals;
+using ForRobot.Models.Settings;
 
 namespace ForRobot.ViewModels
 {
@@ -51,7 +51,7 @@ namespace ForRobot.ViewModels
         /// </summary>
         public string SelectedDetalTypeName
         {
-            get => this._selectedDetalTypeName ?? (this._selectedDetalTypeName = ForRobot.Model.Detals.DetalTypes.Plita);
+            get => this._selectedDetalTypeName ?? (this._selectedDetalTypeName = ForRobot.Models.Detals.DetalTypes.Plita);
             set
             {
                 Set(ref this._selectedDetalTypeName, value);
@@ -64,7 +64,7 @@ namespace ForRobot.ViewModels
         /// </summary>
         public string SelectedDetalTypeScript
         {
-            get => this._selectedDetalTypeScript ?? (this._selectedDetalTypeScript = ForRobot.Model.Detals.DetalTypes.Plita);
+            get => this._selectedDetalTypeScript ?? (this._selectedDetalTypeScript = ForRobot.Models.Detals.DetalTypes.Plita);
             set
             {
                 Set(ref this._selectedDetalTypeScript, value);
@@ -179,7 +179,7 @@ namespace ForRobot.ViewModels
             get
             {
                 List<string> detalTypesList = new List<string>();
-                foreach (var f in typeof(ForRobot.Model.Detals.DetalTypes).GetFields())
+                foreach (var f in typeof(ForRobot.Models.Detals.DetalTypes).GetFields())
                 {
                     detalTypesList.Add(f.GetValue(null).ToString());
                 }
@@ -282,7 +282,7 @@ namespace ForRobot.ViewModels
             if (DesignerProperties.GetIsInDesignMode(new DependencyObject()))
                 return;
 
-            this.Settings = App.Current.Settings.Clone() as ForRobot.Model.Settings.Settings;
+            this.Settings = App.Current.Settings.Clone() as ForRobot.Models.Settings.Settings;
             this.Settings.ChangePropertyEvent -= App.Current.SaveAppSettings;
         }
 

@@ -7,11 +7,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 using GalaSoft.MvvmLight.Messaging;
-using HelixToolkit.Wpf;
 
-using ForRobot.Model.File3D;
-using ForRobot.Model.Detals;
-using ForRobot.Strategies.AnnotationStrategies;
+using ForRobot.Models.File3D;
+using ForRobot.Models.Detals;
+using ForRobot.Libr.Strategies.AnnotationStrategies;
 
 namespace ForRobot.Libr.Behavior
 {
@@ -22,7 +21,7 @@ namespace ForRobot.Libr.Behavior
     {
         #region Private variables
 
-        private readonly ForRobot.Services.AnnotationService _annotationService;
+        private readonly ForRobot.Libr.Services.AnnotationService _annotationService;
         private readonly List<IDetalAnnotationStrategy> _strategies;
 
         #endregion
@@ -113,7 +112,7 @@ namespace ForRobot.Libr.Behavior
 
         public HelixAnnotationsBehavior()
         {
-            double scaleFactor = (double)ForRobot.Model.Settings.Settings.ScaleFactor;
+            double scaleFactor = (double)ForRobot.Models.Settings.Settings.ScaleFactor;
             this._strategies = new List<IDetalAnnotationStrategy>
             {
                 new PlateAnnotationStrategy(scaleFactor)
@@ -230,11 +229,10 @@ namespace ForRobot.Libr.Behavior
                 return value?.ToString() ?? string.Empty;
         }
 
-
         /// <summary>
         /// Обновление видимости <see cref="Annotation"/>
         /// </summary>
-        /// <param name="propertyName">Имя свойства <see cref="Model.Detals.Detal"/></param>
+        /// <param name="propertyName">Имя свойства <see cref="Models.Detals.Detal"/></param>
         private void UpdateAnnotationsIsVisibale(string propertyName)
         {
             if (this.Items == null)
@@ -245,22 +243,22 @@ namespace ForRobot.Libr.Behavior
 
             switch (propertyName)
             {
-                case nameof(ForRobot.Model.Detals.Detal.DistanceToFirstRib):
-                case nameof(ForRobot.Model.Detals.Detal.DistanceBetweenRibs):
+                case nameof(ForRobot.Models.Detals.Plita.DistanceToFirstRib):
+                case nameof(ForRobot.Models.Detals.Plita.DistanceBetweenRibs):
                 case nameof(Rib.DistanceLeft):
                 case nameof(Rib.DistanceRight):
                     foreach (var item in this.Items.Where(x => x != null && x.PropertyName.Contains("Distance")))
                         item.IsVisible = true;
                     break;
 
-                case nameof(ForRobot.Model.Detals.Detal.RibsIdentToLeft):
-                case nameof(ForRobot.Model.Detals.Detal.RibsIdentToRight):
+                case nameof(ForRobot.Models.Detals.Plita.RibsIdentToLeft):
+                case nameof(ForRobot.Models.Detals.Plita.RibsIdentToRight):
                     foreach (var item in this.Items.Where(x => x != null && x.PropertyName.Contains("Ident")))
                         item.IsVisible = true;
                     break;
 
-                case nameof(Rib.WeldsDissolutionLeft):
-                case nameof(Rib.WeldsDissolutionRight):
+                case nameof(Rib.DissolutionLeft):
+                case nameof(Rib.DissolutionRight):
                     foreach (var item in this.Items.Where(x => x != null && x.PropertyName.Contains("Dissolution")))
                         item.IsVisible = true;
                     break;

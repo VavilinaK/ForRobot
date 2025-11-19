@@ -2,7 +2,7 @@
 using System.Linq;
 
 using ForRobot.Libr.Services.Providers;
-using ForRobot.Model.Detals;
+using ForRobot.Models.Detals;
 using ForRobot.Libr.Configuration;
 
 namespace ForRobot.Libr.Factories.DetalFactory
@@ -31,13 +31,6 @@ namespace ForRobot.Libr.Factories.DetalFactory
                 default:
                     throw new ArgumentException($"Неизвестный тип детали: {type}", nameof(type));
             }
-            //return type switch
-            //{
-            //    DetalType.Plita => CreatePlita(),
-            //    DetalType.Stringer => CreateStringer(),
-            //    DetalType.Treygolnik => CreateTreygolnik(),
-            //    _ => throw new ArgumentException($"Неизвестный тип детали: {type}", nameof(type))
-            //};
         }
 
         private Plita CreatePlita()

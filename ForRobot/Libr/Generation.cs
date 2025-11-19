@@ -16,8 +16,8 @@ using System.Diagnostics;
 //using Python.Runtime;
 //using Python.Runtime.Native;
 
-using ForRobot.Model;
-using ForRobot.Model.Detals;
+using ForRobot.Models;
+using ForRobot.Models.Detals;
 
 namespace ForRobot.Libr
 {
@@ -106,7 +106,7 @@ namespace ForRobot.Libr
         {
             switch (obj)
             {
-                case ForRobot.Model.Detals.Plita plita:
+                case ForRobot.Models.Detals.Plita plita:
                     return (ConfigurationManager.GetSection("app") as ForRobot.Libr.ConfigurationProperties.AppConfigurationSection).PlitaGenerator;
 
                 default:

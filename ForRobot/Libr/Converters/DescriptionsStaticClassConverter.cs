@@ -6,7 +6,7 @@ using System.Globalization;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-using ForRobot.Model.Detals;
+using ForRobot.Models.Detals;
 
 namespace ForRobot.Libr.Converters
 {
@@ -41,7 +41,7 @@ namespace ForRobot.Libr.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return ForRobot.Model.Detals.ScoseTypes.FieldByDescription(value as string);
+            return ForRobot.Models.Detals.ScoseTypes.FieldByDescription(value as string);
         }
     }
 }

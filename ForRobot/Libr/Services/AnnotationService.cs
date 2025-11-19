@@ -4,9 +4,9 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-using ForRobot.Strategies.AnnotationStrategies;
-using ForRobot.Model.Detals;
-using ForRobot.Model.File3D;
+using ForRobot.Libr.Strategies.AnnotationStrategies;
+using ForRobot.Models.Detals;
+using ForRobot.Models.File3D;
 
 namespace ForRobot.Libr.Services
 {

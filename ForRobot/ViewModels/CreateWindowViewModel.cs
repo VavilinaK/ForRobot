@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Microsoft.Win32;
 
-using ForRobot.Model.Detals;
+using ForRobot.Models.Detals;
 
 namespace ForRobot.ViewModels
 {
@@ -24,7 +24,7 @@ namespace ForRobot.ViewModels
         private string _plitaProgramName = App.Current.Settings.PlitaProgramName;
         private string _plitaStringerProgramName = App.Current.Settings.PlitaStringerProgramName;
         private string _plitaTreugolnikProgramName = App.Current.Settings.PlitaTreugolnikProgramName;
-        private Model.File3D.File3D _file3D;
+        private Models.File3D.File3D _file3D;
 
         #endregion Private variables
 
@@ -39,7 +39,7 @@ namespace ForRobot.ViewModels
             set
             {
                 this._selectedDetalType = value;
-                this.File3D = new Model.File3D.File3D(Detal.GetDetal(this._selectedDetalType));
+                this.File3D = new Models.File3D.File3D(Detal.GetDetal(this._selectedDetalType));
                 RaisePropertyChanged(nameof(this.SelectedDetalType), nameof(this.FileName));
             }
         }
@@ -85,7 +85,7 @@ namespace ForRobot.ViewModels
 
         public string FilePath { get => this._filePath; set => Set(ref this._filePath, value); }
 
-        public Model.File3D.File3D File3D { get => this._file3D; set => Set(ref this._file3D, value); }
+        public Models.File3D.File3D File3D { get => this._file3D; set => Set(ref this._file3D, value); }
         
         /// <summary>
         /// Коллекция видов деталей
@@ -95,7 +95,7 @@ namespace ForRobot.ViewModels
             get
             {
                 List<string> detalTypesList = new List<string>();
-                foreach (var f in typeof(ForRobot.Model.Detals.DetalTypes).GetFields())
+                foreach (var f in typeof(ForRobot.Models.Detals.DetalTypes).GetFields())
                 {
                     detalTypesList.Add(f.GetValue(null).ToString());
                 }

@@ -3,7 +3,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:ForRobot.Themes"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib"
-                    xmlns:detals="clr-namespace:ForRobot.Model.Detals"
+                    xmlns:detals="clr-namespace:ForRobot.Models.Detals"
                     xmlns:behavior="clr-namespace:ForRobot.Libr.Behavior">
 
     <BitmapImage x:Key="ImageRectangular" UriSource="/InterfaceOfRobots;component/Themes/Images/Rectangular.png"/>

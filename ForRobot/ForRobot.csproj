@@ -337,26 +337,24 @@
     <Compile Include="Libr\Messages\UpdateCurrentDetalMessage.cs" />
     <Compile Include="Libr\UndoRedo\IUndoRedo.cs" />
     <Compile Include="Libr\ValueChangedEventArgs.cs" />
-    <Compile Include="Libr\Configuration\ConfigurationProperties\PlateWeldingConfigurationSection.cs" />
-    <Compile Include="Model\Detals\WeldingProperties.cs" />
-    <Compile Include="Strategies\DetalObjectStrategies\AppConfigurationProvider.cs" />
+    <Compile Include="Models\Detals\WeldingProperties.cs" />
     <Compile Include="Libr\Services\Providers\IConfigurationProvider.cs" />
     <Compile Include="Themes\Colors.cs" />
-    <Compile Include="Model\Settings\ApplicationInfo.cs" />
-    <Compile Include="Model\Settings\PropertyColor.cs" />
-    <Compile Include="Model\Settings\ModeClosingApp.cs" />
-    <Compile Include="Model\Settings\Settings.cs" />
-    <Compile Include="Model\AppMessage.cs" />
-    <Compile Include="Model\Controls\FileFlags.cs" />
-    <Compile Include="Model\Detals\Hole.cs" />
-    <Compile Include="Model\File3D\Weld.cs" />
-    <Compile Include="Model\Detals\WeldingSchemas.cs" />
-    <Compile Include="Model\File3D\Annotation.cs" />
-    <Compile Include="Model\File3D\File3D.cs" />
-    <Compile Include="Model\File3D\Materials.cs" />
-    <Compile Include="Model\File3D\SceneItem.cs" />
+    <Compile Include="Models\Settings\ApplicationInfo.cs" />
+    <Compile Include="Models\Settings\PropertyColor.cs" />
+    <Compile Include="Models\Settings\ModeClosingApp.cs" />
+    <Compile Include="Models\Settings\Settings.cs" />
+    <Compile Include="Models\AppMessage.cs" />
+    <Compile Include="Models\Controls\FileFlags.cs" />
+    <Compile Include="Models\Detals\Hole.cs" />
+    <Compile Include="Models\File3D\Weld.cs" />
+    <Compile Include="Models\Detals\WeldingSchemas.cs" />
+    <Compile Include="Models\File3D\Annotation.cs" />
+    <Compile Include="Models\File3D\File3D.cs" />
+    <Compile Include="Models\File3D\Materials.cs" />
+    <Compile Include="Models\File3D\SceneItem.cs" />
     <Compile Include="Libr\UndoRedo\IUndoableCommand.cs" />
-    <Compile Include="Model\ProcessStatuses.cs" />
+    <Compile Include="Models\ProcessStatuses.cs" />
     <Compile Include="Libr\UndoRedo\PropertyChangeCommand.cs" />
     <Compile Include="Libr\Services\AnnotationService.cs" />
     <Compile Include="Libr\Services\ChangeService.cs" />
@@ -369,10 +367,10 @@
     <Compile Include="Libr\Services\SelectAppsOnDeviceService.cs" />
     <Compile Include="Libr\Services\WeldService.cs" />
     <Compile Include="Libr\Services\WindowsAppService.cs" />
-    <Compile Include="Strategies\AnnotationStrategies\IDetalAnnotationStrategy.cs" />
-    <Compile Include="Strategies\AnnotationStrategies\PlateAnnotationStrategy.cs" />
-    <Compile Include="Strategies\ModelingStrategies\IDetalModelingStrategy.cs" />
-    <Compile Include="Strategies\ModelingStrategies\PlateModelingStrategy.cs" />
+    <Compile Include="Libr\Strategies\AnnotationStrategies\IDetalAnnotationStrategy.cs" />
+    <Compile Include="Libr\Strategies\AnnotationStrategies\PlateAnnotationStrategy.cs" />
+    <Compile Include="Libr\Strategies\ModelingStrategies\IDetalModelingStrategy.cs" />
+    <Compile Include="Libr\Strategies\ModelingStrategies\PlateModelingStrategy.cs" />
     <Compile Include="ViewModels\CreateWindowViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel3.cs" />
     <Compile Include="ViewModels\MainPageViewModel4.cs" />
@@ -461,24 +459,24 @@
     <Compile Include="Libr\Converters\JsonCommentConverter.cs" />
     <Compile Include="Libr\Converters\RadioButtonConverter.cs" />
     <Compile Include="Libr\Converters\ThicknessConverter.cs" />
-    <Compile Include="Libr\FileCollection.cs" />
+    <Compile Include="Libr\Collections\FileCollection.cs" />
     <Compile Include="Libr\Collections\FullyObservableCollection.cs" />
     <Compile Include="Libr\Generation.cs" />
     <Compile Include="Libr\Behavior\AutoScrollBehavior.cs" />
     <Compile Include="Libr\Attributes\SaveAttribute.cs" />
     <Compile Include="Libr\Json\SaveAttributesResolver.cs" />
     <Compile Include="Libr\Configuration\ConfigurationProperties\PlateConfigurationSection.cs" />
-    <Compile Include="Libr\Configuration\RobotConfigurationSection.cs" />
+    <Compile Include="Libr\Configuration\ConfigurationProperties\RobotConfigurationSection.cs" />
     <Compile Include="Libr\ScrollViewerAttachedProperties.cs" />
     <Compile Include="Libr\Converters\StatusColorConverter.cs" />
     <Compile Include="Libr\Converters\StringFormatConverter.cs" />
     <Compile Include="Libr\TreeViewSelectedItemBehavior.cs" />
-    <Compile Include="Model\Controls\File.cs" />
-    <Compile Include="Model\Controls\IFile.cs" />
-    <Compile Include="Model\Detals\DetalTypes.cs" />
-    <Compile Include="Model\Detals\Plita.cs" />
-    <Compile Include="Model\Detals\ScoseTypes.cs" />
-    <Compile Include="Model\Controls\FileTypes.cs" />
+    <Compile Include="Models\Controls\File.cs" />
+    <Compile Include="Models\Controls\IFile.cs" />
+    <Compile Include="Models\Detals\DetalTypes.cs" />
+    <Compile Include="Models\Detals\Plita.cs" />
+    <Compile Include="Models\Detals\ScoseTypes.cs" />
+    <Compile Include="Models\Controls\FileTypes.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -494,12 +492,12 @@
     <Compile Include="Libr\LogErrorEventArgs.cs" />
     <Compile Include="Libr\LogEventArgs.cs" />
     <Compile Include="Libr\Font.cs" />
-    <Compile Include="Model\Robot.cs" />
-    <Compile Include="Model\Detals\Detal.cs" />
-    <Compile Include="Model\Detals\DetalType.cs" />
-    <Compile Include="Model\Detals\PlitaStringer.cs" />
-    <Compile Include="Model\Detals\PlitaTreygolnik.cs" />
-    <Compile Include="Model\Detals\Privyazka.cs" />
+    <Compile Include="Models\Robot.cs" />
+    <Compile Include="Models\Detals\Detal.cs" />
+    <Compile Include="Models\Detals\DetalType.cs" />
+    <Compile Include="Models\Detals\PlitaStringer.cs" />
+    <Compile Include="Models\Detals\PlitaTreygolnik.cs" />
+    <Compile Include="Models\Detals\Privyazka.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Themes\MetroStyleResourceDictionary.cs" />
     <Compile Include="Libr\Converters\RowNumberConverter.cs" />
@@ -537,7 +535,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\Detals\Rib.cs" />
+    <Compile Include="Models\Detals\Rib.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

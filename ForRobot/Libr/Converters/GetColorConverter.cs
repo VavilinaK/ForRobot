@@ -8,7 +8,7 @@ using System.Globalization;
 namespace ForRobot.Libr.Converters
 {
     /// <summary>
-    /// Класс преобразователь для выгрузки цвета из <see cref="ForRobot.Model.File3D.Colors"/> по имени свойства
+    /// Класс преобразователь для выгрузки цвета из <see cref="ForRobot.Models.File3D.Colors"/> по имени свойства
     /// </summary>
     public class GetColorConverter : IValueConverter
     {

@@ -7,6 +7,6 @@ namespace ForRobot.Libr.Services.Providers
     public interface IConfigurationProvider
     {
         PlateConfigurationSection GetPlitaConfig();
-        PlateWeldingConfigurationSection GetPlateWeldingConfig();
+        RobotConfigurationSection GetRobotConfig();
     }
 }

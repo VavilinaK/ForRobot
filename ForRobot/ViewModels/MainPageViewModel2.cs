@@ -18,8 +18,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using ForRobot.Libr;
-using ForRobot.Model;
-using ForRobot.Model.Detals;
+using ForRobot.Models;
+using ForRobot.Models.Detals;
 using ForRobot.Views.Pages;
 
 namespace ForRobot.ViewModels
@@ -200,8 +200,8 @@ namespace ForRobot.ViewModels
 
                         //foreach (var item in ((Plita)this.DetalObject).WeldingSchema) item.Change += (o, e) =>
                         //                                                                          {
-                        //                                                                              if (((Plita)this.DetalObject).SelectedWeldingSchema != ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit))
-                        //                                                                                  ((Plita)this.DetalObject).SelectedWeldingSchema = ForRobot.Model.Detals.WeldingSchemas.GetDescription(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes.Edit);
+                        //                                                                              if (((Plita)this.DetalObject).SelectedWeldingSchema != ForRobot.Models.Detals.WeldingSchemas.GetDescription(ForRobot.Models.Detals.WeldingSchemas.SchemasTypes.Edit))
+                        //                                                                                  ((Plita)this.DetalObject).SelectedWeldingSchema = ForRobot.Models.Detals.WeldingSchemas.GetDescription(ForRobot.Models.Detals.WeldingSchemas.SchemasTypes.Edit);
                         //                                                                              this.SaveDetal();
                         //                                                                          };
                         break;
@@ -277,7 +277,7 @@ namespace ForRobot.ViewModels
             get
             {
                 List<string> detalTypesList = new List<string>();
-                foreach (var f in typeof(ForRobot.Model.Detals.DetalTypes).GetFields())
+                foreach (var f in typeof(ForRobot.Models.Detals.DetalTypes).GetFields())
                 {
                     detalTypesList.Add(f.GetValue(null).ToString());
                 }
@@ -292,7 +292,7 @@ namespace ForRobot.ViewModels
         {
             get
             {
-                var Descriptions = typeof(ForRobot.Model.Detals.WeldingSchemas.SchemasTypes).GetFields().Select(field => field.GetCustomAttributes(typeof(System.ComponentModel.DescriptionAttribute), false).SingleOrDefault() as System.ComponentModel.DescriptionAttribute);
+                var Descriptions = typeof(ForRobot.Models.Detals.WeldingSchemas.SchemasTypes).GetFields().Select(field => field.GetCustomAttributes(typeof(System.ComponentModel.DescriptionAttribute), false).SingleOrDefault() as System.ComponentModel.DescriptionAttribute);
                 List<string> DescriptionList = Descriptions.Where(item => item != null).Select(item => item.Description).ToList<string>();
                 return new ObservableCollection<string>(DescriptionList);
             }
@@ -763,7 +763,7 @@ namespace ForRobot.ViewModels
                                         if (folder == null)
                                             continue;
 
-                                        foreach (var child in folder.Children.Where(f => f.Type == Model.Controls.FileTypes.DataList || f.Type == Model.Controls.FileTypes.Program))
+                                        foreach (var child in folder.Children.Where(f => f.Type == Models.Controls.FileTypes.DataList || f.Type == Models.Controls.FileTypes.Program))
                                         {
                                             await Task.Run(() => this.RobotsCollection[i].DeleteFile(child.Path));
                                         }
@@ -794,7 +794,7 @@ namespace ForRobot.ViewModels
                                     if (folder == null)
                                         continue;
 
-                                    foreach (var child in folder.Children.Where(f => f.Type == Model.Controls.FileTypes.DataList || f.Type == Model.Controls.FileTypes.Program))
+                                    foreach (var child in folder.Children.Where(f => f.Type == Models.Controls.FileTypes.DataList || f.Type == Models.Controls.FileTypes.Program))
                                     {
                                         await Task.Run(() => this.RobotForControl.DeleteFile(child.Path));
                                     }
@@ -843,7 +843,7 @@ namespace ForRobot.ViewModels
 
                       foreach (var path in openFileDialog.FileNames)
                       {
-                          ForRobot.Model.Controls.File file = new Model.Controls.File(path);
+                          ForRobot.Models.Controls.File file = new Models.Controls.File(path);
                           string tempFile = Path.Combine(Robot.PathOfTempFolder, file.Name);
 
                           if (!this.SelectedRobot.CopyToPC(file.Path, tempFile))
@@ -1024,13 +1024,13 @@ namespace ForRobot.ViewModels
                             checkedFiles = new List<string>();
                             foreach (var file in this.SelectedRobot.Files.Children)
                             {
-                                Stack<ForRobot.Model.Controls.IFile> stack = new Stack<Model.Controls.IFile>();
+                                Stack<ForRobot.Models.Controls.IFile> stack = new Stack<Models.Controls.IFile>();
                                 stack.Push(file);
-                                ForRobot.Model.Controls.IFile current;
+                                ForRobot.Models.Controls.IFile current;
                                 do
                                 {
                                     current = stack.Pop();
-                                    ObservableCollection<ForRobot.Model.Controls.IFile> files = current.Children;
+                                    ObservableCollection<ForRobot.Models.Controls.IFile> files = current.Children;
 
                                     if (current.IsCheck)
                                         checkedFiles.Add(current.Path);
@@ -1071,7 +1071,7 @@ namespace ForRobot.ViewModels
             
             Libr.Logger.LoggingEvent += (s, o) =>
             {
-                System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() => this.MessagesCollection.Add(new Model.AppMessage(o))));
+                System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() => this.MessagesCollection.Add(new Models.AppMessage(o))));
             };
 
             if (Properties.Settings.Default.SaveRobots.Count > 0)

@@ -19,7 +19,7 @@ namespace ForRobot.Libr.Configuration
 
         public PlateConfigurationSection GetPlitaConfig() => GetCached("plate", () => _innerProvider.GetPlitaConfig());
 
-        public PlateWeldingConfigurationSection GetPlateWeldingConfig() => GetCached("plateWelding", () => _innerProvider.GetPlateWeldingConfig());
+        public RobotConfigurationSection GetRobotConfig() => GetCached("robot", () => _innerProvider.GetRobotConfig());
 
         private T GetCached<T>(string key, Func<T> factory) where T : class
         {

@@ -1,5 +1,5 @@
-﻿using ForRobot.Model.Detals;
-using ForRobot.Model.File3D;
+﻿using ForRobot.Models.Detals;
+using ForRobot.Models.File3D;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

@@ -10,8 +10,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
-using ForRobot.Model;
-using ForRobot.Model.Controls;
+using ForRobot.Models;
+using ForRobot.Models.Controls;
 
 namespace ForRobot.Views.Controls
 {
@@ -64,10 +64,10 @@ namespace ForRobot.Views.Controls
         /// <summary>
         /// Дочернии папки выбранного каталога
         /// </summary>
-        public List<ForRobot.Model.Controls.File> ChildrenFolder
+        public List<ForRobot.Models.Controls.File> ChildrenFolder
         {
             get => (this.SelectedFolder != null && this.RobotSource.Files.Children.Count > 0) ?
-                    this.RobotSource.Files?.Search(this.SelectedFolder)?.Children.Where(item => item.Type == FileTypes.Folder).Cast<ForRobot.Model.Controls.File>().ToList() : null;
+                    this.RobotSource.Files?.Search(this.SelectedFolder)?.Children.Where(item => item.Type == FileTypes.Folder).Cast<ForRobot.Models.Controls.File>().ToList() : null;
         }
 
         public static readonly DependencyProperty BlockedFolderProperty = DependencyProperty.Register(nameof(BlockedFolder),
@@ -84,8 +84,8 @@ namespace ForRobot.Views.Controls
             set => SetValue(BlockedFolderProperty, value);
         }
 
-        private ForRobot.Model.Controls.File _selectedPopupItem;
-        public ForRobot.Model.Controls.File SelectedPopupItem
+        private ForRobot.Models.Controls.File _selectedPopupItem;
+        public ForRobot.Models.Controls.File SelectedPopupItem
         {
             get => this._selectedPopupItem;
             set
@@ -188,7 +188,7 @@ namespace ForRobot.Views.Controls
             if (this.RobotSource?.Files == null || this.BlockedFolder == null)
                 return;
 
-            ForRobot.Model.Controls.File files = this.RobotSource.Files;
+            ForRobot.Models.Controls.File files = this.RobotSource.Files;
 
             var set = this.BlockedFolder.Where(x => !x.Value).Select(s => s.Key).ToList<string>();
             for (int i = 0; i < files.Children.Count(); i++)
@@ -210,11 +210,11 @@ namespace ForRobot.Views.Controls
 
                     for (int y = 0; y < node.Children.Count; y++)
                     {
-                        q.Enqueue(node.Children[y] as ForRobot.Model.Controls.File);
+                        q.Enqueue(node.Children[y] as ForRobot.Models.Controls.File);
 
                         if (set.Contains(node.Children[y].Name))
                         {
-                            node.Children.Remove(node.Children[y] as ForRobot.Model.Controls.File);
+                            node.Children.Remove(node.Children[y] as ForRobot.Models.Controls.File);
                             y--;
                         }
                     }

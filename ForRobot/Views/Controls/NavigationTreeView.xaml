@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ForRobot.Views.Controls"
-             xmlns:model="clr-namespace:ForRobot.Model.Controls"
+             xmlns:model="clr-namespace:ForRobot.Models.Controls"
              xmlns:vm="clr-namespace:ForRobot.ViewModels"
              xmlns:conv="clr-namespace:ForRobot.Libr.Converters"
              mc:Ignorable="d">

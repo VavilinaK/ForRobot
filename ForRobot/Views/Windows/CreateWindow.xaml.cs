@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
-using ForRobot.Model.File3D;
-using ForRobot.Model.Detals;
+using ForRobot.Models.File3D;
+using ForRobot.Models.Detals;
 
 namespace ForRobot.Views.Windows
 {
@@ -93,7 +93,7 @@ namespace ForRobot.Views.Windows
             get
             {
                 List<string> detalTypesList = new List<string>();
-                foreach (var f in typeof(ForRobot.Model.Detals.DetalTypes).GetFields())
+                foreach (var f in typeof(ForRobot.Models.Detals.DetalTypes).GetFields())
                 {
                     detalTypesList.Add(f.GetValue(null).ToString());
                 }

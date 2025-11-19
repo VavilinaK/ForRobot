@@ -16,10 +16,10 @@ namespace ForRobot.Libr.Converters
             if (value is Dictionary<string, Color> dictionary)
             {
                 return dictionary.Keys
-                                 .Select(key => new ForRobot.Model.File3D.PropertyColor(key, dictionary.Where(item => item.Key == key).First().Value))
+                                 .Select(key => new ForRobot.Models.File3D.PropertyColor(key, dictionary.Where(item => item.Key == key).First().Value))
                                  .ToList();
             }
-            return Enumerable.Empty<ForRobot.Model.File3D.PropertyColor>();
+            return Enumerable.Empty<ForRobot.Models.File3D.PropertyColor>();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

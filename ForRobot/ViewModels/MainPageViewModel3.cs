@@ -24,10 +24,10 @@ using GalaSoft.MvvmLight.Messaging;
 using HelixToolkit.Wpf;
 
 using ForRobot.Libr;
+using ForRobot.Libr.Services;
 using ForRobot.Libr.Collections;
-using ForRobot.Services;
-using ForRobot.Model;
-using ForRobot.Model.Detals;
+using ForRobot.Models;
+using ForRobot.Models.Detals;
 
 namespace ForRobot.ViewModels
 {
@@ -85,14 +85,14 @@ namespace ForRobot.ViewModels
             }
         }
 
-        private Model.File3D.File3D _selectedFile;
+        private Models.File3D.File3D _selectedFile;
 
         private object _selectedObject;
 
         private Robot _selectedRobot;
 
         private FullyObservableCollection<Robot> _robotsCollection;
-        private ObservableCollection<Model.File3D.SceneItem> _sceneItemsCollection = new ObservableCollection<Model.File3D.SceneItem>();
+        private ObservableCollection<Models.File3D.SceneItem> _sceneItemsCollection = new ObservableCollection<Models.File3D.SceneItem>();
         private ObservableCollection<AppMessage> _messagesCollection = new ObservableCollection<AppMessage>();
 
         /// <summary>
@@ -147,7 +147,7 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Выбранный файл
         /// </summary>
-        public Model.File3D.File3D SelectedFile
+        public Models.File3D.File3D SelectedFile
         {
             get => this._selectedFile;
             set
@@ -213,8 +213,8 @@ namespace ForRobot.ViewModels
                     //case HelixToolkit.Wpf.BoundingBoxVisual3D boundingBoxVisual3D:
                     //    return;
 
-                    case ForRobot.Model.File3D.Annotation annotation:
-                        GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Messages.ProperteisNameMessage((value as Model.File3D.Annotation).PropertyName));
+                    case ForRobot.Models.File3D.Annotation annotation:
+                        GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Messages.ProperteisNameMessage((value as Models.File3D.Annotation).PropertyName));
                         break;
 
                     default:
@@ -235,7 +235,7 @@ namespace ForRobot.ViewModels
         {
             get
             {
-                var Descriptions = typeof(ForRobot.Model.Detals.ScoseTypes).GetFields().Select(field => field.GetCustomAttributes(typeof(System.ComponentModel.DescriptionAttribute), false).SingleOrDefault() as System.ComponentModel.DescriptionAttribute);
+                var Descriptions = typeof(ForRobot.Models.Detals.ScoseTypes).GetFields().Select(field => field.GetCustomAttributes(typeof(System.ComponentModel.DescriptionAttribute), false).SingleOrDefault() as System.ComponentModel.DescriptionAttribute);
                 List<string> DescriptionList = Descriptions.Where(item => item != null).Select(item => item.Description).ToList<string>();
                 return new ObservableCollection<string>(DescriptionList);
             }
@@ -270,7 +270,7 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// 
         /// </summary>
-        public ObservableCollection<Model.File3D.SceneItem> SceneItemsCollection { get => this._sceneItemsCollection; set => Set(ref this._sceneItemsCollection, value); }
+        public ObservableCollection<Models.File3D.SceneItem> SceneItemsCollection { get => this._sceneItemsCollection; set => Set(ref this._sceneItemsCollection, value); }
         /// <summary>
         /// Коллекция сообщений
         /// </summary>
@@ -308,7 +308,7 @@ namespace ForRobot.ViewModels
         /// <summary>
         /// Сохранение файла программы как
         /// </summary>
-        public ICommand SaveAsFileCommand { get => _saveAsFileCommand ?? (_saveAsFileCommand = new RelayCommand(obj => SaveFileAs(obj as Model.File3D.File3D))); }
+        public ICommand SaveAsFileCommand { get => _saveAsFileCommand ?? (_saveAsFileCommand = new RelayCommand(obj => SaveFileAs(obj as Models.File3D.File3D))); }
 
         /// <summary>
         /// Сохранение всех файлов
@@ -318,7 +318,7 @@ namespace ForRobot.ViewModels
              foreach (var file in App.Current.OpenedFiles)
                  this.SaveFile(file);
         }); }
-        //= new RelayCommand(obj => SaveAllFile(obj as ObservableCollection<Model.File3D.File3D>));
+        //= new RelayCommand(obj => SaveAllFile(obj as ObservableCollection<Models.File3D.File3D>));
 
         /// <summary>
         /// Экспорт параметров программы
@@ -384,7 +384,7 @@ namespace ForRobot.ViewModels
         /// </summary>
         public ICommand StandartParametrsCommand { get => new RelayCommand(_ =>
         {
-            var newDetal = Model.File3D.File3D.StandartParamertrs(this.SelectedFile.CurrentDetal);
+            var newDetal = Models.File3D.File3D.StandartParamertrs(this.SelectedFile.CurrentDetal);
             this.SelectedFile.CurrentDetal = newDetal;
             RaisePropertyChanged(nameof(this.SelectedFile));
             RaisePropertyChanged(nameof(this.SelectedFile.CurrentDetal));
@@ -495,7 +495,7 @@ namespace ForRobot.ViewModels
             if (Properties.Settings.Default.SaveRobots == null)
                 Properties.Settings.Default.SaveRobots = new System.Collections.Specialized.StringCollection();
 
-            Libr.Logger.LoggingEvent += (s, o) => System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() => this.MessagesCollection.Add(new Model.AppMessage(o))));
+            Libr.Logger.LoggingEvent += (s, o) => System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() => this.MessagesCollection.Add(new Models.AppMessage(o))));
 
             // Выгрузка сохранённых соединений
             this.RobotsCollection = new FullyObservableCollection<Robot>();
@@ -517,7 +517,7 @@ namespace ForRobot.ViewModels
                 switch (e.Action)
                 {
                     case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
-                        this.ActiveContent = e.NewItems[0] as ForRobot.Model.File3D.File3D; // При открытии нового файла, он выбирается как активный
+                        this.ActiveContent = e.NewItems[0] as ForRobot.Models.File3D.File3D; // При открытии нового файла, он выбирается как активный
                         break;
                 }
             };
@@ -528,20 +528,20 @@ namespace ForRobot.ViewModels
                 string programName = this.GetStandartProgramName(App.Current.Settings.StartedDetalType);
                 string path = Path.Combine(Path.GetTempPath(), programName);
 
-                Model.File3D.File3D file3D;
+                Models.File3D.File3D file3D;
                 if (App.Current.Settings.SaveDetalProperties && File.Exists(path))
                 {
-                    file3D = new Model.File3D.File3D();
-                    file3D.Load(path);
-                    file3D = new Model.File3D.File3D(file3D.CurrentDetal, path);
+                    file3D = new Models.File3D.File3D(path);
+                    //file3D.Load(path);
+                    //file3D = new Models.File3D.File3D(file3D.CurrentDetal, path);
                 }
                 else
-                    file3D = new Model.File3D.File3D(Detal.GetDetal(App.Current.Settings.StartedDetalType), path);
+                    file3D = new Models.File3D.File3D(DetalTypes.StringToEnum(App.Current.Settings.StartedDetalType), path);
 
                 if (App.Current.Settings.SaveDetalProperties)
                     file3D.DetalChangedEvent += (s, e) =>
                      {
-                         Services.File3DService.SaveFiles(s as ForRobot.Model.File3D.File3D);
+                         File3DService.SaveFiles(s as ForRobot.Models.File3D.File3D);
                      };
 
                 App.Current.OpenedFiles.Add(file3D);
@@ -568,7 +568,7 @@ namespace ForRobot.ViewModels
             System.Windows.Input.FocusManager.SetFocusedElement(System.Windows.Input.FocusManager.GetFocusScope(frameworkElement), null);
         }
 
-        private void SaveFile(Model.File3D.File3D file)
+        private void SaveFile(Models.File3D.File3D file)
         {
             if (file == null || file.IsSaved)
                 return;
@@ -586,7 +586,7 @@ namespace ForRobot.ViewModels
             file.Save();
         }
 
-        //private static void SaveAllFile(IEnumerable<Model.File3D.File3D> files)
+        //private static void SaveAllFile(IEnumerable<Models.File3D.File3D> files)
         //{
         //    if (files == null)
         //        return;
@@ -601,9 +601,9 @@ namespace ForRobot.ViewModels
         ///// Возврат к стандартным параметрам детали
         ///// </summary>
         ///// <param name="file">Выбранный файл</param>
-        //private static void GetStandartParametrs(Model.File3D.File3D file)
+        //private static void GetStandartParametrs(Models.File3D.File3D file)
         //{
-        //    file.CurrentDetal = Model.File3D.File3D.StandartParamertrs(file.CurrentDetal);
+        //    file.CurrentDetal = Models.File3D.File3D.StandartParamertrs(file.CurrentDetal);
         //}
 
         ///// <summary>
@@ -692,18 +692,18 @@ namespace ForRobot.ViewModels
 
             System.Windows.Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
-                if (ActiveContent is Model.File3D.File3D file3D)
+                if (ActiveContent is Models.File3D.File3D file3D)
                     Task.Run(() => GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Behavior.SelectLayoutDocumentPane(file3D)));
             }), System.Windows.Threading.DispatcherPriority.Background);
 
-            if (ActiveContent is Model.File3D.File3D file)
+            if (ActiveContent is Models.File3D.File3D file)
             {
                 this.SelectedFile = file;
                 this.SelectedObject = null; // Снимает выделение с объекта HelixViewport3D.
             }
         }
 
-        private void SaveFileAs(Model.File3D.File3D file)
+        private void SaveFileAs(Models.File3D.File3D file)
         {
             try
             {
@@ -724,12 +724,12 @@ namespace ForRobot.ViewModels
         /// </summary>
         private void Open3DFile()
         {
-            string filePath = this._fileDialogService.OpenFileDialog(null, null, Model.File3D.File3D.FilterForFileDialog + "|All Files|*.*", string.Empty);
+            string filePath = this._fileDialogService.OpenFileDialog(null, null, Models.File3D.File3D.FilterForFileDialog + "|All Files|*.*", string.Empty);
 
             if (string.IsNullOrEmpty(filePath))
                 return;
 
-            var file = new Model.File3D.File3D(filePath);
+            var file = new Models.File3D.File3D(filePath);
             App.Current.OpenedFiles.Add(file);
         }
 
@@ -869,13 +869,13 @@ namespace ForRobot.ViewModels
 
         //public void HandleSelectFileDetalChanged(object sender, Libr.ValueChangedEventArgs<Detal> e)
         //{
-        //    ////Model.File3D.File3D file3D = sender as Model.File3D.File3D;
+        //    ////Models.File3D.File3D file3D = sender as Models.File3D.File3D;
         //    ////RaisePropertyChanged(nameof(file3D.Detal));
         //    //////RaisePropertyChanged(nameof(file3D.CurrentModel));
 
-        //    ////if (file3D.Detal is ForRobot.Model.Detals.Plita)
+        //    ////if (file3D.Detal is ForRobot.Models.Detals.Plita)
         //    ////{
-        //    ////    Plita plita = file3D.Detal as ForRobot.Model.Detals.Plita;
+        //    ////    Plita plita = file3D.Detal as ForRobot.Models.Detals.Plita;
         //    ////    RaisePropertyChanged(nameof(plita.SelectedWeldingSchema));
         //    ////    RaisePropertyChanged(nameof(plita.WeldingSchema));
         //    ////}
@@ -1020,7 +1020,7 @@ namespace ForRobot.ViewModels
                 if (folder == null)
                     continue;
 
-                foreach (var child in folder.Children.Where(f => f.Type == Model.Controls.FileTypes.DataList || f.Type == Model.Controls.FileTypes.Program))
+                foreach (var child in folder.Children.Where(f => f.Type == Models.Controls.FileTypes.DataList || f.Type == Models.Controls.FileTypes.Program))
                 {
                     await Task.Run(() => this.RobotsCollection[i].DeleteFile(child.Path));
                 }

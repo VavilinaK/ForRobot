@@ -4,7 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-using ForRobot.Model.Detals;
+using ForRobot.Models.Detals;
 
 namespace ForRobot.Libr.Services
 {
