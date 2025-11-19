@@ -1252,8 +1252,7 @@
                 <Label Content="В разработке" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontWeight="Bold" FontSize="18"/>
             </StackPanel>
         </Grid>
-    </DataTemplate>
-    
+    </DataTemplate>    
     
     <!--v3-->
     <!--Параметры сварки (настила с ребром)-->
@@ -1262,6 +1261,11 @@
             <Style TargetType="{x:Type FrameworkElement}">
                 <Setter Property="TextElement.FontFamily" Value="{StaticResource DefaultFont}"/>
                 <Setter Property="TextElement.Foreground" Value="{StaticResource ThemeFgP2Brush}"/>
+            </Style>
+
+            <Style TargetType="{x:Type Label}">
+                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
             </Style>
 
             <Style x:Key="TextBlockBase" TargetType="{x:Type TextBlock}">
@@ -1363,7 +1367,7 @@
             <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=WildingSpead, Mode=TwoWay, ConverterCulture='en-us', StringFormat=F0, UpdateSourceTrigger=LostFocus}"/>
             <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=ProgramNom, Mode=TwoWay, ConverterCulture='en-us', StringFormat=F0, UpdateSourceTrigger=LostFocus}"/>
 
-            <GroupBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Header="Схема сварки" HorizontalContentAlignment="Stretch">
+            <GroupBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Header="Схема сварки">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -1394,9 +1398,10 @@
                     <DataGrid Grid.Row="1" TextElement.FontWeight="Normal"
                               HorizontalAlignment="Stretch"
                               HorizontalScrollBarVisibility="Disabled"
-                              ItemsSource="{Binding Path=WeldingSchema, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
+                              ItemsSource="{Binding Path=WeldingSchema, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
+                              Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type Grid}, Mode=FindAncestor}}">
 
-                        <DataGrid.Resources>
+                        <!--<DataGrid.Resources>
                             <Style TargetType="{x:Type ComboBox}">
                                 <Setter Property="MaxDropDownHeight" Value="150"/>
                                 <Setter Property="ItemsSource" Value="{Binding Path=., RelativeSource={RelativeSource AncestorType=DataGrid, Mode=FindAncestor}, Converter={StaticResource NumbersForWeldingSchemaConvert}}"/>
@@ -1419,7 +1424,7 @@
                                     </Setter.Value>
                                 </Setter>
                             </Style>
-                        </DataGrid.Resources>
+                        </DataGrid.Resources>-->
 
                         <DataGrid.Columns>
                             <DataGridTemplateColumn Header="Слева" Width="*">
