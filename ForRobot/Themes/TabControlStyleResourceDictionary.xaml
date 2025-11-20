@@ -1295,7 +1295,6 @@
             </Style>
 
             <Style TargetType="{x:Type GroupBox}">
-                <Setter Property="FontSize" Value="{StaticResource FontSizeNP2}"/>
                 <Setter Property="FontWeight" Value="DemiBold"/>
                 <Setter Property="Padding" Value="4"/>
                 <Setter Property="Margin" Value="0,4,0,0"/>
@@ -1348,9 +1347,7 @@
             </Style>
         </DataTemplate.Resources>
 
-        <Grid Width="{Binding Path=Parent.ActualWidth, RelativeSource={RelativeSource Self}}"
-              DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}, Mode=FindAncestor}}">   
-            
+        <Grid DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}, Mode=FindAncestor}}">   
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -1401,7 +1398,7 @@
                               ItemsSource="{Binding Path=WeldingSchema, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"
                               Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type Grid}, Mode=FindAncestor}}">
 
-                        <!--<DataGrid.Resources>
+                        <DataGrid.Resources>
                             <Style TargetType="{x:Type ComboBox}">
                                 <Setter Property="MaxDropDownHeight" Value="150"/>
                                 <Setter Property="ItemsSource" Value="{Binding Path=., RelativeSource={RelativeSource AncestorType=DataGrid, Mode=FindAncestor}, Converter={StaticResource NumbersForWeldingSchemaConvert}}"/>
@@ -1424,10 +1421,10 @@
                                     </Setter.Value>
                                 </Setter>
                             </Style>
-                        </DataGrid.Resources>-->
+                        </DataGrid.Resources>
 
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn Header="Слева" Width="*">
+                            <DataGridTemplateColumn Header="Слева">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <ComboBox SelectedItem="{Binding Path=LeftSide, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
@@ -1435,10 +1432,9 @@
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
 
-                            <DataGridTextColumn Header="№ ребра" Width="Auto"
-                                                Binding="{Binding Path=., Mode=OneWay, RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={StaticResource RowNumberConvert}}"/>
+                            <DataGridTextColumn Header="№ ребра" Binding="{Binding Path=., Mode=OneWay, RelativeSource={RelativeSource AncestorType=DataGridRow}, Converter={StaticResource RowNumberConvert}}"/>
 
-                            <DataGridTemplateColumn Header="Справа" Width="*">
+                            <DataGridTemplateColumn Header="Справа">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <ComboBox SelectedItem="{Binding Path=RightSide, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>

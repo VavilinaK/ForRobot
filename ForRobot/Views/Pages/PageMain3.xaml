@@ -1046,7 +1046,8 @@
                                                                     <RowDefinition/>
                                                                 </Grid.RowDefinitions>
 
-                                                                <ToggleButton x:Name="Expander" ClickMode="Press" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
+                                                                <ToggleButton x:Name="Expander" ClickMode="Press"
+                                                                              IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
                                                                               Style="{DynamicResource ExpandCollapseToggleStyle}"/>
 
                                                                 <Border x:Name="Bd" Grid.Column="1" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
