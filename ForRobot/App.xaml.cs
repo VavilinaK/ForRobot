@@ -8,8 +8,6 @@ using System.Reflection;
 using System.Diagnostics;
 using System.Windows;
 using System.Security.Cryptography;
-using System.Configuration;
-using System.Collections.Generic;
 //using System.Collections.ObjectModel;
 
 using System.IO.Pipes;
@@ -35,6 +33,7 @@ namespace ForRobot
         private const string _mutexName = "InterfaceOfRobots_UniqueAppMutex";
         private const string _pipeName = "InterfaceOfRobots_UniqueAppPipe";
         private CancellationTokenSource _pipeServerCts;
+        private System.Collections.ObjectModel.ObservableCollection<Models.File3D.File3D> _openedFiles;
 
         /// <summary>
         /// Путь к программе на сервере
@@ -90,7 +89,33 @@ namespace ForRobot
         /// <summary>
         /// Открытые файлы 3D моделей
         /// </summary>
-        public System.Collections.ObjectModel.ObservableCollection<Models.File3D.File3D> OpenedFiles { get; set; } = new System.Collections.ObjectModel.ObservableCollection<Models.File3D.File3D>();
+        public System.Collections.ObjectModel.ObservableCollection<Models.File3D.File3D> OpenedFiles
+        {
+            get
+            {
+                if (this._openedFiles == null)
+                {
+                    this._openedFiles = new System.Collections.ObjectModel.ObservableCollection<Models.File3D.File3D>();
+                    this._openedFiles.CollectionChanged += (s, e) =>
+                    {
+                        switch (e.Action)
+                        {
+                            case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+                                for(int i=0; i<e.NewItems.Count; i++)
+                                {
+                                    var file = e.NewItems[i];
+                                    if (file == null)
+                                        return;
+                                    // В отдельную кэшированную коллекцию добавлять стэки новых файлов
+                                }
+                                break;
+                        }
+                    };
+                }
+                return this._openedFiles;
+            }
+            set => this._openedFiles = value;
+        }
 
         /// <summary>
         /// Обработчик сохранения настроек

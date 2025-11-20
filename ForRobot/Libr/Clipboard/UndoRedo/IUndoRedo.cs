@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ForRobot.Libr.UndoRedo
+namespace ForRobot.Libr.Clipboard.UndoRedo
 {
     public interface IUndoRedo
     {

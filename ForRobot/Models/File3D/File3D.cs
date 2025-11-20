@@ -24,7 +24,7 @@ using CommunityToolkit.Diagnostics;
 //using CommunityToolkit.Mvvm.Input;
 
 using ForRobot.Models.Detals;
-using ForRobot.Libr.UndoRedo;
+using ForRobot.Libr.Clipboard.UndoRedo;
 using ForRobot.Libr.Services;
 
 namespace ForRobot.Models.File3D

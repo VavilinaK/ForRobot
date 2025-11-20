@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace ForRobot.Libr.UndoRedo
+namespace ForRobot.Libr.Clipboard.UndoRedo
 {
     public interface IUndoableCommand : ICommand
     {

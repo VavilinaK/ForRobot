@@ -303,6 +303,7 @@
     <Compile Include="Libr\Behavior\FocusBehavior.cs" />
     <Compile Include="Libr\Behavior\HelixAddCollectionBehavior.cs" />
     <Compile Include="Libr\Behavior\DataGridStretchLastColumn.cs" />
+    <Compile Include="Libr\Clipboard\CacheClipboardProvider.cs" />
     <Compile Include="Libr\Collections\Model3DCollection.cs" />
     <Compile Include="Libr\Configuration\CachedConfigurationProvider.cs" />
     <Compile Include="Libr\Configuration\ConfigurationProperties\BaseDetalConfiguration.cs" />
@@ -335,7 +336,7 @@
     <Compile Include="Libr\Json\SettingsResolver.cs" />
     <Compile Include="Libr\Logger.cs" />
     <Compile Include="Libr\Messages\UpdateCurrentDetalMessage.cs" />
-    <Compile Include="Libr\UndoRedo\IUndoRedo.cs" />
+    <Compile Include="Libr\Clipboard\UndoRedo\IUndoRedo.cs" />
     <Compile Include="Libr\ValueChangedEventArgs.cs" />
     <Compile Include="Models\Detals\WeldingProperties.cs" />
     <Compile Include="Libr\Services\Providers\IConfigurationProvider.cs" />
@@ -353,9 +354,9 @@
     <Compile Include="Models\File3D\File3D.cs" />
     <Compile Include="Models\File3D\Materials.cs" />
     <Compile Include="Models\File3D\SceneItem.cs" />
-    <Compile Include="Libr\UndoRedo\IUndoableCommand.cs" />
+    <Compile Include="Libr\Clipboard\UndoRedo\IUndoableCommand.cs" />
     <Compile Include="Models\ProcessStatuses.cs" />
-    <Compile Include="Libr\UndoRedo\PropertyChangeCommand.cs" />
+    <Compile Include="Libr\Clipboard\UndoRedo\PropertyChangeCommand.cs" />
     <Compile Include="Libr\Services\AnnotationService.cs" />
     <Compile Include="Libr\Services\ChangeService.cs" />
     <Compile Include="Libr\Services\ExporterService.cs" />
