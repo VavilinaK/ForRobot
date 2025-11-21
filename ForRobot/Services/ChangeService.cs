@@ -39,13 +39,6 @@ namespace ForRobot.Services
             Model.File3D.File3D file3D = sender as Model.File3D.File3D;
             RaisePropertyChanged(nameof(file3D.CurrentDetal));
 
-            if (file3D.CurrentDetal is ForRobot.Model.Detals.Plita)
-            {
-                Plita plita = file3D.CurrentDetal as ForRobot.Model.Detals.Plita;
-                RaisePropertyChanged(nameof(plita.SelectedWeldingSchema));
-                RaisePropertyChanged(nameof(plita.WeldingSchema));
-            }
-
             if (e.OldValue != null)
             {
                 var command = new PropertyChangeCommand<Detal>(file3D,

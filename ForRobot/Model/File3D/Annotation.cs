@@ -301,7 +301,8 @@ namespace ForRobot.Model.File3D
                 this._lines.Color = this.SelectedColor;
                 this._arrows.Color = this.SelectedColor;
             }
-            else{
+            else
+            {
                 this._lines.Color = this.Color;
                 this._arrows.Color = this.Color;
             }

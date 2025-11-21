@@ -922,13 +922,14 @@ namespace ForRobot.Model.Detals
             if (string.IsNullOrEmpty(this.SelectedWeldingSchema))
                 return null;
 
-            FullyObservableCollection<WeldingSchemas.SchemaRib> schema = ForRobot.Model.Detals.WeldingSchemas.BuildingSchema(ForRobot.Model.Detals.WeldingSchemas.GetSchemaType(this.SelectedWeldingSchema), base.RibCount);
+            FullyObservableCollection<WeldingSchemas.SchemaRib> schema = ForRobot.Model.Detals.WeldingSchemas.BuildingSchema(ForRobot.Model.Detals.WeldingSchemas.GetSchemaType(this.SelectedWeldingSchema), base.RibCount);                
+            schema.CollectionChanged += (s, e) => this.OnChangeProperty(nameof(this.WeldingSchema));
             schema.ItemPropertyChanged += (s, e) =>
             {
                 if (this.SelectedWeldingSchema != WeldingSchemas.GetDescription(WeldingSchemas.SchemasTypes.Edit))
                     this.SelectedWeldingSchema = ForRobot.Model.Detals.WeldingSchemas.GetDescription(WeldingSchemas.SchemasTypes.Edit);
 
-                this.OnChangeProperty(nameof(this.WeldingSchema));
+                this.OnChangeProperty( nameof(this.WeldingSchema));
             };
             return schema;
         }
