@@ -57,13 +57,25 @@
                     Command="{Binding Path=StandartParametrsCommand}"
                     CommandParameter="{Binding Path=SelectedFile}"/>
 
-        <KeyBinding Key="Plus" Command="{x:Static behavior:CameraControllerBehavior.ZoomViewCommand}">
+        <KeyBinding Key="Add"  Command="{x:Static behavior:CameraControllerBehavior.ZoomViewCommand}">
             <KeyBinding.CommandParameter>
                 <sys:Double>1</sys:Double>
             </KeyBinding.CommandParameter>
         </KeyBinding>
 
         <KeyBinding Key="OemPlus" Command="{x:Static behavior:CameraControllerBehavior.ZoomViewCommand}">
+            <KeyBinding.CommandParameter>
+                <sys:Double>1</sys:Double>
+            </KeyBinding.CommandParameter>
+        </KeyBinding>
+
+        <KeyBinding Key="Subtract"  Command="{x:Static behavior:CameraControllerBehavior.ZoomViewCommand}">
+            <KeyBinding.CommandParameter>
+                <sys:Double>-50</sys:Double>
+            </KeyBinding.CommandParameter>
+        </KeyBinding>
+
+        <KeyBinding Key="OemMinus" Command="{x:Static behavior:CameraControllerBehavior.ZoomViewCommand}">
             <KeyBinding.CommandParameter>
                 <sys:Double>-50</sys:Double>
             </KeyBinding.CommandParameter>
@@ -380,7 +392,7 @@
                 </ItemsPanelTemplate>
             </Menu.ItemsPanel>
 
-            <MenuItem Header="Создать новый файл (Ctrl+Shift+N)"
+            <MenuItem Header="Создать новый файл (Ctrl+Shift+N)" IsEnabled="False"
                       Template="{StaticResource MenuItemTemplate1}"
                       Command="{Binding Path=CreateNewFileCommand}">
                 
@@ -390,17 +402,17 @@
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem Header="Открыть файл (Ctrl+O)"
+            <MenuItem Header="Открыть файл (Ctrl+O)" IsEnabled="False"
                       Template="{StaticResource MenuItemTemplate1}"
                       Command="{Binding Path=OpenedFileCommand}">
                 
-                <MenuItem.Icon>
+                <MenuItem.Icon> 
                     <Path Fill="{StaticResource IconOpenFileBrush}"
                           Data="{StaticResource OpenPathGeomerty}"/>
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem Template="{StaticResource MenuItemTemplate1}"
+            <MenuItem Template="{StaticResource MenuItemTemplate1}" IsEnabled="False"
                       Command="{Binding Path=SaveFileCommand}"
                       CommandParameter="{Binding Path=SelectedFile}">
 
@@ -416,7 +428,7 @@
                 </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem Header="Сохранить все"
+            <MenuItem Header="Сохранить все" IsEnabled="False"
                       Template="{StaticResource MenuItemTemplate1}"
                       Command="{Binding Path=SaveAllFilesCommand}"
                       CommandParameter="{Binding Path=OpenedFiles, Source={x:Static Application.Current}}">
@@ -758,8 +770,6 @@
                                 <h:GridLinesVisual3D Visible="{Binding Path=DataContext.IsVisibleGridLinesVisual3D, Mode=OneWay, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"/>
 
                                 <ModelVisual3D Content="{Binding Path=CurrentModel, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
-
-                                <h:CoordinateSystemVisual3D ArrowLengths="3"/>
 
                                 <!--<h:BoundingBoxVisual3D BoundingBox="{Binding Path=DataContext.SelectedObject, Converter={StaticResource BoundsConvert}, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
                                                        Diameter="0.1"

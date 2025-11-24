@@ -1136,7 +1136,7 @@
 
                     <ComboBox Grid.Row="0" Margin="0, 10"
                               ItemsSource="{x:Static detals:WeldingSchemas.WeldingSchemasCollection}"
-                              SelectedItem="{Binding Path=DataContext.SelectedFile.CurrentDetal.SelectedWeldingSchema, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
+                              SelectedItem="{Binding Path=DataContext.DetalObject.SelectedWeldingSchema, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
                               SelectedIndex="0">
 
                         <ComboBox.ItemTemplate>
@@ -1156,7 +1156,7 @@
 
                     <DataGrid Grid.Row="1" 
                               Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type Grid}, Mode=FindAncestor}}"
-                              ItemsSource="{Binding Path=DataContext.SelectedFile.CurrentDetal.SelectedWeldingSchema, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}">
+                              ItemsSource="{Binding Path=DataContext.DetalObject.WeldingSchema, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}">
 
                         <DataGrid.Resources>
                             <Style TargetType="{x:Type ComboBox}">
@@ -1314,10 +1314,9 @@
                 <Setter Property="SelectionMode" Value="Single"/>
                 <Setter Property="ScrollViewer.CanContentScroll" Value="False"/>
                 <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
-                <!--<Setter Property="behavior:DataGridAutoSizeColumns.IsDynamicWith" Value="True"/>-->
             </Style>
 
-            <!--<Style TargetType="DataGridColumnHeader">
+            <Style TargetType="DataGridColumnHeader">
                 <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                 <Setter Property="ContentTemplate">
                     <Setter.Value>
@@ -1326,14 +1325,14 @@
                         </DataTemplate>
                     </Setter.Value>
                 </Setter>
-            </Style>-->
+            </Style>
 
             <!--<Style TargetType="DataGridRow">
                 <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
             </Style>-->
 
-            <!--<Style TargetType="{x:Type DataGridCell}">
+            <Style TargetType="{x:Type DataGridCell}">
                 <Setter Property="TextBlock.TextAlignment" Value="Center"/>
 
                 <Setter Property="Template">
@@ -1345,7 +1344,7 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
-            </Style>-->
+            </Style>
         </DataTemplate.Resources>
 
         <Grid DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType={x:Type ContentControl}, Mode=FindAncestor}}">   
@@ -1394,7 +1393,6 @@
                     </ComboBox>
 
                     <DataGrid Grid.Row="1" ItemsSource="{Binding Path=DataContext.SelectedFile.CurrentDetal.WeldingSchema, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}">
-
                         <DataGrid.Resources>
                             <Style TargetType="{x:Type ComboBox}">
                                 <Setter Property="MaxDropDownHeight" Value="150"/>
