@@ -48,11 +48,11 @@ namespace ForRobot.Models.Detals
 
         #region Public variables
 
-        [JsonIgnore]
-        /// <summary>
-        /// Игнорируемы для Undo/Redo свойства
-        /// </summary>
-        public virtual string[] NotSaveProperties { get; }
+        //[JsonIgnore]
+        ///// <summary>
+        ///// Игнорируемы для Undo/Redo свойства
+        ///// </summary>
+        //public virtual string[] NotSaveProperties { get; }
 
         public virtual string Json { get; }
         
@@ -225,18 +225,6 @@ namespace ForRobot.Models.Detals
             }
         }
 
-        //[JsonIgnore]
-        ///// <summary>
-        ///// Продольная привязка
-        ///// </summary>
-        //public virtual Privyazka LongitudinalPrivyazka { get; set; } = Privyazka.FromLeftToRight;
-
-        //[JsonIgnore]
-        ///// <summary>
-        ///// Поперечная привязка
-        ///// </summary>
-        //public virtual Privyazka TransversePrivyazka { get; set; } = Privyazka.FromLeftToRight;
-       
         #endregion
 
         #region Event
@@ -289,30 +277,30 @@ namespace ForRobot.Models.Detals
 
         #region Public functions
 
-        public virtual object DeserializeDetal(string sJsonString)
-        {
-            return null;
-            //string detalType = Newtonsoft.Json.Linq.JObject.Parse(sJsonString)["DetalType"].ToString();
+        //public virtual object DeserializeDetal(string sJsonString)
+        //{
+        //    return null;
+        //    //string detalType = Newtonsoft.Json.Linq.JObject.Parse(sJsonString)["DetalType"].ToString();
 
-            //if (string.IsNullOrEmpty(sJsonString))
-            //    return new Detal();
+        //    //if (string.IsNullOrEmpty(sJsonString))
+        //    //    return new Detal();
 
-            //switch (detalType)
-            //{
-            //    case DetalTypes.Plita:
-            //        break;
+        //    //switch (detalType)
+        //    //{
+        //    //    case DetalTypes.Plita:
+        //    //        break;
 
-            //    case DetalTypes.Stringer:
-            //        break;
+        //    //    case DetalTypes.Stringer:
+        //    //        break;
 
-            //    case DetalTypes.Treygolnik:
-            //        break;
-            //}
+        //    //    case DetalTypes.Treygolnik:
+        //    //        break;
+        //    //}
 
-            //Detal detal = DetalTypes.StringToEnum(detalType)
+        //    //Detal detal = DetalTypes.StringToEnum(detalType)
 
-            //string.IsNullOrEmpty(sJsonString) ? new Plita(DetalType.Plita) : JsonConvert.DeserializeObject<Plita>(JObject.Parse(Properties.Settings.Default.SavePlita, _jsonLoadSettings).ToString(), this._jsonSettings);
-        }
+        //    //string.IsNullOrEmpty(sJsonString) ? new Plita(DetalType.Plita) : JsonConvert.DeserializeObject<Plita>(JObject.Parse(Properties.Settings.Default.SavePlita, _jsonLoadSettings).ToString(), this._jsonSettings);
+        //}
 
         public object Clone() => (Detal)this.MemberwiseClone();
         //{

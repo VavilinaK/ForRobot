@@ -59,7 +59,18 @@
         <KeyBinding Gesture="Ctrl+Shift+S"
                     Command="{Binding Path=StandartParametrsCommand}"
                     CommandParameter="{Binding Path=SelectedFile}"/>
-        
+
+        <KeyBinding Key="OemPlus" Command="{x:Static behavior:CameraControllerBehavior.ZoomViewCommand}">
+            <KeyBinding.CommandParameter>
+                <sys:Double>1</sys:Double>
+            </KeyBinding.CommandParameter>
+        </KeyBinding>
+
+        <KeyBinding Key="OemMinus" Command="{x:Static behavior:CameraControllerBehavior.ZoomViewCommand}">
+            <KeyBinding.CommandParameter>
+                <sys:Double>-50</sys:Double>
+            </KeyBinding.CommandParameter>
+        </KeyBinding>
     </Page.InputBindings>
 
     <Page.Resources>

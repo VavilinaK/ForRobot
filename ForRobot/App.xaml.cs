@@ -1,19 +1,15 @@
 ﻿using System;
 using System.IO;
+using System.IO.Pipes;
 using System.Text;
 using System.Data;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Reflection;
 using System.Diagnostics;
 using System.Windows;
 using System.Security.Cryptography;
-//using System.Collections.ObjectModel;
-
-using System.IO.Pipes;
-using System.Threading.Tasks;
-
-//using Newtonsoft.Json;
 
 using ForRobot.Libr;
 
@@ -52,7 +48,7 @@ namespace ForRobot
 
         private static ForRobot.Models.Settings.Settings _settings;
 
-        #endregion
+        #endregion 
 
         #region Public variables
 

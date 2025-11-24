@@ -25,7 +25,7 @@ namespace ForRobot.Libr.Clipboard.UndoRedo
         //{
         //    add { CommandManager.RequerySuggested += value; }
         //    remove { CommandManager.RequerySuggested -= value; }
-        //}
+        //}            
 
         public bool CanExecute(object parameter) => true;
 

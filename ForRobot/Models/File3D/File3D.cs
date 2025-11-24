@@ -29,18 +29,18 @@ using ForRobot.Libr.Services;
 
 namespace ForRobot.Models.File3D
 {
-    public class File3D : IUndoRedo, IDisposable
+    public class File3D : IDisposable
     {
         #region Private variables
 
         private readonly ForRobot.Libr.Factories.DetalFactory.IDetalFactory _detalFactory = new ForRobot.Libr.Factories.DetalFactory.DetalFactory(new ForRobot.Libr.Configuration.ConfigurationProvider());
+        private readonly ForRobot.Libr.Clipboard.UndoRedoManager _undoRedoManager;
 
         private Model3DGroup _currentModel = new Model3DGroup();
 
         private Detal _oldDetal;
         private Detal _currentDetal;
         private WeldingProperties _currentWeldingProperties;
-
         private ObservableCollection<Weld> _weldsCollection = new ObservableCollection<Weld>();
         
         private readonly Dispatcher dispatcher;
@@ -66,10 +66,13 @@ namespace ForRobot.Models.File3D
         /// </summary>
         public bool IsSaved { get; private set;} = true;
 
+        public bool CanUndo => this._undoRedoManager.CanUndo;
+        public bool CanRedo => this._undoRedoManager.CanRedo;
+
         /// <summary>
         /// Путь к файлу
         /// </summary>
-        public string Path { get; set; } = string.Empty;
+        public string Path { get; private set; } = string.Empty;
         /// <summary>
         /// Имя с расширением
         /// </summary>
@@ -115,10 +118,18 @@ namespace ForRobot.Models.File3D
         //    this.FileChangedEvent += (s, o) => this.IsSaved = false;
         //}
 
-        public File3D(DetalType detalType, string path = null)
+        public File3D()
+        {
+            this.dispatcher = Dispatcher.CurrentDispatcher;
+            this._undoRedoManager = new ForRobot.Libr.Clipboard.UndoRedoManager(new ForRobot.Libr.Clipboard.CacheClipboardProvider(), this.Name);
+        }
+
+        public File3D(DetalType detalType, string path = null) : this()
         {
             if (path == null)
                 path = System.IO.Path.GetTempPath();
+
+
         }
 
         //public File3D(Detal detal, string path = null) : this()
@@ -141,17 +152,14 @@ namespace ForRobot.Models.File3D
         //    this.IsSaved = false;
         //}
 
-        public File3D(string path)
+        public File3D(string path) : this()
         {
             if (!File.Exists(path))
                 throw new FileNotFoundException("Файл не найден по пути", path);
-
-            this.dispatcher = Dispatcher.CurrentDispatcher;
-
+            
             //if (ExtensionsFilter.Count(item => System.IO.Path.GetExtension(sPath) == item) == 0)
             //    throw new FileFormatException("Неверный формат файла");
 
-            this.Path = path;
             this.Load(path);
             //this.CurrentModel = Task.Run(async () => await this.LoadAsync(Path, true)).Result;
         }
@@ -159,7 +167,11 @@ namespace ForRobot.Models.File3D
         #endregion
 
         #region Private functions
-        
+
+        #region Load
+
+        #endregion
+
         private async Task<Model3DGroup> LoadAsync(string model3DPath, bool freeze = false)
         {
             return await Task.Factory.StartNew(() =>
@@ -513,15 +525,24 @@ namespace ForRobot.Models.File3D
 
         #region Public functions
 
-        public void Load(string sPath)
+        public void Undo() => this._undoRedoManager.Undo();
+
+        public void Redo() => this._undoRedoManager.Redo();
+
+        public void Load(string path)
         {
+            string extension = System.IO.Path.GetExtension(path);
+
             // Проверка соответстия разрешения файла на доступность загрузки
-            if (File3DExtensions.Contains(System.IO.Path.GetExtension(sPath)))
-                this.Load3DModel(sPath);
+            if (File3DExtensions.Contains(extension))
+                this.Load3DModel(path);
+            else if (FileTextExtensions.Contains(extension))
+                this.LoadTextFileModel(path);
+            else
+                throw new FileFormatException(string.Format("Неверный формат файла: {0}", extension));
 
-            else if (FileTextExtensions.Contains(System.IO.Path.GetExtension(sPath)))
-                this.LoadTextFileModel(sPath);
-
+            this.Path = path;
+            
             //else
             //    this.LoadOther(sPath);
             this.IsOpened = true;
@@ -562,7 +583,7 @@ namespace ForRobot.Models.File3D
             this.OnSave();
             return true;
         }
-
+        
         #region Static
 
         public static File3D Open()
@@ -620,75 +641,6 @@ namespace ForRobot.Models.File3D
 
         #endregion
 
-        #region Implementations of IUndoRedo
-
-        private bool _isUndoRedoOperation = false;
-        /// <summary>
-        /// Стек возвращаемых действий (назад)
-        /// </summary>
-        private readonly Stack<IUndoableCommand> _undoStack = new Stack<IUndoableCommand>();
-        /// <summary>
-        /// Стек повторяемых действий (вперёд)
-        /// </summary>
-        private readonly Stack<IUndoableCommand> _redoStack = new Stack<IUndoableCommand>();
-
-        public event EventHandler UndoRedoStateChanged;
-
-        public bool CanUndo => this._undoStack.Count > 0;
-        public bool CanRedo => this._redoStack.Count > 0;
-
-        /// <summary>
-        /// Отмена изменения
-        /// </summary>
-        public void Undo()
-        {
-            if (!this.CanUndo) return;
-
-            _isUndoRedoOperation = true;
-            var command = _undoStack.Pop();
-            command.Unexecute();
-            _redoStack.Push(command);
-            _isUndoRedoOperation = false;
-
-            if (this.CurrentDetal != null)
-                UndoRedoStateChanged?.Invoke(this.CurrentDetal.Clone(), EventArgs.Empty);
-        }
-
-        /// <summary>
-        /// Возврат изменения
-        /// </summary>
-        public void Redo()
-        {
-            if (!this.CanRedo) return;
-
-            _isUndoRedoOperation = true;
-            var command = _redoStack.Pop();
-            command.Execute();
-            _undoStack.Push(command);
-            _isUndoRedoOperation = false;
-
-            if (this.CurrentDetal != null)
-                UndoRedoStateChanged?.Invoke(this.CurrentDetal.Clone(), EventArgs.Empty);
-        }
-
-        public void AddUndoCommand(IUndoableCommand command)
-        {
-            if (_isUndoRedoOperation) return;
-
-            _undoStack.Push(command);
-            _redoStack.Clear();
-            UndoRedoStateChanged?.Invoke(this.CurrentDetal.Clone(), EventArgs.Empty);
-        }
-
-        public void ClearUndoRedoHistory()
-        {
-            _undoStack.Clear();
-            _redoStack.Clear();
-            UndoRedoStateChanged?.Invoke(this.CurrentDetal.Clone(), EventArgs.Empty);
-        }
-
-        #endregion
-
         #region Implementations of IDisposable
 
         private volatile bool _disposed = false;
@@ -704,7 +656,7 @@ namespace ForRobot.Models.File3D
 
             if (disposing)
             {
-                this.ClearUndoRedoHistory();
+                this._undoRedoManager.ClearUndoRedoHistory();
                 this.ModelChangedEvent -= (s, o) => GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Behavior.HelixSceneTrackerMessage());
                 this.ModelChangedEvent -= new ChangeService().HandleModelChanged;
                 this.DetalChangedEvent -= new ChangeService().HandleDetalChanged_Properties;

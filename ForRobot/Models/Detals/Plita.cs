@@ -56,12 +56,6 @@ namespace ForRobot.Models.Detals
 
         public const int MIN_RIB_COUNT = 1;
 
-        //[JsonIgnore]
-        ///// <summary>
-        ///// Игнорируемы для Undo/Redo свойства
-        ///// </summary>
-        //public override string[] NotSaveProperties { get; } = new string[] { nameof(SelectedWeldingSchema) };
-
         /// <summary>
         /// Json-строка для передачи
         /// </summary>

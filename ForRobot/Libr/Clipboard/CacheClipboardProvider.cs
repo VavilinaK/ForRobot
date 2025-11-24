@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Caching;
 using System.Collections.Generic;
 
 using ForRobot.Libr.Clipboard.UndoRedo;
@@ -7,22 +8,35 @@ namespace ForRobot.Libr.Clipboard
 {
     public class CacheClipboardProvider
     {
-        //private readonly IConfigurationProvider _innerProvider;
-        private readonly Dictionary<string, Tuple<Stack<IUndoableCommand>, Stack<IUndoableCommand>>> _cache = new Dictionary<string, Tuple<Stack<IUndoableCommand>, Stack<IUndoableCommand>>>();
+        private readonly Dictionary<string, UndoRedoStacks> _cache = new Dictionary<string, UndoRedoStacks>();
         private readonly object _lock = new object();
 
-        public T GetOrAdd<T>(string key, Func<T> factory, CacheItemPolicy policy = null) where T : class
+        public UndoRedoStacks GetOrAddStacks(string key)
         {
-            T item = (T)_cache.Get(key);
-
-            return item;
+            lock (_lock)
+            {
+                if (!_cache.TryGetValue(key, out var stacks))
+                {
+                    stacks = new UndoRedoStacks();
+                    _cache[key] = stacks;
+                }
+                return stacks;
+            }
         }
 
         public void ClearCache()
         {
             lock (_lock)
             {
-                //_cache.Clear();
+                _cache.Clear();
+            }
+        }
+
+        public bool RemoveStacks(string key)
+        {
+            lock (_lock)
+            {
+                return _cache.Remove(key);
             }
         }
     }

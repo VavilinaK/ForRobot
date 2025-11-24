@@ -15,7 +15,7 @@
     <conv:RowNumberConverter x:Key="RowNumberConvert"/>
     <conv:RadioButtonConverter x:Key="RadioButtonConvert"/>
     <conv:StatusColorConverter x:Key="StatusColorConvert"/>
-    <conv:StringFormatConverter x:Key="StringConvert"/>
+    <conv:StringFormatConverter x:Key="StringFormatConverter"/>
     <conv:StringFormatMultiConverter x:Key="StringFormatMultiConvert"/>
     <conv:ThicknessConverter x:Key="ThicknessConvert"/>
     <conv:SelectProgramConverter x:Key="SelectProgramConvert"/>
