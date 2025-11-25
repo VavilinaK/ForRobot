@@ -40,50 +40,19 @@ namespace ForRobot.Models.Detals
         private decimal _weldsDissolutionRight;
         private decimal _bevelToLeft;
         private decimal _bevelToRight;
-
-        private BitmapImage _rebraImage;
-        private BitmapImage _plitaImage;
-
+        
         private FullyObservableCollection<Rib> _ribsCollection;
-        private readonly JsonSerializerSettings _jsonSettings = new JsonSerializerSettings()
-        {
-            Formatting = Formatting.Indented
-        };
+        //private readonly JsonSerializerSettings _jsonSettings = new JsonSerializerSettings()
+        //{
+        //    Formatting = Formatting.Indented
+        //};
 
         #endregion
 
         #region Public variables
 
         public const int MIN_RIB_COUNT = 1;
-
-        /// <summary>
-        /// Json-строка для передачи
-        /// </summary>
-        [JsonIgnore]
-        public override string Json
-        {
-            get
-            {
-                this._jsonSettings.ContractResolver = new PlitaWithRibsAttributesResolver(this.ScoseType, this.DiferentDistance, this.ParalleleRibs, this.DiferentDissolutionLeft, this.DiferentDissolutionRight);
-                return JsonConvert.SerializeObject(this, _jsonSettings).Replace("d_W2", "d_w");
-            }
-        }
-
-        /// <summary>
-        /// Json-строка для сохранения
-        /// </summary>
-        [JsonIgnore]
-        public override string JsonForSave
-        {
-            get
-            {
-                this._jsonSettings.ContractResolver = new SaveAttributesResolver();
-                return JsonConvert.SerializeObject(this, _jsonSettings);
-            }
-        }
-
-        //[JsonIgnore]
-        //[SaveAttribute]
+        
         /// <inheritdoc cref="Detal.DetalType"/>
         public override string DetalType { get => DetalTypes.Plita; }
 
@@ -106,8 +75,6 @@ namespace ForRobot.Models.Detals
         //    }
         //}
 
-        [JsonIgnore]
-        [SaveAttribute]
         [JsonConverter(typeof(JsonCommentConverter), "Разное ли рассояние между рёбрами")]
         /// <summary>
         /// Различно ли расстояние между рёбрами => отступы и т.д.
@@ -122,8 +89,6 @@ namespace ForRobot.Models.Detals
             }
         }
 
-        [JsonIgnore]
-        [SaveAttribute]
         [JsonConverter(typeof(JsonCommentConverter), "Параллельлны ли рёбра")]
         /// <summary>
         /// Паралельны ли рёбра друг к другу
@@ -138,8 +103,6 @@ namespace ForRobot.Models.Detals
             }
         }
 
-        [JsonIgnore]
-        [SaveAttribute]
         [JsonConverter(typeof(JsonCommentConverter), "Разный ли роспуск слева")]
         /// <summary>
         /// Разный ли роспуск слева
@@ -153,9 +116,7 @@ namespace ForRobot.Models.Detals
                 this.OnChangeProperty(nameof(this.DiferentDissolutionLeft));
             }
         }
-
-        [JsonIgnore]
-        [SaveAttribute]
+        
         [JsonConverter(typeof(JsonCommentConverter), "Разный ли роспуск справа")]
         /// <summary>
         /// Разный ли роспуск справа
@@ -214,9 +175,7 @@ namespace ForRobot.Models.Detals
         //        this.OnChangeProperty();
         //    }
         //}
-
-        [JsonIgnore]
-        [SaveAttribute]
+        
         [JsonConverter(typeof(JsonCommentConverter), "Высота рёбер (вертикальной стенки)")]
         /// <summary>
         /// Высота ребра
@@ -230,9 +189,7 @@ namespace ForRobot.Models.Detals
                 this.OnChangeProperty(nameof(this.RibsHeight));
             }
         }
-
-        [JsonIgnore]
-        [SaveAttribute]
+        
         [JsonConverter(typeof(JsonCommentConverter), "Толщина рёбер")]
         /// <summary>
         /// Толщина ребра
@@ -267,9 +224,7 @@ namespace ForRobot.Models.Detals
                 this.OnChangeProperty(nameof(this.RibsCount));
             }
         }
-
-        [JsonIgnore]
-        [SaveAttribute]
+        
         [JsonConverter(typeof(JsonCommentConverter), "Расстояние по ширине до осевой линии первого ребра")]
         /// <summary>
         /// Поперечное расстояние по ширине до осевой линии первого ребра
@@ -283,9 +238,7 @@ namespace ForRobot.Models.Detals
                 this.OnChangeProperty();
             }
         }
-
-        [JsonIgnore]
-        [SaveAttribute]
+        
         [JsonConverter(typeof(JsonCommentConverter), "Расстояние между осевыми линиями рёбер")]
         /// <summary>
         /// Поперечное расстояние между осевыми линиями рёбер
@@ -299,9 +252,7 @@ namespace ForRobot.Models.Detals
                 this.OnChangeProperty();
             }
         }
-
-        [JsonIgnore]
-        [SaveAttribute]
+        
         [JsonConverter(typeof(JsonCommentConverter), "Продольное расстояние до ребра по левому краю")]
         /// <summary>
         /// Продольное расстояние до ребер по левому краю
@@ -315,9 +266,7 @@ namespace ForRobot.Models.Detals
                 this.OnChangeProperty();
             }
         }
-
-        [JsonIgnore]
-        [SaveAttribute]
+        
         [JsonConverter(typeof(JsonCommentConverter), "Продольное расстояние до ребра по правому краю")]
         /// <summary>
         /// Продольное расстояние до ребер по правому краю
@@ -331,9 +280,7 @@ namespace ForRobot.Models.Detals
                 this.OnChangeProperty();
             }
         }
-
-        [JsonIgnore]
-        [SaveAttribute]
+        
         [JsonConverter(typeof(JsonCommentConverter), "Роспуск слева")]
         /// <summary>
         /// Отступ шва от левого края ребер (роспуск, выкружка)
@@ -347,9 +294,7 @@ namespace ForRobot.Models.Detals
                 this.OnChangeProperty();
             }
         }
-
-        [JsonIgnore]
-        [SaveAttribute]
+        
         [JsonConverter(typeof(JsonCommentConverter), "Роспуск справа")]
         /// <summary>
         /// Отступ шва от правого края ребер (роспуск, выкружка)
@@ -639,18 +584,18 @@ namespace ForRobot.Models.Detals
 
         #region Public functions
 
-        /// <summary>
-        /// Десериализация класса <see cref="Plita"/> из JSON-строки
-        /// </summary>
-        /// <param name="sJsonString">JSON-строка</param>
-        /// <returns></returns>
-        public new Plita DeserializeDetal(string sJsonString = null)
-        {
-            if (string.IsNullOrEmpty(sJsonString))
-                return new Plita();
-            else
-                return JsonConvert.DeserializeObject<Plita>(JObject.Parse(sJsonString, this._jsonLoadSettings).ToString(), this._jsonDeserializerSettings);
-        }
+        ///// <summary>
+        ///// Десериализация класса <see cref="Plita"/> из JSON-строки
+        ///// </summary>
+        ///// <param name="sJsonString">JSON-строка</param>
+        ///// <returns></returns>
+        //public new Plita DeserializeDetal(string sJsonString = null)
+        //{
+        //    if (string.IsNullOrEmpty(sJsonString))
+        //        return new Plita();
+        //    else
+        //        return JsonConvert.DeserializeObject<Plita>(JObject.Parse(sJsonString, this._jsonLoadSettings).ToString(), this._jsonDeserializerSettings);
+        //}
 
         public FullyObservableCollection<Rib> SetRibsCollection(FullyObservableCollection<Rib> collection) => this.RibsCollection = collection;
 

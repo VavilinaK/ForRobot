@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Windows.Media;
-using System.Windows.Media.Media3D;
-using System.Windows.Media.Imaging;
 using System.Runtime.CompilerServices;
-using System.Collections.ObjectModel;
-using System.Configuration;
 using System.ComponentModel;
 
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
-using ForRobot.Models.File3D;
-using ForRobot.Libr;
-using ForRobot.Libr.Json;
+//using ForRobot.Models.File3D;
+//using ForRobot.Libr;
+//using ForRobot.Libr.Json;
 using ForRobot.Libr.Converters;
 using HelixToolkit.Wpf.SharpDX;
 using System.Threading;
@@ -33,31 +27,21 @@ namespace ForRobot.Models.Detals
         private decimal _plateBevelToLeftSave;
         private decimal _plateBevelToRightSave;
         private decimal[] _XYZOffset = new decimal[3] { 0, 0, 0 };
-        
-        protected readonly JsonSerializerSettings _jsonDeserializerSettings = new JsonSerializerSettings()
-        {
-            ContractResolver = new ForRobot.Libr.Json.SaveAttributesResolver(),
-            Formatting = Formatting.Indented,
-        };
-        protected readonly JsonLoadSettings _jsonLoadSettings = new JsonLoadSettings()
-        {
-            CommentHandling = CommentHandling.Ignore
-        };
+
+        //protected readonly JsonSerializerSettings _jsonDeserializerSettings = new JsonSerializerSettings()
+        //{
+        //    ContractResolver = new ForRobot.Libr.Json.SaveAttributesResolver(),
+        //    Formatting = Formatting.Indented,
+        //};
+        //protected readonly JsonLoadSettings _jsonLoadSettings = new JsonLoadSettings()
+        //{
+        //    CommentHandling = CommentHandling.Ignore
+        //};
 
         #endregion
 
         #region Public variables
 
-        //[JsonIgnore]
-        ///// <summary>
-        ///// Игнорируемы для Undo/Redo свойства
-        ///// </summary>
-        //public virtual string[] NotSaveProperties { get; }
-
-        public virtual string Json { get; }
-        
-        public virtual string JsonForSave { get; }
-        
         /// <summary>
         /// Тип детали
         /// </summary>

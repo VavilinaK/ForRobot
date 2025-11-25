@@ -216,29 +216,6 @@ namespace ForRobot
                 ForRobot.Properties.Settings.Default.IsSettingsUpgradeRequired = false;
                 ForRobot.Properties.Settings.Default.Save();
             }
-            else
-            {
-                // Проверка скрипта на обновление, если приложение не обновлялось.
-                foreach (var prop in typeof(ForRobot.Libr.ConfigurationProperties.AppConfigurationSection).GetProperties())
-                {
-                    var v = typeof(ForRobot.Libr.ConfigurationProperties.AppConfigurationSection).GetProperty(prop.Name);
-                    string scriptName = v.GetValue(AppConfig) as string;
-
-                    if (Settings.AutoUpdate &&
-                        (File.Exists(Path.Combine(this.FilePathOnPC, $"Scripts\\{scriptName}")) && File.Exists(Path.Combine(App.Current.UpdatePath, $"Scripts\\{scriptName}"))))
-                    {
-                        Version oldVersion = Version.Parse(File.ReadLines(Path.Combine(this.FilePathOnPC, $"Scripts\\{scriptName}")).Where(str => str.Contains("__version__")).First().Split(new char[] { '=' }).Last().TrimStart().Trim(new char[] { '\'' }));
-                        Version newVersion = Version.Parse(File.ReadLines(Path.Combine(App.Current.UpdatePath, $"Scripts\\{scriptName}")).Where(str => str.Contains("__version__")).First().Split(new char[] { '=' }).Last().TrimStart().Trim(new char[] { '\'' }));
-
-                        if (newVersion > oldVersion && (!Settings.InformUser ||
-                            MessageBox.Show($"Обнаружено обновление скрипта {scriptName} до версии {newVersion}\nОбновить скрипт?", "Обновление скрипта-генерации", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.OK, MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.OK))
-                        {
-                            this.Logger.Trace($"Обновление скрипта {scriptName} до версии {newVersion}");
-                            this.UpDateScript();
-                        }
-                    }
-                }
-            }
 
             Application.Current.MainWindow = WindowsAppService.AppMainWindow;
             SaveAppSettings += (s, o) => Settings.Save();

@@ -8,8 +8,8 @@ using System.Collections.Generic;
 using HelixToolkit.Wpf;
 
 using ForRobot.Libr.Collections;
+using ForRobot.Libr.Strategies.ModelingStrategies;
 using ForRobot.Models.Detals;
-using ForRobot.Strategies.ModelingStrategies;
 
 namespace ForRobot.Libr.Services
 {

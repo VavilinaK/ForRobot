@@ -384,12 +384,11 @@ namespace ForRobot.ViewModels
         /// </summary>
         public ICommand StandartParametrsCommand { get => new RelayCommand(_ =>
         {
-            var newDetal = Models.File3D.File3D.StandartParamertrs(this.SelectedFile.CurrentDetal);
-            this.SelectedFile.CurrentDetal = newDetal;
+            this.SelectedFile.StandartParamertrs();
             RaisePropertyChanged(nameof(this.SelectedFile));
             RaisePropertyChanged(nameof(this.SelectedFile.CurrentDetal));
             RaisePropertyChanged(nameof(this.ActiveContent));
-            GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Messages.UpdateCurrentDetalMessage(newDetal));
+            GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Messages.UpdateCurrentDetalMessage(this.SelectedFile.CurrentDetal));
         });} 
 
         /// <summary>

@@ -562,6 +562,24 @@ namespace ForRobot.Models.File3D
         /// </summary>
         public void Save() => this.Save(this.Path);
 
+        public void StandartParamertrs()
+        {
+            switch (this.CurrentDetal.DetalType)
+            {
+                case DetalTypes.Plita:
+                    this.CurrentDetal = this._detalFactory.CreateDetal<Plita>(DetalType.Plita);
+                    break;
+
+                case DetalTypes.Stringer:
+                    this.CurrentDetal = this._detalFactory.CreateDetal<PlitaStringer>(DetalType.Stringer);
+                    break;
+
+                case DetalTypes.Treygolnik:
+                    this.CurrentDetal = this._detalFactory.CreateDetal<PlitaTreygolnik>(DetalType.Treygolnik);
+                    break;
+            }
+        }
+
         /// <summary>
         /// Сохранение файла
         /// </summary>
@@ -603,39 +621,40 @@ namespace ForRobot.Models.File3D
             }
         }
 
-        public static Detal StandartParamertrs(Detal detal)
-        {
-            switch (detal.DetalType)
-            {
-                case DetalTypes.Plita:
-                    //var plita = new Plita(DetalType.Plita)
-                    //{
-                    //    ScoseType = ((Plita)detal).ScoseType,
-                    //    DiferentDistance = ((Plita)detal).DiferentDistance,
-                    //    ParalleleRibs = ((Plita)detal).ParalleleRibs,
-                    //    DiferentDissolutionLeft = ((Plita)detal).DiferentDissolutionLeft,
-                    //    DiferentDissolutionRight = ((Plita)detal).DiferentDissolutionRight
-                    //};
-                    //plita.ChangePropertyEvent = detal.ChangePropertyEvent;
-                    return new Plita()
-                    {
-                        ScoseType = ((Plita)detal).ScoseType,
-                        DiferentDistance = ((Plita)detal).DiferentDistance,
-                        ParalleleRibs = ((Plita)detal).ParalleleRibs,
-                        DiferentDissolutionLeft = ((Plita)detal).DiferentDissolutionLeft,
-                        DiferentDissolutionRight = ((Plita)detal).DiferentDissolutionRight
-                    };
+        //public static Detal StandartParamertrs(Detal detal)
+        //{
+        //    switch (detal.DetalType)
+        //    {
+        //        case DetalTypes.Plita:
+        //            //var plita = new Plita(DetalType.Plita)
+        //            //{
+        //            //    ScoseType = ((Plita)detal).ScoseType,
+        //            //    DiferentDistance = ((Plita)detal).DiferentDistance,
+        //            //    ParalleleRibs = ((Plita)detal).ParalleleRibs,
+        //            //    DiferentDissolutionLeft = ((Plita)detal).DiferentDissolutionLeft,
+        //            //    DiferentDissolutionRight = ((Plita)detal).DiferentDissolutionRight
+        //            //};
+        //            //plita.ChangePropertyEvent = detal.ChangePropertyEvent;
 
-                case DetalTypes.Stringer:
-                    return new PlitaStringer();
+        //            return new Plita()
+        //            {
+        //                ScoseType = ((Plita)detal).ScoseType,
+        //                DiferentDistance = ((Plita)detal).DiferentDistance,
+        //                ParalleleRibs = ((Plita)detal).ParalleleRibs,
+        //                DiferentDissolutionLeft = ((Plita)detal).DiferentDissolutionLeft,
+        //                DiferentDissolutionRight = ((Plita)detal).DiferentDissolutionRight
+        //            };
 
-                case DetalTypes.Treygolnik:
-                    return new PlitaTreygolnik();
+        //        case DetalTypes.Stringer:
+        //            return new PlitaStringer();
 
-                default:
-                    return null;
-            }
-        }
+        //        case DetalTypes.Treygolnik:
+        //            return new PlitaTreygolnik();
+
+        //        default:
+        //            return null;
+        //    }
+        //}
 
         #endregion
 
@@ -656,6 +675,7 @@ namespace ForRobot.Models.File3D
 
             if (disposing)
             {
+                this._detalFactory.ClearCache();
                 this._undoRedoManager.ClearUndoRedoHistory();
                 this.ModelChangedEvent -= (s, o) => GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Behavior.HelixSceneTrackerMessage());
                 this.ModelChangedEvent -= new ChangeService().HandleModelChanged;
