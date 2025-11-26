@@ -1,0 +1,114 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "title": "Plate Schema",
+  "description": "JSON-схема для валидации объектов типа `Plita`, на основе класса `Plita` и его базового класса `Detal`",
+  "type": "object",
+
+  "properties": {
+    //"name": {
+    //  "type": "string",
+    //  "description": "This shows up in tooltips for the 'name' property."
+    //},
+    //"versions": {
+    //  "type": "array",
+    //  "description": "An array of version numbers.",
+    //  "minItems": 1,
+    //  "items": {
+    //    "type": "number"
+    //  }
+    //}
+
+    "d_type": {
+      "type": "string",
+      "description": "Тип скоса"
+    },
+
+    "reverse_deflection": {
+      "type": "number",
+      "description": "Обратный прогиб детали"
+    },
+
+    "base_width": {
+      "type": "number",
+      "description": "Ширина настила"
+    },
+
+    "base_length": {
+      "type": "number",
+      "description": "Длина настила"
+    },
+
+    "base_thickness": {
+      "type": "number",
+      "description": "Толщина настила"
+    },
+
+    "base_bevel_left": {
+      "type": "number",
+      "description": "Скос настила слева"
+    },
+
+    "base_bevel_right": {
+      "type": "number",
+      "description": "Скос настила справа"
+    },
+
+    "base_displace": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 3,
+      "maxItems": 3,
+      "description": "Смещение настила от нулевой точки стола"
+    },
+
+    "wall_count": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Кол-во рёбер"
+    },
+
+    "walls_list": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "IdentToLeft": {
+            "type": "number"
+          },
+
+          "IdentToRight": {
+            "type": "number"
+          },
+
+          "DissolutionLeft": {
+            "type": "number"
+          },
+
+          "DissolutionRight": {
+            "type": "number"
+          },
+
+          "DistanceLeft": {
+            "type": "number"
+          },
+
+          "DistanceRight": {
+            "type": "number"
+          },
+
+          "Height": {
+            "type": "number"
+          },
+
+          "Thickness": {
+            "type": "number"
+          }
+        },
+        "required": []
+      },
+      "description": "Коллекция рёбер"
+    }
+  }
+}
