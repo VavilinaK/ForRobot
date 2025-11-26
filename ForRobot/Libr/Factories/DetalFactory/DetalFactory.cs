@@ -55,9 +55,14 @@ namespace ForRobot.Libr.Factories.DetalFactory
                 return JsonConvert.DeserializeObject<Plita>(jsonString, settings);
         }
 
+        private string GetJsonShemaPlate()
+        {
+            return string.Empty;
+        }
+
         private bool ValidationJsonStringPlate(string jsonString)
         {
-            string schemaJson = 
+            string schemaJson = this.GetJsonShemaPlate(); 
             return false;
         }
 
@@ -120,7 +125,14 @@ namespace ForRobot.Libr.Factories.DetalFactory
 
         public string GetJsonShema<T>(DetalType type)
         {
+            switch (type)
+            {
+                case DetalType.Plita:
+                    return GetJsonShemaPlate();
 
+                default:
+                    throw new ArgumentException($"Тип детали {DetalTypes.EnumToString(type)} не поддерживается", nameof(type));
+            }
         }
 
         public bool ValidationJsonString(string jsonString)
