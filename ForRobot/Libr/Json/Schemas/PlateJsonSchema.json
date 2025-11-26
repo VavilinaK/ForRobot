@@ -74,41 +74,64 @@
       "items": {
         "type": "object",
         "properties": {
-          "IdentToLeft": {
+          "wall_cross_dist_left": {
             "type": "number"
           },
 
-          "IdentToRight": {
+          "wall_cross_dist_right": {
             "type": "number"
           },
 
-          "DissolutionLeft": {
+          "weld_offset_left": {
             "type": "number"
           },
 
-          "DissolutionRight": {
+          "weld_offset_right": {
             "type": "number"
           },
 
-          "DistanceLeft": {
+          "wall_long_dist_left": {
             "type": "number"
           },
 
-          "DistanceRight": {
+          "wall_long_dist_right": {
             "type": "number"
           },
 
-          "Height": {
+          "wall_height": {
             "type": "number"
           },
 
-          "Thickness": {
+          "wall_thickness": {
             "type": "number"
           }
         },
-        "required": []
+        "required": [
+          "wall_height",
+          "wall_thickness",
+          "wall_cross_dist_left",
+          "wall_cross_dist_right",
+          "wall_long_dist_left",
+          "wall_long_dist_right",
+          "weld_offset_left",
+          "weld_offset_right"
+        ]
       },
+      "minItems": 1,
       "description": "Коллекция рёбер"
     }
-  }
+  },
+
+  "required": [
+    "d_type",
+    "reverse_deflection",
+    "base_width",
+    "base_length",
+    "base_thickness",
+    "base_bevel_left",
+    "base_bevel_right",
+    "base_displace",
+    "wall_count",
+    "walls_list"
+  ]
 }

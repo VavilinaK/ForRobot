@@ -8,5 +8,9 @@ namespace ForRobot.Libr.Json.Schemas
 {
     public class JsonSchemaProvider : ForRobot.Libr.Services.Providers.IJsonSchemaProvider
     {
+        public PlateJsonSchemaSection GetPlitaJsonSchema()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

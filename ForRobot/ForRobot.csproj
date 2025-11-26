@@ -320,6 +320,7 @@
     <Compile Include="Libr\Configuration\ConfigurationProvider.cs" />
     <Compile Include="Libr\Factories\DetalFactory\DetalFactory.cs" />
     <Compile Include="Libr\Factories\DetalFactory\IDetalFactory.cs" />
+    <Compile Include="Libr\Json\Schemas\CachedJsonSchemaProvider.cs" />
     <Compile Include="Libr\Json\Schemas\JsonSchemaProvider.cs" />
     <Compile Include="Libr\Json\Schemas\PlateJsonSchemaSection.cs" />
     <Compile Include="Libr\Messages\ProperteisNameMessage.cs" />

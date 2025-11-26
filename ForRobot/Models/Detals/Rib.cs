@@ -46,13 +46,13 @@ namespace ForRobot.Models.Detals
         /// </summary>
         public decimal DistanceRight { get => this._distanceRight; set => Set(ref this._distanceRight, value); }
 
-        [JsonProperty("wall_cross_dist_left")]
+        [JsonProperty("wall_long_dist_left")]
         /// <summary>
         /// Продольное расстояние до ребра по левому краю
         /// </summary>
         public decimal IdentToLeft { get => this._identToLeft; set => Set(ref this._identToLeft, value); }
 
-        [JsonProperty("wall_cross_dist_right")]
+        [JsonProperty("wall_long_dist_right")]
         /// <summary>
         /// Продольное расстояние до ребра по правому краю
         /// </summary>
