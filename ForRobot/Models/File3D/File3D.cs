@@ -33,7 +33,7 @@ namespace ForRobot.Models.File3D
     {
         #region Private variables
 
-        private readonly ForRobot.Libr.Factories.DetalFactory.IDetalFactory _detalFactory = new ForRobot.Libr.Factories.DetalFactory.DetalFactory(new ForRobot.Libr.Configuration.ConfigurationProvider());
+        private readonly ForRobot.Libr.Factories.DetalFactory.IDetalFactory _detalFactory;
         private readonly ForRobot.Libr.Clipboard.UndoRedoManager _undoRedoManager;
 
         private Model3DGroup _currentModel = new Model3DGroup();
@@ -52,15 +52,17 @@ namespace ForRobot.Models.File3D
         /// Массив допустимых для импрта форматов текстовых файлов
         /// </summary>
         private static readonly string[] FileTextExtensions = new string[] { ".txt", ".json" };
-        
+
         #endregion Private variables
 
         #region Public variables
 
+        [JsonIgnore]
         /// <summary>
         /// Файл был открыт
         /// </summary>
-        public bool IsOpened { get; private set; } = false;        
+        public bool IsOpened { get; private set; } = false;
+        [JsonIgnore]
         /// <summary>
         /// Сохранены ли последнии изменения
         /// </summary>
@@ -69,6 +71,7 @@ namespace ForRobot.Models.File3D
         public bool CanUndo => this._undoRedoManager.CanUndo;
         public bool CanRedo => this._undoRedoManager.CanRedo;
 
+        [JsonIgnore]
         /// <summary>
         /// Путь к файлу
         /// </summary>
@@ -82,6 +85,7 @@ namespace ForRobot.Models.File3D
         /// </summary>
         public string NameWithoutExtension { get => System.IO.Path.GetFileNameWithoutExtension(this.Path); }
 
+        [JsonIgnore]
         public Model3DGroup CurrentModel
         {
             get => this._currentModel;
@@ -121,6 +125,7 @@ namespace ForRobot.Models.File3D
         public File3D()
         {
             this.dispatcher = Dispatcher.CurrentDispatcher;
+            this._detalFactory = new ForRobot.Libr.Factories.DetalFactory.DetalFactory(new ForRobot.Libr.Configuration.ConfigurationProvider(), new ForRobot.Libr.Json.Schemas.JsonSchemaProvider());
             this._undoRedoManager = new ForRobot.Libr.Clipboard.UndoRedoManager(new ForRobot.Libr.Clipboard.CacheClipboardProvider(), this.Name);
         }
 
@@ -232,20 +237,7 @@ namespace ForRobot.Models.File3D
         private void LoadTextFileModel(string path)
         {
             string jsonString = File.ReadAllText(path);
-            string detalType = JObject.Parse(jsonString)["DetalType"].ToString();
-
-            switch (detalType)
-            {
-                case DetalTypes.Plita:
-                    this.CurrentDetal = new Detals.Plita().DeserializeDetal(jsonString) as Plita;
-                    break;
-
-                case DetalTypes.Stringer:
-                    break;
-
-                case DetalTypes.Treygolnik:
-                    break;
-            }
+            this.CurrentDetal = this._detalFactory.Deserialize(jsonString);
         }
 
         private void LoadOther(string path)
@@ -492,8 +484,11 @@ namespace ForRobot.Models.File3D
             //        }
             //    });
 
-            if (this.CurrentDetal.JsonForSave == string.Empty) return;
-            File.WriteAllText(path, this.CurrentDetal.JsonForSave);
+            string jsonString = this._detalFactory.Serialize(this.CurrentDetal);
+
+            if (jsonString == string.Empty) return;
+
+            File.WriteAllText(path, jsonString);
         }
         
         /// <summary>

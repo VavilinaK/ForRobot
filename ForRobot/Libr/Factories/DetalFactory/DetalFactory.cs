@@ -57,19 +57,18 @@ namespace ForRobot.Libr.Factories.DetalFactory
             else
                 return JsonConvert.DeserializeObject<Plita>(jsonString, settings);
         }
-                
-        //private string GetJsonShemaPlate()
-        //{
-        //    var assembly = Assembly.GetExecutingAssembly();
 
-        //    return string.Empty;
-        //}
-
-        //private bool ValidationJsonStringPlate(string jsonString)
-        //{
-        //    string schemaJson = this.GetJsonShemaPlate(); 
-        //    return false;
-        //}
+        private void HandleSerializeringError(object sender, ErrorEventArgs e)
+        {
+            var obj = e.CurrentObject as Detal;
+            string message = string.Empty;
+            if (obj == null)
+                message = e.ErrorContext.Error.Message;
+            else
+                message = string.Format("Ошибка десериализации объекта {0}: {1}", obj.GetType(), e.ErrorContext.Error.Message);
+            e.ErrorContext.Handled = true;
+            throw new JsonSerializationException(message);
+        }
 
         #endregion Private functions
 
@@ -100,27 +99,19 @@ namespace ForRobot.Libr.Factories.DetalFactory
         /// <returns></returns>
         public T Deserialize<T>(string jsonString) where T : Detal
         {
-            this.ValidationJsonString<T>(jsonString);
             return (T)Deserialize(jsonString);
         }
 
+        /// <summary>
+        /// Десериализация и валидация
+        /// </summary>
+        /// <param name="jsonString"></param>
+        /// <returns></returns>
         public Detal Deserialize(string jsonString)
         {
             var settings = new JsonSerializerSettings()
             {
-                Error = (s, e) => 
-                {
-                    var obj = e.CurrentObject as Detal;
-
-                    string message = string.Empty;
-                    if (obj == null)
-                         message = e.ErrorContext.Error.Message;
-                    else
-                        message = string.Format("Ошибка десериализации объекта {0}: {1}", obj.GetType(), e.ErrorContext.Error.Message);
-
-                    e.ErrorContext.Handled = true;
-                    throw new Exception(message);
-                }
+                Error = HandleSerializeringError
             };
             string detalType = Newtonsoft.Json.Linq.JObject.Parse(jsonString)[nameof(Detal.DetalType)].ToString();
 
@@ -135,39 +126,62 @@ namespace ForRobot.Libr.Factories.DetalFactory
             }
         }
 
-        public string GetJsonShema<T>(DetalType type)
+        public string Serialize<T>(T detal, IContractResolver contractResolver = null) where T : Detal
         {
-            switch (type)
+            return Serialize(detal as Detal, contractResolver);
+        }
+
+        public string Serialize(Detal detal, IContractResolver contractResolver = null)
+        {
+            string jsonString = string.Empty;
+
+            var settings = new JsonSerializerSettings()
             {
-                case DetalType.Plita:
-                    return GetJsonShemaPlate();
+                Formatting = Formatting.Indented,
+                ContractResolver = contractResolver ?? new DefaultContractResolver(),
+                Error = HandleSerializeringError
+            };
+
+            switch (detal.DetalType)
+            {
+                case DetalTypes.Plita:
+                    this.ValidationJsonString<ForRobot.Models.Detals.Plita>(jsonString);
+                    //return this.DeserializePlate(jsonString, settings);
+                    break;
 
                 default:
-                    throw new ArgumentException($"Тип детали {DetalTypes.EnumToString(type)} не поддерживается", nameof(type));
+                    throw new ArgumentException($"Тип детали {detal.DetalType} не поддерживается", detal.DetalType);
             }
+
+            return JsonConvert.SerializeObject(detal, settings);
         }
 
         public bool ValidationJsonString<T>(string jsonString) where T : Detal
         {
-            JObject jsonObject = JObject.Parse(jsonString);
-            JSchema schema = _jsonSchemaProvider.GetPlitaSchema();
-
+            string schemaTitle = "Unknown Schema";
             try
             {
-                if (!jsonObject.IsValid(schema, out IList<string> errors))
+                JObject jsonObject = JObject.Parse(jsonString);
+                JSchema schema = _jsonSchemaProvider.GetPlitaSchema();
+                schemaTitle = schema.Title ?? schemaTitle;
+                var validationErrors = new List<ValidationErrorInfo>();
+                
+                // Сбор ошибок валидации
+                jsonObject.Validate(schema, (sender, args) =>
                 {
-                    throw new JsonSchemaValidationException(schema.Title ?? "Unknown Schema", errors, jsonString);
-                }
-                //switch (detalType)
-                //{
-                //    case DetalTypes.Plita:
-                //        return this.ValidationJsonStringPlate(jsonString);
+                    validationErrors.Add(new ValidationErrorInfo
+                    {
+                        Message = args.Message,
+                        Path = args.Path,
+                        ErrorDetails = args
+                    });
+                });
 
-                //    default:
-                //        throw new ArgumentException($"Тип детали {detalType} не поддерживается", detalType);
-                //}
+                if (validationErrors.Count > 0)
+                {
+                    throw new JsonSchemaValidationException(schemaTitle, validationErrors, jsonString);
+                }
             }
-            catch (JsonSchemaValidationException) { throw; }
             catch (JsonReaderException ex)
             {
                 var errors = new List<ValidationErrorInfo>
@@ -175,11 +189,12 @@ namespace ForRobot.Libr.Factories.DetalFactory
                     new ValidationErrorInfo
                     {
                         Message = $"Deserialization failed: {ex.Message}",
-                        Path = "ROOT"
+                        Path = ex.Path
                     }
                 };
-                throw new JsonSchemaValidationException(schema.Title ?? "Unknown Schema", errors, json, ex);
+                throw new JsonSchemaValidationException(schemaTitle, errors, jsonString, ex);
             }
+            return true;
         }
 
         public void ClearCache()

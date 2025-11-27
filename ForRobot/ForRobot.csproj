@@ -347,7 +347,6 @@
     <Compile Include="Libr\DocumentPaneHelper.cs" />
     <Compile Include="Libr\Json\ImageSourceConverter.cs" />
     <Compile Include="Libr\Json\PlitaWithRibsAttributesResolver.cs" />
-    <Compile Include="Libr\Json\SettingsResolver.cs" />
     <Compile Include="Libr\Logger.cs" />
     <Compile Include="Libr\Messages\UpdateCurrentDetalMessage.cs" />
     <Compile Include="Libr\Clipboard\UndoRedo\IUndoRedo.cs" />
@@ -476,7 +475,6 @@
     <Compile Include="Libr\Collections\FullyObservableCollection.cs" />
     <Compile Include="Libr\Generation.cs" />
     <Compile Include="Libr\Behavior\AutoScrollBehavior.cs" />
-    <Compile Include="Libr\Attributes\SaveAttribute.cs" />
     <Compile Include="Libr\Json\SaveAttributesResolver.cs" />
     <Compile Include="Libr\Configuration\ConfigurationProperties\PlateConfigurationSection.cs" />
     <Compile Include="Libr\Configuration\ConfigurationProperties\RobotConfigurationSection.cs" />
@@ -643,7 +641,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
-    <EmbeddedResource Include="Libr\Resource\JsonSchemas\PlateJsonSchema.json" />
+    <EmbeddedResource Include="Libr\Resource\JsonSchemas\plate-schema.json" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

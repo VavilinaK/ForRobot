@@ -25,7 +25,6 @@ namespace ForRobot.Models.Settings
 
         private static readonly JsonSerializerSettings _jsonSettings = new JsonSerializerSettings()
         {
-            //ContractResolver = new ForRobot.Libr.Json.SettingsResolver(),
             Formatting = Formatting.Indented,
             NullValueHandling = NullValueHandling.Ignore
         };
