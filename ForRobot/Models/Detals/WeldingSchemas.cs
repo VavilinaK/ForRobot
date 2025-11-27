@@ -40,17 +40,10 @@ namespace ForRobot.Models.Detals
             return DescriptionList;
         }
 
-        public class SchemaRib : INotifyPropertyChanged
+        public class SchemaItem : INotifyPropertyChanged
         {
-            #region Private variables
-
             private string _leftSide;
-
             private string _rightSide;
-
-            #endregion
-
-            #region Private variables
 
             public string LeftSide
             {
@@ -58,8 +51,7 @@ namespace ForRobot.Models.Detals
                 set
                 {
                     this._leftSide = value;
-                    this.Change?.Invoke(this, null);
-                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.LeftSide)));
+                    this.OnChangeProperty(nameof(this.LeftSide));
                 }
             }
 
@@ -69,37 +61,26 @@ namespace ForRobot.Models.Detals
                 set
                 {
                     this._rightSide = value;
-                    this.Change?.Invoke(this, null);
-                    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.RightSide)));
+                    this.OnChangeProperty(nameof(this.RightSide));
                 }
             }
 
-            #endregion
-
-            #region Constructor
-
-            public SchemaRib() { }
-
-            #endregion
-
-            #region Events
-
-            public event EventHandler Change;
+            public SchemaItem() { }
 
             public event PropertyChangedEventHandler PropertyChanged;
 
-            #endregion
-
-            #region Public functions
-
-            #endregion
+            /// <summary>
+            /// Вызов события изменения свойства
+            /// </summary>
+            /// <param name="propertyName">Наименование свойства</param>
+            private void OnChangeProperty([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null) => this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>
         /// Сборка схемы варки рёбер
         /// </summary>
         /// <param name="typeSchema">Тип схемы</param>
-        public static FullyObservableCollection<SchemaRib> BuildingSchema(SchemasTypes typeSchema, int iSumRib)
+        public static FullyObservableCollection<SchemaItem> BuildingSchema(SchemasTypes typeSchema, int iSumRib)
         {
             switch (typeSchema)
             {
@@ -117,12 +98,12 @@ namespace ForRobot.Models.Detals
         /// <param name="schemaType"></param>
         /// <param name="schema">Схема сварки</param>
         /// <returns></returns>
-        public static object[,] GetSchema(ObservableCollection<SchemaRib> schema)
+        public static object[,] GetSchema(ObservableCollection<SchemaItem> schema)
         {
             object[,] finishSchema = new object[schema.Count * 2, 2];
             for (int i = 1; i <= (schema.Count * 2); i++)
             {
-                SchemaRib rib = schema.Where(item => item.LeftSide == i.ToString() || item.RightSide == i.ToString())?.Count() == 0 ? null
+                SchemaItem rib = schema.Where(item => item.LeftSide == i.ToString() || item.RightSide == i.ToString())?.Count() == 0 ? null
                                 : schema.Where(item => item.LeftSide == i.ToString() || item.RightSide == i.ToString())?.First();
                 if (rib == null)
                     throw new Exception(string.Format("При составлении схемы сварки не найдена очерёдность №{0}", i));
@@ -163,12 +144,12 @@ namespace ForRobot.Models.Detals
         /// </summary>
         /// <param name="iCountOfRibs">Кол-во рёбер</param>
         /// <returns></returns>
-        public static FullyObservableCollection<SchemaRib> SelectSchemaRib(int iCountOfRibs)
+        private static FullyObservableCollection<SchemaItem> SelectSchemaRib(int iCountOfRibs)
         {
-            FullyObservableCollection<SchemaRib> schemaRibs = new FullyObservableCollection<WeldingSchemas.SchemaRib>();
+            FullyObservableCollection<SchemaItem> schemaRibs = new FullyObservableCollection<WeldingSchemas.SchemaItem>();
             for (int i = 0; i < iCountOfRibs; i++)
             {
-                schemaRibs.Add(new WeldingSchemas.SchemaRib());
+                schemaRibs.Add(new WeldingSchemas.SchemaItem());
             }
             return schemaRibs;
         }
@@ -178,9 +159,9 @@ namespace ForRobot.Models.Detals
         /// </summary>
         /// <param name="iSumRib">Кол-во рёбер</param>
         /// <returns></returns>
-        private static FullyObservableCollection<SchemaRib> BuildLeftEvenOddRightEvenOdd(int iSumRib)
+        private static FullyObservableCollection<SchemaItem> BuildLeftEvenOddRightEvenOdd(int iSumRib)
         {
-            List<SchemaRib> ribs = SelectSchemaRib(iSumRib).ToList<SchemaRib>() ;
+            List<SchemaItem> ribs = SelectSchemaRib(iSumRib).ToList<SchemaItem>() ;
             int i = 1;
             while (i <= (iSumRib * 2))
             {
@@ -208,7 +189,7 @@ namespace ForRobot.Models.Detals
                     i++;
                 }
             }
-            return new FullyObservableCollection<SchemaRib>(ribs);
+            return new FullyObservableCollection<SchemaItem>(ribs);
         }
     }
 }

@@ -1,9 +1,12 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Linq;
 using System.Reflection;
+using System.Collections.Generic;
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Linq;
 
 namespace ForRobot.Libr.Json.Schemas
@@ -13,6 +16,11 @@ namespace ForRobot.Libr.Json.Schemas
     /// </summary>
     public static class JsonManager
     {
+        /// <summary>
+        /// Свойства json-schema, которые могут содержать тип
+        /// </summary>
+        private static string[] _titleProperties = new string[] { "meta:targetClass", "meta:namespace", "className", "fullName", "x-target-type", "x-class-name", "x-full-name" };
+
         /// <summary>
         /// Возвращает схему для класса, если её класс является Embedded Resource
         /// </summary>
@@ -44,18 +52,31 @@ namespace ForRobot.Libr.Json.Schemas
                         return schemaJson;
                 }
             }
-            return null;
+            throw new Exception(string.Format("В сборке не найдена json-схема для типа {0}.", type));
         }
 
         public static string GetSchemaTargetType(string schemaJson)
         {
-            JObject schema = JObject.Parse(schemaJson);
-            
-            string targetType = schema["title"]?.ToString() ??
-                                schema["x-class-name"]?.ToString() ??
-                                schema["x-full-name"]?.ToString();
+            JSchema schema = JSchema.Parse(schemaJson);
 
-            return targetType;
+            List<string> allSchemaValues = new List<string>();
+            if (schema.Properties != null)
+                allSchemaValues.AddRange(schema.Properties.Keys);
+            if (schema.Required != null)
+                allSchemaValues.AddRange(schema.Required);
+
+            //JObject schema = JObject.Parse(schemaJson);
+
+            //string targetType = schema["title"]?.ToString() ??
+            //                    schema["x-class-name"]?.ToString() ??
+            //                    schema["x-full-name"]?.ToString();
+
+            string targetType = allSchemaValues.Where(item => _titleProperties.Contains(item)).FirstOrDefault();
+
+            if (string.IsNullOrEmpty(targetType))
+                throw new Exception("В json-схеме не найдено свойство обозначающее класс объекта.");
+            else
+                return targetType;
         }
 
     }

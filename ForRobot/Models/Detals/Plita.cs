@@ -39,13 +39,8 @@ namespace ForRobot.Models.Detals
         private decimal _weldsDissolutionLeft;
         private decimal _weldsDissolutionRight;
         private decimal _bevelToLeft;
-        private decimal _bevelToRight;
-        
+        private decimal _bevelToRight;        
         private FullyObservableCollection<Rib> _ribsCollection;
-        //private readonly JsonSerializerSettings _jsonSettings = new JsonSerializerSettings()
-        //{
-        //    Formatting = Formatting.Indented
-        //};
 
         #endregion
 
@@ -486,30 +481,6 @@ namespace ForRobot.Models.Detals
 
         #endregion Handle
 
-        ///// <summary>
-        ///// Выгрузка стандартных для <see cref="ForRobot.Models.Detals.Plita"/> параметров
-        ///// </summary>
-        //private void SelectDefoultPlateProperties()
-        //{
-        //    ForRobot.Libr.ConfigurationProperties.PlateConfigurationSection plateConfig = ConfigurationManager.GetSection("plate") as ForRobot.Libr.ConfigurationProperties.PlateConfigurationSection;
-        //    this.ReverseDeflection = plateConfig.ReverseDeflection;
-        //    this.PlateWidth = plateConfig.PlateWidth;
-        //    this.PlateLength = plateConfig.PlateLength;
-        //    this.PlateThickness = plateConfig.PlateThickness;
-        //    this.PlateBevelToLeft = plateConfig.PlateBevelToLeft;
-        //    this.PlateBevelToRight = plateConfig.PlateBevelToRight;
-
-        //    this.RibsHeight = plateConfig.RibsHeight;
-        //    this.RibsThickness = plateConfig.RibsThickness;
-        //    this.RibsCount = plateConfig.RibsCount;
-        //    this.DistanceToFirstRib = plateConfig.DistanceToFirstRib;
-        //    this.DistanceBetweenRibs = plateConfig.DistanceBetweenRibs;
-        //    this.RibsIdentToLeft = plateConfig.RibsIdentToLeft;
-        //    this.RibsIdentToRight = plateConfig.RibsIdentToRight;
-        //    this.WeldsDissolutionLeft = plateConfig.WeldsDissolutionLeft;
-        //    this.WeldsDissolutionRight = plateConfig.WeldsDissolutionRight;
-        //}
-
         /// <summary>
         /// Заполнение коллекции расстояний
         /// </summary>
@@ -547,12 +518,12 @@ namespace ForRobot.Models.Detals
             return new FullyObservableCollection<Rib>(ribsList);
         }
 
-        //private FullyObservableCollection<WeldingSchemas.SchemaRib> FillWeldingSchema()
+        //private FullyObservableCollection<WeldingSchemas.SchemaItem> FillWeldingSchema()
         //{
         //    if (string.IsNullOrEmpty(this.SelectedWeldingSchema))
         //        return null;
 
-        //    FullyObservableCollection<WeldingSchemas.SchemaRib> schema = ForRobot.Models.Detals.WeldingSchemas.BuildingSchema(ForRobot.Models.Detals.WeldingSchemas.GetSchemaType(this.SelectedWeldingSchema), base.RibsCount);
+        //    FullyObservableCollection<WeldingSchemas.SchemaItem> schema = ForRobot.Models.Detals.WeldingSchemas.BuildingSchema(ForRobot.Models.Detals.WeldingSchemas.GetSchemaType(this.SelectedWeldingSchema), base.RibsCount);
         //    schema.ItemPropertyChanged += (s, e) =>
         //    {
         //        if (this.SelectedWeldingSchema != WeldingSchemas.GetDescription(WeldingSchemas.SchemasTypes.Edit))
@@ -570,7 +541,7 @@ namespace ForRobot.Models.Detals
 
         //    if (this.RibsCount > this.WeldingSchema.Count)
         //        for (int i = this.WeldingSchema.Count; i < this.RibsCount; i++)
-        //            this.WeldingSchema.Add(new WeldingSchemas.SchemaRib());
+        //            this.WeldingSchema.Add(new WeldingSchemas.SchemaItem());
         //    else
         //    {
         //        for (int i = this.WeldingSchema.Count - 1; i >= this.RibsCount; i--)

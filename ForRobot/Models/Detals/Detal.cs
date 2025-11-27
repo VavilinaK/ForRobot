@@ -28,22 +28,12 @@ namespace ForRobot.Models.Detals
         private decimal _plateBevelToRightSave;
         private decimal[] _XYZOffset = new decimal[3] { 0, 0, 0 };
 
-        //protected readonly JsonSerializerSettings _jsonDeserializerSettings = new JsonSerializerSettings()
-        //{
-        //    ContractResolver = new ForRobot.Libr.Json.SaveAttributesResolver(),
-        //    Formatting = Formatting.Indented,
-        //};
-        //protected readonly JsonLoadSettings _jsonLoadSettings = new JsonLoadSettings()
-        //{
-        //    CommentHandling = CommentHandling.Ignore
-        //};
-
         #endregion
 
         #region Public variables
 
         /// <summary>
-        /// Тип детали
+        /// Тип детали. Использует <see cref="ForRobot.Models.Detals.DetalTypes"/>
         /// </summary>
         public virtual string DetalType { get; }
 
@@ -218,11 +208,6 @@ namespace ForRobot.Models.Detals
         /// </summary>
         public event PropertyChangedEventHandler ChangePropertyEvent;
 
-        /// <summary>
-        /// Событие сохранения параметров детали
-        /// </summary>
-        public event EventHandler SavePropertiesEvent;
-
         #endregion
 
         #region Constructors
@@ -261,31 +246,6 @@ namespace ForRobot.Models.Detals
 
         #region Public functions
 
-        //public virtual object DeserializeDetal(string sJsonString)
-        //{
-        //    return null;
-        //    //string detalType = Newtonsoft.Json.Linq.JObject.Parse(sJsonString)["DetalType"].ToString();
-
-        //    //if (string.IsNullOrEmpty(sJsonString))
-        //    //    return new Detal();
-
-        //    //switch (detalType)
-        //    //{
-        //    //    case DetalTypes.Plita:
-        //    //        break;
-
-        //    //    case DetalTypes.Stringer:
-        //    //        break;
-
-        //    //    case DetalTypes.Treygolnik:
-        //    //        break;
-        //    //}
-
-        //    //Detal detal = DetalTypes.StringToEnum(detalType)
-
-        //    //string.IsNullOrEmpty(sJsonString) ? new Plita(DetalType.Plita) : JsonConvert.DeserializeObject<Plita>(JObject.Parse(Properties.Settings.Default.SavePlita, _jsonLoadSettings).ToString(), this._jsonSettings);
-        //}
-
         public object Clone() => (Detal)this.MemberwiseClone();
         //{
         //    var json = JsonConvert.SerializeObject(this);
@@ -299,34 +259,11 @@ namespace ForRobot.Models.Detals
             return detals.Contains(detal);
         }
 
-        //public static Detal GetDetal(string detalType)
-        //{
-        //    switch (detalType)
-        //    {
-        //        case string a when a == DetalTypes.Plita:
-        //            return new Plita();
-
-        //        case string b when b == DetalTypes.Stringer:
-        //            return new PlitaStringer();
-
-        //        case string c when c == DetalTypes.Treygolnik:
-        //            return new PlitaTreygolnik();
-
-        //        default:
-        //            return null;
-        //    }
-        //}
-
         /// <summary>
         /// Вызов события изменения свойства
         /// </summary>
         /// <param name="propertyName">Наименование свойства</param>
         public virtual void OnChangeProperty([CallerMemberName] string propertyName = null) => this.ChangePropertyEvent?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
-        /// <summary>
-        /// Вызов события сохранения свойств
-        /// </summary>
-        public void SaveProperties() => this.SavePropertiesEvent?.Invoke(this, null);
 
         #endregion
 
