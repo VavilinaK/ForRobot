@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Serialization;
 
+using ForRobot.Libr.Json.Schemas;
 using ForRobot.Libr.Services.Providers;
 using ForRobot.Libr.Configuration;
 using ForRobot.Models.Detals;
@@ -49,22 +52,24 @@ namespace ForRobot.Libr.Factories.DetalFactory
 
         private Plita DeserializePlate(string jsonString, JsonSerializerSettings settings)
         {
-            if (string.IsNullOrEmpty(jsonString) || !this.ValidationJsonString(jsonString))
+            if (string.IsNullOrEmpty(jsonString))
                 return this.CreateDetal<Plita>(DetalType.Plita);
             else
                 return JsonConvert.DeserializeObject<Plita>(jsonString, settings);
         }
+                
+        //private string GetJsonShemaPlate()
+        //{
+        //    var assembly = Assembly.GetExecutingAssembly();
 
-        private string GetJsonShemaPlate()
-        {
-            return string.Empty;
-        }
+        //    return string.Empty;
+        //}
 
-        private bool ValidationJsonStringPlate(string jsonString)
-        {
-            string schemaJson = this.GetJsonShemaPlate(); 
-            return false;
-        }
+        //private bool ValidationJsonStringPlate(string jsonString)
+        //{
+        //    string schemaJson = this.GetJsonShemaPlate(); 
+        //    return false;
+        //}
 
         #endregion Private functions
 
@@ -87,8 +92,15 @@ namespace ForRobot.Libr.Factories.DetalFactory
             }
         }
 
+        /// <summary>
+        /// Десериализация и валидация
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="jsonString"></param>
+        /// <returns></returns>
         public T Deserialize<T>(string jsonString) where T : Detal
         {
+            this.ValidationJsonString<T>(jsonString);
             return (T)Deserialize(jsonString);
         }
 
@@ -110,12 +122,12 @@ namespace ForRobot.Libr.Factories.DetalFactory
                     throw new Exception(message);
                 }
             };
-
             string detalType = Newtonsoft.Json.Linq.JObject.Parse(jsonString)[nameof(Detal.DetalType)].ToString();
 
             switch (detalType)
             {
                 case DetalTypes.Plita:
+                    this.ValidationJsonString<ForRobot.Models.Detals.Plita>(jsonString);
                     return this.DeserializePlate(jsonString, settings);
 
                 default:
@@ -135,16 +147,38 @@ namespace ForRobot.Libr.Factories.DetalFactory
             }
         }
 
-        public bool ValidationJsonString(string jsonString)
+        public bool ValidationJsonString<T>(string jsonString) where T : Detal
         {
-            string detalType = Newtonsoft.Json.Linq.JObject.Parse(jsonString)[nameof(Detal.DetalType)].ToString();
-            switch (detalType)
-            {
-                case DetalTypes.Plita:
-                    return this.ValidationJsonStringPlate(jsonString);
+            JObject jsonObject = JObject.Parse(jsonString);
+            JSchema schema = _jsonSchemaProvider.GetPlitaSchema();
 
-                default:
-                    throw new ArgumentException($"Тип детали {detalType} не поддерживается", detalType);
+            try
+            {
+                if (!jsonObject.IsValid(schema, out IList<string> errors))
+                {
+                    throw new JsonSchemaValidationException(schema.Title ?? "Unknown Schema", errors, jsonString);
+                }
+                //switch (detalType)
+                //{
+                //    case DetalTypes.Plita:
+                //        return this.ValidationJsonStringPlate(jsonString);
+
+                //    default:
+                //        throw new ArgumentException($"Тип детали {detalType} не поддерживается", detalType);
+                //}
+            }
+            catch (JsonSchemaValidationException) { throw; }
+            catch (JsonReaderException ex)
+            {
+                var errors = new List<ValidationErrorInfo>
+                {
+                    new ValidationErrorInfo
+                    {
+                        Message = $"Deserialization failed: {ex.Message}",
+                        Path = "ROOT"
+                    }
+                };
+                throw new JsonSchemaValidationException(schema.Title ?? "Unknown Schema", errors, json, ex);
             }
         }
 

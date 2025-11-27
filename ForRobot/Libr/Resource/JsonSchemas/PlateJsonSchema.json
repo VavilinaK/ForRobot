@@ -1,23 +1,13 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema",
-  "title": "Plate Schema",
-  "description": "JSON-схема для валидации объектов типа `Plita`, на основе класса `Plita` и его базового класса `Detal`",
+  "title": "Plate Json-Schema",
+  "description": "JSON-схема для валидации класса Plita",
+  "x-class-name": "Plita",
+  "x-full-name": "ForRobot.Models.Detals.Plita",
+  "x-namespace": "ForRobot.Models.Detals",
   "type": "object",
 
   "properties": {
-    //"name": {
-    //  "type": "string",
-    //  "description": "This shows up in tooltips for the 'name' property."
-    //},
-    //"versions": {
-    //  "type": "array",
-    //  "description": "An array of version numbers.",
-    //  "minItems": 1,
-    //  "items": {
-    //    "type": "number"
-    //  }
-    //}
-
     "d_type": {
       "type": "string",
       "description": "Тип скоса"

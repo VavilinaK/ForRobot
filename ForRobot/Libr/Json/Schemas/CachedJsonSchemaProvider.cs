@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using Newtonsoft.Json.Schema;
+
 using ForRobot.Libr.Services.Providers;
 
 namespace ForRobot.Libr.Json.Schemas
@@ -19,10 +21,7 @@ namespace ForRobot.Libr.Json.Schemas
             _innerProvider = innerProvider ?? throw new ArgumentNullException(nameof(innerProvider));
         }
 
-        public PlateJsonSchemaSection GetPlitaJsonSchema()
-        {
-            throw new NotImplementedException();
-        }
+        JSchema IJsonSchemaProvider.GetPlitaSchema() => GetCached("plate", () => _innerProvider.GetPlitaSchema());
 
         private T GetCached<T>(string key, Func<T> factory) where T : class
         {

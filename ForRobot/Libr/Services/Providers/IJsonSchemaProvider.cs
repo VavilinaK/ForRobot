@@ -1,11 +1,11 @@
 ﻿using System;
 
-using ForRobot.Libr.Json.Schemas;
+using Newtonsoft.Json.Schema;
 
 namespace ForRobot.Libr.Services.Providers
 {
     public interface IJsonSchemaProvider
     {
-        PlateJsonSchemaSection GetPlitaJsonSchema();
+        JSchema GetPlitaSchema();
     }
 }

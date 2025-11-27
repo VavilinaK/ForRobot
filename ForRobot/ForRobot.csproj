@@ -322,7 +322,8 @@
     <Compile Include="Libr\Factories\DetalFactory\IDetalFactory.cs" />
     <Compile Include="Libr\Json\Schemas\CachedJsonSchemaProvider.cs" />
     <Compile Include="Libr\Json\Schemas\JsonSchemaProvider.cs" />
-    <Compile Include="Libr\Json\Schemas\PlateJsonSchemaSection.cs" />
+    <Compile Include="Libr\Json\Schemas\JsonManager.cs" />
+    <Compile Include="Libr\Json\Schemas\JsonSchemaValidationException.cs" />
     <Compile Include="Libr\Messages\ProperteisNameMessage.cs" />
     <Compile Include="Libr\Behavior\HelixAnnotationsBehavior.cs" />
     <Compile Include="Libr\Behavior\HelixSceneTrackerBehavior.cs" />
@@ -642,7 +643,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
-    <Resource Include="Libr\Json\Schemas\PlateJsonSchema.json" />
+    <EmbeddedResource Include="Libr\Resource\JsonSchemas\PlateJsonSchema.json" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
