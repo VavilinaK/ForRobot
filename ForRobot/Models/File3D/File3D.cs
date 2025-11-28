@@ -29,6 +29,17 @@ using ForRobot.Libr.Services;
 
 namespace ForRobot.Models.File3D
 {
+    //public abstract class File3D : INotifyPropertyChanged
+    //{
+    //    public string Path { get; set; }
+    //    public string Name => System.IO.Path.GetFileName(this.Path);
+    //    public Model3DGroup Model { get; protected set; }
+
+
+    //    //public void Load()
+    //    //public void Load(string path) { }
+    //}
+
     public class File3D : IDisposable
     {
         #region Private variables
@@ -75,7 +86,7 @@ namespace ForRobot.Models.File3D
         /// <summary>
         /// Путь к файлу
         /// </summary>
-        public string Path { get; private set; } = string.Empty;
+        public string Path { get; set; }
         /// <summary>
         /// Имя с расширением
         /// </summary>
@@ -125,7 +136,7 @@ namespace ForRobot.Models.File3D
         public File3D()
         {
             this.dispatcher = Dispatcher.CurrentDispatcher;
-            this._detalFactory = new ForRobot.Libr.Factories.DetalFactory.DetalFactory(new ForRobot.Libr.Configuration.ConfigurationProvider(), new ForRobot.Libr.Json.Schemas.JsonSchemaProvider());
+            this._detalFactory = new ForRobot.Libr.Factories.DetalFactory.DetalFactory(App.Current.ConfigurationProvider, App.Current.JsonSchemaProvider);
             this._undoRedoManager = new ForRobot.Libr.Clipboard.UndoRedoManager(new ForRobot.Libr.Clipboard.CacheClipboardProvider(), this.Name);
         }
 

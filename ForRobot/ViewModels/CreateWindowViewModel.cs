@@ -39,7 +39,7 @@ namespace ForRobot.ViewModels
             set
             {
                 this._selectedDetalType = value;
-                this.File3D = new Models.File3D.File3D(Detal.GetDetal(this._selectedDetalType));
+                //this.File3D = new Models.File3D.File3D(Detal.GetDetal(this._selectedDetalType));
                 RaisePropertyChanged(nameof(this.SelectedDetalType), nameof(this.FileName));
             }
         }
@@ -152,7 +152,7 @@ namespace ForRobot.ViewModels
                 return;
 
             this.File3D.Path = Path.Combine(this.FileName, this.FilePath);
-
+            
             App.Current.OpenedFiles.Add(this.File3D);
             //App.Current.WindowsAppService.CloseCreateWindow();
         }

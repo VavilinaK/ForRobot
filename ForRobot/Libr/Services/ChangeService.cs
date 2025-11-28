@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 using ForRobot.Models.File3D;
 using ForRobot.Models.Detals;
-using ForRobot.Libr.UndoRedo;
+//using ForRobot.Libr.UndoRedo;
 using ForRobot.Libr.Strategies.ModelingStrategies;
 
 namespace ForRobot.Libr.Services
@@ -42,18 +42,18 @@ namespace ForRobot.Libr.Services
             if (file3D.CurrentDetal is ForRobot.Models.Detals.Plita)
             {
                 Plita plita = file3D.CurrentDetal as ForRobot.Models.Detals.Plita;
-                RaisePropertyChanged(nameof(plita.SelectedWeldingSchema));
-                RaisePropertyChanged(nameof(plita.WeldingSchema));
+                //RaisePropertyChanged(nameof(plita.SelectedWeldingSchema));
+                //RaisePropertyChanged(nameof(plita.WeldingSchema));
             }
 
             if (e.OldValue != null)
             {
-                var command = new PropertyChangeCommand<Detal>(file3D,
-                                                               nameof(File3D.CurrentDetal),
-                                                               e.OldValue,
-                                                               e.NewValue,
-                                                               $"Изменение детали: {e.OldValue?.GetType().Name} -> {e.NewValue?.GetType().Name}");
-                file3D.AddUndoCommand(command);
+                //var command = new PropertyChangeCommand<Detal>(file3D,
+                //                                               nameof(File3D.CurrentDetal),
+                //                                               e.OldValue,
+                //                                               e.NewValue,
+                //                                               $"Изменение детали: {e.OldValue?.GetType().Name} -> {e.NewValue?.GetType().Name}");
+                //file3D.AddUndoCommand(command);
             }
         }
 

@@ -354,7 +354,8 @@
     <Compile Include="Libr\ValueChangedEventArgs.cs" />
     <Compile Include="Models\Detals\WeldingProperties.cs" />
     <Compile Include="Libr\Services\Providers\IConfigurationProvider.cs" />
-    <Compile Include="Models\File3D\IFile3D.cs" />
+    <Compile Include="Models\File3D\AssimpFile3D.cs" />
+    <Compile Include="Models\File3D\HelixFile3D.cs" />
     <Compile Include="Themes\Colors.cs" />
     <Compile Include="Models\Settings\ApplicationInfo.cs" />
     <Compile Include="Models\Settings\PropertyColor.cs" />

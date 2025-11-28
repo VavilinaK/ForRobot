@@ -569,20 +569,20 @@ namespace ForRobot.ViewModels
 
         private void SaveFile(Models.File3D.File3D file)
         {
-            if (file == null || file.IsSaved)
-                return;
+            //if (file == null || file.IsSaved)
+            //    return;
 
-            if (file.Path == System.IO.Path.Combine(System.IO.Path.GetTempPath(), file.Name))
-                using (var fbd = new FolderBrowserDialog())
-                {
-                    DialogResult result = fbd.ShowDialog();
-                    if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
-                        file.Path = System.IO.Path.Combine(fbd.SelectedPath, file.Name);
-                    else
-                        return;
-                }
+            //if (file.Path == System.IO.Path.Combine(System.IO.Path.GetTempPath(), file.Name))
+            //    using (var fbd = new FolderBrowserDialog())
+            //    {
+            //        DialogResult result = fbd.ShowDialog();
+            //        if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+            //            file.Path = System.IO.Path.Combine(fbd.SelectedPath, file.Name);
+            //        else
+            //            return;
+            //    }
 
-            file.Save();
+            //file.Save();
         }
 
         //private static void SaveAllFile(IEnumerable<Models.File3D.File3D> files)
@@ -787,42 +787,42 @@ namespace ForRobot.ViewModels
         /// <param name="path"></param>
         private void WriteJsonFile(Detal detal, string path)
         {
-            JObject jObject = JObject.Parse(detal.Json);
-            int[] sumRobots;
-            if (this.SelectedRobotsName == "Все")
-            {
-                sumRobots = new int[this.RobotsCollection.Count];
-                for (int i = 0; i < this.RobotsCollection.Count(); i++)
-                {
-                    sumRobots[i] = i + 1;
-                }
-            }
-            else
-                sumRobots = new int[1] { this.RobotsCollection.IndexOf(this.RobotsCollection.Where(p => p.Name == this.SelectedRobotsName).ToArray()[0]) + 1 };
-            jObject.Add("robots", JToken.FromObject(sumRobots)); // Запись в json-строку выбранных для генерации роботов (не зависит от подключения).
+            //JObject jObject = JObject.Parse(detal.Json);
+            //int[] sumRobots;
+            //if (this.SelectedRobotsName == "Все")
+            //{
+            //    sumRobots = new int[this.RobotsCollection.Count];
+            //    for (int i = 0; i < this.RobotsCollection.Count(); i++)
+            //    {
+            //        sumRobots[i] = i + 1;
+            //    }
+            //}
+            //else
+            //    sumRobots = new int[1] { this.RobotsCollection.IndexOf(this.RobotsCollection.Where(p => p.Name == this.SelectedRobotsName).ToArray()[0]) + 1 };
+            //jObject.Add("robots", JToken.FromObject(sumRobots)); // Запись в json-строку выбранных для генерации роботов (не зависит от подключения).
 
-            try
-            {
-                switch (detal)
-                {
-                    case Plita p:
-                        var plita = (Plita)detal;
-                        var sch = WeldingSchemas.GetSchema(plita.WeldingSchema);
-                        jObject.Add("welding_sequence", JToken.FromObject(sch)); // Запись в json-строку схему сварки настила.
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Windows.MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly);
-                throw ex;
-            }
+            //try
+            //{
+            //    switch (detal)
+            //    {
+            //        case Plita p:
+            //            var plita = (Plita)detal;
+            //            var sch = WeldingSchemas.GetSchema(plita.WeldingSchema);
+            //            jObject.Add("welding_sequence", JToken.FromObject(sch)); // Запись в json-строку схему сварки настила.
+            //            break;
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    System.Windows.MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, System.Windows.MessageBoxOptions.DefaultDesktopOnly);
+            //    throw ex;
+            //}
                         
-            File.WriteAllText(path, jObject.ToString());
+            //File.WriteAllText(path, jObject.ToString());
 
-            if (File.Exists(path))
-                App.Current.Logger.Info(new Exception($"Содержание файла {path}:\n" + jObject.ToString()),
-                                        $"Сгенерирован файл {path}");
+            //if (File.Exists(path))
+            //    App.Current.Logger.Info(new Exception($"Содержание файла {path}:\n" + jObject.ToString()),
+            //                            $"Сгенерирован файл {path}");
         }
 
         /// <summary>

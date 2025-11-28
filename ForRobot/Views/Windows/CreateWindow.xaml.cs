@@ -30,8 +30,8 @@ namespace ForRobot.Views.Windows
             get => this._selectedDetalType;
             set
             {
-                this._selectedDetalType = value;
-                this.CreationFile.CurrentDetal = Detal.GetDetal(this._selectedDetalType);
+                //this._selectedDetalType = value;
+                //this.CreationFile.CurrentDetal = Detal.GetDetal(this._selectedDetalType);
             }
         }
 
@@ -109,9 +109,9 @@ namespace ForRobot.Views.Windows
 
         public CreateWindow(DetalType detalType, string path = null) : this()
         {
-            this.SelectedDetalType = DetalTypes.EnumToString(detalType);
-            Detal detal = Detal.GetDetal(this.SelectedDetalType);
-            this.CreationFile = new File3D(detal, path);
+            //this.SelectedDetalType = DetalTypes.EnumToString(detalType);
+            //Detal detal = Detal.GetDetal(this.SelectedDetalType);
+            //this.CreationFile = new File3D(detal, path);
         }
 
         /// <summary>

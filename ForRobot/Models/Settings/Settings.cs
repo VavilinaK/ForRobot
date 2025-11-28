@@ -58,6 +58,13 @@ namespace ForRobot.Models.Settings
 
         #region Public variables
 
+        /// <summary>
+        /// Наименование файла настроек
+        /// </summary>
+        public static string FileName = "interfaceOfRobot_settings.json";
+
+        #region Properties
+
         #region Generic
 
         /// <summary>
@@ -537,6 +544,8 @@ namespace ForRobot.Models.Settings
 
         #endregion
 
+        #endregion Properties
+
         /// <summary>
         /// Событие изменения свойства настроек
         /// </summary>
@@ -553,17 +562,17 @@ namespace ForRobot.Models.Settings
             else
                 this.SelectedTheme = this.Themes.Where(t => t.Item1 == Properties.Settings.Default.SelectedTheme).First();
 
-            this.PlitaProgramName = this._appConfig.PlitaProgramName;
-            this.PlitaStringerProgramName = this._appConfig.PlitaStringerProgramName;
-            this.PlitaTreugolnikProgramName = this._appConfig.PlitaTreugolnikProgramName;
+            //this.PlitaProgramName = this._appConfig.PlitaProgramName;
+            //this.PlitaStringerProgramName = this._appConfig.PlitaStringerProgramName;
+            //this.PlitaTreugolnikProgramName = this._appConfig.PlitaTreugolnikProgramName;
 
-            this.PlitaScriptName = this._appConfig.PlitaGenerator;
-            this.PlitaStringerScriptName = this._appConfig.PlitaStringerGenerator;
-            this.PlitaTreugolnikScriptName = this._appConfig.PlitaTreugolnikGenerator;
+            //this.PlitaScriptName = this._appConfig.PlitaGenerator;
+            //this.PlitaStringerScriptName = this._appConfig.PlitaStringerGenerator;
+            //this.PlitaTreugolnikScriptName = this._appConfig.PlitaTreugolnikGenerator;
 
-            this.PathFolderOfGeneration = this._robotConfig.PathForGeneration;
+            //this.PathFolderOfGeneration = this._robotConfig.PathForGeneration;
 
-            this.ControlerFolder = this._robotConfig.PathControllerFolder;
+            //this.ControlerFolder = this._robotConfig.PathControllerFolder;
 
             //if (this.Colors == null || this.Colors.Count == 0) this.Colors = new List<File3D.PropertyColor>();
             if (this.Colors.Count == 0) this.Colors = GetColors();
@@ -574,14 +583,20 @@ namespace ForRobot.Models.Settings
         #region Public functions
 
         /// <summary>
-        /// Сохранение настроек в json-файл во временных файлах
+        /// Сохранение json-файла настроек во временных файлах
         /// </summary>
         public void Save()
         {
-            string sPathForSave = Path.Combine(Path.GetTempPath(), "interfaceOfRobot_settings.json");
-            File.WriteAllText(sPathForSave, JsonConvert.SerializeObject(this, _jsonSettings));
+            string filePath = Path.Combine(Path.GetTempPath(), FileName);
+            this.Save(filePath);
         }
-        
+
+        /// <summary>
+        /// Сохранение файла настроек
+        /// </summary>
+        /// <param name="filePath">Путь для сохранения</param>
+        public void Save(string filePath) => File.WriteAllText(filePath, JsonConvert.SerializeObject(this, _jsonSettings));
+
         /// <summary>
         /// Инициализация настроек (при первой загрузки) или выгрузка из временных файлов
         /// </summary>

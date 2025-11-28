@@ -54,6 +54,9 @@ namespace ForRobot
 
         public static new App Current => Application.Current as App;
 
+        public readonly ForRobot.Libr.Services.Providers.IConfigurationProvider ConfigurationProvider = new ForRobot.Libr.Configuration.ConfigurationProvider();
+        public readonly ForRobot.Libr.Services.Providers.IJsonSchemaProvider JsonSchemaProvider = new ForRobot.Libr.Json.Schemas.JsonSchemaProvider();
+
         /// <summary>
         /// Сервис открытия окон приложения
         /// </summary>

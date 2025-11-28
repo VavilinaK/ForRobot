@@ -233,7 +233,7 @@ namespace ForRobot.ViewModels
             try
             {
                 System.Collections.IEnumerable selectedItems = null;
-                using (ForRobot.Views.Windows.SelectWindow selectWindow = new ForRobot.Views.Windows.SelectWindow(ForRobot.Services.SelectAppsOnDeviceService.GetAllApplicationsOnDevice(), this.Settings.SavedAppsForOpened))
+                using (ForRobot.Views.Windows.SelectWindow selectWindow = new ForRobot.Views.Windows.SelectWindow(ForRobot.Libr.Services.SelectAppsOnDeviceService.GetAllApplicationsOnDevice(), this.Settings.SavedAppsForOpened))
                 {
                     ResourceDictionary resource = (ResourceDictionary)Application.Current.Resources["SelectAppsWindowResource"];
 
@@ -459,7 +459,7 @@ namespace ForRobot.ViewModels
         /// </summary>
         public static void EditPinCode()
         {
-            if (App.Sha256(new Services.WindowsAppService().InputWindowShow("Введите старый пин-код")) != Properties.Settings.Default.PinCode)
+            if (App.Sha256(new Libr.Services.WindowsAppService().InputWindowShow("Введите старый пин-код")) != Properties.Settings.Default.PinCode)
                 return;
 
             using (ForRobot.Views.Windows.InputWindow inputWindow = new ForRobot.Views.Windows.InputWindow("Введите новый пин-код"))

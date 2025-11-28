@@ -100,7 +100,7 @@ namespace ForRobot.Libr.Behavior
 
         private void UpdateWelds()
         {
-            ForRobot.Services.IWeldService weldService = new ForRobot.Services.WeldService(ForRobot.Models.Settings.Settings.ScaleFactor);
+            ForRobot.Libr.Services.IWeldService weldService = new ForRobot.Libr.Services.WeldService(ForRobot.Models.Settings.Settings.ScaleFactor);
 
             //if (this.Detal == null)
             //    return;

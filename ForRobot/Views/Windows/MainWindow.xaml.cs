@@ -57,23 +57,7 @@ namespace ForRobot.Views.Windows
             {
                 GalaSoft.MvvmLight.Messaging.Messenger.Default.Send(new Libr.Messages.SaveLayoutMessage());
 
-                if((System.Windows.Controls.Page)this.MainFrame?.Content is Pages.PageMain2 && (this.MainFrame.Content as ForRobot.Views.Pages.PageMain2).ViewModel.RobotsCollection.Where(robot => robot.IsConnection).Count() > 0)
-                {
-                    if (MessageBox.Show($"Закрыть соединение?", "Закрытие приложения", MessageBoxButton.OKCancel, MessageBoxImage.Question) != MessageBoxResult.OK)
-                    {
-                        e.Cancel = true;
-                        return;
-                    }
-                    else
-                    {
-                        foreach (var robot in (this.MainFrame.Content as ForRobot.Views.Pages.PageMain2).ViewModel.RobotsCollection)
-                        {
-                            robot.Dispose();
-                        }
-                    }
-                }
-
-                if ((System.Windows.Controls.Page)this.MainFrame?.Content is Pages.PageMain3 && (this.MainFrame.Content as ForRobot.Views.Pages.PageMain3).ViewModel.RobotsCollection.Where(robot => robot.IsConnection).Count() > 0)
+                if ((this.MainFrame.Content as ForRobot.Views.Pages.PageMain3).ViewModel.RobotsCollection.Where(robot => robot.IsConnection).Count() > 0)
                 {
                     if (MessageBox.Show($"Закрыть соединение?", "Закрытие приложения", MessageBoxButton.OKCancel, MessageBoxImage.Question) != MessageBoxResult.OK)
                     {

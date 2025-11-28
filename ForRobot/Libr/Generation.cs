@@ -106,8 +106,8 @@ namespace ForRobot.Libr
         {
             switch (obj)
             {
-                case ForRobot.Models.Detals.Plita plita:
-                    return (ConfigurationManager.GetSection("app") as ForRobot.Libr.ConfigurationProperties.AppConfigurationSection).PlitaGenerator;
+                //case ForRobot.Models.Detals.Plita plita:
+                //    return (ConfigurationManager.GetSection("app") as ForRobot.Libr.ConfigurationProperties.AppConfigurationSection).PlitaGenerator;
 
                 default:
                     return "none";
