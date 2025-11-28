@@ -29,16 +29,18 @@ using ForRobot.Libr.Services;
 
 namespace ForRobot.Models.File3D
 {
-    //public abstract class File3D : INotifyPropertyChanged
-    //{
-    //    public string Path { get; set; }
-    //    public string Name => System.IO.Path.GetFileName(this.Path);
-    //    public Model3DGroup Model { get; protected set; }
+    public abstract class File3D : INotifyPropertyChanged
+    {
+        public string Path { get; set; }
+        public string Name => System.IO.Path.GetFileName(this.Path);
+        public Model3DGroup Model { get; protected set; }
 
+        public abstract void Load();
+        public abstract Task LoadAsync();
 
-    //    //public void Load()
-    //    //public void Load(string path) { }
-    //}
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = null) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
 
     public class File3D : IDisposable
     {
