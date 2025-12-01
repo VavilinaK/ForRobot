@@ -9,6 +9,7 @@ using HelixToolkit.Wpf;
 
 using ForRobot.Libr.Collections;
 using ForRobot.Model.Detals;
+using ForRobot.Model.Settings;
 using ForRobot.Strategies.ModelingStrategies;
 
 namespace ForRobot.Services
@@ -49,7 +50,71 @@ namespace ForRobot.Services
 
         #endregion
 
-        #region Public Methods
+        #region Private functions
+
+        /// <summary>
+        /// Применяет выбранную конфигурацию расположения дополнительных моделей
+        /// </summary>
+        private void ApplySceneConfiguration(Model3DGroup scene, Detal detal, SceneConfiguration configuration)
+        {
+            switch (detal.DetalType)
+            {
+                case DetalTypes.Plita:
+                    Plita plate = detal as Plita;
+
+                    if (configuration == SceneConfiguration.FirstCehConfiguration)
+                        this.PlateFirstCehConfiguration(scene, plate);
+                    else if (configuration == SceneConfiguration.SecondCehConfiguration)
+                        this.PlateSecondCehConfiguration(scene, plate);
+                    break;
+            }
+        }
+
+        private void PlateFirstCehConfiguration(Model3DGroup scene, Plita plate)
+        {
+            double halfModelPlateLength = (double)plate.PlateLength * this._scaleFactor / 2;
+            double halfModelPlateWidth = (double)plate.PlateWidth * this._scaleFactor / 2;
+            double halfModelPlateHeight = (double)plate.PlateThickness * this._scaleFactor / 2;
+
+            double offsetDirection = (plate.ScoseType == ScoseTypes.SlopeLeft || plate.ScoseType == ScoseTypes.SlopeRight) ? SLOPE_OFF_SET : 0;
+
+            //scene.Children.AddRobot((halfModelPlateLength + offsetDirection) * -1, halfModelPlateWidth + DEFAULT_DISTANCE, 0, this._scaleFactor * 10);
+            //scene.Children.AddPC((halfModelPlateLength + offsetDirection + DEFAULT_DISTANCE) * -1, halfModelPlateWidth + DEFAULT_DISTANCE, 0, this._scaleFactor * 200);
+
+            Transform3DGroup modelTransformA = new Transform3DGroup();
+            modelTransformA.Children.Add(new ScaleTransform3D(this._scaleFactor, this._scaleFactor, this._scaleFactor));
+            modelTransformA.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(1, 0, 0), 90), new Point3D(halfModelPlateLength + 7, 0, 0)));
+            Transform3DGroup modelTransformB = modelTransformA.Clone();
+            modelTransformA.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), 90)));
+
+            scene.Children.AddMan((halfModelPlateLength + DEFAULT_DISTANCE + offsetDirection + Model.File3D.Annotation.DefaultAnnotationWidth) * -1, 0, 0, this._scaleFactor * 150, modelTransformA);
+            scene.Children.AddMan(0, halfModelPlateWidth + 15, 0, this._scaleFactor * 150, modelTransformB);
+        }
+
+        private void PlateSecondCehConfiguration(Model3DGroup scene, Plita plate)
+        {
+            double halfModelPlateLength = (double)plate.PlateLength * this._scaleFactor / 2;
+            double halfModelPlateWidth = (double)plate.PlateWidth * this._scaleFactor / 2;
+            double halfModelPlateHeight = (double)plate.PlateThickness * this._scaleFactor / 2;
+
+            double offsetDirection = (plate.ScoseType == ScoseTypes.SlopeLeft || plate.ScoseType == ScoseTypes.SlopeRight) ? SLOPE_OFF_SET : 0;
+
+            scene.Children.AddRobot(halfModelPlateLength + offsetDirection, -halfModelPlateWidth - DEFAULT_DISTANCE, 0, this._scaleFactor * 10);
+            scene.Children.AddPC(-halfModelPlateLength - offsetDirection, -halfModelPlateWidth - DEFAULT_DISTANCE, 0, this._scaleFactor * 200);
+
+            Transform3DGroup modelTransformA = new Transform3DGroup();
+            modelTransformA.Children.Add(new ScaleTransform3D(this._scaleFactor, this._scaleFactor, this._scaleFactor));
+            modelTransformA.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(1, 0, 0), 90), new Point3D(halfModelPlateLength + 7, 0, 0)));
+            Transform3DGroup modelTransformB = modelTransformA.Clone();
+            modelTransformA.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), -90)));
+
+            scene.Children.AddMan(halfModelPlateLength + DEFAULT_DISTANCE + offsetDirection, 0, 0, this._scaleFactor * 150, modelTransformA);
+            scene.Children.AddMan(0, halfModelPlateWidth + 15, 0, this._scaleFactor * 150, modelTransformB);
+        }
+
+        #endregion Private functions
+
+        #region Public functions
 
         public Model3DGroup Get3DScene(Detal detal)
         {
@@ -68,19 +133,7 @@ namespace ForRobot.Services
                     Plita plate = detal as Plita;
                     detalModel3D.SetName("Plate");
 
-                    double offsetDirection = (plate.ScoseType == ScoseTypes.SlopeLeft || plate.ScoseType == ScoseTypes.SlopeRight) ? SLOPE_OFF_SET : 0;
-                    
-                    scene.Children.AddRobot(halfModelPlateLength + offsetDirection, -halfModelPlateWidth - DEFAULT_DISTANCE, 0, this._scaleFactor * 10);
-                    scene.Children.AddPC(-halfModelPlateLength - offsetDirection, -halfModelPlateWidth - DEFAULT_DISTANCE, 0, this._scaleFactor * 200);
-
-                    Transform3DGroup modelTransformA = new Transform3DGroup();
-                    modelTransformA.Children.Add(new ScaleTransform3D(this._scaleFactor, this._scaleFactor, this._scaleFactor));
-                    modelTransformA.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(1, 0, 0), 90), new Point3D(halfModelPlateLength + 7, 0, 0)));
-                    Transform3DGroup modelTransformB = modelTransformA.Clone();
-                    modelTransformA.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), -90)));
-
-                    scene.Children.AddMan(halfModelPlateLength + DEFAULT_DISTANCE + offsetDirection, 0, 0, this._scaleFactor * 150, modelTransformA);
-                    scene.Children.AddMan(0, halfModelPlateWidth + 15, 0, this._scaleFactor * 150, modelTransformB);
+                    this.ApplySceneConfiguration(scene, plate, SceneConfiguration.SecondCehConfiguration);
                     break;
 
                 default:
@@ -180,6 +233,6 @@ namespace ForRobot.Services
             }
         }
 
-        #endregion Public Methods
+        #endregion Public functions
     }
 }

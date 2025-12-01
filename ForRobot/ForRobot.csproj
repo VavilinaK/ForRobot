@@ -304,6 +304,7 @@
     <Compile Include="Libr\Behavior\HelixAddCollectionBehavior.cs" />
     <Compile Include="Libr\Behavior\DataGridStretchLastColumn.cs" />
     <Compile Include="Libr\Collections\Model3DCollection.cs" />
+    <Compile Include="Libr\Collections\TransformBuilder.cs" />
     <Compile Include="Libr\Messages\ProperteisNameMessage.cs" />
     <Compile Include="Libr\Behavior\HelixAnnotationsBehavior.cs" />
     <Compile Include="Libr\Behavior\HelixSceneTrackerBehavior.cs" />
@@ -333,6 +334,7 @@
     <Compile Include="Libr\Messages\UpdateCurrentDetalMessage.cs" />
     <Compile Include="Libr\UndoRedo\IUndoRedo.cs" />
     <Compile Include="Libr\ValueChangedEventArgs.cs" />
+    <Compile Include="Model\Settings\SceneConfiguration.cs" />
     <Compile Include="Themes\Colors.cs" />
     <Compile Include="Model\Settings\ApplicationInfo.cs" />
     <Compile Include="Model\Settings\PropertyColor.cs" />
