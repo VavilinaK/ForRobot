@@ -304,7 +304,7 @@
     <Compile Include="Libr\Behavior\HelixAddCollectionBehavior.cs" />
     <Compile Include="Libr\Behavior\DataGridStretchLastColumn.cs" />
     <Compile Include="Libr\Collections\Model3DCollection.cs" />
-    <Compile Include="Libr\Collections\TransformBuilder.cs" />
+    <Compile Include="Libr\Collections\Transform3DBuilder.cs" />
     <Compile Include="Libr\Messages\ProperteisNameMessage.cs" />
     <Compile Include="Libr\Behavior\HelixAnnotationsBehavior.cs" />
     <Compile Include="Libr\Behavior\HelixSceneTrackerBehavior.cs" />
