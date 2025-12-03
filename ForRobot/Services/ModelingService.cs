@@ -78,17 +78,27 @@ namespace ForRobot.Services
 
             double offsetDirection = (plate.ScoseType == ScoseTypes.SlopeLeft || plate.ScoseType == ScoseTypes.SlopeRight) ? SLOPE_OFF_SET : 0;
 
-            //scene.Children.AddRobot((halfModelPlateLength + offsetDirection) * -1, halfModelPlateWidth + DEFAULT_DISTANCE, 0, this._scaleFactor * 10);
-            //scene.Children.AddPC((halfModelPlateLength + offsetDirection + DEFAULT_DISTANCE) * -1, halfModelPlateWidth + DEFAULT_DISTANCE, 0, this._scaleFactor * 200);
+            Vector3D robotTranslate = new Vector3D((halfModelPlateLength + offsetDirection) * -1, halfModelPlateWidth + DEFAULT_DISTANCE, 0);
+            var robotTransform = Transform3DBuilder.Create()
+                                                   .Scale(this._scaleFactor * 10)
+                                                   .Rotate(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), -90);
+            scene.Children.AddRobot(robotTranslate.X, robotTranslate.Y, robotTranslate.Z, robotTransform);
 
-            Transform3DGroup modelTransformA = new Transform3DGroup();
-            modelTransformA.Children.Add(new ScaleTransform3D(this._scaleFactor, this._scaleFactor, this._scaleFactor));
-            modelTransformA.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(1, 0, 0), 90), new Point3D(halfModelPlateLength + 7, 0, 0)));
-            Transform3DGroup modelTransformB = modelTransformA.Clone();
-            modelTransformA.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), 90)));
+            Vector3D pcTranslate = new Vector3D((halfModelPlateLength + offsetDirection + DEFAULT_DISTANCE) * -1, halfModelPlateWidth + DEFAULT_DISTANCE, 0);
+            var pcTransform = Transform3DBuilder.Create()
+                                                .Scale(this._scaleFactor * 200).Translate(pcTranslate)
+                                                .Rotate(new System.Windows.Media.Media3D.Vector3D(1, 0, 0), 90, new Point3D(pcTranslate.X, pcTranslate.Y, pcTranslate.Z));
+            scene.Children.AddPC(pcTranslate.X, pcTranslate.Y, pcTranslate.Z, pcTransform);
 
-            //scene.Children.AddMan((halfModelPlateLength + DEFAULT_DISTANCE + offsetDirection + Model.File3D.Annotation.DefaultAnnotationWidth) * -1, 0, 0, this._scaleFactor * 150, modelTransformA);
-            //scene.Children.AddMan(0, halfModelPlateWidth + 15, 0, this._scaleFactor * 150, modelTransformB);
+            var manATransform = Transform3DBuilder.Create()
+                                      .Scale(this._scaleFactor)
+                                      .Rotate(new System.Windows.Media.Media3D.Vector3D(1, 0, 0), 90);
+
+            var manBTransform = manATransform.Clone()
+                                             .Rotate(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), 90);
+
+            scene.Children.AddMan(0, halfModelPlateWidth + 15, 0, manATransform);
+            scene.Children.AddMan((halfModelPlateLength + DEFAULT_DISTANCE * 1.5 + offsetDirection) * -1, 0, 0, manBTransform);
         }
 
         private void PlateSecondCehConfiguration(Model3DGroup scene, Plita plate)
@@ -103,25 +113,25 @@ namespace ForRobot.Services
             var robotTransform = Transform3DBuilder.Create()
                                                    .Scale(this._scaleFactor * 10)
                                                    .Translate(robotTranslate)
-                                                   .Rotate(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), 90), new Point3D(robotTranslate.X, robotTranslate.Y, robotTranslate.Z));
+                                                   .Rotate(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), 90, new Point3D(robotTranslate.X, robotTranslate.Y, robotTranslate.Z));
             scene.Children.AddRobot(robotTranslate.X, robotTranslate.Y, robotTranslate.Z, robotTransform);
 
             Vector3D pcTranslate = new Vector3D(-halfModelPlateLength - offsetDirection, -halfModelPlateWidth - DEFAULT_DISTANCE, 0);
             var pcTransform = Transform3DBuilder.Create()  
                                                 .Scale(this._scaleFactor * 200).Translate(pcTranslate)
-                                                .Rotate(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(1, 0, 0), 90), new Point3D(pcTranslate.X, pcTranslate.Y, pcTranslate.Z))
-                                                .Rotate(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), 180), new Point3D(pcTranslate.X, pcTranslate.Y, pcTranslate.Z));
+                                                .Rotate(new System.Windows.Media.Media3D.Vector3D(1, 0, 0), 90, new Point3D(pcTranslate.X, pcTranslate.Y, pcTranslate.Z))
+                                                .Rotate(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), 180, new Point3D(pcTranslate.X, pcTranslate.Y, pcTranslate.Z));
             scene.Children.AddPC(pcTranslate.X, pcTranslate.Y, pcTranslate.Z, pcTransform);
 
-            var manTransform = Transform3DBuilder.Create()
-                                                 .Scale(this._scaleFactor)
-                                                 .Rotate(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(1, 0, 0), 90), new Point3D(halfModelPlateLength + 7, 0, 0));
+            var manATransform = Transform3DBuilder.Create()
+                                                  .Scale(this._scaleFactor)
+                                                  .Rotate(new System.Windows.Media.Media3D.Vector3D(1, 0, 0), 90);
 
-            scene.Children.AddMan(halfModelPlateLength + DEFAULT_DISTANCE + offsetDirection, 0, 0, manTransform);
+            var manBTransform = manATransform.Clone()
+                                             .Rotate(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), -90);
 
-            //manTransform = manTransform.Rotate(new AxisAngleRotation3D(new System.Windows.Media.Media3D.Vector3D(0, 0, 1), -90));
-
-            //scene.Children.AddMan(0, halfModelPlateWidth + 15, 0, manTransform);
+            scene.Children.AddMan(0, halfModelPlateWidth + 15, 0, manATransform);
+            scene.Children.AddMan(halfModelPlateLength + DEFAULT_DISTANCE + offsetDirection, 0, 0, manBTransform);
         }
 
         #endregion Private functions
@@ -145,7 +155,7 @@ namespace ForRobot.Services
                     Plita plate = detal as Plita;
                     detalModel3D.SetName("Plate");
 
-                    this.ApplySceneConfiguration(scene, plate, SceneConfiguration.SecondCehConfiguration);
+                    this.ApplySceneConfiguration(scene, plate, SceneConfiguration.FirstCehConfiguration);
                     break;
 
                 default:

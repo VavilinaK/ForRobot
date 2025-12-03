@@ -14,6 +14,11 @@ namespace ForRobot.Libr.Collections
         public const string PCModelPath = "pack://application:,,,/InterfaceOfRobots;component/3DModels/computer_monitor.stl";
         public const string ManModelPath = "pack://application:,,,/InterfaceOfRobots;component/3DModels/stickman.stl";
 
+        /// <summary>
+        /// Проверка использования в <see cref="Transform3D"/> <see cref="TranslateTransform3D"/>
+        /// </summary>
+        /// <param name="transform"></param>
+        /// <returns></returns>
         private static bool HasTranslationApplied(this Transform3D transform)
         {
             switch (transform)
@@ -65,7 +70,10 @@ namespace ForRobot.Libr.Collections
             if (transform3DGroup == null)
                 robotModel.Transform = Transform3DBuilder.Create().Translate(x, y, z);
             else if (!transform3DGroup.HasTranslationApplied())
-                (robotModel.Transform as Transform3DGroup).Translate(x, y, z);
+            {
+                transform3DGroup.Translate(x, y, z);
+                robotModel.Transform = transform3DGroup;
+            }
             else
                 robotModel.Transform = transform3DGroup;
 
@@ -89,7 +97,10 @@ namespace ForRobot.Libr.Collections
             if (transform3DGroup == null)
                 pcModel.Transform = Transform3DBuilder.Create().Translate(x, y, z);
             else if (!transform3DGroup.HasTranslationApplied())
-                (pcModel.Transform as Transform3DGroup).Translate(x, y, z);
+            {
+                transform3DGroup.Translate(x, y, z);
+                pcModel.Transform = transform3DGroup;
+            }
             else
                 pcModel.Transform = transform3DGroup;
 
@@ -112,11 +123,14 @@ namespace ForRobot.Libr.Collections
             Vector3D manTranslate = new Vector3D(x, y, z);
             Model3DGroup manModel = LoadModel(ManModelPath);
             ApplyCustomColor(manModel, ForRobot.Themes.Colors.WatcherColor);
-
+            
             if (transform3DGroup == null)
                 manModel.Transform = Transform3DBuilder.Create().Translate(x, y, z);
             else if (!transform3DGroup.HasTranslationApplied())
-                (manModel.Transform as Transform3DGroup).Translate(x, y, z);
+            {
+                transform3DGroup.Translate(x, y, z);
+                manModel.Transform = transform3DGroup;
+            }
             else
                 manModel.Transform = transform3DGroup;
 
