@@ -33,7 +33,7 @@ namespace ForRobot.Model.Settings
         private Tuple<string, Theme> _selectedTheme;
 
         private Dictionary<string, System.Windows.Media.Color> _colors = new Dictionary<string, System.Windows.Media.Color>();
-
+        
         private ForRobot.Libr.ConfigurationProperties.AppConfigurationSection _appConfig = ConfigurationManager.GetSection("app") as ForRobot.Libr.ConfigurationProperties.AppConfigurationSection;
         private ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection _robotConfig = ConfigurationManager.GetSection("robot") as ForRobot.Libr.ConfigurationProperties.RobotConfigurationSection;
 
@@ -52,8 +52,6 @@ namespace ForRobot.Model.Settings
         private bool _isMoveEnabled = true;
         private bool _isRotationEnabled = true;
         private bool _isZoomEnabled = true;
-
-        private SceneConfiguration _selectedSceneConfigurations = SceneConfiguration.FirstCehConfiguration;
 
         #endregion
 
@@ -232,16 +230,6 @@ namespace ForRobot.Model.Settings
 
         public bool ShowFieldOfView { get; set; } = false;
         public bool ShowFrameRate { get; set; } = false;
-
-        public SceneConfiguration SelectedSceneConfigurations
-        {
-            get => this._selectedSceneConfigurations;
-            set
-            {
-                this._selectedSceneConfigurations = value;
-                this.OnChangeProperty();
-            }
-        }
 
         /// <summary>
         /// Вертикальное положение системы координат
