@@ -138,7 +138,7 @@ namespace ForRobot.Services
 
         #region Public functions
 
-        public Model3DGroup Get3DScene(Detal detal)
+        public Model3DGroup Get3DScene(Detal detal, SceneConfiguration sceneConfiguration)
         {
             Model3DGroup scene = new Model3DGroup();
 
@@ -155,7 +155,7 @@ namespace ForRobot.Services
                     Plita plate = detal as Plita;
                     detalModel3D.SetName("Plate");
 
-                    this.ApplySceneConfiguration(scene, plate, SceneConfiguration.FirstCehConfiguration);
+                    this.ApplySceneConfiguration(scene, plate, sceneConfiguration);
                     break;
 
                 default:
@@ -167,7 +167,7 @@ namespace ForRobot.Services
             return scene;
         }
 
-        public async Task<Model3DGroup> Get3DSceneAsync(Detal detal) => await Task.Run(() => this.Get3DScene(detal));
+        public async Task<Model3DGroup> Get3DSceneAsync(Detal detal, SceneConfiguration sceneConfiguration) => await Task.Run(() => this.Get3DScene(detal, sceneConfiguration));
 
         /// <summary>
         /// Поворот вершин вокруг оси X на заданный угол (в градусах)

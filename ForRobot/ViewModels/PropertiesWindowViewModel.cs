@@ -187,6 +187,22 @@ namespace ForRobot.ViewModels
             }
         }
 
+        /// <summary>
+        /// Коллекция конфигураций сцен для цехов
+        /// </summary>
+        public ObservableCollection<SceneConfiguration> SceneConfigurationsCollection
+        {
+            get
+            {
+                List<SceneConfiguration> sc = new List<SceneConfiguration>()
+                {
+                    SceneConfiguration.FirstCehConfiguration,
+                    SceneConfiguration.SecondCehConfiguration
+                };
+                return new ObservableCollection<SceneConfiguration>(sc);
+            }
+        }
+
         public ObservableCollection<HorizontalAlignment> HorizontalAlignments { get; } = new ObservableCollection<HorizontalAlignment>(Enum.GetValues(typeof(HorizontalAlignment))
                                                                                                                                                                                   .Cast<HorizontalAlignment>()
                                                                                                                                                                                   .ToList<HorizontalAlignment>());
