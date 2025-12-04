@@ -109,7 +109,7 @@ namespace ForRobot.Services
                     {
                         try
                         {
-                            var model = _modelingService.Get3DScene(file.CurrentDetal);
+                            var model = _modelingService.Get3DScene(file.CurrentDetal, App.Current.Settings.SelectedSceneConfigurations);
                             file.CurrentModel.Children.Clear();
                             file.CurrentModel.Children.Add(model);
                         }

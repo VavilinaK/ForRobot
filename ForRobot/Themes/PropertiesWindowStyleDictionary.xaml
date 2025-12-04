@@ -611,6 +611,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
@@ -635,7 +636,23 @@
                 </StackPanel>
             </Grid>
 
-            <GroupBox Grid.Row="1" Header="Отображение параметров">
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="Сцена для цеха:"/>
+
+                <ComboBox Grid.Column="1"
+                          ItemsSource="{Binding Path=SceneConfigurationsCollection}"
+                          SelectedItem="{Binding Path=Settings.SelectedSceneConfigurations, Mode=TwoWay}"
+                          SelectedIndex="0" Background="#FF3F3F9B">
+                    
+                </ComboBox>
+            </Grid>
+
+            <GroupBox Grid.Row="2" Header="Отображение параметров">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -656,7 +673,7 @@
                 </Grid>
             </GroupBox>
 
-            <GroupBox Grid.Row="2" Header="Система координат">
+            <GroupBox Grid.Row="3" Header="Система координат">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -683,12 +700,12 @@
                 </Grid>
             </GroupBox>
 
-            <CheckBox Grid.Row="3" Content="Пространственный куб" IsChecked="{Binding Path=Settings.ShowViewCube, Mode=TwoWay}"/>
-            <CheckBox Grid.Row="4" Content="Доступности нажатия рёбер пространственного куба" IsChecked="{Binding Path=Settings.IsViewCubeEdgeClicksEnabled, Mode=TwoWay}"/>
-            <CheckBox Grid.Row="5" Content="Количество полигонов" IsChecked="{Binding Path=Settings.ShowTriangleCountInfo, Mode=TwoWay}"/>
-            <CheckBox Grid.Row="6" Content="Количество кадров" IsChecked="{Binding Path=Settings.ShowFrameRate, Mode=TwoWay}"/>
+            <CheckBox Grid.Row="4" Content="Пространственный куб" IsChecked="{Binding Path=Settings.ShowViewCube, Mode=TwoWay}"/>
+            <CheckBox Grid.Row="5" Content="Доступности нажатия рёбер пространственного куба" IsChecked="{Binding Path=Settings.IsViewCubeEdgeClicksEnabled, Mode=TwoWay}"/>
+            <CheckBox Grid.Row="6" Content="Количество полигонов" IsChecked="{Binding Path=Settings.ShowTriangleCountInfo, Mode=TwoWay}"/>
+            <CheckBox Grid.Row="7" Content="Количество кадров" IsChecked="{Binding Path=Settings.ShowFrameRate, Mode=TwoWay}"/>
 
-            <GroupBox Grid.Row="7" Header="Камера">
+            <GroupBox Grid.Row="8" Header="Камера">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -789,7 +806,7 @@
                 </Grid>
             </GroupBox>
 
-            <GroupBox Grid.Row="8" Header="Цветовое обозначение">
+            <GroupBox Grid.Row="9" Header="Цветовое обозначение">
                 <Grid TextElement.FontWeight="Normal">
                     <Grid.Resources>
                         <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource TextBlockBase}">                            
