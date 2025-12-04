@@ -771,7 +771,7 @@
 
                                 <ModelVisual3D Content="{Binding Path=CurrentModel, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
 
-                                <h:CoordinateSystemVisual3D ArrowLengths="3"/>
+                                <!--<h:CoordinateSystemVisual3D ArrowLengths="3"/>-->
                                 
                                 <!--<h:BoundingBoxVisual3D BoundingBox="{Binding Path=DataContext.SelectedObject, Converter={StaticResource BoundsConvert}, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type Page}, Mode=FindAncestor}}"
                                                        Diameter="0.1"
